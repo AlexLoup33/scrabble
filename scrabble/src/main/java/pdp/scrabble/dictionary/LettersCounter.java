@@ -8,27 +8,28 @@ public class LettersCounter {
     //      B: 45
     // sert a dire le nombre de chaque lettre presente
 
-    private Hashtable<Character, Integer> letters;
+    private final Hashtable<Character, Integer> letters = new Hashtable<>();
 
-    public Hashtable getLettersCounter() {
+    public LettersCounter() {
+        // none
+    }
+
+    public Hashtable<Character, Integer> getLettersCounter() {
         return this.letters;
     }
 
-    public Hashtable addLetter(char letter) {
-        this.letters.put(letter, this.letters.getOrDefault(letter, 0) + 1);
+    public Hashtable<Character, Integer> addLetter(Character letter) {
+        this.letters.put(letter, this.letters.getOrDefault('A', 0) + 1);
         return this.letters;
     }
 
-    public Hashtable removeLetter(char letter) {
+    public Hashtable<Character, Integer> removeLetter(char letter) {
+        // NOT CORRECT
         this.letters.remove(letter);
         return this.letters;
     }
 
-    public int getLetterCount(char letter) {
-        if (this.letters.get(letter) != 0) {
-            return this.letters.get(letter);
-        } else {
-            return 0;
-        }
+    public int getLetterCount(Character letter) {
+        return this.letters.getOrDefault(letter, 0);
     }
 }

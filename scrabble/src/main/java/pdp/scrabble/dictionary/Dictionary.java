@@ -8,6 +8,6 @@ public interface Dictionary {
 
     void load_from_file(String file_name);
 
-    void find_world(String word);
+    void find_world(LettersCounter lc);
 
 }

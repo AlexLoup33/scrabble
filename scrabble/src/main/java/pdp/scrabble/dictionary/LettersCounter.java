@@ -18,15 +18,22 @@ public class LettersCounter {
         return this.letters;
     }
 
-    public Hashtable<Character, Integer> addLetter(Character letter) {
-        this.letters.put(letter, this.letters.getOrDefault('A', 0) + 1);
-        return this.letters;
+    public int addLetter(Character letter) {
+        if (this.letters.getOrDefault(letter, 0) == 0) {
+            this.letters.put(letter, 1);
+        } else {
+            this.letters.put(letter, this.letters.getOrDefault(letter, 0) + 1);
+        }
+        return this.letters.getOrDefault(letter, 0);
     }
 
-    public Hashtable<Character, Integer> removeLetter(char letter) {
-        // NOT CORRECT
-        this.letters.remove(letter);
-        return this.letters;
+    public int removeLetter(char letter) {
+        if (this.letters.getOrDefault(letter, 0) == 1) {
+            this.letters.remove(letter);
+        } else {
+            this.letters.put(letter, this.letters.getOrDefault(letter, 0) - 1);
+        }
+        return this.letters.getOrDefault(letter, 0);
     }
 
     public int getLetterCount(Character letter) {

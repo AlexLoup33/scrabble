@@ -19,7 +19,10 @@ public class Main {
         counter.addLetter('A');
         counter.addLetter('B');
         counter.addLetter('A');
-        if (counter.getLetterCount('A') != 2 && counter.getLetterCount('B') != 0) {
+        counter.removeLetter('A');
+
+        // Basic test implementation
+        if (counter.getLetterCount('A') != 1 && counter.getLetterCount('B') != 0) {
             throw new Exception("getLetterCount");
         }
 

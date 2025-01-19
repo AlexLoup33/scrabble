@@ -18,9 +18,11 @@ public class Word {
     private static String normalize(String text) {
         // 
         String newText = Normalizer.normalize(text, Normalizer.Form.NFD);
+        newText = newText.toUpperCase();
         // replace specific chars
-        newText = newText.replace("ç", "c");
-        newText = newText.replace("œ", "oe");
+        newText = newText.replace(" ", "");
+        newText = newText.replace("Ç", "C");
+        newText = newText.replace("Œ", "OE");
         // delete all non ascii chars
         newText = newText.replaceAll("[^\\p{ASCII}]", "");
         return newText;

@@ -26,7 +26,7 @@ public class WordsLoader {
             System.err.println(errorMessage);
             throw new Error(errorMessage);
         }
-        
+
         return words;
     }
 
@@ -35,7 +35,7 @@ public class WordsLoader {
             throw new IllegalArgumentException("the file at: " + filePath + " don't exist");
         }
         try {
-            return filePath.toString(); 
+            return filePath.toString();
             // dont work when toUri() as:
             // return filePath.toUri().toString();
         } catch (IllegalArgumentException e) {

@@ -1,18 +1,15 @@
 package pdp.scrabble.dictionary;
 
 import java.text.Normalizer;
+import java.util.Objects;
 
-/* a class that hold a normalized word with letters that are compatible with the scrable
+/* a class that hold a normalized word with letters that are compatible with the scrabble
  */
 public class Word {
     private final String word;
 
     public Word(String baseWord) {
-        this.word = Word.normalize(baseWord);
-    }
-
-    public String getString() {
-        return this.word;
+        this.word = Word.normalize(baseWord.toUpperCase());
     }
 
     private static String normalize(String text) {
@@ -26,6 +23,22 @@ public class Word {
         // delete all non ascii chars
         newText = newText.replaceAll("[^\\p{ASCII}]", "");
         return newText;
+    }
 
+    @Override
+    public String toString() {
+        return this.word;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Word word1 = (Word) o;
+        return Objects.equals(word, word1.word);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(word);
     }
 }

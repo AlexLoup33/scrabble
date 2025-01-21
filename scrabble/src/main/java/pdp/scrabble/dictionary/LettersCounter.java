@@ -18,7 +18,7 @@ public class LettersCounter {
     }
 
     public int addLetter(Character letter) {
-        letter = toUpperCase(letter);
+        letter = Character.toUpperCase(letter);
         this.letters.put(letter, this.letters.getOrDefault(letter, 0) + 1);
         return this.getLetterCount(letter);
     }

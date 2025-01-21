@@ -14,10 +14,13 @@ stages:
 compile-job:
   stage: compile
   tags:
-    - ubuntu
-    - docker
-    - scrabble
-    - build
+    - "24.04"
+    - CREMI
+    - LTS
+    - Noble
+    - Ubuntu
+    - amd64
+    - shell
   script:
     - echo "Compile stage"
     - cd scrabble
@@ -30,10 +33,13 @@ compile-job:
 test-job:
   stage: test
   tags:
-    - ubuntu
-    - docker
-    - scrabble
-    - build
+    - "24.04"
+    - CREMI
+    - LTS
+    - Noble
+    - Ubuntu
+    - amd64
+    - shell
   script:
     - echo "Test stage"
     - cd scrabble

@@ -39,7 +39,7 @@ public class WordsLoader {
             // dont work when toUri() as:
             // return filePath.toUri().toString();
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("couldn't load the ressource at: " + filePath);
+            throw new IllegalArgumentException("couldn't load the resource at: " + filePath);
         }
     }
 }

@@ -1,6 +1,9 @@
 package pdp.scrabble.dictionary;
 
 import java.util.Hashtable;
+import java.util.Set;
+
+import static java.lang.Character.toUpperCase;
 
 public class LettersCounter {
 
@@ -15,11 +18,13 @@ public class LettersCounter {
     }
 
     public int addLetter(Character letter) {
+        letter = toUpperCase(letter);
         this.letters.put(letter, this.letters.getOrDefault(letter, 0) + 1);
         return this.getLetterCount(letter);
     }
 
     public int removeLetter(char letter) {
+        letter = toUpperCase(letter);
         if (this.letters.getOrDefault(letter, -1) > 1) {
             this.letters.put(letter, this.letters.getOrDefault(letter, -1) - 1);
             return this.getLetterCount(letter);
@@ -36,5 +41,9 @@ public class LettersCounter {
 
     public int getLetterCount(Character letter) {
         return this.letters.getOrDefault(letter, 0);
+    }
+
+    public Set<Character> getKey() {
+        return this.letters.keySet();
     }
 }

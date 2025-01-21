@@ -61,7 +61,6 @@ public class Dictionary implements IDictionary {
         return result;
     }
 
-
     private static void generatePermutations(List<Character> original, List<Character> current, List<List<Character>> permutations, int length) {
         if (current.size() == length) {
             permutations.add(new ArrayList<>(current));

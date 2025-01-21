@@ -17,11 +17,13 @@ public class Main {
     public static void main(String[] args) throws Exception {
         System.out.println("--- Start ---");
 
+        // Create a 'bag of letters' (=LettersCounter)
         LettersCounter lc = new LettersCounter();
         lc.addLetter('A');
         lc.addLetter('b');
         lc.addLetter('C');
 
+        // Create a Dictionary with some words
         Dictionary dict = new Dictionary();
         dict.addWord(new Word("bac"));
         dict.addWord(new Word("ba"));
@@ -30,6 +32,7 @@ public class Main {
         dict.addWord(new Word("ab"));
         System.out.println(dict);
 
+        // Search for words containing lc letters
         System.out.println(dict.findWords(lc));
 
 

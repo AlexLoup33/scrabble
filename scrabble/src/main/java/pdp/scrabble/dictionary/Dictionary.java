@@ -28,7 +28,7 @@ public class Dictionary implements IDictionary {
 
         // transform LettersCounter to a list
         List<Character> lc_list = new ArrayList<>();
-        for (Character key : lc.getKey()) {
+        for (Character key : lc.getLettersSet()) {
             int freq = lc.getLetterCount(key);
             for (int i = 0; i < freq; ++i) {
                 lc_list.add(key);

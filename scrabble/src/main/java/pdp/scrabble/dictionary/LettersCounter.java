@@ -40,10 +40,11 @@ public class LettersCounter {
     }
 
     public int getLetterCount(Character letter) {
+        letter = Character.toUpperCase(letter);
         return this.letters.getOrDefault(letter, 0);
     }
 
-    public Set<Character> getKey() {
+    public Set<Character> getLettersSet() {
         return this.letters.keySet();
     }
 }

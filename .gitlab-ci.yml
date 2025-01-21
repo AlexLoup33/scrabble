@@ -13,6 +13,8 @@ stages:
 
 compile-job:
   stage: compile
+  tags:
+    - docker
   script:
     - echo "Compile stage"
     - cd scrabble
@@ -24,6 +26,8 @@ compile-job:
 
 test-job:
   stage: test
+  tags:
+    - docker
   script:
     - echo "Test stage"
     - cd scrabble

@@ -1,0 +1,34 @@
+# Docker image containing Maven and OpenJDK
+image: maven:3.8.5-openjdk-17
+
+# Global variables for Maven
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  MAVEN_CLI_OPTS: "-B -e -V"
+
+# Define pipeline stages
+stages:
+  - compile
+  - test
+
+compile-job:
+  stage: compile
+  script:
+    - echo "Compile stage"
+    - cd scrabble
+    - mvn dependency:resolve $MAVEN_CLI_OPTS
+    - mvn compile $MAVEN_CLI_OPTS
+  artifacts:
+    paths:
+      - scrabble/target/
+
+test-job:
+  stage: test
+  script:
+    - echo "Test stage"
+    - cd scrabble
+    - mvn test $MAVEN_CLI_OPTS
+  artifacts:
+    paths:
+      - scrabble/target/surefire-reports/
+    when: always

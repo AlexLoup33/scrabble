@@ -10,30 +10,28 @@ public class LettersCounter {
 
     private final Hashtable<Character, Integer> letters = new Hashtable<>();
 
-    public LettersCounter() {
-        // none
-    }
-
     public Hashtable<Character, Integer> getLettersCounter() {
         return this.letters;
     }
 
     public int addLetter(Character letter) {
-        if (this.letters.getOrDefault(letter, 0) == 0) {
-            this.letters.put(letter, 1);
-        } else {
-            this.letters.put(letter, this.letters.getOrDefault(letter, 0) + 1);
-        }
-        return this.letters.getOrDefault(letter, 0);
+        this.letters.put(letter, this.letters.getOrDefault(letter, 0) + 1);
+        return this.getLetterCount(letter);
     }
 
     public int removeLetter(char letter) {
-        if (this.letters.getOrDefault(letter, 0) == 1) {
-            this.letters.remove(letter);
-        } else {
-            this.letters.put(letter, this.letters.getOrDefault(letter, 0) - 1);
+        if (this.letters.getOrDefault(letter, -1) > 1) {
+            this.letters.put(letter, this.letters.getOrDefault(letter, -1) - 1);
+            return this.getLetterCount(letter);
         }
-        return this.letters.getOrDefault(letter, 0);
+        if (this.letters.getOrDefault(letter, -1) == 1) {
+            this.letters.remove(letter);
+            return this.getLetterCount(letter);
+        }
+        if (this.letters.getOrDefault(letter, -1) == -1) {
+            return 0;
+        }
+        return 0;
     }
 
     public int getLetterCount(Character letter) {

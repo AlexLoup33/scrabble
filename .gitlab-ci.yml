@@ -15,6 +15,9 @@ compile-job:
   stage: compile
   tags:
     - docker
+    - shell
+    - amd64
+    - ubuntu
   script:
     - echo "Compile stage"
     - cd scrabble
@@ -28,6 +31,9 @@ test-job:
   stage: test
   tags:
     - docker
+    - shell
+    - amd64
+    - ubuntu
   script:
     - echo "Test stage"
     - cd scrabble

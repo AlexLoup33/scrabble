@@ -14,10 +14,10 @@ stages:
 compile-job:
   stage: compile
   tags:
-    - docker
-    - shell
-    - amd64
     - ubuntu
+    - docker
+    - scrabble
+    - build
   script:
     - echo "Compile stage"
     - cd scrabble
@@ -30,10 +30,10 @@ compile-job:
 test-job:
   stage: test
   tags:
-    - docker
-    - shell
-    - amd64
     - ubuntu
+    - docker
+    - scrabble
+    - build
   script:
     - echo "Test stage"
     - cd scrabble

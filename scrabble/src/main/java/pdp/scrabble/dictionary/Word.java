@@ -8,6 +8,7 @@ public class Word {
     private final Letter[] letters;
     private final String word;
 
+    /** create a word from unnormalized text */
     public Word(String baseWord) {
         this.letters = new Letter[baseWord.length()];
         baseWord = Word.normalize(baseWord);

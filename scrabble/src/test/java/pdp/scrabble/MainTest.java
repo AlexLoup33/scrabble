@@ -10,6 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import pdp.scrabble.dictionary.Dictionary;
+import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.dictionary.Word;
 
@@ -33,25 +34,24 @@ public class MainTest {
     @Test
     public void testLettersCounter() {
         // test addLetter, getLetterCount
-        lc.addLetter('A');
-        lc.addLetter('b');
-        lc.addLetter('C');
-        lc.addLetter('c');
-        assertEquals(1, lc.getLetterCount('A'));
-        assertEquals(1, lc.getLetterCount('b'));
-        assertEquals(2, lc.getLetterCount('C'));
-        assertEquals(0, lc.getLetterCount('D'));
+        lc.addLetter(new Letter('A'));
+        lc.addLetter(new Letter('B'));
+        lc.addLetter(new Letter('C'));
+        lc.addLetter(new Letter('B'));
+        assertEquals(1, lc.getLetterCount(new Letter('A')));
+        assertEquals(1, lc.getLetterCount(new Letter('B')));
+        assertEquals(2, lc.getLetterCount(new Letter('C')));
+        assertEquals(0, lc.getLetterCount(new Letter('D')));
 
         // test removeLetter
-        lc.removeLetter('A');
-        assertEquals(0, lc.getLetterCount('A'));
-        lc.removeLetter('c');
-        assertEquals(1, lc.getLetterCount('C'));
+        lc.removeLetter(new Letter('A'));
+        assertEquals(0, lc.getLetterCount(new Letter('A')));
+        lc.removeLetter(new Letter('C'));
+        assertEquals(1, lc.getLetterCount(new Letter('C')));
 
         // test getLettersSet
-        assertFalse(lc.getLettersSet().contains('b')); //TODO: fix this (uppercase)
-        assertTrue(lc.getLettersSet().contains('B'));
-        assertFalse(lc.getLettersSet().contains('A')); 
+        assertTrue(lc.getLettersSet().contains(new Letter('B')));
+        assertFalse(lc.getLettersSet().contains(new Letter('A')));
     }
 
     @Test
@@ -66,9 +66,9 @@ public class MainTest {
 
     @Test
     public void testDictionaryFindWords() {
-        lc.addLetter('b');
-        lc.addLetter('a');
-        lc.addLetter('c');
+        lc.addLetter(new Letter('B'));
+        lc.addLetter(new Letter('A'));
+        lc.addLetter(new Letter('C'));
 
         dict.addWord(new Word("bac"));
         dict.addWord(new Word("ba"));
@@ -84,7 +84,7 @@ public class MainTest {
         assertFalse(dict.findWords(lc).contains(new Word("baba"))); // not enough 'b' and 'a'
 
         assertFalse(dict.findWords(lc).contains(new Word("aa"))); // not enough 'a'
-        lc.addLetter('a');
+        lc.addLetter(new Letter('A'));
         assertTrue(dict.findWords(lc).contains(new Word("aa")));
     }
 

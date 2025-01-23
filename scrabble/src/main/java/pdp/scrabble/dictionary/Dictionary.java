@@ -5,7 +5,7 @@ import java.util.*;
 
 public class Dictionary implements IDictionary {
 
-    public final Set<Word> words = new HashSet<>();
+    private final Set<Word> words = new HashSet<>();
 
     @Override
     public void addWord(Word word) {
@@ -14,6 +14,7 @@ public class Dictionary implements IDictionary {
 
     @Override
     public void loadFromFile(Path file_name) {
+        this.words.clear();
         this.words.addAll(WordsLoader.loadWordsFromFile(file_name));
     }
 
@@ -27,8 +28,8 @@ public class Dictionary implements IDictionary {
         Set<Word> result = new HashSet<>();
 
         // transform LettersCounter to a list
-        List<Character> lc_list = new ArrayList<>();
-        for (Character key : lc.getLettersSet()) {
+        List<Letter> lc_list = new ArrayList<>();
+        for (Letter key : lc.getLettersSet()) {
             int freq = lc.getLetterCount(key);
             for (int i = 0; i < freq; ++i) {
                 lc_list.add(key);
@@ -38,16 +39,16 @@ public class Dictionary implements IDictionary {
         // add (if exists) every word which can be created by these letters
         for (int word_size = 1; word_size <= lc_list.size(); word_size++) {
             // generate all letter permutation for a final word size of word_size
-            List<List<Character>> permutations = new ArrayList<>();
+            List<List<Letter>> permutations = new ArrayList<>();
             generatePermutations(lc_list, new ArrayList<>(), permutations, word_size);
 
 //            System.out.println("Size " + word_size + " letter: " + permutations);
 
             // convert List<Character> to Word
-            for (List<Character> word : permutations) {
+            for (List<Letter> word : permutations) {
 
                 StringBuilder stringBuilder = new StringBuilder();
-                for (Character ch : word) {
+                for (Letter ch : word) {
                     stringBuilder.append(ch);
                 }
                 String word_as_str = stringBuilder.toString();
@@ -61,14 +62,14 @@ public class Dictionary implements IDictionary {
         return result;
     }
 
-    private static void generatePermutations(List<Character> original, List<Character> current, List<List<Character>> permutations, int length) {
+    private static void generatePermutations(List<Letter> original, List<Letter> current, List<List<Letter>> permutations, int length) {
         if (current.size() == length) {
             permutations.add(new ArrayList<>(current));
             return;
         }
         for (int i = 0; i < original.size(); i++) {
             current.add(original.get(i));
-            List<Character> remaining = new ArrayList<>(original);
+            List<Letter> remaining = new ArrayList<>(original);
             remaining.remove(i);
             generatePermutations(remaining, current, permutations, length);
             current.remove(current.size() - 1);
@@ -77,8 +78,13 @@ public class Dictionary implements IDictionary {
 
     @Override
     public String toString() {
-        return "Dictionary{" +
-                "words=" + words +
-                '}';
+        StringBuilder builder = new StringBuilder();
+        builder.append(this.getClass().getSimpleName());
+        builder.append('(');
+        for (Word w : this.words) {
+            builder.append(w);
+        }
+        builder.append(')');
+        return builder.toString();
     }
 }

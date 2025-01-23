@@ -1,6 +1,5 @@
-package pdp.scrabble;
+package pdp.scrabble.errorsHandling;
 
-import pdp.scrabble.EnumError;
 
 public class CustomError extends Exception {
     public final boolean fatal_error;

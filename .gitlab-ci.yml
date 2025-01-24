@@ -24,7 +24,8 @@ format-job:
     - shell
   script:
     - echo "Format stage"
-    - mvn spotless:check -o $MAVEN_CLI_OPTS
+    - mvn clean install -U $MAVEN_CLI_OPTS
+    - mvn spotless:check $MAVEN_CLI_OPTS
 
   cache:
     paths:

@@ -22,10 +22,23 @@ format-job:
     - Ubuntu
     - amd64
     - shell
-  script:
-    - echo "Format stage"
+    script:
+    - echo "Starting format stage..."
     - cd scrabble
-    - mvn spotless:check $MAVEN_CLI_OPTS || (echo "Code is not properly formatted. Applying Spotless..."; mvn spotless:apply $MAVEN_CLI_OPTS; git diff --exit-code || (echo "Pushing formatted code back to repository..."; git config user.name "CI Bot"; git config user.email "ci-bot@scrabbleJAVA.com"; git checkout main; git add . && git commit -m "Apply code formatting with Spotless [CI]" && git push origin main))
+    - mvn spotless:check $MAVEN_CLI_OPTS || (
+        echo "Code is not properly formatted. Applying Spotless..."; 
+        mvn spotless:apply $MAVEN_CLI_OPTS; 
+        git diff --exit-code || (
+          echo "Code formatted. Pushing changes back to the repository..."; 
+          git config user.name "CI Bot"; 
+          git config user.email "ci-bot@scrabbleJAVA.com"; 
+          git checkout main; 
+          git add .; 
+          git commit -m "Apply code formatting with Spotless [CI]"; 
+          git push origin main
+        )
+      )
+    - git clean -fdx
   # Allow this stage to fail without failing the entire pipeline
   allow_failure: true
   artifacts:

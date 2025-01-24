@@ -25,17 +25,7 @@ format-job:
   script:
     - echo "Format stage"
     - cd scrabble
-    - mvn spotless:check $MAVEN_CLI_OPTS || (
-        echo "Code is not properly formatted. Applying Spotless...";
-        mvn spotless:apply $MAVEN_CLI_OPTS;
-        git diff --exit-code || (
-            echo "Pushing formatted code back to repository...";
-            git add .
-            git commit -m "Apply code formatting with Spotless [CI]"
-            git push
-        )
-      )
-
+    - mvn spotless:check $MAVEN_CLI_OPTS || (echo "Code is not properly formatted. Applying Spotless..."; mvn spotless:apply $MAVEN_CLI_OPTS; git diff --exit-code || (echo "Pushing formatted code back to repository..."; git config user.name "CI Bot"; git config user.email "ci-bot@scrabbleJAVA.com"; git checkout main; git add . && git commit -m "Apply code formatting with Spotless [CI]" && git push origin main))
   # Allow this stage to fail without failing the entire pipeline
   allow_failure: true
   artifacts:

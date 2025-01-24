@@ -22,7 +22,7 @@ format-job:
     - Ubuntu
     - amd64
     - shell
-    script:
+  script:
     - echo "Starting format stage..."
     - cd scrabble
     - mvn spotless:check $MAVEN_CLI_OPTS || (

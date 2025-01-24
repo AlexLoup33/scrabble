@@ -39,15 +39,16 @@ public class MainTest {
         lc.addLetter(new Letter('C'));
         lc.addLetter(new Letter('B'));
         assertEquals(1, lc.getLetterCount(new Letter('A')));
-        assertEquals(1, lc.getLetterCount(new Letter('B')));
-        assertEquals(2, lc.getLetterCount(new Letter('C')));
+        assertEquals(2, lc.getLetterCount(new Letter('B')));
+        assertEquals(1, lc.getLetterCount(new Letter('C')));
         assertEquals(0, lc.getLetterCount(new Letter('D')));
 
         // test removeLetter
         lc.removeLetter(new Letter('A'));
         assertEquals(0, lc.getLetterCount(new Letter('A')));
         lc.removeLetter(new Letter('C'));
-        assertEquals(1, lc.getLetterCount(new Letter('C')));
+        assertEquals(0, lc.getLetterCount(new Letter('C')));
+        assertEquals(0, lc.getLetterCount(new Letter('Z')));
 
         // test getLettersSet
         assertTrue(lc.getLettersSet().contains(new Letter('B')));
@@ -61,7 +62,7 @@ public class MainTest {
         Word word = new Word("test");
         dict.addWord(word);
         assertTrue(dict.containsWord(word));
-        assertFalse(dict.containsWord(new Word("test2")));
+        assertFalse(dict.containsWord(new Word("testN")));
     }
 
     @Test

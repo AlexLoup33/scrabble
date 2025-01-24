@@ -23,7 +23,7 @@ public class LettersCounter {
      * throw an error if there isn't enougth letters in the counter
      * (dont store the given letter) */
     public int removeLetter(Letter letter) {
-        int newCount = this.table.getOrDefault(letter, 0) + 1;
+        int newCount = this.table.getOrDefault(letter, 0) - 1;
         // -1 => not enougth letters 
         if (newCount == -1) {
             throw new IllegalArgumentException("not enougth letters of: " + letter.chr + " to remove 1");

@@ -42,7 +42,7 @@ public class Dictionary implements IDictionary {
             List<List<Letter>> permutations = new ArrayList<>();
             generatePermutations(lc_list, new ArrayList<>(), permutations, word_size);
 
-//            System.out.println("Size " + word_size + " letter: " + permutations);
+            System.err.println("Size " + word_size + " letter: " + permutations);
 
             // convert List<Character> to Word
             for (List<Letter> word : permutations) {

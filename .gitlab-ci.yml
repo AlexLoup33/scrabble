@@ -25,6 +25,9 @@ format-job:
   script:
     - echo "Starting format stage..."
     - cd scrabble
+    - git status -uall || echo "No modifications detected"
+    - git add . || echo "No files to add"
+    - git commit -m "Save current changes before format stage" || echo "No changes to commit"
     - mvn spotless:check $MAVEN_CLI_OPTS || (
         echo "Code is not properly formatted. Applying Spotless..."; 
         mvn spotless:apply $MAVEN_CLI_OPTS; 
@@ -38,7 +41,8 @@ format-job:
           git push origin main
         )
       )
-    - git clean -fdx
+    - git clean -fdx || echo "No files to clean"
+
   # Allow this stage to fail without failing the entire pipeline
   allow_failure: true
   artifacts:

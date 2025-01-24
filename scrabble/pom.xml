@@ -79,7 +79,10 @@
             </executions>
             <configuration>
                 <java>
-                    <googleJavaFormat />
+                    <googleJavaFormat>
+                        <version>1.25.2</version>
+                        <style>GOOGLE</style>
+                    </googleJavaFormat>
                 </java>
             </configuration>
         </plugin>

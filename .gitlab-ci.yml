@@ -30,9 +30,9 @@ format-job:
         mvn spotless:apply $MAVEN_CLI_OPTS;
         git diff --exit-code || (
           echo "Pushing formatted code back to repository...";
-          git config user.name "CI Bot" &&
-          git config user.email "ci-bot@scrabbleJAVA.com" &&
-          git checkout main && 
+          git config user.name "CI Bot";
+          git config user.email "ci-bot@scrabbleJAVA.com";
+          git checkout main;
           git add . &&
           git commit -m "Apply code formatting with Spotless [CI]" &&
           git push origin main

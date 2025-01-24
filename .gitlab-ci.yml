@@ -25,8 +25,16 @@ format-job:
   script:
     - echo "Format stage"
     - cd scrabble
-    - mvn clean install -U $MAVEN_CLI_OPTS
-    - mvn spotless:check $MAVEN_CLI_OPTS
+    - mvn spotless:check $MAVEN_CLI_OPTS || (
+        echo "Code is not properly formatted. Applying Spotless...";
+        mvn spotless:apply $MAVEN_CLI_OPTS;
+        git diff --exit-code || (
+            echo "Pushing formatted code back to repository...";
+            git add .
+            git commit -m "Apply code formatting with Spotless [CI]"
+            git push
+        )
+      )
 
   cache:
     paths:

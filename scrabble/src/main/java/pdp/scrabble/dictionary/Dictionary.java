@@ -13,7 +13,8 @@ public class Dictionary implements IDictionary {
   }
 
   @Override
-  public void loadFromFile(Path file_name) {
+  public void loadFromFile(Path file_name) 
+  {
     this.words.clear();
     this.words.addAll(WordsLoader.loadWordsFromFile(file_name));
   }

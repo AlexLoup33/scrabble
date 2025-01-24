@@ -30,16 +30,13 @@ format-job:
         mvn spotless:apply $MAVEN_CLI_OPTS;
         git diff --exit-code || (
             echo "Pushing formatted code back to repository...";
+            git config user.name "CI Bot"
+            git config user.email "ci-bot@scrabbleJAVA.com"
             git add .
             git commit -m "Apply code formatting with Spotless [CI]"
             git push
         )
       )
-
-  cache:
-    paths:
-      - .m2/repository
-      - target
       
   # Allow this stage to fail without failing the entire pipeline
   allow_failure: true

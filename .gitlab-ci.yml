@@ -33,7 +33,7 @@ format-job:
             git commit -m "Apply code formatting with Spotless [CI]"
             git push
         )
-    )
+      )
 
   # Allow this stage to fail without failing the entire pipeline
   allow_failure: true

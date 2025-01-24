@@ -24,8 +24,13 @@ format-job:
     - shell
   script:
     - echo "Format stage"
-    - mvn spotless:check $MAVEN_CLI_OPTS
+    - mvn spotless:check -o $MAVEN_CLI_OPTS
 
+  cache:
+    paths:
+      - .m2/repository
+      - target
+      
   # Allow this stage to fail without failing the entire pipeline
   allow_failure: true
   artifacts:

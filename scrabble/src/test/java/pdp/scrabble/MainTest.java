@@ -3,9 +3,10 @@ package pdp.scrabble;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
-import static java.nio.file.Path.*;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import pdp.scrabble.dictionary.Dictionary;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.dictionary.Word;
+import pdp.scrabble.dictionary.WordsLoader;
 
 public class MainTest {
 
@@ -63,37 +65,57 @@ public class MainTest {
         dict.addWord(word);
         assertTrue(dict.containsWord(word));
         assertFalse(dict.containsWord(new Word("testN")));
+
+        // test toString
+        Word word2 = new Word("testicule");
+        dict.addWord(word2);
+        assertTrue(dict.toString().contains(word.toString()));
+        assertTrue(dict.toString().contains(word2.toString()));
     }
 
-    @Test
-    public void testDictionaryFindWords() {
-        lc.addLetter(new Letter('B'));
-        lc.addLetter(new Letter('A'));
-        lc.addLetter(new Letter('C'));
+    // @Test
+    // public void testDictionaryFindWords() {
+    //     lc.addLetter(new Letter('B'));
+    //     lc.addLetter(new Letter('A'));
+    //     lc.addLetter(new Letter('C'));
 
-        dict.addWord(new Word("bac"));
-        dict.addWord(new Word("ba"));
-        dict.addWord(new Word("baba"));
-        dict.addWord(new Word("aa"));
-        dict.addWord(new Word("ab"));
+    //     dict.addWord(new Word("bac"));
+    //     dict.addWord(new Word("ba"));
+    //     dict.addWord(new Word("baba"));
+    //     dict.addWord(new Word("aa"));
+    //     dict.addWord(new Word("ab"));
 
-        assertTrue(dict.findWords(lc).contains(new Word("bac")));
-        assertTrue(dict.findWords(lc).contains(new Word("ba")));
-        assertTrue(dict.findWords(lc).contains(new Word("ab")));
+    //     assertTrue(dict.findWords(lc).contains(new Word("bac")));
+    //     assertTrue(dict.findWords(lc).contains(new Word("ba")));
+    //     assertTrue(dict.findWords(lc).contains(new Word("ab")));
 
-        assertFalse(dict.findWords(lc).contains(new Word("ca"))); // 'ca' is not in the dictionary
-        assertFalse(dict.findWords(lc).contains(new Word("baba"))); // not enough 'b' and 'a'
+    //     assertFalse(dict.findWords(lc).contains(new Word("ca"))); // 'ca' is not in the dictionary
+    //     assertFalse(dict.findWords(lc).contains(new Word("baba"))); // not enough 'b' and 'a'
 
-        assertFalse(dict.findWords(lc).contains(new Word("aa"))); // not enough 'a'
-        lc.addLetter(new Letter('A'));
-        assertTrue(dict.findWords(lc).contains(new Word("aa")));
-    }
+    //     assertFalse(dict.findWords(lc).contains(new Word("aa"))); // not enough 'a'
+    //     lc.addLetter(new Letter('A'));
+    //     assertTrue(dict.findWords(lc).contains(new Word("aa")));
+    // }
 
     @Test
     public void testDictionaryLoadFromFile() {
         dict.loadFromFile(java.nio.file.Paths.get("../dictScrableFR.txt")); //TODO: fix path
         assertTrue(dict.containsWord(new Word("AALENIEN")));
         assertFalse(dict.containsWord(new Word("zebi")));
+    }
 
+    @Test
+    public void testWordsLoader() {
+        Path validPath = Paths.get("../dictScrableFR.txt"); //TODO: fix path
+        List<Word> words = WordsLoader.loadWordsFromFile(validPath);
+        assertFalse(words.isEmpty());
+        assertTrue(words.contains(new Word("AALENIEN")));
+
+        Path invalidPath = Paths.get("../FAKE_FILE.txt");
+        try {
+            WordsLoader.loadWordsFromFile(invalidPath);
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
     }
 }

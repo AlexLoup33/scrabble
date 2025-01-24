@@ -83,6 +83,7 @@ public class Dictionary implements IDictionary {
         builder.append('(');
         for (Word w : this.words) {
             builder.append(w);
+            builder.append(',');
         }
         builder.append(')');
         return builder.toString();

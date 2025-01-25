@@ -62,7 +62,7 @@ public record Configuration(boolean verbose, boolean debug, boolean blitz, boole
     }
 
     @Override
-    public String getDictFiles() {
+    public String getDictFile() {
         return this.dictFile;
     }
 

@@ -23,7 +23,7 @@ public interface IConfiguration {
     public String getLanguage();
 
     //Related to Paths/Filenames
-    public String getDictFiles();
+    public String getDictFile();
     public String getContestFile();
     public String getHistoryFile();
 }

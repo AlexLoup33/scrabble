@@ -1,6 +1,6 @@
 package pdp.scrabble.configuration;
 
-public record Configuration(boolean verbose, boolean debug, boolean blitz, boolean superS, boolean gui, int playerCount, int blitzTime, String aiPlayers, int aiDepth, int aiTime, String language, String aiMode, String dictFile, String contestFile, String historyFile) implements IConfiguration{
+public record Configuration(boolean verbose, boolean debug, boolean blitz, boolean superScrabble, boolean gui, int playerCount, int blitzTime, String aiPlayers, int aiDepth, int aiTime, String language, String aiMode, String dictFile, String contestFile, String historyFile) implements IConfiguration{
     @Override
     public Boolean getVerbose() {
         return this.verbose;
@@ -17,8 +17,8 @@ public record Configuration(boolean verbose, boolean debug, boolean blitz, boole
     }
 
     @Override
-    public Boolean getSuperS() {
-        return this.superS;
+    public Boolean getSuperScrabble() {
+        return this.superScrabble;
     }
 
     @Override

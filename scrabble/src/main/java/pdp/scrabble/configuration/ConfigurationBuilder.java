@@ -2,7 +2,8 @@ package pdp.scrabble.configuration;
 
 import java.util.Properties;
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.nio.file.Path;
+import java.nio.file.Files;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
@@ -14,7 +15,7 @@ public class ConfigurationBuilder {
   private Boolean verbose;
   private Boolean debug;
   private Boolean blitz;
-  private Boolean superS;
+  private Boolean superScrabble;
   private Boolean gui;
 
   private int playerCount;
@@ -40,21 +41,20 @@ public class ConfigurationBuilder {
   private String contestFile;
   private String historyFile;
 
-  public ConfigurationBuilder() {
+  // TODO: Use Custom Error module from test package
+  // currently Exception does not stop execution
+  public ConfigurationBuilder(Path src) throws Exception {
     // Step 1 : Get defaults 
-    defaultProps = getDefaultProperties();
-    Properties props = new Properties(defaultProps);
+    Properties props = new Properties();
 
     // Step 2 : Override defaults with contents of scrabblerc
     try {
-      BufferedReader scrabblerc = new BufferedReader(new FileReader("./.scrabblerc"));
+      // FileReader location is relative to user working directory at runtime
+      BufferedReader scrabblerc = Files.newBufferedReader(src);
       props.load(scrabblerc);
-
     } catch(IOException e) {
       System.out.println(e);
     }
-      // TODO: Step 3 : Override scrabblerc with CLI options
-      // TODO: props.load(CLI)
 
     convertPropsToPojo(props, this);
   }
@@ -86,80 +86,91 @@ public class ConfigurationBuilder {
     return props;
   }
 
-  private void convertPropsToPojo(Properties props, ConfigurationBuilder target) {
-    for (String key : props.stringPropertyNames()) {
-      Class cls = target.getClass();
-      switch (key) {
-        // FLAGS
-        case "verbose":
-        case "debug":
-        case "blitz":
-        case "superS":
-        case "gui": {
-            // true if property == "true" / false in every other case
-            // its fine to not check the value bcs flags are false by default
-            Boolean value = Boolean.valueOf(props.getProperty(key));
-            // Build setter reflectively from key
-            // basically creating `set{key}(boolean value)` and calling it
-            try {
-              Method meth = cls.getMethod("set"
-                  + Character.toUpperCase(key.charAt(0))
-                  + key.substring(1), new Class[]{Boolean.class});
-              meth.invoke(target, value);
-            } catch(Exception e) {
-              System.out.println(e);
-            }
-            break;
-        }
-        // Ints
-        case "playerCount":
-        case "blitzTime":
-        case "aiDepth":
-        case "aiTime": {
-            // If the key from scrabblerc is not unsigned integer,
-            // get the key from default properties
-            int value = Integer.parseUnsignedInt(defaultProps.getProperty(key));
-            try {
-              value = Integer.parseUnsignedInt(props.getProperty(key));
-            } catch(NumberFormatException e) {
-              System.out.println("[scrabblerc] Warning: value `" + props.getProperty(key)
-                 + "` was ignored for key `" + key + "`, default is `" + value + "`");
-            }
-            // Build setter reflectively from key
-            // basically creating `set{key}(int value)` and calling it
-            try {
-              Method meth = cls.getMethod("set"
-                  + Character.toUpperCase(key.charAt(0))
-                  + key.substring(1), new Class[]{Integer.TYPE});
-              meth.invoke(target, value);
-            } catch (Exception e) {
-              System.out.println(e);
-            }
-            break;
-        }
-        // Strings
-        case "aiPlayers":
-        case "language":
-        case "aiMode":
-        case "dictFile":
-        case "contestFile":
-        case "historyFile": {
-            String value = props.getProperty(key);
-            // Build setter reflectively from key
-            // basically creating `set{key}(String value)` and calling it
-            try {
-              Method meth = cls.getMethod("set"
-                  + Character.toUpperCase(key.charAt(0))
-                  + key.substring(1), new Class[]{String.class});
-              meth.invoke(target, value);
-            } catch (Exception e) {
-              System.out.println(e);
-            }
-            break;
-        }
-        default:
-      }
+  public void writeDefaultsToFile(Path target) {
+    Properties defaults = getDefaultProperties();
+    try {
+      defaults.store(Files.newOutputStream(target), "[Default]");
+    } catch (IOException e) {
+      System.out.println(e);
     }
+  }
+
+  // TODO: Throw exceptions on invalid Data
+  private void convertPropsToPojo(Properties props, ConfigurationBuilder target)
+    throws Exception {
+        for (String key : props.stringPropertyNames()) {
+          Class cls = target.getClass();
+          switch (key) {
+            // FLAGS
+            case "verbose":
+            case "debug":
+            case "blitz":
+            case "superScrabble":
+            case "gui": {
+                // true if property == "true" / false in every other case
+                // its fine to not check the value bcs flags are false by default
+                Boolean value = Boolean.valueOf(props.getProperty(key));
+                // Build setter reflectively from key
+                // basically creating `set{key}(boolean value)` and calling it
+                try {
+                  Method meth = cls.getMethod("set"
+                      + Character.toUpperCase(key.charAt(0))
+                      + key.substring(1), new Class[]{Boolean.class});
+                  meth.invoke(target, value);
+                } catch(Exception e) {
+                  System.out.println(e);
+                }
+                break;
+            }
+            // Ints
+            case "playerCount":
+            case "blitzTime":
+            case "aiDepth":
+            case "aiTime": {
+                int value = 0;
+                try {
+                  value = Integer.parseUnsignedInt(props.getProperty(key));
+                } catch(NumberFormatException e) {
+                  // TODO: Use Custom Error module from test package
+                  // Currently exception does not stop Execution
+                  throw new Exception("[scrabblerc] Error: value `" + props.getProperty(key)
+                     + "` for key `" + key + "`, expected a `" + Integer.TYPE + "`");
+                }
+                // Build setter reflectively from key
+                // basically creating `set{key}(int value)` and calling it
+                try {
+                  Method meth = cls.getMethod("set"
+                      + Character.toUpperCase(key.charAt(0))
+                      + key.substring(1), new Class[]{Integer.TYPE});
+                  meth.invoke(target, value);
+                } catch (Exception e) {
+                  System.out.println(e);
+                }
+                break;
+            }
+            // Strings
+            case "aiPlayers":
+            case "language":
+            case "aiMode":
+            case "dictFile":
+            case "contestFile":
+            case "historyFile": {
+                String value = props.getProperty(key);
+                // Build setter reflectively from key
+                // basically creating `set{key}(String value)` and calling it
+                try {
+                  Method meth = cls.getMethod("set"
+                      + Character.toUpperCase(key.charAt(0))
+                      + key.substring(1), new Class[]{String.class});
+                  meth.invoke(target, value);
+                } catch (Exception e) {
+                  System.out.println(e);
+                }
+                break;
+            }
+            default:
+          }
+        }
   }
 
   public Configuration getConfiguration() {
@@ -167,7 +178,7 @@ public class ConfigurationBuilder {
             verbose,
             debug,
             blitz,
-            superS,
+            superScrabble,
             gui,
             playerCount,
             blitzTime,
@@ -187,7 +198,7 @@ public class ConfigurationBuilder {
     + "verbose=" + verbose.toString() + " | "
     + "debug=" + debug.toString() + " | "
     + "blitz=" + blitz.toString() + " | "
-    + "superS=" + superS.toString() + " | "
+    + "superScrabble=" + superScrabble.toString() + " | "
     + "gui=" + gui.toString() + " | "
     + "playerCount=" + Integer.toString(playerCount) + " | "
     + "blitzTime=" + Integer.toString(blitzTime) + " | "
@@ -214,8 +225,8 @@ public class ConfigurationBuilder {
     this.blitz = blitz;
   }
 
-  public void setSuperS(Boolean superS){
-    this.superS = superS;
+  public void setSuperScrabble(Boolean superScrabble){
+    this.superScrabble = superScrabble;
   }
 
   public void setGui(Boolean gui){

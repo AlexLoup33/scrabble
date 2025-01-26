@@ -5,7 +5,7 @@ public interface IConfiguration {
     public Boolean getVerbose();
     public Boolean getDebug();
     public Boolean getBlitz();
-    public Boolean getSuperS();
+    public Boolean getSuperScrabble();
     public Boolean getGui();
 
     public int getPlayerCount();

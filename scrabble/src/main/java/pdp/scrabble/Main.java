@@ -17,7 +17,7 @@ public class Main {
         counter.addLetter(new Letter('B'));
         counter.addLetter(new Letter('A'));
         counter.removeLetter(new Letter('A'));
-        
+
         // Basic test implementation
         if (counter.getLetterCount(new Letter('A')) != 1
                 && counter.getLetterCount(new Letter('B')) != 0) {

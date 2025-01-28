@@ -7,14 +7,35 @@ import java.util.Set;
 
 public interface IDictionary {
 
-  void addWord(Word word);
+    /**
+     * add a word to the dictionary
+     *
+     * @param word
+     * @return void
+     */
+    void addWord(Word word);
 
-  /** load all the words of a file in the dictionary, clear the words that are alredy in the dict */
-  void loadFromFile(Path file_name);
+    /**
+     * put every word from a file into the dictionary
+     *
+     * @param file_name
+     * @return void
+     */
+    void loadFromFile(Path file_name);
 
-  /** find all words from the dictionary that can be formed with up to the given letters */
-  Set<Word> findWords(LettersCounter lc);
+    /**
+     * find every words that can be created be the inputted letters
+     *
+     * @param lc
+     * @return empty set if no word found, set with word else
+     */
+    Set<Word> findWords(LettersCounter lc);
 
-  /** test if the given word is inside the dictionary */
-  boolean containsWord(Word word);
+    /**
+     * check if the dictionary contains the word
+     *
+     * @param word
+     * @return boolean, true if the word is in the dictionary
+     */
+    boolean containsWord(Word word);
 }

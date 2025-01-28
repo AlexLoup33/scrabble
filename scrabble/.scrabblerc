@@ -1,23 +1,23 @@
-[Default]
-[Flags]
+#[Default]
+#[Flags]
 verbose=false
 debug=false
 blitz=false
 superScrabble=false
 gui=false
 
-[Game]
+#[Game]
 language=en
 playerCount=2
 blitzTime=30
 
-[AI]
+#[AI]
 aiPlayers=0010 
 aiMode=null
 aiDepth=0
 aiTime=5
 
-[Storage]
+#[Storage]
 historyFile=./
 dictFile=./
 contestFile=./

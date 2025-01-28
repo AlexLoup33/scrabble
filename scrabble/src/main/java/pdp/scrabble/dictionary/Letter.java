@@ -31,6 +31,6 @@ public class Letter {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + '(' + this.chr + ')';
+        return String.valueOf(this.chr);
     }
 }

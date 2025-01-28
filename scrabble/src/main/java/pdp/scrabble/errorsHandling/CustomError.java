@@ -1,6 +1,6 @@
 package pdp.scrabble.errorsHandling;
 
-public class CustomError extends Exception {
+public final class CustomError extends Exception {
   public final boolean fatal_error;
   public final EnumError error_type;
   public final String message;
@@ -11,13 +11,13 @@ public class CustomError extends Exception {
     this.fatal_error = fatal_error;
   }
 
-  private void displayError() {
+  public void displayError() {
     System.out.println("Error Type: " + this.error_type);
     System.out.println("Message: " + this.message);
 
     if (this.fatal_error) {
       System.out.println("Problem fatal error. Need to stop of the app");
-      System.exit(0);
+      this.printStackTrace(System.out);
     } else {
       System.out.println("No fatal error. Continue running");
     }

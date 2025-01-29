@@ -64,7 +64,7 @@ public class MainTest {
     Word word = new Word("test");
     dict.addWord(word);
     assertTrue(dict.containsWord(word));
-    assertFalse(dict.containsWord(new Word("testN")));
+    assertFalse(dict.containsWord(new Word("testDeux")));
 
     // test toString
     Word word2 = new Word("frank");

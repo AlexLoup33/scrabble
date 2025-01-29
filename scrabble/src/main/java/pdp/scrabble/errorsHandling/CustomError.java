@@ -1,33 +1,46 @@
 package pdp.scrabble.errorsHandling;
 
 public final class CustomError extends Exception {
-    public final boolean fatal_error;
-    public final EnumError error_type;
-    public final String message;
+  public final ErrorType type; /* Type of error that happends */
+  public final String message; /* Short explaination of what happend, for the user */
+  public final String details; /*
+                                * a message as long as needed, to explain all is needed to understand what
+                                * happend,if the error is expected or if it is a bug, this message is intended
+                                * for the devs and will be logged later
+                                */
 
-    public CustomError(EnumError error_type, String message, boolean fatal_error) {
-        this.error_type = error_type;
-        this.message = message;
-        this.fatal_error = fatal_error;
-    }
+  public CustomError(ErrorType type, String message, String details) {
+    this.type = type;
+    this.message = message;
+    this.details = details;
+  }
 
-    public void displayError() {
-        System.err.println("Error Type: " + this.error_type);
-        System.err.println("Message: " + this.message);
+  public boolean isFatal() {
+    return this.type.isFatal;
+  }
 
-        if (this.fatal_error) {
-            System.err.println("Problem fatal error. Need to stop of the app");
-            this.printStackTrace(System.err);
-        } else {
-            System.err.println("No fatal error. Continue running");
-        }
-    }
+  public String toString() {
+    /* To read the data of the attributs of an object. for a development optical */
+    return "ErrorType: " + this.type.name() + "\nMessage: " + this.message + "\nDetails: " + this.details;
+  }
 
-    /**
-     * Add all error we need. We throw it on CustomError with what is the error, the
-     * messages and if it's fatal.
+  public String toDevFormatedText() {
+    /*
+     * For the developer to read what he need: stack trace, type of error, message
+     * and details
      */
-    private void AddError() throws CustomError {
-        throw new CustomError(EnumError.FailedConfigFileParsing, "the char at i isn't valid", true);
+    Exception exception = new Exception();
+    StringBuilder stackTrace = new StringBuilder();
+    for (StackTraceElement element : exception.getStackTrace()) {
+      stackTrace.append(element.getClassName() + " - " + element.getLineNumber() + " : " + element.getMethodName());
+      stackTrace.append("\n");
     }
+
+    return "Stack Trace:\n" + stackTrace.toString() + toString();
+  }
+
+  public String toUserFormatedText() {
+    /* For the user to read what he need: type of error and message only */
+    return "ErrorType: " + this.type.name() + "\nMessage: " + this.message;
+  }
 }

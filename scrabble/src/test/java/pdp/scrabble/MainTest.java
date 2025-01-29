@@ -2,6 +2,7 @@ package pdp.scrabble;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Path;
@@ -57,6 +58,22 @@ public class MainTest {
     assertFalse(lc.getLettersSet().contains(new Letter('A')));
   }
 
+  @Test
+  public void testRemoveNonExistingLetter() {
+    lc.addLetter(new Letter('D'));
+    assertEquals(1, lc.getLetterCount(new Letter('D')));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          lc.removeLetter(new Letter('E'));
+        });
+  }
+
+  @Test
+  public void testEmptyCounter() {
+    assertEquals(0, lc.getLetterCount(new Letter('F')));
+  }
+
   /** Test the basic functionality of the Dictionary class */
   @Test
   public void testDictionaryBasicFunc() {
@@ -72,32 +89,6 @@ public class MainTest {
     assertTrue(dict.toString().contains(word.toString()));
     assertTrue(dict.toString().contains(word2.toString()));
   }
-
-  //     TODO fix/implement
-  //    @Test
-  //    public void testDictionaryFindWords() {
-  //        lc.addLetter(new Letter('B'));
-  //        lc.addLetter(new Letter('A'));
-  //        lc.addLetter(new Letter('C'));
-  //
-  //        dict.addWord(new Word("bac"));
-  //        dict.addWord(new Word("ba"));
-  //        dict.addWord(new Word("baba"));
-  //        dict.addWord(new Word("aa"));
-  //        dict.addWord(new Word("ab"));
-  //
-  //        assertTrue(dict.findWords(lc2).contains(new Word("bac")));
-  //         assertTrue(dict.findWords(lc).contains(new Word("ba")));
-  //         assertTrue(dict.findWords(lc).contains(new Word("ab")));
-  //
-  //         assertFalse(dict.findWords(lc).contains(new Word("ca"))); // 'ca' is not in the
-  // dictionary
-  //         assertFalse(dict.findWords(lc).contains(new Word("baba"))); // not enough 'b' and 'a'
-  //
-  //         assertFalse(dict.findWords(lc).contains(new Word("aa"))); // not enough 'a'
-  //         lc.addLetter(new Letter('A'));
-  //         assertTrue(dict.findWords(lc).contains(new Word("aa")));
-  //    }
 
   @Test
   public void testDictionaryLoadFromFile() {

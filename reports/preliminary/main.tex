@@ -70,7 +70,7 @@ Le scrabble étant un jeu très connu et répandu, il n'est pas étonnant de tro
     \includegraphics[scale=.1]{img/quackle-1.0.png}
 \end{figure}
 
-Mais on peut aussi retrouver des existants du projet n'étant pas orientés que vers la recherche, on peut aussi retrouver des implémentations du Scrabble se concentrant sur l'aspect ludique et distrayant via l'ajout de différents modes de jeu, d'un aspect compétitif ou d'éléments de customisation comme les jeux Scrabble développés pour les mobiles (exemple : Scrabble Go pour les téléphones sous IOS).
+Mais on peut aussi retrouver des existants du projet n'étant pas orientés que vers la recherche, on peut aussi retrouver des implémentations du Scrabble se concentrant sur l'aspect ludique et distrayant via l'ajout de différents modes de jeu, d'un aspect compétitif ou d'éléments de customisation comme les jeux Scrabble développés pour les mobiles (exemple : Scrabble Go pour les téléphones sous iOS).
 
 \begin{figure}[H]
     \centering
@@ -207,7 +207,7 @@ l'adversaire (minimisant le score).
 Les nœuds finaux de l'arbre correspondent à une évaluation heuristique de  
 l'état du jeu dans le cas où l'algorithme n'a pu aller assez en profondeur pour calculer une véritable  
 fin de partie.  
-On joue ensuite le coup menant au meilleur coup trouvé lors de la recherche.  
+On joue ensuite le coup menant au meilleur coup trouvé lors de la recherche.
 
 \item \textbf{Monte-Carlo}  
 Dans l'algorithme de Monte-Carlo\cite{browne2012survey}, on parcourt toujours un arbre de décision, cependant  on va parcourir des chemins de manière aléatoire, au lieu d'une recherche en profondeur  
@@ -274,7 +274,7 @@ B15 & Support de différents modes de jeux & B13 \\
     \item \textbf {B04 : Avoir une interface graphique GUI}\\ Afin que l'utilisateur est un visuel du jeux \\ 
     \item \textbf {B05 : Avoir une interface de jeux en ligne de commande CLI}\\ Pour pouvoir jouer via la console \\
     \item \textbf {B06 : Pouvoir accéder à un historique des coups joués commentés}\\ Pour se souvenir qui a poser tel mot ainsi que leur score \\
-    \item \textbf {B07 : Déterminer si un mot est dans le dictionnaire}\\ Grace au DWAG pour vérifier quels mots sont jouables \\
+    \item \textbf {B07 : Déterminer si un mot est dans le dictionnaire}\\ Grace au DAWG pour vérifier quels mots sont jouables \\
     \item \textbf {B08 : L’application ne doit jamais crasher de façon non gérée}\\ Pour avoir une utilisation fluide de l’application \\
     \item \textbf {B09 : Pouvoir jouer en multijoueur local}\\ Car le scrabble est un jeu qui se joue a plusieurs \\
     \item \textbf {B10 : Avoir un système de score}\\ Qui détermine qui a gagner. Utile aussi pour l'IA \\
@@ -349,6 +349,263 @@ Nous avons donc établi notre agenda prévisionnel.
 
 Par exemple, de la Semaine 2 à la Semaine 3, soit 2 semaines de travail, le besoin B07 sera développé par Ludovic et Valentin. Il en va de même pour le besoin B11, qui sera pris en charge par Mathéo et Jean, etc.
 
+\subsection{Équivalence entre les besoins et les spécifications initiales}
+
+Voici l'agenda prévisionnel de livraison des spécifications du projet:\newline
+
+\textbf{\large{Semaine 4}}
+
+\textit{Livraisons: F46, F10, F45}\newline
+\begin{enumerate}
+    \item B07 : Déterminer si un mot est dans le dictionnaire\newline
+    Ludovic \& Valentin
+    \begin{itemize}
+        \item F46: Dictionnaire (module `lexicon` pour vérifier les mots).
+    \end{itemize}
+    \item B11 : Mettre en place des tests et les automatiser\newline
+    Jean \& Matheo
+    \begin{itemize}
+        \item F10 : Framework de tests (JUnit + Jacoco).
+    \end{itemize}
+    \item B12 : Respecter un fichier de configuration au lancement de l’appli\newline
+    Alexandre \& Aymeric
+    \begin{itemize}
+        \item F45 : Fichier de configuration (`.scrabblerc` au format INI).\newline
+    \end{itemize}
+\end{enumerate}
+
+\textbf{\large{Semaine 5}}
+
+\textit{Livraisons: F11, F14, F16, F13, F32}\newline
+\begin{enumerate}
+    \item B02 : Lancer le programme grâce à la commande scrabble\newline
+    Alexandre \& Aymeric
+    \begin{itemize}
+        \item F11 : Mise en place de commons-cli.
+        \item F14 : Nom de l’exécutable principal (`scrabble`).
+        \item F16 : Aide en ligne de commande (option `-h` ou `--help`).
+    \end{itemize}
+    \item B03 : Pouvoir jouer en plusieurs langues\newline
+    Ludovic \& Jean
+    \begin{itemize}
+        \item F13 : Internationalisation (framework basé sur `ResourceBundle` et `Locale`).
+    \end{itemize}    
+    \item B13 : Gérer le déroulement d’une partie\newline
+    Valentin \& Matheo
+        \begin{itemize}
+            \item F32 : Placement d’un mot sur le plateau.\newline
+        \end{itemize}
+\end{enumerate}
+
+\textbf{\large{Semaine 6}}
+
+\textit{Livraisons: F33, F35, F30, F22, F12, F29, F17, F18, F19}\newline
+\begin{enumerate}
+    \item B13 : Gérer le déroulement d’une partie\newline
+    Valentin \& Matheo
+    \begin{itemize}
+        \item F33 : Passer son tour.
+        \item F35 : Gestion du sac de lettres.
+    \end{itemize}
+    \item B05 : Avoir une interface de jeux en ligne de commande CLI\newline
+    Aymeric
+        \begin{itemize}
+            \item F30 : Affichage du plateau (représentation ASCII avec couleurs ANSI).
+            \item F22 : Nombre de joueurs (option `-p N` ou `--players N`).
+            \item F17 : Version (option `-V` ou `--version`).
+            \item F18 : Mode verbose (option `-v` ou `--verbose`).
+            \item F19 : Mode debug (option `-d` ou `--debug`).
+        \end{itemize}    
+    \item B04 : Avoir une interface graphique GUI\newline
+    Alexandre \& Jean
+        \begin{itemize}
+            \item F12 : Bibliothèque graphique (JavaFX).
+            \item F29 : Interface graphique (option `-g` ou `--gui`).
+        \end{itemize}
+    \item B10 : Avoir un système de score\newline
+    Ludovic
+        \begin{itemize}
+            \item F37 : Comptage et affichage des scores (valeurs des lettres selon la langue).\newline
+        \end{itemize}
+\end{enumerate}
+
+\textbf{\large{Semaine 7}}
+
+\textit{Livraisons: F34, F36, F37, F52, F51, F28, F31}
+
+\begin{enumerate}
+\item B13 : Gérer le déroulement d’une partie\newline
+Valentin \& Matheo
+  \begin{itemize}
+    \item F34 : Échange de lettres.
+    \item F36 : Abandon.
+  \end{itemize}
+\item B10 : Avoir un système de score\newline
+Ludovic
+  \begin{itemize}
+    \item F37 : Comptage et affichage des scores (valeurs des lettres selon la langue).
+  \end{itemize}
+\item B04 : Avoir une interface graphique GUI\newline
+Alexandre \& Jean
+  \begin{itemize}
+    \item F52 : Affichage d’une partie en cours (plateau et informations).
+    \item F51 : Menu "About" (informations sur le programme).
+  \end{itemize}
+\item B05 : Avoir une interface de jeux en ligne de commande CLI\newline
+Aymeric
+  \begin{itemize}
+    \item F28 : Interface en ligne de commande (interaction via terminal).
+    \item F31 : Nommer les joueurs (remplacer le numéro par un nom).\newline
+  \end{itemize}
+\end{enumerate}
+
+\textbf{\large{Semaine 8}}
+
+\textit{Livraisons: F51, F53, F43, F44, F39, F47, F23, F25}
+
+\begin{enumerate}
+\item B04 : Avoir une interface graphique GUI\newline
+Matheo \& Jean
+  \begin{itemize}
+    \item F51 : Menu "About" (informations sur le programme).
+    \item F53 : Affichage des coups joués (historique des coups).
+  \end{itemize}
+\item B06 : Pouvoir accéder à un historique des coups joués commentés\newline
+Valentin \& Alexandre
+  \begin{itemize}
+    \item F43 : Format de fichier simplifié.
+    \item F44 : Format de l’historique (coups joués avec commentaires).
+    \item F39 : Sauvegarde de l’historique.
+  \end{itemize}
+\item B01 : Mettre en place une AI\newline
+Ludovic
+  \begin{itemize}
+    \item F47 : Module GADDAG (recherche rapide de mots possibles).
+  \end{itemize}
+\item B15 : Support de différents modes de jeux\newline
+Aymeric
+  \begin{itemize}
+    \item F23 : Langue du jeu (option `-l LANG` ou `--language LANG`). 
+    \item F25 : Dictionnaire personnalise (option `-D FILENAME` ou `--dictionnary FILENAME`).\newline
+  \end{itemize}
+\end{enumerate}
+
+\textbf{\large{Semaine 9}}
+
+\textit{Livraisons: F54, F41, F38 , F20, F21, F24 , F26, F40, F42, F55, F56}
+
+\begin{enumerate}
+  \item B04 : Avoir une interface graphique GUI\newline
+  Matheo \& Jean
+  \begin{itemize}
+    \item F54 : Configuration d’une nouvelle partie (fenêtre de paramétrage).
+    \item F41 : Recommencer une partie(GUI)
+    \item F38 : Sauvegarde d’une partie en cours.(GUI)
+  \end{itemize}
+  \item B15 : Support de différents modes de jeux\newline
+  Aymeric
+  \begin{itemize}
+    \item F41 : Recommencer une partie.(CLI)
+    \item F38 : Sauvegarde d’une partie en cours.(CLI)
+    \item F20 : Mode blitz (option `-b` ou `--blitz`).
+    \item F21 : Durée du blitz (option `-t` ou `--time`).
+    \item F24 : Mode Super-scrabble (option `-s` ou `--super`).
+    \item F26 : Mode contest (option `-c` ou `--contest`).
+  \end{itemize}
+  \item B14 : Pouvoir sauvegarder et charger une partie\newline
+  Alexandre
+  \begin{itemize}
+    \item F15 : Chargement d’une partie depuis un fichier.
+    \item F40 : Naviguer dans l’historique.
+    \item F42 : Rejouer une partie (chargement de l’historique).
+  \end{itemize}
+  \item B01 : Mettre en place une AI\newline
+  Ludovic \& Valentin
+  \begin{itemize}
+    \item F55 : Recherche de mots possibles (module GADDAG).
+    \item F56 : Heuristique d’évaluation de position.\newline
+  \end{itemize}
+\end{enumerate}
+
+\textbf{\large{Semaine 10}}
+
+\textit{Livraisons: F57, F59, F43, F44, F49, F50}
+
+\begin{enumerate}
+  \item B01 : Mettre en place une AI\newline
+  Ludovic \& Valentin
+  \begin{itemize}
+    \item F57 : Recherche du meilleur coup (Minimax).
+    \item F59 : Profondeur de recherche (option `--ai-depth`).
+  \end{itemize}
+  \item B14 : Pouvoir sauvegarder et charger une partie\newline
+  Alexandre \& Aymeric
+  \begin{itemize}
+    \item F43 : Format de fichier simplifié (sauvegarde et restauration).
+    \item F44 : Format de l’historique (sauvegarde des coups joués).
+  \end{itemize}
+  \item B04 : Avoir une interface graphique GUI\newline
+  Matheo \& Jean
+  \begin{itemize}
+    \item F49 : Menu "File" (charger et sauvegarder dans l’interface graphique).
+    \item F50 : Menu "Game" (conseil, navigation dans l’historique).\newline
+  \end{itemize}
+\end{enumerate}
+
+\textbf{\large{Semaine 11}}
+
+\textit{Livraisons: F57, F59, F15, F01, F02, F03, F04}
+
+\begin{enumerate}
+  \item B01 : Mettre en place une AI\newline
+  Ludovic \& Valentin
+  \begin{itemize}
+    \item F57 : Recherche du meilleur coup (Minimax).
+    \item F59 : Profondeur de recherche (option `--ai-depth`).
+  \end{itemize}
+  \item B08 : L’application ne doit jamais crasher de façon non gérée
+  Jean \& Matheo
+  \begin{itemize}
+    \item F7 : Bugs (aucun crash, gestion des erreurs avec messages appropriés).
+    \item F15 : Gestion des erreurs en ligne de commande (messages sur `stderr`).
+  \end{itemize}
+  \item B11 : Mettre en place des tests et les automatiser
+  Aymeric \& Alexandre
+  \begin{itemize}
+    \item F02 : Langage de programmation.
+    \item F03 : Style de codage.
+    \item F04 : Langue par défaut dans le code.
+    \item F08 : Performances.\newline
+  \end{itemize}
+\end{enumerate}
+
+\textbf{\large{Semaine 12}}
+
+\textit{Livraisons: F05, F06, F07, F08, F09, F27, F58, F60}
+
+\begin{enumerate}
+  \item B11 : Mettre en place des tests et les automatiser\newline
+  Aymeric \& Alexandre
+  \begin{itemize}
+    \item F05 : Documentation.
+    \item F06 : Tests.
+    \item F07 : Bugs.
+    \item F08 : Performances.
+    \item F09 : Build-System.
+  \end{itemize}
+  \item B01 : Mettre en place une AI\newline
+  Ludovic \& Valentin
+  \begin{itemize}
+    \item F27 : Mode IA (option `-a [PLAYER]` ou `--ai[PLAYER]`).
+    \item F58 : Recherche du meilleur coup (Monte-Carlo Tree Search).
+    \item F60 : Temps de réflexion borné (option `--ai-time`).
+  \end{itemize}
+  \item B04 : Avoir une interface graphique GUI
+  Matheo \& Jean
+  \begin{itemize}
+    \item F48 : Fonctions de base(GUI)
+  \end{itemize}
+\end{enumerate}
 
 
 %----------------------------------------------------------------------------------------------------------------
@@ -389,11 +646,11 @@ projet, un certain nombre de dépendances sont ajoutées:
   en conjonction avec JUnit pour certifier le pourcentage de code
   source testé.
   \item \textbf{Commons-cli}: API d'analyse d'options de commandes.
-  Utilisé pour interpreter les options passées en ligne de
+  Utilisé pour interpréter les options passées en ligne de
   commande.
   \item \textbf{JavaFx}: Framework d'interface utilisateur, utilisé
   pour la partie interface graphique.
-  \item \textbf{Checkstyle}: Outil d'analyse de code permettant de
+  \item \textbf{Spotless}: Outil d'analyse de code permettant de
   vérifier la conformité du formatage avec le style de codage de 
   Google.
 \end{itemize}
@@ -468,7 +725,7 @@ Les besoins sont composés d'exigences. Les exigences sont des règles plus pré
         \begin{itemize}[label=$\square$]
             \item T11-02-01 : mettre en place une énumération pour lister les différentes types d'erreurs
             \item T11-02-02 : mettre en place un classe unique pour gérer les erreurs dans notre code
-            \item T11-02-03 : implémenter des méthodes pour récuperer l'erreur sous forme de texte
+            \item T11-02-03 : implémenter des méthodes pour récupérer l'erreur sous forme de texte
         \end{itemize}
     \end{itemize}
 \end{itemize}

@@ -1,114 +1,69 @@
 package pdp.scrabble.configuration;
 
 import java.io.BufferedReader;
-import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.errorsHandling.EnumError;
 
 public class ConfigurationBuilder {
 
-  private Properties defaultProps;
+  private Map<ConfigurationPropertiesEnum, Boolean> completeness;
+  private ConfigurationTemplate confStub;
 
-  // FLAGS
-  private Boolean verbose;
-  private Boolean debug;
-  private Boolean blitz;
-  private Boolean superScrabble;
-  private Boolean gui;
-
-  private int playerCount;
-  // Only relevant with blitz on
-  private int blitzTime;
-
-  // Only relevant with aiPlayers
-  // TODO: Truly implement aiPlayers as Bitmap
-  // Currently bitmap in string
-  // with player 1 to the right
-  // and player 4 to the left
-  private String aiPlayers;
-  private int aiDepth;
-  private int aiTime;
-
-  private String language;
-  // Monte Carlo or MiniMax
-  // 'mcts' or 'minimax'
-  private String aiMode;
-
-  // Paths/Filenames
-  private String dictFile;
-  private String contestFile;
-  private String historyFile;
-
-  // TODO: Use Custom Error module from test package
-  // currently Exception does not stop execution
-  public ConfigurationBuilder(Path src) throws Exception {
-    // Step 1 : Get defaults
+  public ConfigurationBuilder(Path src) throws CustomError {
     Properties props = new Properties();
-
-    // Step 2 : Override defaults with contents of scrabblerc
     try {
       // FileReader location is relative to user working directory at runtime
       BufferedReader scrabblerc = Files.newBufferedReader(src);
       props.load(scrabblerc);
-    } catch (IOException e) {
-      System.out.println(e);
+    } catch (Exception e) {
+      throw createError("Could not access .scrabblerc\n");
     }
 
-    convertPropsToPojo(props, this);
-  }
+    this.completeness = new HashMap<>();
+    for (ConfigurationPropertiesEnum instance : ConfigurationPropertiesEnum.values()) {
+      this.completeness.put(instance, false);
+    }
 
-  private Properties getDefaultProperties() {
-    Properties props = new Properties();
-    props.setProperty("verbose", "false");
-    props.setProperty("debug", "false");
-    props.setProperty("blitz", "false");
-    props.setProperty("superScrabble", "false");
-    props.setProperty("gui", "false");
+    this.confStub = new ConfigurationTemplate();
+    convertPropsToTemplate(props, this.confStub);
 
-    props.setProperty("playerCount", "2");
-    props.setProperty("blitzTime", "30");
-    // Player 2 is AI by default
-    props.setProperty("aiPlayers", "0010");
-    // TODO: CHOOSE DEFAULT DEPTH
-    props.setProperty("aiDepth", "0");
-    props.setProperty("aiTime", "5");
-
-    props.setProperty("language", "en");
-    props.setProperty("aiMode", "null");
-
-    // TODO: CHOOSE DEFAULT LOCATION FOR THESE FILES
-    props.setProperty("dictFile", "./");
-    props.setProperty("contestFile", "./");
-    props.setProperty("historyFile", "./");
-
-    return props;
-  }
-
-  public void writeDefaultsToFile(Path target) {
-    Properties defaults = getDefaultProperties();
-    try {
-      defaults.store(Files.newOutputStream(target), "[Default]");
-    } catch (IOException e) {
-      System.out.println(e);
+    // completeness keeps track of properties that have been set
+    // .scrabblerc must define all of the properties, otherwise stop execution
+    if (this.completeness.containsValue(false)) {
+      throw createError("Some properties are missing from .scrabblerc");
     }
   }
 
-  // TODO: Throw exceptions on invalid Data
-  private void convertPropsToPojo(Properties props, ConfigurationBuilder target) throws Exception {
+  private CustomError createError(String msg) {
+    return new CustomError(
+        EnumError.FailedConfigFileParsing, "[.scrabblerc] Parsing error: " + msg, true);
+  }
+
+  private void convertPropsToTemplate(Properties props, ConfigurationTemplate target)
+      throws CustomError {
     for (String key : props.stringPropertyNames()) {
       Class cls = target.getClass();
-      switch (key) {
+      ConfigurationPropertiesEnum confEnum = ConfigurationPropertiesEnum.get(key);
+      // If key is not a known scrabblerc key, ignore it
+      if (confEnum == null) {
+        continue;
+      }
+      switch (confEnum) {
         // FLAGS
-        case "verbose":
-        case "debug":
-        case "blitz":
-        case "superScrabble":
-        case "gui":
+        case VERBOSE:
+        case DEBUG:
+        case BLITZ:
+        case SUPERSCRABBLE:
+        case GUI:
           {
             // true if property == "true" / false in every other case
-            // its fine to not check the value bcs flags are false by default
             Boolean value = Boolean.valueOf(props.getProperty(key));
             // Build setter reflectively from key
             // basically creating `set{key}(boolean value)` and calling it
@@ -124,23 +79,21 @@ public class ConfigurationBuilder {
             break;
           }
         // Ints
-        case "playerCount":
-        case "blitzTime":
-        case "aiDepth":
-        case "aiTime":
+        case PLAYERCOUNT:
+        case BLITZTIME:
+        case AIDEPTH:
+        case AITIME:
           {
             int value = 0;
             try {
               value = Integer.parseUnsignedInt(props.getProperty(key));
             } catch (NumberFormatException e) {
-              // TODO: Use Custom Error module from test package
-              // Currently exception does not stop Execution
-              throw new Exception(
-                  "[scrabblerc] Error: value `"
+              throw createError(
+                  "value `"
                       + props.getProperty(key)
                       + "` for key `"
                       + key
-                      + "`, expected a `"
+                      + "`, expected a positive `"
                       + Integer.TYPE
                       + "`");
             }
@@ -153,17 +106,22 @@ public class ConfigurationBuilder {
                       new Class[] {Integer.TYPE});
               meth.invoke(target, value);
             } catch (Exception e) {
-              System.out.println(e);
+              // Reflected exceptions are wrapped in InvocationTargetException
+              // the only possible exception from our setter is CustomError
+              // so we can safely cast
+              InvocationTargetException qualified = (InvocationTargetException) e;
+              CustomError src = (CustomError) qualified.getCause();
+              throw src;
             }
             break;
           }
         // Strings
-        case "aiPlayers":
-        case "language":
-        case "aiMode":
-        case "dictFile":
-        case "contestFile":
-        case "historyFile":
+        case AIPLAYERS:
+        case LANGUAGE:
+        case AIMODE:
+        case DICTFILE:
+        case CONTESTFILE:
+        case HISTORYFILE:
           {
             String value = props.getProperty(key);
             // Build setter reflectively from key
@@ -175,144 +133,26 @@ public class ConfigurationBuilder {
                       new Class[] {String.class});
               meth.invoke(target, value);
             } catch (Exception e) {
-              System.out.println(e);
+              // Reflected exceptions are wrapped in InvocationTargetException
+              // the only possible exception from our setter is CustomError
+              // so we can safely cast
+              InvocationTargetException qualified = (InvocationTargetException) e;
+              CustomError src = (CustomError) qualified.getCause();
+              throw src;
             }
             break;
           }
         default:
+          throw createError(
+              "[Dev error] ConvertPropsToTemplate: ConfigurationPropertiesEnum."
+                  + props.getProperty(key)
+                  + " not properly checked for");
       }
+      this.completeness.put(confEnum, true);
     }
   }
 
   public Configuration getConfiguration() {
-    return new Configuration(
-        verbose,
-        debug,
-        blitz,
-        superScrabble,
-        gui,
-        playerCount,
-        blitzTime,
-        aiPlayers,
-        aiDepth,
-        aiTime,
-        language,
-        aiMode,
-        dictFile,
-        contestFile,
-        historyFile);
-  }
-
-  public String toString() {
-    return "ConfigurationBuilder={ "
-        + "verbose="
-        + verbose.toString()
-        + " | "
-        + "debug="
-        + debug.toString()
-        + " | "
-        + "blitz="
-        + blitz.toString()
-        + " | "
-        + "superScrabble="
-        + superScrabble.toString()
-        + " | "
-        + "gui="
-        + gui.toString()
-        + " | "
-        + "playerCount="
-        + Integer.toString(playerCount)
-        + " | "
-        + "blitzTime="
-        + Integer.toString(blitzTime)
-        + " | "
-        + "aiPlayers="
-        + aiPlayers.toString()
-        + " | "
-        + "aiDepth="
-        + Integer.toString(aiDepth)
-        + " | "
-        + "aiTime="
-        + Integer.toString(aiTime)
-        + " | "
-        + "language="
-        + language.toString()
-        + " | "
-        + "aiMode="
-        + aiMode.toString()
-        + " | "
-        + "dictFile="
-        + dictFile.toString()
-        + " | "
-        + "contestFile="
-        + contestFile.toString()
-        + " | "
-        + "historyFile="
-        + historyFile.toString()
-        + " "
-        + "}";
-  }
-
-  public void setVerbose(Boolean verbose) {
-    this.verbose = verbose;
-  }
-
-  public void setDebug(Boolean debug) {
-    this.debug = debug;
-  }
-
-  public void setBlitz(Boolean blitz) {
-    this.blitz = blitz;
-  }
-
-  public void setSuperScrabble(Boolean superScrabble) {
-    this.superScrabble = superScrabble;
-  }
-
-  public void setGui(Boolean gui) {
-    this.gui = gui;
-  }
-
-  public void setPlayerCount(int playerCount) {
-    this.playerCount = playerCount;
-  }
-
-  public void setBlitzTime(int blitzTime) {
-    this.blitzTime = blitzTime;
-  }
-
-  public void setAiPlayers(String aiPlayers) {
-    this.aiPlayers = aiPlayers;
-  }
-
-  public void setAiDepth(int aiDepth) {
-    this.aiDepth = aiDepth;
-  }
-
-  public void setAiTime(int aiTime) {
-    this.aiTime = aiTime;
-  }
-
-  public void setLanguage(String language) {
-    this.language = language;
-  }
-
-  public void setAiMode(String aiMode) {
-    this.aiMode = aiMode;
-  }
-
-  public void setDictFile(String dictFile) {
-    // TODO: ENFORCE STRING BEING A PATH
-    this.dictFile = dictFile;
-  }
-
-  public void setContestFile(String contestFile) {
-    // TODO: ENFORCE STRING BEING A PATH
-    this.contestFile = contestFile;
-  }
-
-  public void setHistoryFile(String historyFile) {
-    // TODO: ENFORCE STRING BEING A PATH
-    this.historyFile = historyFile;
+    return this.confStub.getConfiguration();
   }
 }

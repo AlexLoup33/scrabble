@@ -1,5 +1,7 @@
 package pdp.scrabble.configuration;
 
+import java.nio.file.Path;
+
 public interface IConfiguration {
   // Related to GameMode
   public Boolean getVerbose();
@@ -18,7 +20,7 @@ public interface IConfiguration {
   public int getBlitzTime();
 
   // Related to AI
-  public String getAiPlayers();
+  public boolean[] getAiPlayers();
 
   public int getAiDepth();
 
@@ -30,9 +32,9 @@ public interface IConfiguration {
   public String getLanguage();
 
   // Related to Paths/Filenames
-  public String getDictFile();
+  public Path getDictFile();
 
-  public String getContestFile();
+  public Path getContestFile();
 
-  public String getHistoryFile();
+  public Path getHistoryFile();
 }

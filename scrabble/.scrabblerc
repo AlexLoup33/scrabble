@@ -9,15 +9,15 @@ gui=false
 #[Game]
 language=en
 playerCount=2
-blitzTime=30
+blitzTime=2
 
 #[AI]
-aiPlayers=0010 
+aiPlayers=2
 aiMode=null
 aiDepth=0
 aiTime=5
 
 #[Storage]
-historyFile=./
-dictFile=./
-contestFile=./
+historyFile=null
+dictFile=./dictionary/en.txt
+contestFile=null

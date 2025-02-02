@@ -1,5 +1,7 @@
 package pdp.scrabble.configuration;
 
+import java.nio.file.Path;
+
 public record Configuration(
     boolean verbose,
     boolean debug,
@@ -8,14 +10,14 @@ public record Configuration(
     boolean gui,
     int playerCount,
     int blitzTime,
-    String aiPlayers,
+    boolean[] aiPlayers,
     int aiDepth,
     int aiTime,
     String language,
     String aiMode,
-    String dictFile,
-    String contestFile,
-    String historyFile)
+    Path dictFile,
+    Path contestFile,
+    Path historyFile)
     implements IConfiguration {
   @Override
   public Boolean getVerbose() {
@@ -53,7 +55,7 @@ public record Configuration(
   }
 
   @Override
-  public String getAiPlayers() {
+  public boolean[] getAiPlayers() {
     return this.aiPlayers;
   }
 
@@ -78,17 +80,17 @@ public record Configuration(
   }
 
   @Override
-  public String getDictFile() {
+  public Path getDictFile() {
     return this.dictFile;
   }
 
   @Override
-  public String getContestFile() {
+  public Path getContestFile() {
     return this.contestFile;
   }
 
   @Override
-  public String getHistoryFile() {
+  public Path getHistoryFile() {
     return this.historyFile;
   }
 }

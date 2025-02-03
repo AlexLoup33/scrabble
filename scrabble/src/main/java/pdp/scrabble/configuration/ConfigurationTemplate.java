@@ -216,7 +216,7 @@ public class ConfigurationTemplate {
         + language.toString()
         + " | "
         + "aiMode="
-        + aiMode.toString()
+        + (aiMode != null ? aiMode.toString() : "null")
         + " | "
         + "dictFile="
         + (dictFile != null ? dictFile.toString() : "null")

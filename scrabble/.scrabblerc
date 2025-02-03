@@ -9,7 +9,7 @@ gui=false
 #[Game]
 language=en
 playerCount=2
-blitzTime=2
+blitzTime=30
 
 #[AI]
 aiPlayers=2

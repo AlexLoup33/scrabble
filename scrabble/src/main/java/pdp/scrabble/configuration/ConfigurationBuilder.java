@@ -23,7 +23,7 @@ public class ConfigurationBuilder {
       BufferedReader scrabblerc = Files.newBufferedReader(src);
       props.load(scrabblerc);
     } catch (Exception e) {
-      throw createError("Could not access .scrabblerc\n");
+      throw createError("Could not access .scrabblerc");
     }
 
     this.completeness = new HashMap<>();
@@ -150,6 +150,10 @@ public class ConfigurationBuilder {
       }
       this.completeness.put(confEnum, true);
     }
+  }
+
+  public String getTemplateString() {
+    return this.confStub.toString();
   }
 
   public Configuration getConfiguration() {

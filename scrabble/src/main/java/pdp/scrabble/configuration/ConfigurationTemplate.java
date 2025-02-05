@@ -230,6 +230,22 @@ public class ConfigurationTemplate {
         + "}";
   }
 
+  public void setAiPlayers(boolean[] aiPlayers) {
+    this.aiPlayers = aiPlayers;
+  }
+
+  public void setDictFile(Path dictFile) {
+    this.dictFile = dictFile;
+  }
+
+  public void setContestFile(Path contestFile) {
+    this.contestFile = contestFile;
+  }
+
+  public void setHistoryFile(Path historyFile) {
+    this.historyFile = historyFile;
+  }
+
   public Configuration getConfiguration() {
     return new Configuration(
         verbose,

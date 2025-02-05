@@ -71,11 +71,11 @@ public class ConfigurationBuilder {
             // Build setter reflectively from key
             // basically creating `set{key}(boolean value)` and calling it
             try {
-              Method meth =
+              Method setter =
                   cls.getMethod(
                       "set" + Character.toUpperCase(key.charAt(0)) + key.substring(1),
                       new Class[] {Boolean.class});
-              meth.invoke(target, value);
+              setter.invoke(target, value);
             } catch (Exception e) {
               System.out.println(e);
             }
@@ -103,11 +103,11 @@ public class ConfigurationBuilder {
             // Build setter reflectively from key
             // basically creating `set{key}(int value)` and calling it
             try {
-              Method meth =
+              Method setter =
                   cls.getMethod(
                       "set" + Character.toUpperCase(key.charAt(0)) + key.substring(1),
                       new Class[] {Integer.TYPE});
-              meth.invoke(target, value);
+              setter.invoke(target, value);
             } catch (Exception e) {
               // Reflected exceptions are wrapped in InvocationTargetException
               // the only possible exception from our setter is CustomError
@@ -130,11 +130,11 @@ public class ConfigurationBuilder {
             // Build setter reflectively from key
             // basically creating `set{key}(String value)` and calling it
             try {
-              Method meth =
+              Method setter =
                   cls.getMethod(
                       "set" + Character.toUpperCase(key.charAt(0)) + key.substring(1),
                       new Class[] {String.class});
-              meth.invoke(target, value);
+              setter.invoke(target, value);
             } catch (Exception e) {
               // Reflected exceptions are wrapped in InvocationTargetException
               // the only possible exception from our setter is CustomError
@@ -155,8 +155,40 @@ public class ConfigurationBuilder {
     }
   }
 
+  // Merge the current ConfigurationBuilder instance: (`this`)
+  // with the ConfigurationBuilder source
+  // Uses the completeness BitMap to find unset fields
+  // If a field is unset in source, keeps the current instance value from
+  // before the merge
+  public void merge(ConfigurationBuilder source) throws CustomError {
+    Configuration sourceConf = source.getConfiguration();
+    for (ConfigurationPropertiesEnum confEnum : ConfigurationPropertiesEnum.values()) {
+      if (source.getCompleteness().get(confEnum)) {
+        try {
+          String fieldName = confEnum.toString();
+          String methAttrName = Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+          Method getter = Configuration.class.getMethod("get" + methAttrName, null);
+          Method setter =
+              ConfigurationTemplate.class.getMethod(
+                  "set" + methAttrName, new Class[] {getter.getReturnType()});
+          // Calling this.confStub.set{fieldName}(source.get({fieldName}))
+          setter.invoke(this.confStub, getter.invoke(sourceConf));
+        } catch (Exception e) {
+          throw new CustomError(
+              EnumError.FailedConfigFileParsing,
+              "[dev Error] ConfigurationBuilder.merge: " + e.getMessage(),
+              true);
+        }
+      }
+    }
+  }
+
   public String getTemplateString() {
     return this.confStub.toString();
+  }
+
+  public Map<ConfigurationPropertiesEnum, Boolean> getCompleteness() {
+    return this.completeness;
   }
 
   public Configuration getConfiguration() {

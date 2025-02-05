@@ -49,7 +49,4 @@ public class Grid {
         }
     }
 
-    public void reverseGrid360MesCouillesJspQuoi() {
-        System.out.println("Grosse dedicasse a Ludo");
-    }
 }

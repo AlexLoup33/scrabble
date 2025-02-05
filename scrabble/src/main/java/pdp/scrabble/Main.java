@@ -7,6 +7,7 @@ package pdp.scrabble;
 
 import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Grid;
+import pdp.scrabble.game.Player;
 
 import java.lang.module.Configuration;
 
@@ -18,6 +19,9 @@ public class Main {
 //        GameModel gm = new GameModel();
 
 //        Grid grid = new Grid(5);
+
+        Player p1 = new Player("franck");
+        Player p2 = new Player("franck2");
 
         System.out.println("--- End ---");
     }

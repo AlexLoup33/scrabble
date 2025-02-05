@@ -1,13 +1,12 @@
 package pdp.scrabble.configuration;
 
 import java.io.BufferedReader;
-import java.io.FileOutputStream;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -196,34 +195,49 @@ public class ConfigurationBuilder {
   }
 
   public static void saveConfiguration(Path dst, Configuration conf) throws IOException {
-    try (FileOutputStream file = new FileOutputStream(dst.toFile())){
-      String[] parse = String.valueOf(dst).split("/");
-      String name = parse[parse.length-1].replace(".", "");
-      System.out.println(name);
+    BufferedWriter writer = Files.newBufferedWriter(dst);
 
-      file.write(("#["+name+"]\n").getBytes());
-      file.write(("#[Flags]\n").getBytes());
-      file.write(("verbose="+conf.getVerbose()+"\n").getBytes());
-      file.write(("debug="+conf.getDebug()+"\n").getBytes());
-      file.write(("blitz="+conf.getBlitz()+"\n").getBytes());
-      file.write(("superScrabble="+conf.getSuperScrabble()+"\n").getBytes());
-      file.write(("gui="+conf.getGui()+"\n\n").getBytes());
+    String name = dst.getFileName().toString().replace(".", "");
+    writer.write("#[" + name + "]\n");
+    writer.write("#[Flags]\n");
+    writer.write("verbose=" + conf.getVerbose() + "\n");
+    writer.write("debug=" + conf.getDebug() + "\n");
+    writer.write("blitz=" + conf.getBlitz() + "\n");
+    writer.write("superScrabble=" + conf.getSuperScrabble() + "\n");
+    writer.write("gui=" + conf.getGui() + "\n\n");
 
-      file.write(("#[Game]\n").getBytes());
-      file.write(("language="+conf.getLanguage()+"\n").getBytes());
-      file.write(("playerCount="+conf.getPlayerCount()+"\n").getBytes());
-      file.write(("blitzTime="+conf.getBlitzTime()+"\n\n").getBytes());
+    writer.write("#[Game]\n");
+    writer.write("language=" + conf.getLanguage() + "\n");
+    writer.write("playerCount=" + conf.getPlayerCount() + "\n");
+    writer.write("blitzTime=" + conf.getBlitzTime() + "\n\n");
 
-      file.write(("#[AI]\n").getBytes());
-      file.write(("aiPlayers="+ Arrays.toString(conf.getAiPlayers()) +"\n").getBytes());
-      file.write(("aiMode="+conf.getAiMode()+"\n").getBytes());
-      file.write(("aiDepth="+conf.getAiDepth()+"\n").getBytes());
-      file.write(("aiTime="+conf.getAiTime()+"\n\n").getBytes());
+    writer.write("#[AI]\n");
+    writer.write("aiPlayers=" + aiPlayersToString(conf.getAiPlayers()) + "\n");
+    writer.write("aiMode=" + conf.getAiMode() + "\n");
+    writer.write("aiDepth=" + conf.getAiDepth() + "\n");
+    writer.write("aiTime=" + conf.getAiTime() + "\n\n");
 
-      file.write(("#[Storage]").getBytes());
-      file.write(("historyFile="+conf.getHistoryFile()+"\n").getBytes());
-      file.write(("dictFile="+conf.getDictFile()+"\n").getBytes());
-      file.write(("contestFile="+conf.getContestFile()+"\n").getBytes());
+    writer.write("#[Storage]\n");
+    writer.write("historyFile=" + conf.getHistoryFile() + "\n");
+    writer.write("dictFile=" + conf.getDictFile() + "\n");
+    writer.write("contestFile=" + conf.getContestFile() + "\n");
+
+    writer.close();
+  }
+
+  public static String aiPlayersToString(boolean[] aiPlayers) {
+    StringBuilder value = new StringBuilder();
+    for (int i = 0; i < 4; i++) {
+      if (aiPlayers[i]) {
+        if (value.length() != 0) {
+          value.append(',');
+        }
+        value.append(i + 1);
+      }
     }
+    if (value.length() == 0) {
+      return "null";
+    }
+    return value.toString();
   }
 }

@@ -71,4 +71,20 @@ public class ConfigurationBuilderTest {
     assertEquals(merged.getDictFile(), srcConf.getDictFile());
     assertEquals(merged.getDictFile(), otherConf.getDictFile());
   }
+
+  @Test
+  public void testSaveConfiguration() throws Exception {
+    ConfigurationBuilder original =
+        new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/.default"));
+    Configuration originalConf = original.getConfiguration();
+
+    ConfigurationBuilder.saveConfiguration(
+        Paths.get("src/test/resources/scrabblerc/created/.savedDefault"), originalConf);
+
+    ConfigurationBuilder created =
+        new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/created/.savedDefault"));
+    Configuration createdConf = created.getConfiguration();
+
+    assertEquals(originalConf.getDebug(), createdConf.getDebug());
+  }
 }

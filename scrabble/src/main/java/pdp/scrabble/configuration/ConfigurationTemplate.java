@@ -164,7 +164,7 @@ public class ConfigurationTemplate {
         EnumError.FailedConfigFileParsing, "[.scrabblerc] Parsing error: " + msg, true);
   }
 
-  private String aiPlayersToString() {
+  public String aiPlayersToString() {
     StringBuilder value = new StringBuilder();
     for (int i = 0; i < 4; i++) {
       if (this.aiPlayers[i]) {
@@ -204,7 +204,7 @@ public class ConfigurationTemplate {
         + Integer.toString(blitzTime)
         + " | "
         + "aiPlayers="
-        + aiPlayersToString()
+        + ConfigurationBuilder.aiPlayersToString(aiPlayers)
         + " | "
         + "aiDepth="
         + Integer.toString(aiDepth)

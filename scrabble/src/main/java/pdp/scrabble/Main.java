@@ -18,10 +18,11 @@ public class Main {
 //        Configuration config = new Configuration();
 //        GameModel gm = new GameModel();
 
-//        Grid grid = new Grid(5);
+        Grid grid = new Grid(15);
+        grid.printScoreMatrix();
 
-        Player p1 = new Player("franck");
-        Player p2 = new Player("franck2");
+//        Player p1 = new Player("franck");
+//        Player p2 = new Player("franck2");
 
         System.out.println("--- End ---");
     }

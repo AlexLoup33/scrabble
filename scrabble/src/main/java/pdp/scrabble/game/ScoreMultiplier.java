@@ -9,4 +9,9 @@ public class ScoreMultiplier {
         this.multi = multi;
         this.isLetterMultiplier = isLetterMultiplier;
     }
+
+    @Override
+    public String toString() {
+        return multi + (isLetterMultiplier ? "LS" : "WS");
+    }
 }

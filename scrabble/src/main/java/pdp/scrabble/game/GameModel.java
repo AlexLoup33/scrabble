@@ -5,9 +5,9 @@ import java.util.List;
 
 public class GameModel {
 
-    private static Grid grid;
-    private static List<Player> players = new ArrayList<>();
-    private static Draw draw; // draw = pioche en fr
+    public static Grid grid;
+    public static List<Player> players = new ArrayList<>();
+    public static Draw draw; // draw = pioche en fr
 
     // Constructor
     public GameModel() {

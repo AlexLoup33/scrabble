@@ -17,6 +17,9 @@ public class Grid {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 this.letterMatrix[i][j] = null;
+                if (i == j) {
+                    this.scoreMatrix[i][j] = new ScoreMultiplier(2, false);
+                }
                 if (i % 7 == 0 && j % 7 == 0) {
                     this.scoreMatrix[i][j] = new ScoreMultiplier(3, false);
                 }
@@ -36,9 +39,17 @@ public class Grid {
     public void printScoreMatrix() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                System.out.print(this.scoreMatrix[i][j] + " ");
+                if (this.scoreMatrix[i][j] == null) {
+                    System.out.print("   ");
+                } else {
+                    System.out.print(this.scoreMatrix[i][j] + " ");
+                }
             }
             System.out.println();
         }
+    }
+
+    public void reverseGrid360MesCouillesJspQuoi() {
+        System.out.println("Grosse dedicasse a Ludo");
     }
 }

@@ -1,10 +1,13 @@
 package pdp.scrabble.configuration;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -158,5 +161,37 @@ public class ConfigurationBuilder {
 
   public Configuration getConfiguration() {
     return this.confStub.getConfiguration();
+  }
+
+  public static void saveConfiguration(Path dst, Configuration conf) throws IOException {
+    try (FileOutputStream file = new FileOutputStream(dst.toFile())){
+      String[] parse = String.valueOf(dst).split("/");
+      String name = parse[parse.length-1].replace(".", "");
+      System.out.println(name);
+
+      file.write(("#["+name+"]\n").getBytes());
+      file.write(("#[Flags]\n").getBytes());
+      file.write(("verbose="+conf.getVerbose()+"\n").getBytes());
+      file.write(("debug="+conf.getDebug()+"\n").getBytes());
+      file.write(("blitz="+conf.getBlitz()+"\n").getBytes());
+      file.write(("superScrabble="+conf.getSuperScrabble()+"\n").getBytes());
+      file.write(("gui="+conf.getGui()+"\n\n").getBytes());
+
+      file.write(("#[Game]\n").getBytes());
+      file.write(("language="+conf.getLanguage()+"\n").getBytes());
+      file.write(("playerCount="+conf.getPlayerCount()+"\n").getBytes());
+      file.write(("blitzTime="+conf.getBlitzTime()+"\n\n").getBytes());
+
+      file.write(("#[AI]\n").getBytes());
+      file.write(("aiPlayers="+ Arrays.toString(conf.getAiPlayers()) +"\n").getBytes());
+      file.write(("aiMode="+conf.getAiMode()+"\n").getBytes());
+      file.write(("aiDepth="+conf.getAiDepth()+"\n").getBytes());
+      file.write(("aiTime="+conf.getAiTime()+"\n\n").getBytes());
+
+      file.write(("#[Storage]").getBytes());
+      file.write(("historyFile="+conf.getHistoryFile()+"\n").getBytes());
+      file.write(("dictFile="+conf.getDictFile()+"\n").getBytes());
+      file.write(("contestFile="+conf.getContestFile()+"\n").getBytes());
+    }
   }
 }

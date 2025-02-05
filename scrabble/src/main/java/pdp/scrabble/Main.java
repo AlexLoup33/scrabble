@@ -6,6 +6,7 @@
 package pdp.scrabble;
 
 import pdp.scrabble.game.GameModel;
+import pdp.scrabble.game.Grid;
 
 import java.lang.module.Configuration;
 
@@ -15,6 +16,8 @@ public class Main {
 
 //        Configuration config = new Configuration();
 //        GameModel gm = new GameModel();
+
+//        Grid grid = new Grid(5);
 
         System.out.println("--- End ---");
     }

@@ -1,0 +1,24 @@
+#[Default]
+#[Flags]
+verbose=true
+debug=true
+blitz=true
+superScrabble=true
+gui=true
+
+#[Game]
+language=en
+playerCount=3
+blitzTime=29
+
+#[AI]
+aiPlayers=3, 2
+aiMode=mcts
+aiDepth=1
+aiTime=6
+
+#[Storage]
+historyFile=null
+dictFile=./dictionary/en.txt
+contestFile=null
+

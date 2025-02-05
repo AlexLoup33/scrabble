@@ -1,0 +1,16 @@
+#[Default]
+#[Flags]
+superScrabble=false
+gui=false
+
+#[Game]
+playerCount=2
+blitzTime=30
+
+#[AI]
+aiDepth=0
+aiTime=5
+
+#[Storage]
+contestFile=null
+

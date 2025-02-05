@@ -1,5 +1,4 @@
 package pdp.scrabble.game;
 
-public class gameLoop {
-
+public class Player {
 }

@@ -12,7 +12,7 @@ public class GameModel {
     // Constructor
     public GameModel() {
         // TODO get these infos from Config
-        this.grid = new Grid(10);
+        this.grid = new Grid(15);
     }
 
 

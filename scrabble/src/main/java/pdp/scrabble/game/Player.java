@@ -24,6 +24,4 @@ public class Player {
         this.score = 0;
         this.bag = new LettersCounter();
     }
-
-
 }

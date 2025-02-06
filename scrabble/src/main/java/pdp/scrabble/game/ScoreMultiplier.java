@@ -1,17 +1,25 @@
 package pdp.scrabble.game;
 
-public class ScoreMultiplier {
-    public final int multi;
-    public final boolean isLetterMultiplier;
+public enum ScoreMultiplier {
+    DOUBLE_LETTER(2, true),
+    TRIPLE_LETTER(3, true),
+    DOUBLE_WORD(2, false),
+    TRIPLE_WORD(3, false);
 
+    private final int multi;
+    private final boolean letterMultiplier;
 
-    public ScoreMultiplier(int multi, boolean isLetterMultiplier) {
+    ScoreMultiplier(int multi, boolean letterMultiplier) {
         this.multi = multi;
-        this.isLetterMultiplier = isLetterMultiplier;
+        this.letterMultiplier = letterMultiplier;
     }
 
-    @Override
-    public String toString() {
-        return multi + (isLetterMultiplier ? "LS" : "WS");
+    public int getMulti() {
+        return multi;
+    }
+
+    public boolean isLetterMultiplier() {
+        return letterMultiplier;
     }
 }
+

@@ -1,25 +1,26 @@
 package pdp.scrabble.game;
 
 import pdp.scrabble.dictionary.LettersCounter;
-import pdp.scrabble.errorsHandling.CustomError;
-import pdp.scrabble.errorsHandling.EnumError;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class Player {
-    public static final Set<String> names = new HashSet<>();
+    public static final Set<Integer> id_set = new HashSet<>();
+    public final Integer id;
     public final String name;
     public final int score;
     public final LettersCounter bag;
 
-    public Player(String name) throws CustomError {
-        if (this.names.contains(name)) {
-            throw new CustomError(EnumError.SamePlayerName,
-                    "Name already taken: " + name,
-                    false);
+    public Player(String name) {
+        Integer max_id = -1;
+        for (Integer d : id_set) {
+            if (d > max_id) {
+                max_id = d;
+            }
         }
-        this.names.add(name);
+        this.id = max_id + 1;
+        id_set.add(this.id);
         this.name = name;
         this.score = 0;
         this.bag = new LettersCounter();

@@ -160,9 +160,15 @@ public class ConfigurationTemplate {
         }
     }
 
+    /*
+     * Maintenant details ne doit plus contenir un boolean mais un commentaire que
+     * peut voir l'utilisateur. J'ai mis true en string pour l'instant.
+     * Merci de décrire du mieux que possible le detail afin qu'on puisse
+     * reconnaitre d'ou vient l'erreur
+     */
     private CustomError createError(String msg) {
         return new CustomError(
-                EnumError.FailedConfigFileParsing, "[.scrabblerc] Parsing error: " + msg, true);
+                ErrorType.FailedConfigFileParsing, "[.scrabblerc] Parsing error: " + msg, "true");
     }
 
     public String aiPlayersToString() {

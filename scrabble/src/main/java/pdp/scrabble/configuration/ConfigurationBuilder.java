@@ -44,9 +44,15 @@ public class ConfigurationBuilder {
         }
     }
 
+    /*
+     * Maintenant details ne doit plus contenir un boolean mais un commentaire que
+     * peut voir l'utilisateur. J'ai mis true en string pour l'instant.
+     * Merci de décrire du mieux que possible le detail afin qu'on puisse
+     * reconnaitre d'ou vient l'erreur
+     */
     private CustomError createError(String msg) {
         return new CustomError(
-                EnumError.FailedConfigFileParsing, "[.scrabblerc] Parsing error: " + msg, true);
+                ErrorType.FailedConfigFileParsing, "[.scrabblerc] Parsing error: " + msg, "true");
     }
 
     private void convertPropsToTemplate(Properties props, ConfigurationTemplate target)
@@ -168,9 +174,14 @@ public class ConfigurationBuilder {
                     setter.invoke(this.confStub, getter.invoke(sourceConf));
                 } catch (Exception e) {
                     throw new CustomError(
-                            EnumError.FailedConfigFileParsing,
+                            ErrorType.FailedConfigFileParsing,
                             "[dev Error] ConfigurationBuilder.merge: " + e.getMessage(),
-                            true);
+                            "true");/*
+                                     * Maintenant details ne doit plus contenir un boolean mais un commentaire que
+                                     * peut voir l'utilisateur. J'ai mis true en string pour l'instant.
+                                     * Merci de décrire du mieux que possible le detail afin qu'on puisse
+                                     * reconnaitre d'ou vient l'erreur
+                                     */
                 }
             }
         }

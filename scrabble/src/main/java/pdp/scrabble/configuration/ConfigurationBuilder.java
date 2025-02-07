@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import pdp.scrabble.errorsHandling.CustomError;
-import pdp.scrabble.errorsHandling.EnumError;
+import pdp.scrabble.errorsHandling.ErrorType;
 
 public class ConfigurationBuilder {
 
@@ -70,10 +70,9 @@ public class ConfigurationBuilder {
                     // Build setter reflectively from key
                     // basically creating `set{key}(boolean value)` and calling it
                     try {
-                        Method setter =
-                                cls.getMethod(
-                                        "set" + Character.toUpperCase(key.charAt(0)) + key.substring(1),
-                                        new Class[]{Boolean.class});
+                        Method setter = cls.getMethod(
+                                "set" + Character.toUpperCase(key.charAt(0)) + key.substring(1),
+                                new Class[] { Boolean.class });
                         setter.invoke(target, value);
                     } catch (Exception e) {
                         System.out.println(e);
@@ -101,10 +100,9 @@ public class ConfigurationBuilder {
                     // Build setter reflectively from key
                     // basically creating `set{key}(int value)` and calling it
                     try {
-                        Method setter =
-                                cls.getMethod(
-                                        "set" + Character.toUpperCase(key.charAt(0)) + key.substring(1),
-                                        new Class[]{Integer.TYPE});
+                        Method setter = cls.getMethod(
+                                "set" + Character.toUpperCase(key.charAt(0)) + key.substring(1),
+                                new Class[] { Integer.TYPE });
                         setter.invoke(target, value);
                     } catch (Exception e) {
                         // Reflected exceptions are wrapped in InvocationTargetException
@@ -127,10 +125,9 @@ public class ConfigurationBuilder {
                     // Build setter reflectively from key
                     // basically creating `set{key}(String value)` and calling it
                     try {
-                        Method setter =
-                                cls.getMethod(
-                                        "set" + Character.toUpperCase(key.charAt(0)) + key.substring(1),
-                                        new Class[]{String.class});
+                        Method setter = cls.getMethod(
+                                "set" + Character.toUpperCase(key.charAt(0)) + key.substring(1),
+                                new Class[] { String.class });
                         setter.invoke(target, value);
                     } catch (Exception e) {
                         // Reflected exceptions are wrapped in InvocationTargetException
@@ -165,9 +162,8 @@ public class ConfigurationBuilder {
                     String fieldName = confEnum.toString();
                     String methAttrName = Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
                     Method getter = Configuration.class.getMethod("get" + methAttrName, null);
-                    Method setter =
-                            ConfigurationTemplate.class.getMethod(
-                                    "set" + methAttrName, new Class[]{getter.getReturnType()});
+                    Method setter = ConfigurationTemplate.class.getMethod(
+                            "set" + methAttrName, new Class[] { getter.getReturnType() });
                     // Calling this.confStub.set{fieldName}(source.get({fieldName}))
                     setter.invoke(this.confStub, getter.invoke(sourceConf));
                 } catch (Exception e) {

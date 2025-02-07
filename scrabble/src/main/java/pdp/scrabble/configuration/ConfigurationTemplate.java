@@ -5,7 +5,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
 import pdp.scrabble.errorsHandling.CustomError;
-import pdp.scrabble.errorsHandling.EnumError;
+import pdp.scrabble.errorsHandling.ErrorType;
 
 public class ConfigurationTemplate {
 
@@ -36,7 +36,7 @@ public class ConfigurationTemplate {
     private Path historyFile;
 
     public ConfigurationTemplate() {
-        this.aiPlayers = new boolean[]{false, false, false, false};
+        this.aiPlayers = new boolean[] { false, false, false, false };
     }
 
     public void setVerbose(Boolean verbose) {

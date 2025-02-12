@@ -1,10 +1,15 @@
 package pdp.scrabble.game;
 
 import pdp.scrabble.dictionary.Letter;
+import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.errorsHandling.ErrorType;
+import pdp.scrabble.game.actions.PlaceWordAction;
 
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+
+import static pdp.scrabble.errorsHandling.ErrorType.LetterPlacedOutOfRange;
 
 public class Grid {
     public final int size;
@@ -30,8 +35,31 @@ public class Grid {
         }
     }
 
-    public List<OwnedWord> placeLetters(List<Letter> letter, GridWordPos gwp) {
+    public List<OwnedWord> placeLetters(PlaceWordAction pwa) {
         // todo
+        // try to place the letter
+
+        Letter[][] gridCopy = this.placedLetters.clone();
+
+
+        if (pwa.startPosition.direction() == Direction.Down) {
+            if (pwa.startPosition.row() + pwa.toPlace.length > this.size) {
+                throw new CustomError(LetterPlacedOutOfRange,
+                        "Index out of range",
+                        "Can not place a letter out of the grid");
+            }
+
+            int letter_index = 0;
+            for (int row = pwa.startPosition.row();
+                 row < pwa.startPosition.row() + pwa.toPlace.length;
+                 row++) {
+                this.placedLetters[row][pwa.startPosition.col()] = pwa.toPlace[letter_index];
+                letter_index++;
+            }
+
+        }
+
+
         return null;
     }
 

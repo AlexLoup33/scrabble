@@ -16,7 +16,7 @@ import static pdp.scrabble.errorsHandling.ErrorType.LetterPlacedOutOfRange;
 
 public class Grid {
     public final int size;
-    private final Letter[][] placedLetters;
+    private Letter[][] placedLetters;
     private final Hashtable<GridPos, ScoreMultiplier> multiplicators = new Hashtable<>();
     private LinkedList<OwnedWord> placedWords = new LinkedList<>();
 
@@ -42,43 +42,43 @@ public class Grid {
         // todo
         // try to place the letter
 
-        Letter[][] gridCopy = this.placedLetters.clone();
+        Letter[][] placedLettersCopy = this.placedLetters.clone();
+        LinkedList<OwnedWord> placedWordsCopy = (LinkedList<OwnedWord>) this.placedWords.clone();
 
-
-        // down
-        if (pwa.startPosition.direction() == Direction.Down) {
-            // check if the word fit the grid
-            if (pwa.startPosition.row() + pwa.toPlace.length > this.size) {
-                throw new CustomError(
-                        LetterPlacedOutOfRange,
-                        "Index out of range",
-                        "Can not place a letter out of the grid");
-            }
-
-            int letter_index = 0;
-            for (int row = pwa.startPosition.row();
-                 row < pwa.startPosition.row() + pwa.toPlace.length;
-                 row++) {
-
-                // if there is already another letter and this letter isn't the same
-                if (this.placedLetters[row][pwa.startPosition.col()] != null &&
-                        this.placedLetters[row][pwa.startPosition.col()] != pwa.toPlace[letter_index]) {
-                    throw new CustomError(LetterCantBePlacedOnAnotherLetter,
-                            "LetterCantBePlacedOnAnOtherLetter",
-                            "LetterCantBePlacedOnAnOtherLetter");
+        try {
+            // Direction: down
+            if (pwa.startPosition.direction() == Direction.Down) {
+                // 1: check if the word fit the grid
+                if (pwa.startPosition.row() + pwa.toPlace.length > this.size) {
+                    throw new CustomError(
+                            LetterPlacedOutOfRange,
+                            "LetterPlacedOutOfRange",
+                            "Can not place a letter out of the grid");
                 }
 
-                this.placedLetters[row][pwa.startPosition.col()] = pwa.toPlace[letter_index];
-                letter_index++;
-
-
-            }
-            if (GameModel.dictionary.containsWord(new Word(pwa.toPlace))) {
-                System.out.println("Word in dictionary: ok");
-            }
+                // 2 Place letter
+                int letter_index = 0;
+                int row = pwa.startPosition.row();
+                while (letter_index < pwa.toPlace.length) {
+                    // if there is no other letter
+                    if (this.placedLetters[row][pwa.startPosition.col()] == null) {
+                        // place letter
+                        this.placedLetters[row][pwa.startPosition.col()] = pwa.toPlace[letter_index];
+                        letter_index++;
+                    }
+                    row++;
+                }
+                if (GameModel.dictionary.containsWord(new Word(pwa.toPlace))) {
+                    System.out.println("Word in dictionary: ok");
+                }
 
 //            this.placedWords.add(new OwnedWord(pwa.startPosition, ));
+            }
+        } finally {
+            this.placedLetters = placedLettersCopy;
         }
+
+
         return null;
     }
 }

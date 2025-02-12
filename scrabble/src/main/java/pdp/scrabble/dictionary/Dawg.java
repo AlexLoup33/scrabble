@@ -26,7 +26,6 @@ public class Dawg implements IDictionary {
         addWord_recur(root, wordStr, 0);
     }
 
-
     /**
      * add recursively each letter of a word
      * if a node for this letter doesn't exist, it will be created
@@ -124,7 +123,7 @@ public class Dawg implements IDictionary {
             List<List<Letter>> permutations = new ArrayList<>();
             generatePermutations(lc_list, new ArrayList<>(), permutations, word_size);
 
-//            System.err.println("Size " + word_size + " letter: " + permutations);
+            // System.err.println("Size " + word_size + " letter: " + permutations);
 
             // convert List<Character> to Word
             for (List<Letter> word : permutations) {
@@ -142,5 +141,10 @@ public class Dawg implements IDictionary {
             }
         }
         return result;
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("to implement");
     }
 }

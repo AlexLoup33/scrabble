@@ -67,8 +67,8 @@ public class Dictionary implements IDictionary {
             List<List<Letter>> permutations = new ArrayList<>();
             generatePermutations(lc_list, new ArrayList<>(), permutations, word_size);
 
-//            System.err.println("Size " + word_size + " letter: " + permutations);
-//            System.err.println("Nb for " + word_size + " is: " + permutations.size());
+            // System.err.println("Size " + word_size + " letter: " + permutations);
+            // System.err.println("Nb for " + word_size + " is: " + permutations.size());
 
             // convert List<Character> to Word
             for (List<Letter> word : permutations) {
@@ -114,7 +114,7 @@ public class Dictionary implements IDictionary {
         StringBuilder builder = new StringBuilder();
         builder.append(this.getClass().getSimpleName());
         builder.append('(');
-        for (Word w : this.words) {
+        for (Word w : this.words.stream().sorted().toList()) {
             builder.append(w);
             builder.append(',');
         }

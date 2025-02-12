@@ -92,9 +92,8 @@ public class Grid {
             }
         } finally {
             this.placedLetters = placedLettersCopy;
+            this.placedWords = placedWordsCopy;
         }
-
-
         return null;
     }
 }

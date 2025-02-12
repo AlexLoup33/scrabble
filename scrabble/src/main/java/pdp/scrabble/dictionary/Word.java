@@ -55,8 +55,7 @@ public class Word implements Comparable<Word> {
     public int hashCode() {
         return Objects.hashCode(this.word);
     }
-
-
+    
     @Override
     public int compareTo(Word o) {
         return this.word.compareTo(o.word);

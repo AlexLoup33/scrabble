@@ -62,7 +62,6 @@ public class Grid {
 
 
 //            this.placedWords.add(new OwnedWord(pwa.startPosition, ));
-
         }
 
 

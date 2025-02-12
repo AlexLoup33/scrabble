@@ -1,6 +1,7 @@
 package pdp.scrabble.dictionary;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class Dictionary implements IDictionary {
@@ -120,5 +121,14 @@ public class Dictionary implements IDictionary {
         }
         builder.append(')');
         return builder.toString();
+    }
+
+    /*
+     * get the path on the dictionary and complete the new LettersCounter with the
+     * starting letters for the pile.
+     */
+    public Path getDictionaryPath(Path file_name) {
+
+        return file_name;
     }
 }

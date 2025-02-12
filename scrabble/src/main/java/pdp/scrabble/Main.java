@@ -21,6 +21,7 @@ public class Main {
         Grid grid = new Grid(15);
         grid.printGrid();
 
+
 //        Player p1 = new Player("franck");
 //        Player p2 = new Player("franck2");
 

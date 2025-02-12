@@ -29,11 +29,10 @@ public class LettersCounter {
         }
     }
 
-    public LettersCounter(Map<Character, Integer> letters) {
+    public LettersCounter(Map<Letter, Integer> letters) {
         this();
-        for (Character chr : letters.keySet()) {
-            Letter letter = new Letter(chr);
-            this.addLetter(letter, letters.get(chr));
+        for (Letter letter : letters.keySet()) {
+            this.addLetter(letter, letters.get(letter));
         }
     }
 

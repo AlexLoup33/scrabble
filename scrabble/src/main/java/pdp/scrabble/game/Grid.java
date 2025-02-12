@@ -63,16 +63,7 @@ public class Grid {
                 }
 
 
-                // find start
-                int start = pwa.startPosition.row();
-                while (this.placedLetters[start][pwa.startPosition.col()] != null
-                        && pwa.startPosition.row() != 0
-                        && start > 0) {
-                    start--;
-                }
-                if (start > 0) {
-                    start++;
-                }
+                int start = findStartXY(pwa);
 
                 StringBuilder sb = new StringBuilder();
                 while (start < this.size && this.placedLetters[start][pwa.startPosition.col()] != null) {
@@ -80,7 +71,7 @@ public class Grid {
                     start++;
                 }
 
-//                System.out.println("DEBUG vertical formed word: " + sb.toString());
+                System.out.println("DEBUG vertical formed word: " + sb.toString());
 //                System.out.println("DEBUG contains word: " +GameModel.dictionary.containsWord(new Word(sb.toString())));
                 if (GameModel.dictionary.containsWord(new Word(sb.toString()))) {
                     this.placedWords.add(new OwnedWord(pwa.startPosition,
@@ -95,5 +86,22 @@ public class Grid {
             this.placedWords = placedWordsCopy;
         }
         return null;
+    }
+
+    private int findStartXY(PlaceWordAction pwa) {
+        // find start
+        int start = pwa.startPosition.row();
+        if (pwa.startPosition.direction() == Direction.Down) {
+            while (this.placedLetters[start][pwa.startPosition.col()] != null
+                    && pwa.startPosition.row() != 0
+                    && start > 0) {
+                start--;
+            }
+            if (start > 0) {
+                start++;
+            }
+            return start;
+        }
+        return start;
     }
 }

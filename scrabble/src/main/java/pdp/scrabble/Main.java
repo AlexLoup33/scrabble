@@ -46,18 +46,18 @@ public class Main {
                 l,
                 new GridWordPos(0, 3, Direction.Down))
         );
-//        grid.placeLetters(new PlaceWordAction(
-//                p1,
-//                0,
-//                l2,
-//                new GridWordPos(3, 3, Direction.Down))
-//        );
-//        grid.placeLetters(new PlaceWordAction(
-//                p1,
-//                0,
-//                l3,
-//                new GridWordPos(5, 3, Direction.Down))
-//        );
+        grid.placeLetters(new PlaceWordAction(
+                p1,
+                0,
+                l2,
+                new GridWordPos(3, 3, Direction.Down))
+        );
+        grid.placeLetters(new PlaceWordAction(
+                p1,
+                0,
+                l3,
+                new GridWordPos(10, 3, Direction.Down))
+        );
         grid.printGrid();
 
 

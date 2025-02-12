@@ -4,6 +4,7 @@ import pdp.scrabble.dictionary.Letter;
 
 import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Grid {
     public final int size;
@@ -27,6 +28,11 @@ public class Grid {
             }
             System.out.println();
         }
+    }
+
+    public List<OwnedWord> placeLetters(List<Letter> letter, GridWordPos gwp) {
+        // todo
+        return null;
     }
 
 

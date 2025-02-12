@@ -9,7 +9,7 @@ public class Grid {
     public final int size;
     private final Letter[][] placedLetters;
     private final Hashtable<GridPos, ScoreMultiplier> multiplicators = new Hashtable<>();
-    private LinkedList<OwnedWord> ownedWords = new LinkedList<>();
+    private LinkedList<OwnedWord> placedWords = new LinkedList<>();
 
     public Grid(int size) {
         this.size = size;

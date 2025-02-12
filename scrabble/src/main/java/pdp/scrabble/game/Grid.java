@@ -11,8 +11,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
-import static pdp.scrabble.errorsHandling.ErrorType.LetterCantBePlacedOnAnotherLetter;
-import static pdp.scrabble.errorsHandling.ErrorType.LetterPlacedOutOfRange;
+import static pdp.scrabble.errorsHandling.ErrorType.*;
 
 public class Grid {
     public final int size;
@@ -66,9 +65,13 @@ public class Grid {
 
                 // find start
                 int start = pwa.startPosition.row();
-                while (this.placedLetters[start][pwa.startPosition.col()] != null &&
-                        pwa.startPosition.row() != 0 && start > 0) {
+                while (this.placedLetters[start][pwa.startPosition.col()] != null
+                        && pwa.startPosition.row() != 0
+                        && start > 0) {
                     start--;
+                }
+                if (start > 0) {
+                    start++;
                 }
 
                 StringBuilder sb = new StringBuilder();
@@ -76,13 +79,16 @@ public class Grid {
                     sb.append(this.placedLetters[start][pwa.startPosition.col()]);
                     start++;
                 }
-                System.out.println(sb.toString());
 
-//                if (GameModel.dictionary.containsWord(new Word(pwa.toPlace))) {
-//                    System.out.println("Word in dictionary: ok");
-//                }
-
-//            this.placedWords.add(new OwnedWord(pwa.startPosition, ));
+//                System.out.println("DEBUG vertical formed word: " + sb.toString());
+//                System.out.println("DEBUG contains word: " +GameModel.dictionary.containsWord(new Word(sb.toString())));
+                if (GameModel.dictionary.containsWord(new Word(sb.toString()))) {
+                    this.placedWords.add(new OwnedWord(pwa.startPosition,
+                            new Word(sb.toString()),
+                            pwa.player));
+                } else {
+                    throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
+                }
             }
         } finally {
             this.placedLetters = placedLettersCopy;

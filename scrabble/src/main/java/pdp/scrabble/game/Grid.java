@@ -48,19 +48,11 @@ public class Grid {
         try {
             // Direction: down
             if (pwa.startPosition.direction() == Direction.Down) {
-                // 1: check if the word fit the grid
-                if (pwa.startPosition.row() + pwa.toPlace.length > this.size) {
-                    throw new CustomError(
-                            LetterPlacedOutOfRange,
-                            "LetterPlacedOutOfRange",
-                            "Can not place a letter out of the grid");
-                }
-
-                // 2 Place letter
+                // 1 Place letter
                 int letter_index = 0;
                 int row = pwa.startPosition.row();
-                int timeout = 0;
-                while (letter_index < pwa.toPlace.length && timeout < 50) {
+                int col = pwa.startPosition.col();
+                while (letter_index < pwa.toPlace.length && row < this.size) {
                     // if there is no other letter
                     if (this.placedLetters[row][pwa.startPosition.col()] == null) {
                         // place letter
@@ -68,11 +60,27 @@ public class Grid {
                         letter_index++;
                     }
                     row++;
-                    timeout++;
+                    // col++;
                 }
-                if (GameModel.dictionary.containsWord(new Word(pwa.toPlace))) {
-                    System.out.println("Word in dictionary: ok");
+
+
+                // find start
+                int start = pwa.startPosition.row();
+                while (this.placedLetters[start][pwa.startPosition.col()] != null && start > 0) {
+                    start--;
                 }
+
+                StringBuilder sb = new StringBuilder();
+                start++;
+                while (start < this.size && this.placedLetters[start][pwa.startPosition.col()] != null) {
+                    sb.append(this.placedLetters[start][pwa.startPosition.col()]);
+                    start++;
+                }
+                System.out.println(sb.toString());
+
+//                if (GameModel.dictionary.containsWord(new Word(pwa.toPlace))) {
+//                    System.out.println("Word in dictionary: ok");
+//                }
 
 //            this.placedWords.add(new OwnedWord(pwa.startPosition, ));
             }

@@ -31,20 +31,32 @@ public class Main {
         l[2] = new Letter('R');
 
         Letter[] l2 = new Letter[2];
-        l2[0] = new Letter('Z');
-        l2[1] = new Letter('Z');
+        l2[0] = new Letter('R');
+        l2[1] = new Letter('E');
+
+        Letter[] l3 = new Letter[4];
+        l3[0] = new Letter('M');
+        l3[1] = new Letter('E');
+        l3[2] = new Letter('N');
+        l3[3] = new Letter('T');
 
         grid.placeLetters(new PlaceWordAction(
                 p1,
                 0,
                 l,
-                new GridWordPos(5, 3, Direction.Down))
+                new GridWordPos(2, 3, Direction.Down))
         );
         grid.placeLetters(new PlaceWordAction(
                 p1,
                 0,
                 l2,
-                new GridWordPos(4, 3, Direction.Down))
+                new GridWordPos(5, 3, Direction.Down))
+        );
+        grid.placeLetters(new PlaceWordAction(
+                p1,
+                0,
+                l3,
+                new GridWordPos(7, 3, Direction.Down))
         );
         grid.printGrid();
 

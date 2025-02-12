@@ -29,11 +29,21 @@ public class Main {
         l[1] = new Letter('A');
         l[2] = new Letter('R');
 
+        Letter[] l2 = new Letter[2];
+        l2[0] = new Letter('R');
+        l2[1] = new Letter('E');
+
         grid.placeLetters(new PlaceWordAction(
                 p1,
                 0,
                 l,
-                new GridWordPos(13, 2, Direction.Down))
+                new GridWordPos(5, 3, Direction.Down))
+        );
+        grid.placeLetters(new PlaceWordAction(
+                p1,
+                0,
+                l2,
+                new GridWordPos(8, 3, Direction.Down))
         );
         grid.printGrid();
 

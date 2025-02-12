@@ -9,6 +9,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
+import static pdp.scrabble.errorsHandling.ErrorType.LetterCantBePlacedOnAnOtherLetter;
 import static pdp.scrabble.errorsHandling.ErrorType.LetterPlacedOutOfRange;
 
 public class Grid {
@@ -54,11 +55,18 @@ public class Grid {
             for (int row = pwa.startPosition.row();
                  row < pwa.startPosition.row() + pwa.toPlace.length;
                  row++) {
+
+                if (this.placedLetters[row][pwa.startPosition.col()] != null &&
+                        this.placedLetters[row][pwa.startPosition.col()] != pwa.toPlace[letter_index]) {
+                    // if there is already another letter and this letter isn't the same
+                    throw new CustomError(LetterCantBePlacedOnAnOtherLetter,
+                            "LetterCantBePlacedOnAnOtherLetter",
+                            "LetterCantBePlacedOnAnOtherLetter");
+                }
+
                 this.placedLetters[row][pwa.startPosition.col()] = pwa.toPlace[letter_index];
                 letter_index++;
             }
-
-
 
 
 //            this.placedWords.add(new OwnedWord(pwa.startPosition, ));

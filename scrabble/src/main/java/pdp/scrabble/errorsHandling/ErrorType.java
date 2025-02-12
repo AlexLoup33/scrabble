@@ -13,7 +13,8 @@ public enum ErrorType {
     MalformedDictionaryError(true),
     InvalidGameStatusError(true),
     InvalidLetterCountError(true),
-    LetterPlacedOutOfRange(false);
+    LetterPlacedOutOfRange(false),
+    LetterCantBePlacedOnAnOtherLetter(false);
 
     public final boolean isFatal;
 

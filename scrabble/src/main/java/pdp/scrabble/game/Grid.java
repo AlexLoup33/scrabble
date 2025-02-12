@@ -2,14 +2,13 @@ package pdp.scrabble.game;
 
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.errorsHandling.CustomError;
-import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.actions.PlaceWordAction;
 
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
-import static pdp.scrabble.errorsHandling.ErrorType.LetterCantBePlacedOnAnOtherLetter;
+import static pdp.scrabble.errorsHandling.ErrorType.LetterCantBePlacedOnAnotherLetter;
 import static pdp.scrabble.errorsHandling.ErrorType.LetterPlacedOutOfRange;
 
 public class Grid {
@@ -59,7 +58,7 @@ public class Grid {
                 if (this.placedLetters[row][pwa.startPosition.col()] != null &&
                         this.placedLetters[row][pwa.startPosition.col()] != pwa.toPlace[letter_index]) {
                     // if there is already another letter and this letter isn't the same
-                    throw new CustomError(LetterCantBePlacedOnAnOtherLetter,
+                    throw new CustomError(LetterCantBePlacedOnAnotherLetter,
                             "LetterCantBePlacedOnAnOtherLetter",
                             "LetterCantBePlacedOnAnOtherLetter");
                 }
@@ -71,10 +70,6 @@ public class Grid {
 
 //            this.placedWords.add(new OwnedWord(pwa.startPosition, ));
         }
-
-
         return null;
     }
-
-
 }

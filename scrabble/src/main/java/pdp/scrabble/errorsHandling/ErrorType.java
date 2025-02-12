@@ -14,7 +14,7 @@ public enum ErrorType {
     InvalidGameStatusError(true),
     InvalidLetterCountError(true),
     LetterPlacedOutOfRange(false),
-    LetterCantBePlacedOnAnOtherLetter(false);
+    LetterCantBePlacedOnAnotherLetter(false);
 
     public final boolean isFatal;
 

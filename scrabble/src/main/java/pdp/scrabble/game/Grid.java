@@ -19,7 +19,11 @@ public class Grid {
     public void printGrid() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                System.out.print(this.placedLetters[i][j] + " ");
+                if (this.placedLetters[i][j] == null) {
+                    System.out.print("❎ ");
+                } else {
+                    System.out.print(this.placedLetters[i][j] + " ");
+                }
             }
             System.out.println();
         }

@@ -80,6 +80,41 @@ public class Grid {
                 } else {
                     throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
                 }
+            } else {
+                // 1 Place letter
+                int letter_index = 0;
+                int row = pwa.startPosition.row();
+                int col = pwa.startPosition.col();
+                while (letter_index < pwa.toPlace.length && col < this.size) {
+                    // if there is no other letter
+                    if (this.placedLetters[pwa.startPosition.row()][col] == null) {
+                        // place letter
+                        this.placedLetters[pwa.startPosition.row()][col] = pwa.toPlace[letter_index];
+                        letter_index++;
+                    }
+//                    row++;
+                    col++;
+                }
+
+
+                int start = findStartXY(pwa, Direction.Right);
+
+                StringBuilder sb = new StringBuilder();
+                while (start < this.size
+                        && this.placedLetters[pwa.startPosition.row()][start] != null) {
+                    sb.append(this.placedLetters[pwa.startPosition.row()][start]);
+                    start++;
+                }
+
+                System.out.println("DEBUG vertical formed word: " + sb.toString());
+//                System.out.println("DEBUG contains word: " +GameModel.dictionary.containsWord(new Word(sb.toString())));
+                if (GameModel.dictionary.containsWord(new Word(sb.toString()))) {
+                    this.placedWords.add(new OwnedWord(pwa.startPosition,
+                            new Word(sb.toString()),
+                            pwa.player));
+                } else {
+                    throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
+                }
             }
         } finally {
             this.placedLetters = placedLettersCopy;
@@ -101,7 +136,17 @@ public class Grid {
                 start++;
             }
             return start;
+        } else { // direction == Direction.Right
+            while (this.placedLetters[pwa.startPosition.row()][start] != null
+                    && pwa.startPosition.col() != 0
+                    && start > 0) {
+                start--;
+            }
+            if (start > 0) {
+                start++;
+            }
+            return start;
         }
-        return start;
+
     }
 }

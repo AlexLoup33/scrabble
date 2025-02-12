@@ -40,6 +40,10 @@ public class Main {
         l3[2] = new Letter('N');
         l3[3] = new Letter('T');
 
+        Letter[] l4 = new Letter[2];
+        l4[0] = new Letter('A');
+        l4[1] = new Letter('R');
+
         grid.placeLetters(new PlaceWordAction(
                 p1,
                 0,
@@ -56,7 +60,13 @@ public class Main {
                 p1,
                 0,
                 l3,
-                new GridWordPos(10, 3, Direction.Down))
+                new GridWordPos(5, 3, Direction.Down))
+        );
+        grid.placeLetters(new PlaceWordAction(
+                p1,
+                0,
+                l4,
+                new GridWordPos(0, 4, Direction.Right))
         );
         grid.printGrid();
 

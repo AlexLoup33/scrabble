@@ -3,6 +3,7 @@ package pdp.scrabble.dictionary;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.Map.Entry;
 
 public class Dictionary implements IDictionary {
 
@@ -125,10 +126,78 @@ public class Dictionary implements IDictionary {
 
     /*
      * get the path on the dictionary and complete the new LettersCounter with the
-     * starting letters for the pile.
+     * language
+     * that we want.
+     * 
+     * @param file_name
+     * 
+     * @return LettersCounter
      */
-    public Path getDictionaryPath(Path file_name) {
+    public LettersCounter getDictionaryPath(Path file_name) {
 
-        return file_name;
+        /* LettersCounter letters = new LettersCounter(); */
+        Path french = java.nio.file.Paths.get("dictionary/fr.txt");
+        Path english = java.nio.file.Paths.get("dictionary/en.txt");
+        Map<Letter, Integer> letterCounts = new HashMap<>();
+
+        if (file_name.equals(french)) {
+            letterCounts.put(new Letter('A'), 9);
+            letterCounts.put(new Letter('B'), 2);
+            letterCounts.put(new Letter('C'), 2);
+            letterCounts.put(new Letter('D'), 3);
+            letterCounts.put(new Letter('E'), 15);
+            letterCounts.put(new Letter('F'), 2);
+            letterCounts.put(new Letter('G'), 2);
+            letterCounts.put(new Letter('H'), 2);
+            letterCounts.put(new Letter('I'), 8);
+            letterCounts.put(new Letter('J'), 1);
+            letterCounts.put(new Letter('K'), 1);
+            letterCounts.put(new Letter('L'), 5);
+            letterCounts.put(new Letter('M'), 3);
+            letterCounts.put(new Letter('N'), 6);
+            letterCounts.put(new Letter('O'), 6);
+            letterCounts.put(new Letter('P'), 2);
+            letterCounts.put(new Letter('Q'), 1);
+            letterCounts.put(new Letter('R'), 6);
+            letterCounts.put(new Letter('S'), 6);
+            letterCounts.put(new Letter('T'), 6);
+            letterCounts.put(new Letter('U'), 6);
+            letterCounts.put(new Letter('V'), 2);
+            letterCounts.put(new Letter('W'), 1);
+            letterCounts.put(new Letter('X'), 1);
+            letterCounts.put(new Letter('Y'), 1);
+            letterCounts.put(new Letter('Z'), 1);
+
+        } else {
+            letterCounts.put(new Letter('A'), 9);
+            letterCounts.put(new Letter('B'), 2);
+            letterCounts.put(new Letter('C'), 2);
+            letterCounts.put(new Letter('D'), 4);
+            letterCounts.put(new Letter('E'), 12);
+            letterCounts.put(new Letter('F'), 2);
+            letterCounts.put(new Letter('G'), 3);
+            letterCounts.put(new Letter('H'), 2);
+            letterCounts.put(new Letter('I'), 9);
+            letterCounts.put(new Letter('J'), 1);
+            letterCounts.put(new Letter('K'), 1);
+            letterCounts.put(new Letter('L'), 4);
+            letterCounts.put(new Letter('M'), 2);
+            letterCounts.put(new Letter('N'), 6);
+            letterCounts.put(new Letter('O'), 8);
+            letterCounts.put(new Letter('P'), 2);
+            letterCounts.put(new Letter('Q'), 1);
+            letterCounts.put(new Letter('R'), 6);
+            letterCounts.put(new Letter('S'), 4);
+            letterCounts.put(new Letter('T'), 6);
+            letterCounts.put(new Letter('U'), 4);
+            letterCounts.put(new Letter('V'), 2);
+            letterCounts.put(new Letter('W'), 2);
+            letterCounts.put(new Letter('X'), 1);
+            letterCounts.put(new Letter('Y'), 2);
+            letterCounts.put(new Letter('Z'), 1);
+        }
+        LettersCounter letters = new LettersCounter(letterCounts);
+
+        return letters;
     }
 }

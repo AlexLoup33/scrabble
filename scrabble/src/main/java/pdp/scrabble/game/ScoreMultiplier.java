@@ -14,12 +14,11 @@ public enum ScoreMultiplier {
         this.letterMultiplier = letterMultiplier;
     }
 
-    public int getMulti() {
-        return multi;
+    public int getMultiplier() {
+        return this.multi;
     }
 
     public boolean isLetterMultiplier() {
-        return letterMultiplier;
+        return this.letterMultiplier;
     }
 }
-

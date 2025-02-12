@@ -21,6 +21,7 @@ public class Player {
         }
         this.id = max_id + 1;
         id_set.add(this.id);
+
         this.name = name;
         this.score = 0;
         this.bag = new LettersCounter();

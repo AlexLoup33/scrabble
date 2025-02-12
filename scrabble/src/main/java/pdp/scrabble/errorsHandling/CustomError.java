@@ -1,6 +1,6 @@
 package pdp.scrabble.errorsHandling;
 
-public final class CustomError extends Exception {
+public final class CustomError extends Error {
   public final ErrorType type; /* Type of error that happends */
   public final String message; /* Short explaination of what happend, for the user */
   public final String details; /*

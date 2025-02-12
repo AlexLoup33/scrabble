@@ -11,7 +11,8 @@ public enum ErrorType {
   UncompletConfigexception(true),
   InvalideLetterException(true),
   MalformedDictionaryError(true),
-  InvalidGameStatusError(true);
+  InvalidGameStatusError(true),
+  InvalidLetterCountError(true);
 
   public final boolean isFatal;
 

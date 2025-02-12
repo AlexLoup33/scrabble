@@ -33,4 +33,12 @@ public class Letter {
     public String toString() {
         return String.valueOf(this.chr);
     }
+
+    public static String concatenate(Letter[] letters) {
+        StringBuilder sb = new StringBuilder();
+        for (Letter letter : letters) {
+            sb.append(letter);
+        }
+        return sb.toString();
+    }
 }

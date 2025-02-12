@@ -1,9 +1,12 @@
 package pdp.scrabble.game;
 
+import pdp.scrabble.dictionary.IDictionary;
 import pdp.scrabble.dictionary.Letter;
+import pdp.scrabble.dictionary.Word;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.actions.PlaceWordAction;
 
+import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +45,9 @@ public class Grid {
         Letter[][] gridCopy = this.placedLetters.clone();
 
 
+        // down
         if (pwa.startPosition.direction() == Direction.Down) {
+            // check if the word fit the grid
             if (pwa.startPosition.row() + pwa.toPlace.length > this.size) {
                 throw new CustomError(
                         LetterPlacedOutOfRange,
@@ -55,9 +60,9 @@ public class Grid {
                  row < pwa.startPosition.row() + pwa.toPlace.length;
                  row++) {
 
+                // if there is already another letter and this letter isn't the same
                 if (this.placedLetters[row][pwa.startPosition.col()] != null &&
                         this.placedLetters[row][pwa.startPosition.col()] != pwa.toPlace[letter_index]) {
-                    // if there is already another letter and this letter isn't the same
                     throw new CustomError(LetterCantBePlacedOnAnotherLetter,
                             "LetterCantBePlacedOnAnOtherLetter",
                             "LetterCantBePlacedOnAnOtherLetter");
@@ -65,8 +70,12 @@ public class Grid {
 
                 this.placedLetters[row][pwa.startPosition.col()] = pwa.toPlace[letter_index];
                 letter_index++;
-            }
 
+
+            }
+            if (GameModel.dictionary.containsWord(new Word(pwa.toPlace))) {
+                System.out.println("Word in dictionary: ok");
+            }
 
 //            this.placedWords.add(new OwnedWord(pwa.startPosition, ));
         }

@@ -24,6 +24,10 @@ public class Word implements Comparable<Word> {
         this.word = baseWord;
     }
 
+    public Word(Letter[] letters) {
+        this(Letter.concatenate(letters));
+    }
+
     /**
      * transform the characters of the given text to legals letters
      */
@@ -55,7 +59,7 @@ public class Word implements Comparable<Word> {
     public int hashCode() {
         return Objects.hashCode(this.word);
     }
-    
+
     @Override
     public int compareTo(Word o) {
         return this.word.compareTo(o.word);

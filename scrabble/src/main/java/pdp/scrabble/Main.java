@@ -18,7 +18,8 @@ public class Main {
         System.out.println("--- Start ---");
 
 //        Configuration config = new Configuration();
-//        GameModel gm = new GameModel();
+        GameModel gm = new GameModel();
+        GameModel.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
 
         Player p1 = new Player("franck");
         Player p2 = new Player("franck2");
@@ -39,12 +40,12 @@ public class Main {
                 l,
                 new GridWordPos(5, 3, Direction.Down))
         );
-        grid.placeLetters(new PlaceWordAction(
-                p1,
-                0,
-                l2,
-                new GridWordPos(8, 3, Direction.Down))
-        );
+//        grid.placeLetters(new PlaceWordAction(
+//                p1,
+//                0,
+//                l2,
+//                new GridWordPos(8, 3, Direction.Down))
+//        );
         grid.printGrid();
 
 

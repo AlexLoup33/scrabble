@@ -1,12 +1,10 @@
 package pdp.scrabble.game;
 
-import pdp.scrabble.dictionary.IDictionary;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.Word;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.actions.PlaceWordAction;
 
-import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,7 +59,7 @@ public class Grid {
                 }
 
 
-                int start = findStartXY(pwa, Direction.Down);
+                int start = findStart(pwa, Direction.Down);
 
                 StringBuilder sb = new StringBuilder();
                 while (start < this.size && this.placedLetters[start][pwa.startPosition.col()] != null) {
@@ -93,7 +91,7 @@ public class Grid {
                 }
 
 
-                int start = findStartXY(pwa, Direction.Right);
+                int start = findStart(pwa, Direction.Right);
 
                 StringBuilder sb = new StringBuilder();
                 while (start < this.size
@@ -103,14 +101,14 @@ public class Grid {
                 }
 
                 System.out.println("DEBUG vertical formed word: " + sb.toString());
-//                System.out.println("DEBUG contains word: " +GameModel.dictionary.containsWord(new Word(sb.toString())));
-//                if (GameModel.dictionary.containsWord(new Word(sb.toString()))) {
-//                    this.placedWords.add(new OwnedWord(pwa.startPosition,
-//                            new Word(sb.toString()),
-//                            pwa.player));
-//                } else {
-//                    throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
-//                }
+                System.out.println("DEBUG contains word: " +GameModel.dictionary.containsWord(new Word(sb.toString())));
+                if (GameModel.dictionary.containsWord(new Word(sb.toString()))) {
+                    this.placedWords.add(new OwnedWord(pwa.startPosition,
+                            new Word(sb.toString()),
+                            pwa.player));
+                } else {
+                    throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
+                }
             }
         } finally {
             this.placedLetters = placedLettersCopy;
@@ -119,7 +117,7 @@ public class Grid {
         return null;
     }
 
-    private int findStartXY(PlaceWordAction pwa, Direction direction) {
+    private int findStart(PlaceWordAction pwa, Direction direction) {
         // find start
         int start = 0;
         if (direction == Direction.Down) {

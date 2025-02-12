@@ -40,33 +40,34 @@ public class Main {
         l3[2] = new Letter('N');
         l3[3] = new Letter('T');
 
-        Letter[] l4 = new Letter[2];
+        Letter[] l4 = new Letter[3];
         l4[0] = new Letter('A');
         l4[1] = new Letter('R');
+        l4[2] = new Letter('C');
 
         grid.placeLetters(new PlaceWordAction(
                 p1,
                 0,
                 l,
-                new GridWordPos(0, 3, Direction.Down))
+                new GridWordPos(0, 5, Direction.Down))
         );
         grid.placeLetters(new PlaceWordAction(
                 p1,
                 0,
                 l2,
-                new GridWordPos(3, 3, Direction.Down))
+                new GridWordPos(3, 5, Direction.Down))
         );
         grid.placeLetters(new PlaceWordAction(
                 p1,
                 0,
                 l3,
-                new GridWordPos(5, 3, Direction.Down))
+                new GridWordPos(5, 5, Direction.Down))
         );
         grid.placeLetters(new PlaceWordAction(
                 p1,
                 0,
                 l4,
-                new GridWordPos(0, 4, Direction.Right))
+                new GridWordPos(0, 0, Direction.Right))
         );
         grid.printGrid();
 

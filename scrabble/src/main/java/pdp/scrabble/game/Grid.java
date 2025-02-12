@@ -50,7 +50,6 @@ public class Grid {
                 // 1 Place letter
                 int letter_index = 0;
                 int row = pwa.startPosition.row();
-                int col = pwa.startPosition.col();
                 while (letter_index < pwa.toPlace.length && row < this.size) {
                     // if there is no other letter
                     if (this.placedLetters[row][pwa.startPosition.col()] == null) {
@@ -59,7 +58,6 @@ public class Grid {
                         letter_index++;
                     }
                     row++;
-                    // col++;
                 }
 
 
@@ -83,7 +81,6 @@ public class Grid {
             } else {
                 // 1 Place letter
                 int letter_index = 0;
-                int row = pwa.startPosition.row();
                 int col = pwa.startPosition.col();
                 while (letter_index < pwa.toPlace.length && col < this.size) {
                     // if there is no other letter
@@ -92,7 +89,6 @@ public class Grid {
                         this.placedLetters[pwa.startPosition.row()][col] = pwa.toPlace[letter_index];
                         letter_index++;
                     }
-//                    row++;
                     col++;
                 }
 
@@ -108,13 +104,13 @@ public class Grid {
 
                 System.out.println("DEBUG vertical formed word: " + sb.toString());
 //                System.out.println("DEBUG contains word: " +GameModel.dictionary.containsWord(new Word(sb.toString())));
-                if (GameModel.dictionary.containsWord(new Word(sb.toString()))) {
-                    this.placedWords.add(new OwnedWord(pwa.startPosition,
-                            new Word(sb.toString()),
-                            pwa.player));
-                } else {
-                    throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
-                }
+//                if (GameModel.dictionary.containsWord(new Word(sb.toString()))) {
+//                    this.placedWords.add(new OwnedWord(pwa.startPosition,
+//                            new Word(sb.toString()),
+//                            pwa.player));
+//                } else {
+//                    throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
+//                }
             }
         } finally {
             this.placedLetters = placedLettersCopy;
@@ -125,8 +121,9 @@ public class Grid {
 
     private int findStartXY(PlaceWordAction pwa, Direction direction) {
         // find start
-        int start = pwa.startPosition.row();
+        int start = 0;
         if (direction == Direction.Down) {
+            start = pwa.startPosition.row();
             while (this.placedLetters[start][pwa.startPosition.col()] != null
                     && pwa.startPosition.row() != 0
                     && start > 0) {
@@ -137,6 +134,7 @@ public class Grid {
             }
             return start;
         } else { // direction == Direction.Right
+            start = pwa.startPosition.col();
             while (this.placedLetters[pwa.startPosition.row()][start] != null
                     && pwa.startPosition.col() != 0
                     && start > 0) {

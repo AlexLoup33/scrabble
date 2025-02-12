@@ -58,6 +58,11 @@ public class Grid {
                 letter_index++;
             }
 
+
+
+
+//            this.placedWords.add(new OwnedWord(pwa.startPosition, ));
+
         }
 
 

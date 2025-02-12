@@ -124,7 +124,7 @@ public class Dictionary implements IDictionary {
         return builder.toString();
     }
 
-    /*
+    /**
      * get the path on the dictionary and complete the new LettersCounter with the
      * language
      * that we want.

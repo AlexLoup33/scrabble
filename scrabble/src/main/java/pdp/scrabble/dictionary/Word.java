@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  * a class that hold a normalized word with letters that are compatible with the scrabble
  */
-public class Word {
+public class Word implements Comparable<Word> {
     private final Letter[] letters;
     private final String word;
 
@@ -54,5 +54,11 @@ public class Word {
     @Override
     public int hashCode() {
         return Objects.hashCode(this.word);
+    }
+
+
+    @Override
+    public int compareTo(Word o) {
+        return this.word.compareTo(o.word);
     }
 }

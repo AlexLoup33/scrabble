@@ -66,12 +66,12 @@ public class Grid {
 
                 // find start
                 int start = pwa.startPosition.row();
-                while (this.placedLetters[start][pwa.startPosition.col()] != null && start > 0) {
+                while (this.placedLetters[start][pwa.startPosition.col()] != null &&
+                        pwa.startPosition.row() != 0 && start > 0) {
                     start--;
                 }
 
                 StringBuilder sb = new StringBuilder();
-                start++;
                 while (start < this.size && this.placedLetters[start][pwa.startPosition.col()] != null) {
                     sb.append(this.placedLetters[start][pwa.startPosition.col()]);
                     start++;

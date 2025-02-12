@@ -44,19 +44,19 @@ public class Main {
                 p1,
                 0,
                 l,
-                new GridWordPos(2, 3, Direction.Down))
+                new GridWordPos(0, 3, Direction.Down))
         );
         grid.placeLetters(new PlaceWordAction(
                 p1,
                 0,
                 l2,
-                new GridWordPos(5, 3, Direction.Down))
+                new GridWordPos(3, 3, Direction.Down))
         );
         grid.placeLetters(new PlaceWordAction(
                 p1,
                 0,
                 l3,
-                new GridWordPos(7, 3, Direction.Down))
+                new GridWordPos(5, 3, Direction.Down))
         );
         grid.printGrid();
 

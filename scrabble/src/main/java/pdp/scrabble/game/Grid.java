@@ -44,7 +44,8 @@ public class Grid {
 
         if (pwa.startPosition.direction() == Direction.Down) {
             if (pwa.startPosition.row() + pwa.toPlace.length > this.size) {
-                throw new CustomError(LetterPlacedOutOfRange,
+                throw new CustomError(
+                        LetterPlacedOutOfRange,
                         "Index out of range",
                         "Can not place a letter out of the grid");
             }

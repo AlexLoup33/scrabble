@@ -59,7 +59,8 @@ public class Grid {
                 // 2 Place letter
                 int letter_index = 0;
                 int row = pwa.startPosition.row();
-                while (letter_index < pwa.toPlace.length) {
+                int timeout = 0;
+                while (letter_index < pwa.toPlace.length && timeout < 50) {
                     // if there is no other letter
                     if (this.placedLetters[row][pwa.startPosition.col()] == null) {
                         // place letter
@@ -67,6 +68,7 @@ public class Grid {
                         letter_index++;
                     }
                     row++;
+                    timeout++;
                 }
                 if (GameModel.dictionary.containsWord(new Word(pwa.toPlace))) {
                     System.out.println("Word in dictionary: ok");

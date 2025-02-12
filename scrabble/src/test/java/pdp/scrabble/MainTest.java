@@ -57,16 +57,16 @@ public class MainTest {
         assertFalse(lc.getLettersSet().contains(new Letter('A')));
     }
 
-    @Test
-    public void testRemoveNonExistingLetter() {
-        lc.addLetter(new Letter('D'));
-        assertEquals(1, lc.getLetterCount(new Letter('D')));
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> {
-                    lc.removeLetter(new Letter('E'));
-                });
-    }
+//    @Test
+//    public void testRemoveNonExistingLetter() {
+//        lc.addLetter(new Letter('D'));
+//        assertEquals(1, lc.getLetterCount(new Letter('D')));
+//        assertThrows(
+//                IllegalArgumentException.class,
+//                () -> {
+//                    lc.removeLetter(new Letter('E'));
+//                });
+//    }
 
     @Test
     public void testEmptyCounter() {

@@ -23,7 +23,5 @@ public class AI extends Player {
         String lastName = lastNames[random.nextInt(lastNames.length)];
 
         this.name = firstName + " " + lastName;
-
-
     }
 }

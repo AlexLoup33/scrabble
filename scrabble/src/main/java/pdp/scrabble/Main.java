@@ -28,65 +28,36 @@ public class Main {
         Player p2 = new Player("franck2");
 
         Grid grid = new Grid(15);
-        Letter[] l = new Letter[3];
-        l[0] = new Letter('C');
-        l[1] = new Letter('A');
-        l[2] = new Letter('R');
+        Letter[] l1 = new Letter[5];
+        l1[0] = new Letter('L');
+        l1[1] = new Letter('O');
+        l1[2] = new Letter('U');
+        l1[3] = new Letter('E');
+        l1[4] = new Letter('E');
 
-        Letter[] l2 = new Letter[2];
-        l2[0] = new Letter('R');
-        l2[1] = new Letter('E');
+        Letter[] l2 = new Letter[4];
+        l2[0] = new Letter('T');
+        l2[1] = new Letter('I');
+        l2[2] = new Letter('S');
+        l2[3] = new Letter('A');
 
-        Letter[] l3 = new Letter[4];
-        l3[0] = new Letter('M');
-        l3[1] = new Letter('E');
-        l3[2] = new Letter('N');
-        l3[3] = new Letter('T');
 
-        Letter[] l4 = new Letter[3];
-        l4[0] = new Letter('A');
-        l4[1] = new Letter('R');
-        l4[2] = new Letter('C');
-
-        Letter[] l5 = new Letter[5];
-        l5[0] = new Letter('N');
-        l5[1] = new Letter('T');
-        l5[2] = new Letter('I');
-        l5[3] = new Letter('E');
-        l5[4] = new Letter('R');
-
-        grid.placeLetters(new PlaceWordAction(
-                p1,
-                0,
-                l,
-                new GridWordPos(0, 5, Direction.Down))
-        );
-        grid.placeLetters(new PlaceWordAction(
-                p1,
-                0,
-                l5,
-                new GridWordPos(4, 6, Direction.Right))
-        );
         System.out.println(
                 grid.placeLetters(new PlaceWordAction(
                         p1,
                         0,
-                        l2,
-                        new GridWordPos(3, 5, Direction.Down))
-                )
-        );
-//        grid.placeLetters(new PlaceWordAction(
-//                p1,
-//                0,
-//                l3,
-//                new GridWordPos(5, 5, Direction.Down))
-//        );
-//        grid.placeLetters(new PlaceWordAction(
-//                p1,
-//                0,
-//                l4,
-//                new GridWordPos(0, 0, Direction.Right))
-//        );
+                        l1,
+                        new GridWordPos(2, 0, Direction.Right))
+                ));
+//        System.out.println(
+//                grid.placeLetters(new PlaceWordAction(
+//                        p1,
+//                        0,
+//                        l2,
+//                        new GridWordPos(0, 5, Direction.Down))
+//                ));
+
+
         grid.printGrid();
 
 

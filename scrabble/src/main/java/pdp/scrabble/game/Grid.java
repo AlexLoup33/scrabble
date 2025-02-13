@@ -81,7 +81,7 @@ public class Grid {
                 // Check new horizontal word
                 int start = findStart(pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
 
-                System.out.println("DEBUG start: " + start);
+//                System.out.println("DEBUG start: " + start);
                 while (start < this.size
                         && this.placedLetters[start][pwa.startPosition.col()] != null) {
                     String new_horizontal_word = getHorizontalWord(start, pwa.startPosition.col(), Direction.Right);
@@ -127,10 +127,32 @@ public class Grid {
                             new Word(sb),
                             pwa.player));
                 }
-                // tmp
-//                else {
+                else {
 //                    throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
-//                }
+                }
+
+                // Check new vertical word
+                int start = findStart(pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
+
+//                System.out.println("DEBUG start: " + start);
+                while (start < this.size
+                        && this.placedLetters[pwa.startPosition.row()][start] != null) {
+                    String new_vertical_word = getVerticalWord(start, pwa.startPosition.col(), Direction.Right);
+//                    System.out.println("DEBUG new_vertical_word: " + new_horizontal_word);
+                    if (new_vertical_word.length() >= 2) {
+                        if (GameModel.dictionary.containsWord(new Word(new_vertical_word))) {
+                            this.placedWords.add(new OwnedWord(pwa.startPosition,
+                                    new Word(new_vertical_word),
+                                    pwa.player));
+                            result.add(new OwnedWord(pwa.startPosition,
+                                    new Word(new_vertical_word),
+                                    pwa.player));
+                        } else {
+                            throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
+                        }
+                    }
+                    start++;
+                }
             }
             return result;
         } finally {

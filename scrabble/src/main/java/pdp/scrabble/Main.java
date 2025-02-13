@@ -47,7 +47,7 @@ public class Main {
                         p1,
                         0,
                         l1,
-                        new GridWordPos(2, 0, Direction.Right))
+                        new GridWordPos(2, 3, Direction.Right))
                 ));
 //        System.out.println(
 //                grid.placeLetters(new PlaceWordAction(

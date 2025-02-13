@@ -120,14 +120,14 @@ public class Grid {
                 // Find the start index of the new word created
                 String sb = getHorizontalWord(pwa.startPosition.col(), pwa.startPosition.row(), pwa.startPosition.direction());
 
-//                System.out.println("DEBUG vertical formed word: " + sb);
-//                System.out.println("DEBUG contains word: " + GameModel.dictionary.containsWord(new Word(sb)));
+                System.out.println("DEBUG vertical formed word: " + sb);
+                System.out.println("DEBUG contains word: " + GameModel.dictionary.containsWord(new Word(sb)));
                 if (GameModel.dictionary.containsWord(new Word(sb))) {
                     this.placedWords.add(new OwnedWord(pwa.startPosition,
                             new Word(sb),
                             pwa.player));
                 } else {
-                    throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
+//                    throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
                 }
 
                 // Check new vertical word
@@ -136,7 +136,7 @@ public class Grid {
 //                System.out.println("DEBUG start: " + start);
                 while (start < this.size
                         && this.placedLetters[pwa.startPosition.row()][start] != null) {
-                    String new_vertical_word = getVerticalWord(start, pwa.startPosition.col(), Direction.Right);
+                    String new_vertical_word = getVerticalWord(pwa.startPosition.row(), start, Direction.Right);
 //                    System.out.println("DEBUG new_vertical_word: " + new_vertical_word);
                     if (new_vertical_word.length() >= 2) {
                         if (GameModel.dictionary.containsWord(new Word(new_vertical_word))) {

@@ -26,4 +26,14 @@ public class Player {
         this.score = 0;
         this.bag = new LettersCounter();
     }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", score=" + score +
+                ", bag=" + bag +
+                '}';
+    }
 }

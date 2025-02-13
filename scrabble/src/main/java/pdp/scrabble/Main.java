@@ -71,7 +71,7 @@ public class Main {
                         p1,
                         0,
                         l2,
-                        new GridWordPos(13, 7, Direction.Right))
+                        new GridWordPos(13, 6, Direction.Right))
                 ));
 
 

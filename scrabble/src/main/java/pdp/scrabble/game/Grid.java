@@ -46,7 +46,7 @@ public class Grid {
         try {
             // Direction: down
             if (pwa.startPosition.direction() == Direction.Down) {
-                // Place letter
+                // 1 Place letter
                 int letter_index = 0;
                 int row = pwa.startPosition.row();
                 // place every letter on the grid
@@ -61,27 +61,32 @@ public class Grid {
                 }
 
 
-                // Find the new word created
-                String vertical_created_word = getVerticalWord(pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
+                // 2 Find the new word created
+                String vertical_created_word = getVerticalWord(
+                        pwa.startPosition.row(),
+                        pwa.startPosition.col(),
+                        pwa.startPosition.direction());
+                Word vertical_word = new Word(vertical_created_word);
 
 //                System.out.println("DEBUG vertical_created_word: " + vertical_created_word);
 //                System.out.println("DEBUG contains word: " + GameModel.dictionary.containsWord(new Word(vertical_created_word)));
 
-                if (GameModel.dictionary.containsWord(new Word(vertical_created_word))) {
-                    this.placedWords.add(new OwnedWord(pwa.startPosition,
-                            new Word(vertical_created_word),
-                            pwa.player));
-                    result.add(new OwnedWord(pwa.startPosition,
-                            new Word(vertical_created_word),
-                            pwa.player));
+                if (GameModel.dictionary.containsWord(vertical_word)) {
+                    OwnedWord to_add = new OwnedWord(
+                            pwa.startPosition,
+                            vertical_word,
+                            pwa.player);
+                    this.placedWords.add(to_add);
+                    result.add(to_add);
                 } else {
                     throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
                 }
 
                 // Check new horizontal word
-                int start = findStart(pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
+                int start = findStart(pwa.startPosition.row(),
+                        pwa.startPosition.col(),
+                        pwa.startPosition.direction());
 
-//                System.out.println("DEBUG start: " + start);
                 while (start < this.size
                         && this.placedLetters[start][pwa.startPosition.col()] != null) {
                     String new_horizontal_word = getHorizontalWord(start, pwa.startPosition.col(), Direction.Right);

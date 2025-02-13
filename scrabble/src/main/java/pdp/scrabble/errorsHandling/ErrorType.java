@@ -14,7 +14,8 @@ public enum ErrorType {
     InvalidGameStatusError(true),
     InvalidLetterCountError(true),
     NotAValidWord(false),
-    InvalidCliArgs(true);
+    InvalidCliArgs(true),
+    InvalidLangError(true);
 
     public final boolean isFatal;
 

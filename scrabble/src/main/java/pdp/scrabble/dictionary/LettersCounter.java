@@ -41,8 +41,10 @@ public class LettersCounter {
      * 
      * @param count must be >= 0
      * @return the new count for this letter (don't store the given letter)
+     * 
+     *         Modif: addLetter en public car utiliser dans la classe Lang
      */
-    private int addLetter(Letter letter, int count) {
+    public int addLetter(Letter letter, int count) {
         if (count < 0) {
             throw new CustomError(ErrorType.InvalidLetterCountError,
                     "count must be >= 0", "the count " + count + " isn't >= 0");

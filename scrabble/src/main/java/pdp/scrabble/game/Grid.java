@@ -36,7 +36,6 @@ public class Grid {
     }
 
     public List<OwnedWord> placeLetters(PlaceWordAction pwa) {
-        // todo
         // try to place the letter
 
         Letter[][] placedLettersCopy = this.placedLetters.clone();
@@ -59,7 +58,7 @@ public class Grid {
                 }
 
 
-                int start = findStart(pwa, Direction.Down);
+                int start = findStart(pwa);
 
                 StringBuilder sb = new StringBuilder();
                 while (start < this.size && this.placedLetters[start][pwa.startPosition.col()] != null) {
@@ -91,7 +90,7 @@ public class Grid {
                 }
 
 
-                int start = findStart(pwa, Direction.Right);
+                int start = findStart(pwa);
 
                 StringBuilder sb = new StringBuilder();
                 while (start < this.size
@@ -117,10 +116,10 @@ public class Grid {
         return null;
     }
 
-    private int findStart(PlaceWordAction pwa, Direction direction) {
+    private int findStart(PlaceWordAction pwa) {
         // find start
         int start = 0;
-        if (direction == Direction.Down) {
+        if (pwa.startPosition.direction() == Direction.Down) {
             start = pwa.startPosition.row();
             while (this.placedLetters[start][pwa.startPosition.col()] != null
                     && pwa.startPosition.row() != 0

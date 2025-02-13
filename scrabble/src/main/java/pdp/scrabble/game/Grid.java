@@ -126,9 +126,8 @@ public class Grid {
                     this.placedWords.add(new OwnedWord(pwa.startPosition,
                             new Word(sb),
                             pwa.player));
-                }
-                else {
-//                    throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
+                } else {
+                    throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
                 }
 
                 // Check new vertical word
@@ -138,7 +137,7 @@ public class Grid {
                 while (start < this.size
                         && this.placedLetters[pwa.startPosition.row()][start] != null) {
                     String new_vertical_word = getVerticalWord(start, pwa.startPosition.col(), Direction.Right);
-//                    System.out.println("DEBUG new_vertical_word: " + new_horizontal_word);
+//                    System.out.println("DEBUG new_vertical_word: " + new_vertical_word);
                     if (new_vertical_word.length() >= 2) {
                         if (GameModel.dictionary.containsWord(new Word(new_vertical_word))) {
                             this.placedWords.add(new OwnedWord(pwa.startPosition,

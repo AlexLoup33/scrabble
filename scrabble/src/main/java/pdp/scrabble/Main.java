@@ -25,9 +25,9 @@ public class Main {
         GameModel.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
 
         Player p1 = new Player("franck");
-        Player p2 = new Player("franck2");
 
         Grid grid = new Grid(15);
+
         Letter[] l1 = new Letter[5];
         l1[0] = new Letter('L');
         l1[1] = new Letter('O');

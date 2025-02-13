@@ -12,12 +12,13 @@ import pdp.scrabble.game.actions.PlaceWordAction;
 import java.lang.module.Configuration;
 import java.util.ArrayList;
 import java.util.List;
+
 import pdp.scrabble.configuration.ConfigurationBuilder;
 
 public class Main {
-  public static void main(String[] args) throws Exception {
-    ConfigurationBuilder confBuilder = new ConfigurationBuilder(args);
-    System.out.println("--- Start ---");
+    public static void main(String[] args) throws Exception {
+        ConfigurationBuilder confBuilder = new ConfigurationBuilder(args);
+        System.out.println("--- Start ---");
 
 //        Configuration config = new Configuration();
         GameModel gm = new GameModel();

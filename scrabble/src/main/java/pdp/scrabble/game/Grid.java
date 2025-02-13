@@ -28,7 +28,7 @@ public class Grid {
                 if (this.placedLetters[i][j] == null) {
                     System.out.print("❎ ");
                 } else {
-                    System.out.print(this.placedLetters[i][j] + " ");
+                    System.out.print(this.placedLetters[i][j] + "  ");
                 }
             }
             System.out.println();
@@ -101,7 +101,7 @@ public class Grid {
                 }
 
                 System.out.println("DEBUG vertical formed word: " + sb.toString());
-                System.out.println("DEBUG contains word: " +GameModel.dictionary.containsWord(new Word(sb.toString())));
+                System.out.println("DEBUG contains word: " + GameModel.dictionary.containsWord(new Word(sb.toString())));
                 if (GameModel.dictionary.containsWord(new Word(sb.toString()))) {
                     this.placedWords.add(new OwnedWord(pwa.startPosition,
                             new Word(sb.toString()),

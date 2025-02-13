@@ -12,4 +12,13 @@ public class OwnedWord {
         this.word = word;
         this.owner = owner;
     }
+
+    @Override
+    public String toString() {
+        return "OwnedWord{" +
+                "position=" + position +
+                ", word=" + word +
+                ", owner=" + owner +
+                '}';
+    }
 }

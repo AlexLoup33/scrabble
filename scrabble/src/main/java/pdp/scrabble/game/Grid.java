@@ -39,14 +39,17 @@ public class Grid {
         Letter[][] placedLettersCopy = this.placedLetters.clone();
         LinkedList<OwnedWord> placedWordsCopy = (LinkedList<OwnedWord>) this.placedWords.clone();
 
+        List<OwnedWord> result = new LinkedList<>();
+
         // try to place the letter
         // we will try every action, and only if one of the sub-action isn't possible, we roll back
         try {
             // Direction: down
             if (pwa.startPosition.direction() == Direction.Down) {
-                // 1 Place letter
+                // Place letter
                 int letter_index = 0;
                 int row = pwa.startPosition.row();
+                // place every letter on the grid
                 while (letter_index < pwa.toPlace.length && row < this.size) {
                     // if there is no other letter
                     if (this.placedLetters[row][pwa.startPosition.col()] == null) {
@@ -58,20 +61,45 @@ public class Grid {
                 }
 
 
-                // Find the start index of the new word created
-                StringBuilder sb = getVerticalWord(pwa, pwa.startPosition.col());
+                // Find the new word created
+                String vertical_created_word = getVerticalWord(pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
 
-//                System.out.println("DEBUG vertical formed word: " + sb.toString());
-//                System.out.println("DEBUG contains word: " +GameModel.dictionary.containsWord(new Word(sb.toString())));
-                if (GameModel.dictionary.containsWord(new Word(sb.toString()))) {
+//                System.out.println("DEBUG vertical_created_word: " + vertical_created_word);
+//                System.out.println("DEBUG contains word: " + GameModel.dictionary.containsWord(new Word(vertical_created_word)));
+
+                if (GameModel.dictionary.containsWord(new Word(vertical_created_word))) {
                     this.placedWords.add(new OwnedWord(pwa.startPosition,
-                            new Word(sb.toString()),
+                            new Word(vertical_created_word),
+                            pwa.player));
+                    result.add(new OwnedWord(pwa.startPosition,
+                            new Word(vertical_created_word),
                             pwa.player));
                 } else {
                     throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
                 }
 
                 // Check new horizontal word
+                int start = findStart(pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
+
+                System.out.println("DEBUG start: " + start);
+                while (start < this.size
+                        && this.placedLetters[start][pwa.startPosition.col()] != null) {
+                    String new_horizontal_word = getHorizontalWord(start, pwa.startPosition.col(), Direction.Right);
+//                    System.out.println("DEBUG new_vertical_word: " + new_horizontal_word);
+                    if (new_horizontal_word.length() >= 2) {
+                        if (GameModel.dictionary.containsWord(new Word(new_horizontal_word))) {
+                            this.placedWords.add(new OwnedWord(pwa.startPosition,
+                                    new Word(new_horizontal_word),
+                                    pwa.player));
+                            result.add(new OwnedWord(pwa.startPosition,
+                                    new Word(new_horizontal_word),
+                                    pwa.player));
+                        } else {
+                            throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
+                        }
+                    }
+                    start++;
+                }
 
             }
             // Direction: right
@@ -90,38 +118,40 @@ public class Grid {
                 }
 
                 // Find the start index of the new word created
-                String sb = getHorizontalWord(pwa, pwa.startPosition.row());
+                String sb = getHorizontalWord(pwa.startPosition.col(), pwa.startPosition.row(), pwa.startPosition.direction());
 
 //                System.out.println("DEBUG vertical formed word: " + sb);
-                System.out.println("DEBUG contains word: " + GameModel.dictionary.containsWord(new Word(sb)));
+//                System.out.println("DEBUG contains word: " + GameModel.dictionary.containsWord(new Word(sb)));
                 if (GameModel.dictionary.containsWord(new Word(sb))) {
                     this.placedWords.add(new OwnedWord(pwa.startPosition,
                             new Word(sb),
                             pwa.player));
-                } else {
-                    throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
                 }
+                // tmp
+//                else {
+//                    throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
+//                }
             }
+            return result;
         } finally {
             this.placedLetters = placedLettersCopy;
             this.placedWords = placedWordsCopy;
         }
-        return null;
     }
 
-    private StringBuilder getVerticalWord(PlaceWordAction pwa, int col) {
-        int start = findStart(pwa);
+    private String getVerticalWord(int row, int col, Direction direction) {
+        int start = findStart(row, col, direction);
 
         StringBuilder sb = new StringBuilder();
         while (start < this.size && this.placedLetters[start][col] != null) {
             sb.append(this.placedLetters[start][col]);
             start++;
         }
-        return sb;
+        return sb.toString();
     }
 
-    private String getHorizontalWord(PlaceWordAction pwa, int row) {
-        int start = findStart(pwa);
+    private String getHorizontalWord(int row, int col, Direction direction) {
+        int start = findStart(row, col, direction);
 
         StringBuilder sb = new StringBuilder();
         while (start < this.size
@@ -132,13 +162,14 @@ public class Grid {
         return sb.toString();
     }
 
-    private int findStart(PlaceWordAction pwa) {
+
+    private int findStart(int row, int col, Direction direction) {
         // find start
         int start = 0;
-        if (pwa.startPosition.direction() == Direction.Down) {
-            start = pwa.startPosition.row();
-            while (this.placedLetters[start][pwa.startPosition.col()] != null
-                    && pwa.startPosition.row() != 0
+        if (direction == Direction.Down) {
+            start = row;
+            while (this.placedLetters[start][col] != null
+                    && row != 0
                     && start > 0) {
                 start--;
             }
@@ -147,9 +178,9 @@ public class Grid {
             }
             return start;
         } else { // direction == Direction.Right
-            start = pwa.startPosition.col();
-            while (this.placedLetters[pwa.startPosition.row()][start] != null
-                    && pwa.startPosition.col() != 0
+            start = col;
+            while (this.placedLetters[row][start] != null
+                    && col != 0
                     && start > 0) {
                 start--;
             }

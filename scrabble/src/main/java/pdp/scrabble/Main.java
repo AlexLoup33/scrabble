@@ -48,6 +48,13 @@ public class Main {
         l4[1] = new Letter('R');
         l4[2] = new Letter('C');
 
+        Letter[] l5 = new Letter[5];
+        l5[0] = new Letter('N');
+        l5[1] = new Letter('T');
+        l5[2] = new Letter('I');
+        l5[3] = new Letter('E');
+        l5[4] = new Letter('R');
+
         grid.placeLetters(new PlaceWordAction(
                 p1,
                 0,
@@ -57,21 +64,29 @@ public class Main {
         grid.placeLetters(new PlaceWordAction(
                 p1,
                 0,
-                l2,
-                new GridWordPos(3, 5, Direction.Down))
+                l5,
+                new GridWordPos(4, 6, Direction.Right))
         );
-        grid.placeLetters(new PlaceWordAction(
-                p1,
-                0,
-                l3,
-                new GridWordPos(5, 5, Direction.Down))
+        System.out.println(
+                grid.placeLetters(new PlaceWordAction(
+                        p1,
+                        0,
+                        l2,
+                        new GridWordPos(3, 5, Direction.Down))
+                )
         );
-        grid.placeLetters(new PlaceWordAction(
-                p1,
-                0,
-                l4,
-                new GridWordPos(0, 0, Direction.Right))
-        );
+//        grid.placeLetters(new PlaceWordAction(
+//                p1,
+//                0,
+//                l3,
+//                new GridWordPos(5, 5, Direction.Down))
+//        );
+//        grid.placeLetters(new PlaceWordAction(
+//                p1,
+//                0,
+//                l4,
+//                new GridWordPos(0, 0, Direction.Right))
+//        );
         grid.printGrid();
 
 

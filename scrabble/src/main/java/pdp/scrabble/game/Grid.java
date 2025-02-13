@@ -208,7 +208,6 @@ public class Grid {
         return sb.toString();
     }
 
-
     private int findStart(int row, int col, Direction direction) {
         // find start
         int start;

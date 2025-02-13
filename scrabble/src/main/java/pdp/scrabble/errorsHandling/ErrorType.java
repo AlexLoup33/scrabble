@@ -13,7 +13,8 @@ public enum ErrorType {
     MalformedDictionaryError(true),
     InvalidGameStatusError(true),
     InvalidLetterCountError(true),
-    NotAValidWord(false);
+    NotAValidWord(false),
+    InvalidCliArgs(true);
 
     public final boolean isFatal;
 

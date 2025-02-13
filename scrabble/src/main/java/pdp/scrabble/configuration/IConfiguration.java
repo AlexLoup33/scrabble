@@ -3,38 +3,38 @@ package pdp.scrabble.configuration;
 import java.nio.file.Path;
 
 public interface IConfiguration {
-    // Related to GameMode
-    public Boolean getVerbose();
+  // Related to GameMode
+  public Boolean getVerbose();
 
-    public Boolean getDebug();
+  public Boolean getDebug();
 
-    public Boolean getBlitz();
+  public Boolean getBlitz();
 
-    public Boolean getSuperScrabble();
+  public Boolean getSuperScrabble();
 
-    public Boolean getGui();
+  public Boolean getGui();
 
-    public int getPlayerCount();
+  public int getPlayerCount();
 
-    // Related to blitz
-    public int getBlitzTime();
+  // Related to blitz
+  public int getBlitzTime();
 
-    // Related to AI
-    public boolean[] getAiPlayers();
+  // Related to AI
+  public boolean[] getAiPlayers();
 
-    public int getAiDepth();
+  public int getAiDepth();
 
-    public int getAiTime();
+  public int getAiTime();
 
-    public String getAiMode();
+  public String getAiMode();
 
-    // Related to dictionnary
-    public String getLanguage();
+  // Related to dictionnary
+  public String getLanguage();
 
-    // Related to Paths/Filenames
-    public Path getDictFile();
+  // Related to Paths/Filenames
+  public Path getDictFile();
 
-    public Path getContestFile();
+  public Path getContestFile();
 
-    public Path getHistoryFile();
+  public Path getHistoryFile();
 }

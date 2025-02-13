@@ -25,7 +25,7 @@ public class ConfigurationBuilderTest {
   public void testMissingConfFile() {
     CustomError e =
         assertThrows(CustomError.class, () -> new ConfigurationBuilder(Paths.get("nonExistent")));
-    assertEquals("[.scrabblerc] Parsing error: Could not access .scrabblerc", e.message);
+    assertEquals("Could not access .scrabblerc", e.message);
   }
 
   @Test
@@ -34,8 +34,7 @@ public class ConfigurationBuilderTest {
         assertThrows(
             CustomError.class,
             () -> new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/.incomplete")));
-    assertEquals(
-        "[.scrabblerc] Parsing error: Some properties are missing from .scrabblerc", e.message);
+    assertEquals("Some properties are missing from .scrabblerc", e.message);
   }
 
   @Test
@@ -47,8 +46,7 @@ public class ConfigurationBuilderTest {
                 new ConfigurationBuilder(
                     Paths.get("src/test/resources/scrabblerc/.invalidPlayerCount")));
     assertEquals(
-        "[.scrabblerc] Parsing error: Value `5` for key `playerCount`, expected value in range 1-4",
-        e.message);
+        "[.scrabblerc] Value `5` for key `playerCount`, expected value in range 1-4", e.message);
   }
 
   @Test
@@ -86,5 +84,12 @@ public class ConfigurationBuilderTest {
     Configuration createdConf = created.getConfiguration();
 
     assertEquals(originalConf.getDebug(), createdConf.getDebug());
+  }
+
+  @Test
+  public void testInvalidCliArg() {
+    String[] args = {"--Nonexistent"};
+    CustomError e = assertThrows(CustomError.class, () -> new ConfigurationBuilder(args));
+    assertEquals("Some cli options were incorrect, -h for help.", e.message);
   }
 }

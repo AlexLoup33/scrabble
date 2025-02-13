@@ -21,7 +21,12 @@ public final class CustomError extends Error {
 
   public String toString() {
     /* To read the data of the attributs of an object. for a development optical */
-    return "ErrorType: " + this.type.name() + "\nMessage: " + this.message + "\nDetails: " + this.details;
+    return "ErrorType: "
+        + this.type.name()
+        + "\nMessage: "
+        + this.message
+        + "\nDetails: "
+        + this.details;
   }
 
   public String toDevFormatedText() {
@@ -32,7 +37,12 @@ public final class CustomError extends Error {
     Exception exception = new Exception();
     StringBuilder stackTrace = new StringBuilder();
     for (StackTraceElement element : exception.getStackTrace()) {
-      stackTrace.append(element.getClassName() + " - " + element.getLineNumber() + " : " + element.getMethodName());
+      stackTrace.append(
+          element.getClassName()
+              + " - "
+              + element.getLineNumber()
+              + " : "
+              + element.getMethodName());
       stackTrace.append("\n");
     }
 

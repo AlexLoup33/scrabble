@@ -118,16 +118,19 @@ public class Grid {
                 }
 
                 // Find the start index of the new word created
-                String sb = getHorizontalWord(pwa.startPosition.col(), pwa.startPosition.row(), pwa.startPosition.direction());
+                String horizontal_created_word = getHorizontalWord(pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
 
-                System.out.println("DEBUG vertical formed word: " + sb);
-                System.out.println("DEBUG contains word: " + GameModel.dictionary.containsWord(new Word(sb)));
-                if (GameModel.dictionary.containsWord(new Word(sb))) {
+                System.out.println("DEBUG vertical formed word: " + horizontal_created_word);
+                System.out.println("DEBUG contains word: " + GameModel.dictionary.containsWord(new Word(horizontal_created_word)));
+                if (GameModel.dictionary.containsWord(new Word(horizontal_created_word))) {
                     this.placedWords.add(new OwnedWord(pwa.startPosition,
-                            new Word(sb),
+                            new Word(horizontal_created_word),
+                            pwa.player));
+                    result.add(new OwnedWord(pwa.startPosition,
+                            new Word(horizontal_created_word),
                             pwa.player));
                 } else {
-//                    throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
+                    throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
                 }
 
                 // Check new vertical word
@@ -160,24 +163,24 @@ public class Grid {
         }
     }
 
-    private String getVerticalWord(int row, int col, Direction direction) {
-        int start = findStart(row, col, direction);
+    private String getVerticalWord(int row, int col_inv, Direction direction) {
+        int start = findStart(row, col_inv, direction);
 
         StringBuilder sb = new StringBuilder();
-        while (start < this.size && this.placedLetters[start][col] != null) {
-            sb.append(this.placedLetters[start][col]);
+        while (start < this.size && this.placedLetters[start][col_inv] != null) {
+            sb.append(this.placedLetters[start][col_inv]);
             start++;
         }
         return sb.toString();
     }
 
-    private String getHorizontalWord(int row, int col, Direction direction) {
-        int start = findStart(row, col, direction);
+    private String getHorizontalWord(int row_inv, int col, Direction direction) {
+        int start = findStart(row_inv, col, direction);
 
         StringBuilder sb = new StringBuilder();
         while (start < this.size
-                && this.placedLetters[row][start] != null) {
-            sb.append(this.placedLetters[row][start]);
+                && this.placedLetters[row_inv][start] != null) {
+            sb.append(this.placedLetters[row_inv][start]);
             start++;
         }
         return sb.toString();
@@ -186,7 +189,7 @@ public class Grid {
 
     private int findStart(int row, int col, Direction direction) {
         // find start
-        int start = 0;
+        int start;
         if (direction == Direction.Down) {
             start = row;
             while (this.placedLetters[start][col] != null

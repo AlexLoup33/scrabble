@@ -42,6 +42,7 @@ public class Main {
         l2[3] = new Letter('A');
 
 
+        // Test 1
         System.out.println(
                 grid.placeLetters(new PlaceWordAction(
                         p1,
@@ -55,6 +56,22 @@ public class Main {
                         0,
                         l2,
                         new GridWordPos(0, 5, Direction.Down))
+                ));
+
+        // Test 2
+        System.out.println(
+                grid.placeLetters(new PlaceWordAction(
+                        p1,
+                        0,
+                        l1,
+                        new GridWordPos(8, 8, Direction.Down))
+                ));
+        System.out.println(
+                grid.placeLetters(new PlaceWordAction(
+                        p1,
+                        0,
+                        l2,
+                        new GridWordPos(13, 7, Direction.Right))
                 ));
 
 

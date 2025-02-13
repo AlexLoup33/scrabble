@@ -49,13 +49,13 @@ public class Main {
                         l1,
                         new GridWordPos(2, 0, Direction.Right))
                 ));
-//        System.out.println(
-//                grid.placeLetters(new PlaceWordAction(
-//                        p1,
-//                        0,
-//                        l2,
-//                        new GridWordPos(0, 5, Direction.Down))
-//                ));
+        System.out.println(
+                grid.placeLetters(new PlaceWordAction(
+                        p1,
+                        0,
+                        l2,
+                        new GridWordPos(0, 5, Direction.Down))
+                ));
 
 
         grid.printGrid();

@@ -120,8 +120,8 @@ public class Grid {
                 // Find the start index of the new word created
                 String horizontal_created_word = getHorizontalWord(pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
 
-                System.out.println("DEBUG vertical formed word: " + horizontal_created_word);
-                System.out.println("DEBUG contains word: " + GameModel.dictionary.containsWord(new Word(horizontal_created_word)));
+//                System.out.println("DEBUG vertical formed word: " + horizontal_created_word);
+//                System.out.println("DEBUG contains word: " + GameModel.dictionary.containsWord(new Word(horizontal_created_word)));
                 if (GameModel.dictionary.containsWord(new Word(horizontal_created_word))) {
                     this.placedWords.add(new OwnedWord(pwa.startPosition,
                             new Word(horizontal_created_word),

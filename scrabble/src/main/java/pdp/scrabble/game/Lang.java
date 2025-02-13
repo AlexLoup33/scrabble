@@ -1,8 +1,7 @@
 package pdp.scrabble.game;
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.file.Paths;
 
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
@@ -162,26 +161,31 @@ public enum Lang {
      * }
      */
 
-    private Lang(String displayName, String codeLang, String filename) {
+    private Lang(String displayName, String codeLang, String fileName) {
         this.displayName = displayName;
         this.codeLang = codeLang;
-        this.fileName = filename;
+        this.fileName = fileName;
     }
 
-    public static void getLang(String codeLang) {
+    public static Lang getLang(String codeLang) {
         // renvoie la langue associé a ce code (throw une erreur si non match)
         if (codeLang != "fr" || codeLang != "en") {
             throw new CustomError(ErrorType.InvalidLangError,
                     "lang msut be exist", "the lang " + codeLang + "not supported");
         }
+        if (codeLang == "fr") {
+            return FR;
+        } else {
+            return EN;
+        }
     }
 
-    public void getDictionaryPath() {
+    public Path getDictionaryPath() {
         // new Path(concat une chaine fixe avec this.fileName)
-        /*
-         * Path path = this.fileName;
-         * return path;
-         */
+        String chain = "";
+        String pathChain = chain + this.fileName;
+        Path path = Paths.get(pathChain);
+        return path;
     }
 
     public LettersCounter getLettersCount() {

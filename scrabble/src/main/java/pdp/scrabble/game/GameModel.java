@@ -10,7 +10,7 @@ public class GameModel {
 
     public static Grid grid;
     public static List<Player> players = new ArrayList<>();
-    public static Draw draw; // draw = pioche en fr
+    public static LettersDrawer draw; // draw = pioche en fr
     public static IDictionary dictionary;
 
     // Constructor

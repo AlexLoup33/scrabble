@@ -15,6 +15,7 @@ public enum ErrorType {
     InvalidLetterCountError(true),
     NotAValidWord(false),
     InvalidCliArgs(true),
+    DrawerError(true),
     InvalidLangError(true);
 
     public final boolean isFatal;

@@ -9,11 +9,11 @@ import pdp.scrabble.errorsHandling.ErrorType;
 public class ConfigurationTemplate {
 
   // FLAGS
-  private Boolean verbose;
-  private Boolean debug;
-  private Boolean blitz;
-  private Boolean superScrabble;
-  private Boolean gui;
+  private boolean verbose;
+  private boolean debug;
+  private boolean blitz;
+  private boolean superScrabble;
+  private boolean gui;
 
   private int playerCount;
   // Only relevant with blitz on

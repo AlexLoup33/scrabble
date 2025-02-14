@@ -10,11 +10,7 @@ import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 
 public enum Lang {
-
-    EN("english", "en", "en.txt"),
-    FR("français", "fr", "fr.txt"),
-
-    EN_2("english", "en", "en.txt") {
+    EN("english", "en.txt") {
         @Override
         public LettersCounter getLettersCount() {
             LettersCounter letterCounts = new LettersCounter();
@@ -81,7 +77,7 @@ public enum Lang {
         }
     },
 
-    FR_2("français", "fr", "en.txt") {
+    FR("français", "en.txt") {
         @Override
         public LettersCounter getLettersCount() {
             LettersCounter letterCounts = new LettersCounter();
@@ -148,51 +144,56 @@ public enum Lang {
         }
     };
 
+    private static final String dictionaryDirectory = "dictionary/";
     public final String displayName;
-    public final String codeLang;
     private final String fileName;
-    /*
-     * LettersCounter lc;
-     * 
-     * Lang(String displayName, String codeLang, LettersCounter lc) {
-     * this.displayName = displayName;
-     * this.codeLang = codeLang;
-     * this.lc = lc;
-     * }
-     */
 
-    private Lang(String displayName, String codeLang, String fileName) {
+    private Lang(String displayName, String fileName) {
         this.displayName = displayName;
-        this.codeLang = codeLang;
         this.fileName = fileName;
     }
 
+    public String getCodeLang() {
+        return this.name().toLowerCase();
+    }
+
+    /**
+     * @param codeLang must be a valid codeLang (will be lowercased)
+     * @return the Lang with the associated codeLang
+     */
     public static Lang getLang(String codeLang) {
-        // renvoie la langue associé a ce code (throw une erreur si non match)
-        if (codeLang != "fr" || codeLang != "en") {
-            throw new CustomError(ErrorType.InvalidLangError,
-                    "lang msut be exist", "the lang " + codeLang + "not supported");
+        codeLang = codeLang.toLowerCase();
+        for (Lang lang : Lang.values()) {
+            if (lang.getCodeLang() == codeLang) {
+                // => matching codeLang
+                return lang;
+            }
         }
-        if (codeLang == "fr") {
-            return FR;
-        } else {
-            return EN;
-        }
+        // => no matching codeLang
+        throw new CustomError(ErrorType.InvalidLangError,
+                "invalid lang code: " + codeLang, "there are no Lang named with the codeLang: " + codeLang);
     }
 
+    /**
+     * @return where to find the file of the dictionary for this lang
+     */
     public Path getDictionaryPath() {
-        // new Path(concat une chaine fixe avec this.fileName)
-        String chain = "";
-        String pathChain = chain + this.fileName;
-        Path path = Paths.get(pathChain);
-        return path;
+        return Path.of(Lang.dictionaryDirectory, this.fileName);
     }
 
+    /**
+     * 
+     * @return the counts of the initial letters in the drawer for this lang
+     */
     public LettersCounter getLettersCount() {
-        throw new UnsupportedOperationException("to implement");
+        throw new UnsupportedOperationException("the lang " + this.name() + " havn't implemented getLettersCount");
     }
 
+    /**
+     * 
+     * @return the points for each letters in this lang
+     */
     public LettersPoints getLettersPoints() {
-        throw new UnsupportedOperationException("to implement");
+        throw new UnsupportedOperationException("the lang " + this.name() + " havn't implemented getLettersPoints");
     }
 }

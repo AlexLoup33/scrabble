@@ -14,6 +14,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import pdp.scrabble.dictionary.*;
+import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.*;
 import pdp.scrabble.game.actions.PlaceWordAction;
 
@@ -59,17 +60,12 @@ public class MainTest {
         assertFalse(lc.getLettersSet().contains(new Letter('A')));
     }
 
-    // TODO fix
-//    @Test
-//    public void testRemoveNonExistingLetter() {
-//        lc.addLetter(new Letter('D'));
-//        assertEquals(1, lc.getLetterCount(new Letter('D')));
-//        assertThrows(
-//                IllegalArgumentException.class,
-//                () -> {
-//                    lc.removeLetter(new Letter('E'));
-//                });
-//    }
+    @Test
+    public void testRemoveNonExistingLetter() {
+        lc.addLetter(new Letter('D'));
+        assertEquals(1, lc.getLetterCount(new Letter('D')));
+        assertThrows(CustomError.class, () -> {lc.removeLetter(new Letter('E'));});
+    }
 
     @Test
     public void testEmptyCounter() {
@@ -183,84 +179,109 @@ public class MainTest {
         l2[2] = new Letter('S');
         l2[3] = new Letter('A');
 
-        assertEquals("[OwnedWord{position=GridWordPos[row=2, col=0, direction=Right], word=LOUEE, owner=Player{id=0, name='franck', score=0, bag=LettersCounter{table={}}}}]",
+        assertEquals(
+                "[OwnedWord{position=GridWordPos[row=2, col=0, direction=Right], word=LOUEE, owner=Player{id=0, name='franck', score=0, bag=LettersCounter{table={}}}}]",
                 grid.placeLetters(new PlaceWordAction(
-                                p1,
-                                0,
-                                l1,
-                                new GridWordPos(2, 0, Direction.Right)
-                        )
-                ).toString()
-        );
+                        p1,
+                        0,
+                        l1,
+                        new GridWordPos(2, 0, Direction.Right))).toString());
 
-
-        assertEquals("[OwnedWord{position=GridWordPos[row=0, col=5, direction=Down], word=TISA, owner=Player{id=0, name='franck', score=0, bag=LettersCounter{table={}}}}, OwnedWord{position=GridWordPos[row=0, col=5, direction=Down], word=LOUEES, owner=Player{id=0, name='franck', score=0, bag=LettersCounter{table={}}}}]",
+        assertEquals(
+                "[OwnedWord{position=GridWordPos[row=0, col=5, direction=Down], word=TISA, owner=Player{id=0, name='franck', score=0, bag=LettersCounter{table={}}}}, OwnedWord{position=GridWordPos[row=0, col=5, direction=Down], word=LOUEES, owner=Player{id=0, name='franck', score=0, bag=LettersCounter{table={}}}}]",
                 grid.placeLetters(new PlaceWordAction(
-                                p1,
-                                0,
-                                l2,
-                                new GridWordPos(0, 5, Direction.Down)
-                        )
-                ).toString()
-        );
+                        p1,
+                        0,
+                        l2,
+                        new GridWordPos(0, 5, Direction.Down))).toString());
 
-
-        assertEquals("[OwnedWord{position=GridWordPos[row=8, col=8, direction=Down], word=LOUEE, owner=Player{id=0, name='franck', score=0, bag=LettersCounter{table={}}}}]",
+        assertEquals(
+                "[OwnedWord{position=GridWordPos[row=8, col=8, direction=Down], word=LOUEE, owner=Player{id=0, name='franck', score=0, bag=LettersCounter{table={}}}}]",
                 grid.placeLetters(new PlaceWordAction(
-                                p1,
-                                0,
-                                l1,
-                                new GridWordPos(8, 8, Direction.Down)
-                        )
-                ).toString()
-        );
+                        p1,
+                        0,
+                        l1,
+                        new GridWordPos(8, 8, Direction.Down))).toString());
 
-        assertEquals("[OwnedWord{position=GridWordPos[row=13, col=6, direction=Right], word=TISA, owner=Player{id=0, name='franck', score=0, bag=LettersCounter{table={}}}}, OwnedWord{position=GridWordPos[row=13, col=6, direction=Right], word=LOUEES, owner=Player{id=0, name='franck', score=0, bag=LettersCounter{table={}}}}]",
+        assertEquals(
+                "[OwnedWord{position=GridWordPos[row=13, col=6, direction=Right], word=TISA, owner=Player{id=0, name='franck', score=0, bag=LettersCounter{table={}}}}, OwnedWord{position=GridWordPos[row=13, col=6, direction=Right], word=LOUEES, owner=Player{id=0, name='franck', score=0, bag=LettersCounter{table={}}}}]",
                 grid.placeLetters(new PlaceWordAction(
-                                p1,
-                                0,
-                                l2,
-                                new GridWordPos(13, 6, Direction.Right)
-                        )
-                ).toString()
-        );
+                        p1,
+                        0,
+                        l2,
+                        new GridWordPos(13, 6, Direction.Right))).toString());
 
         // to print:
 
-//        // Test 1
-//        System.out.println(
-//                grid.placeLetters(new PlaceWordAction(
-//                        p1,
-//                        0,
-//                        l1,
-//                        new GridWordPos(2, 0, Direction.Right))
-//                ));
-//        System.out.println(
-//                grid.placeLetters(new PlaceWordAction(
-//                        p1,
-//                        0,
-//                        l2,
-//                        new GridWordPos(0, 5, Direction.Down))
-//                ));
-//
-//        // Test 2
-//        System.out.println(
-//                grid.placeLetters(new PlaceWordAction(
-//                        p1,
-//                        0,
-//                        l1,
-//                        new GridWordPos(8, 8, Direction.Down))
-//                ));
-//        System.out.println(
-//                grid.placeLetters(new PlaceWordAction(
-//                        p1,
-//                        0,
-//                        l2,
-//                        new GridWordPos(13, 6, Direction.Right))
-//                ));
-//
-//
-//        grid.printGrid();
+        // // Test 1
+        // System.out.println(
+        // grid.placeLetters(new PlaceWordAction(
+        // p1,
+        // 0,
+        // l1,
+        // new GridWordPos(2, 0, Direction.Right))
+        // ));
+        // System.out.println(
+        // grid.placeLetters(new PlaceWordAction(
+        // p1,
+        // 0,
+        // l2,
+        // new GridWordPos(0, 5, Direction.Down))
+        // ));
+        //
+        // // Test 2
+        // System.out.println(
+        // grid.placeLetters(new PlaceWordAction(
+        // p1,
+        // 0,
+        // l1,
+        // new GridWordPos(8, 8, Direction.Down))
+        // ));
+        // System.out.println(
+        // grid.placeLetters(new PlaceWordAction(
+        // p1,
+        // 0,
+        // l2,
+        // new GridWordPos(13, 6, Direction.Right))
+        // ));
+        //
+        //
+        // grid.printGrid();
+
+    }
+
+    @Test
+    public void testLettersDrawer() {
+        for (Lang lang : Lang.values()) {
+            LettersDrawer drawer = new LettersDrawer(lang);
+            // check it can draw all the letters
+            final int totalLetters = drawer.getCurrentSize();
+            final LettersCounter drawedLetters = new LettersCounter();
+            for (int i = 0; i < totalLetters; i++) {
+                drawedLetters.addLetter(drawer.popLetter());
+            }
+            // check if the drawer is empty
+            assertThrows(CustomError.class, () -> {drawer.popLetter();});
+            /// assert the letters drawed are correct
+            // check the letters set
+            final LettersCounter langLetters = lang.getLettersCount();
+            assertEquals(drawedLetters.getLettersSet(), langLetters.getLettersSet());
+            // check the letters count
+            for (Letter letter : langLetters.getLettersSet()) {
+                assertEquals(
+                    drawedLetters.getLetterCount(letter),
+                    langLetters.getLetterCount(letter));
+            }
+            // add back all the letters
+            for (Letter letter : langLetters.getLettersSet()) {
+                for (int i = 0; i < langLetters.getLetterCount(letter); i++) {
+                    drawer.pushLetter(letter);   
+                }
+            }
+            // check if the drawer is full
+            assertThrows(CustomError.class, () -> {drawer.pushLetter(new Letter('A'));});
+
+        }
 
     }
 }

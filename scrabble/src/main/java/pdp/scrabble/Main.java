@@ -8,19 +8,16 @@ package pdp.scrabble;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.game.*;
 import pdp.scrabble.game.actions.PlaceWordAction;
+import pdp.scrabble.configuration.ConfigurationBuilder;
 
-import java.lang.module.Configuration;
 import java.util.ArrayList;
 import java.util.List;
 
-import pdp.scrabble.configuration.ConfigurationBuilder;
-
 public class Main {
     public static void main(String[] args) throws Exception {
-        ConfigurationBuilder confBuilder = new ConfigurationBuilder(args);
+        ConfigurationBuilder cliBuilder = new ConfigurationBuilder(args);
         System.out.println("--- Start ---");
 
-//        Configuration config = new Configuration();
         GameModel gm = new GameModel();
         GameModel.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
 

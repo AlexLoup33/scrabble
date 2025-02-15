@@ -18,7 +18,18 @@ public class ConfigurationBuilder {
   private Map<ConfigurationPropertiesEnum, Boolean> completeness;
   private ConfigurationTemplate confStub;
 
-  /** */
+  /**
+   * Returns a ConfigurationBuilder from a path object. The given path object must point to a
+   * scrabblerc file. The scrabble rc file is in INI format, and values are defined using key=value
+   * format. This scrabblerc file must define all the properties of a Configuration object,
+   * otherwise, this constructor will throw. The keys are listed in ConfigurationPropertiesEnum.
+   *
+   * @param src Path object pointing to a scrabblerc file
+   * @throws CustomError if src is not a regular file or absent on disk
+   * @throws CustomError if one of the values of the scrabblerc is not valid for key
+   * @throws CustomError if the scrabblerc file is missing a configuration property
+   * @see ConfigurationPropertiesEnum for the properties keys.
+   */
   public ConfigurationBuilder(Path src) throws CustomError {
     Properties props = new Properties();
     try {
@@ -50,7 +61,20 @@ public class ConfigurationBuilder {
     }
   }
 
-  /** Creates a configurationBuilder object from args given to the java executable */
+  /**
+   * Returns a ConfigurationBuilder from cli args passed to the java executable. These args are
+   * parsed using the Commons-cli apache library in the CliOptions class. Unlike the path
+   * constructor, we don't expect that cli args define all properties, this is because args
+   * configuration properties are only meant to override scrabblerc values, so all configuration
+   * values should already be defined. This constructor is the entry point of our commons-cli
+   * parsing, which means it is required for parsing of cli args unrelated to configuration (eg.
+   * help and version)
+   *
+   * @param args command line arguments
+   * @throws CustomError if one of the args keys was unexpected
+   * @throws CustomError if one of the args has incorrect value for key
+   * @see CliOptions
+   */
   public ConfigurationBuilder(String[] args) throws CustomError {
     CliOptions options = new CliOptions(args); // this can throw
     this.completeness = new HashMap<>();
@@ -65,6 +89,17 @@ public class ConfigurationBuilder {
     return new CustomError(ErrorType.FailedConfigFileParsing, userMsg, devMsg);
   }
 
+  /**
+   * This method takes a properties object and tries to set a target configuration template with
+   * it's values. It sets the completeness bitmap values at the same time, which is used to know if
+   * the template has had all it's values set.
+   *
+   * @param props the properties object containing the values to set the template with
+   * @param target the ConfigurationTemplate to be completed
+   * @param fromCli determines if the properties target is being completed from cli values or from
+   *     scrabblerc, to display different error messages
+   * @throws CustomError if a properties value does not match the type of template attribute
+   */
   private void convertPropsToTemplate(
       Properties props, ConfigurationTemplate target, boolean fromCli) throws CustomError {
     for (String key : props.stringPropertyNames()) {
@@ -175,11 +210,15 @@ public class ConfigurationBuilder {
     }
   }
 
-  // Merge the current ConfigurationBuilder instance: (`this`)
-  // with the ConfigurationBuilder source
-  // Uses the completeness BitMap to find unset fields
-  // If a field is unset in source, keeps the current instance value from
-  // before the merge
+  /**
+   * Merges the current ConfigurationBuilder instance: (`this`) with the ConfigurationBuilder
+   * source. The template of a ConfigurationBuilder is private, so we use the configuration record
+   * of source. Uses the completeness BitMap to find unset fields. If a field is unset in source,
+   * keeps the current instance value from before the merge. Mutates this.confStub
+   *
+   * @param source the ConfigurationBuilder to merge from
+   * @throws CustomError
+   */
   public void merge(ConfigurationBuilder source) throws CustomError {
     Configuration sourceConf = source.getConfiguration();
     for (ConfigurationPropertiesEnum confEnum : ConfigurationPropertiesEnum.values()) {
@@ -212,6 +251,12 @@ public class ConfigurationBuilder {
     return this.confStub.getConfiguration();
   }
 
+  /**
+   * Saves a configuration Object to file, using INI format. This creates a valid scrabblerc file.
+   *
+   * @param dst the target path to write to
+   * @param conf the configuration objet to get values to write from
+   */
   public static void saveConfiguration(Path dst, Configuration conf) throws IOException {
     BufferedWriter writer = Files.newBufferedWriter(dst);
 

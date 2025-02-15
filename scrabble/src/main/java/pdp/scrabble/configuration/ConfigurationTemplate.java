@@ -6,6 +6,11 @@ import java.nio.file.Path;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 
+/**
+ * Provides a template for ConfigurationBuilder to create a Configuration object incrementally. This
+ * is needed because Configuration record is immutable. All the setters throws errors if the values
+ * does not match the requirements.
+ */
 public class ConfigurationTemplate {
 
   // FLAGS
@@ -160,8 +165,8 @@ public class ConfigurationTemplate {
   }
 
   private CustomError createError(String msg) {
-    return new CustomError(ErrorType.FailedConfigFileParsing, "[.scrabblerc] " + msg,
-        "user skill issue");
+    return new CustomError(
+        ErrorType.FailedConfigFileParsing, "[.scrabblerc] " + msg, "user skill issue");
   }
 
   public String aiPlayersToString() {

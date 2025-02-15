@@ -22,7 +22,7 @@ public class CliOptions {
   private Properties props;
 
   /**
-   * Builds a config Options from args passed as parameters to the java executable
+   * Builds a cli Options from args passed as parameters to the java executable
    *
    * @param args command line arguments
    * @throws CustomError if user specify a non existent CliOption

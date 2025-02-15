@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-// Binds enum to scrabblerc key
+/** Enumerates all the different keys that can be set from scrabblerc */
 public enum ConfigurationPropertiesEnum {
   AIDEPTH("aiDepth"),
   AIMODE("aiMode"),

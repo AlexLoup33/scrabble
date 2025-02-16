@@ -37,7 +37,8 @@ public class ConfigurationBuilder {
       BufferedReader scrabblerc = Files.newBufferedReader(src);
       props.load(scrabblerc);
     } catch (Exception e) {
-      throw createError("Could not access .scrabblerc", e.getMessage());
+      throw new CustomError(
+          ErrorType.FailedConfigFileParsing, "Could not access .scrabblerc", e.getMessage());
     }
 
     this.completeness = new HashMap<>();
@@ -56,8 +57,10 @@ public class ConfigurationBuilder {
           (ConfigurationPropertiesEnum e, Boolean b) ->
               completenessValues.append(
                   "[key: " + e.toString() + " / value: " + b.toString() + "]\n"));
-      throw createError(
-          "Some properties are missing from .scrabblerc", completenessValues.toString());
+      throw new CustomError(
+          ErrorType.FailedConfigFileParsing,
+          "Some properties are missing from .scrabblerc",
+          completenessValues.toString());
     }
   }
 
@@ -85,10 +88,6 @@ public class ConfigurationBuilder {
     convertPropsToTemplate(options.getProps(), this.confStub, true);
   }
 
-  private CustomError createError(String userMsg, String devMsg) {
-    return new CustomError(ErrorType.FailedConfigFileParsing, userMsg, devMsg);
-  }
-
   /**
    * This method takes a properties object and tries to set a target configuration template with
    * it's values. It sets the completeness bitmap values at the same time, which is used to know if
@@ -110,6 +109,7 @@ public class ConfigurationBuilder {
         continue;
       }
       String errHeader = fromCli ? "" : "[.scrabblerc] ";
+      ErrorType errType = fromCli ? ErrorType.InvalidCliArgs : ErrorType.ConfigParsingException;
       switch (confEnum) {
         // FLAGS
         case VERBOSE:
@@ -143,7 +143,8 @@ public class ConfigurationBuilder {
             try {
               value = Integer.parseUnsignedInt(props.getProperty(key));
             } catch (NumberFormatException e) {
-              throw createError(
+              throw new CustomError(
+                  errType,
                   errHeader
                       + "value `"
                       + props.getProperty(key)
@@ -168,7 +169,7 @@ public class ConfigurationBuilder {
               // so we can safely cast
               InvocationTargetException qualified = (InvocationTargetException) e;
               CustomError src = (CustomError) qualified.getCause();
-              throw src;
+              throw new CustomError(errType, errHeader + src.message, src.details);
             }
             break;
           }
@@ -195,12 +196,13 @@ public class ConfigurationBuilder {
               // so we can safely cast
               InvocationTargetException qualified = (InvocationTargetException) e;
               CustomError src = (CustomError) qualified.getCause();
-              throw src;
+              throw new CustomError(errType, errHeader + src.message, src.details);
             }
             break;
           }
         default:
-          throw createError(
+          throw new CustomError(
+              errType,
               errHeader + "Oops",
               "ConvertPropsToTemplate: ConfigurationPropertiesEnum."
                   + props.getProperty(key)

@@ -64,9 +64,9 @@ public class ConfigurationTemplate {
   }
 
   public void setPlayerCount(int playerCount) throws CustomError {
-    if (playerCount > 4 || playerCount < 0) {
+    if (playerCount > 4 || playerCount < 2) {
       throw createError(
-          "Value `" + playerCount + "` for key `playerCount`" + ", expected value in range 1-4");
+          "Value `" + playerCount + "` for key `playerCount`" + ", expected value in range 2-4");
     }
     this.playerCount = playerCount;
   }
@@ -76,6 +76,10 @@ public class ConfigurationTemplate {
   }
 
   public void setAiPlayers(String aiPlayers) {
+    if (aiPlayers.contains("A")) {
+      this.aiPlayers = new boolean[] {true, true, true, true};
+      return;
+    }
     if (aiPlayers.contains("1")) {
       this.aiPlayers[0] = true;
     }
@@ -165,8 +169,7 @@ public class ConfigurationTemplate {
   }
 
   private CustomError createError(String msg) {
-    return new CustomError(
-        ErrorType.FailedConfigFileParsing, "[.scrabblerc] " + msg, "user skill issue");
+    return new CustomError(ErrorType.FailedConfigFileParsing, msg, "user skill issue");
   }
 
   public String aiPlayersToString() {

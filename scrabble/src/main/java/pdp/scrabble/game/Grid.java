@@ -1,14 +1,14 @@
 package pdp.scrabble.game;
 
+import static pdp.scrabble.errorsHandling.ErrorType.NotAValidWord;
+import static pdp.scrabble.game.ScoreMultiplier.SIMPLE_LETTER;
+
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
-
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.Word;
 import pdp.scrabble.errorsHandling.CustomError;
-import static pdp.scrabble.errorsHandling.ErrorType.NotAValidWord;
-import static pdp.scrabble.game.ScoreMultiplier.SIMPLE_LETTER;
 import pdp.scrabble.game.actions.PlaceWordAction;
 
 public class Grid {

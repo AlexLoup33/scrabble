@@ -14,7 +14,7 @@ public class WordsLoader {
   public static List<Word> loadWordsFromFile(Path filePath) {
     LinkedList<Word> words = new LinkedList<>();
     String solvedPath = WordsLoader.resolveFilePath(filePath);
-//    System.out.println(solvedPath);
+    //    System.out.println(solvedPath);
     try (FileReader fileReader = new FileReader(solvedPath);
         BufferedReader bufferedReader = new BufferedReader(fileReader)) {
       String line;

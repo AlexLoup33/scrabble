@@ -6,22 +6,22 @@ Exceptions occur both at runtime and compile time, can be caught and handled (=>
 */
 
 public enum ErrorType {
-    FailedConfigFileParsing(true),
-    ConfigParsingException(true),
-    UncompletConfigexception(true),
-    InvalideLetterException(true),
-    MalformedDictionaryError(true),
-    InvalidGameStatusError(true),
-    InvalidLetterCountError(true),
-    NotAValidWord(false),
-    InvalidCliArgs(true),
-    DrawerError(true),
-    InvalidLangError(true), 
-    MalformedLangError(true);
+  FailedConfigFileParsing(true),
+  ConfigParsingException(true),
+  UncompletConfigexception(true),
+  InvalideLetterException(true),
+  MalformedDictionaryError(true),
+  InvalidGameStatusError(true),
+  InvalidLetterCountError(true),
+  NotAValidWord(false),
+  InvalidCliArgs(true),
+  DrawerError(true),
+  InvalidLangError(true),
+  MalformedLangError(true);
 
-    public final boolean isFatal;
+  public final boolean isFatal;
 
-    ErrorType(boolean isFatal) {
-        this.isFatal = isFatal;
-    }
+  ErrorType(boolean isFatal) {
+    this.isFatal = isFatal;
+  }
 }

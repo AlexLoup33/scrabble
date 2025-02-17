@@ -7,6 +7,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import pdp.scrabble.dictionary.Letter;
+import pdp.scrabble.dictionary.LettersPoints;
 import pdp.scrabble.dictionary.Word;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.actions.PlaceWordAction;
@@ -14,12 +15,19 @@ import pdp.scrabble.game.actions.PlaceWordAction;
 public class Grid {
   public final int size;
   private Letter[][] placedLetters;
-  private final Hashtable<GridPos, ScoreMultiplier> multiplicators = new Hashtable<>();
-  private LinkedList<OwnedWord> placedWords = new LinkedList<>();
+  private LinkedList<OwnedWord> placedWords;
+  private final Hashtable<GridPos, ScoreMultiplier> multiplicators;
+  private final LettersPoints pointsPerLetter;
+  // in order to cach the points for the letters
+  private final GameModel gameModel;
 
-  public Grid(int size) {
+  public Grid(GameModel gameModel, int size) {
+    this.gameModel = gameModel;
     this.size = size;
+    this.multiplicators = new Hashtable<>();
     this.placedLetters = new Letter[size][size];
+    this.pointsPerLetter = this.gameModel.lang.getLettersPoints();
+    this.placedWords = new LinkedList<>();
   }
 
   public void printGrid() {
@@ -71,7 +79,7 @@ public class Grid {
         //                System.out.println("DEBUG contains word: " +
         // GameModel.dictionary.containsWord(new Word(vertical_created_word)));
 
-        if (GameModel.dictionary.containsWord(vertical_word)) {
+        if (this.gameModel.dictionary.containsWord(vertical_word)) {
           OwnedWord to_add = new OwnedWord(pwa.startPosition, vertical_word, pwa.player);
           this.placedWords.add(to_add);
           result.add(to_add);
@@ -91,7 +99,7 @@ public class Grid {
           //                    System.out.println("DEBUG new_vertical_word: " +
           // new_horizontal_word);
           if (new_horizontal_word.length() >= 2) {
-            if (GameModel.dictionary.containsWord(new Word(new_horizontal_word))) {
+            if (this.gameModel.dictionary.containsWord(new Word(new_horizontal_word))) {
               OwnedWord tmp =
                   new OwnedWord(pwa.startPosition, new Word(new_horizontal_word), pwa.player);
               this.placedWords.add(tmp);
@@ -131,7 +139,7 @@ public class Grid {
         //                System.out.println("DEBUG contains word: " +
         // GameModel.dictionary.containsWord(new Word(horizontal_created_word)));
 
-        if (GameModel.dictionary.containsWord(horizontal_word)) {
+        if (this.gameModel.dictionary.containsWord(horizontal_word)) {
           OwnedWord to_place = new OwnedWord(pwa.startPosition, horizontal_word, pwa.player);
           this.placedWords.add(to_place);
           result.add(to_place);
@@ -151,7 +159,7 @@ public class Grid {
           //                    System.out.println("DEBUG new_vertical_word: " +
           // new_horizontal_word);
           if (new_horizontal_word.length() >= 2) {
-            if (GameModel.dictionary.containsWord(new Word(new_horizontal_word))) {
+            if (this.gameModel.dictionary.containsWord(new Word(new_horizontal_word))) {
               OwnedWord tmp =
                   new OwnedWord(pwa.startPosition, new Word(new_horizontal_word), pwa.player);
               this.placedWords.add(tmp);
@@ -216,6 +224,10 @@ public class Grid {
     }
   }
 
+  private int getLetterPoints(Letter letter) {
+    return this.pointsPerLetter.getLetterCount(letter);
+  }
+
   /**
    * The function `getMultiplier` returns the ScoreMultiplier associated with a given GridPos or a
    * default value if none is found.
@@ -249,9 +261,16 @@ public class Grid {
     for (int i = 0; i < word.word.getLength(); i++) {
       GridPos pos = word.position.getPosAtIndex(i);
       ScoreMultiplier multi = this.getMultiplier(pos);
+      int letterMult = 1;
       if (!multi.isLetterMultiplier()) {
         multi_word *= multi.getMultiplier();
+      } else {
+        // => is a letter mult
+        letterMult = multi.getMultiplier();
       }
+      Letter letter = word.word.getLetterAt(i);
+      int lettreBasePoints = this.getLetterPoints(letter);
+      score += (lettreBasePoints * letterMult);
     }
 
     return score * multi_word;

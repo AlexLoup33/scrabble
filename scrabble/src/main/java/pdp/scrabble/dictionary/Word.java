@@ -41,6 +41,10 @@ public class Word implements Comparable<Word> {
     return this.letters.length;
   }
 
+  public Letter getLetterAt(int index) {
+    return this.letters[index];
+  }
+
   @Override
   public String toString() {
     return this.word;

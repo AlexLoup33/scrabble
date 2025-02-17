@@ -6,17 +6,20 @@ import pdp.scrabble.dictionary.Dictionary;
 import pdp.scrabble.dictionary.IDictionary;
 
 public class GameModel {
-
-  public static Grid grid;
-  public static List<Player> players = new ArrayList<>();
-  public static LettersDrawer draw; // draw = pioche en fr
-  public static IDictionary dictionary;
+  public final Lang lang;
+  public final Grid grid;
+  public final List<Player> players;
+  public final LettersDrawer draw; // draw = pioche en fr
+  public final IDictionary dictionary;
 
   // Constructor
   public GameModel() {
+    this.lang = Lang.FR;
     // TODO get these infos from Config
-    this.grid = new Grid(15);
+    this.grid = new Grid(this, 15);
     this.dictionary = new Dictionary();
-    this.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
+    this.players = new ArrayList<>();
+    this.dictionary.loadFromFile(this.lang.getDictionaryPath());
+    this.draw = new LettersDrawer(this.lang);
   }
 }

@@ -16,11 +16,11 @@ public class Main {
     System.out.println("--- Start ---");
 
     GameModel gm = new GameModel();
-    GameModel.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
+    gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
 
     Player p1 = new Player("franck");
 
-    Grid grid = new Grid(15);
+    Grid grid = new Grid(gm, 15);
 
     Letter[] l1 = new Letter[5];
     l1[0] = new Letter('L');

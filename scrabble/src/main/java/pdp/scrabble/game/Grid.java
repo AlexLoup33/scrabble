@@ -296,4 +296,16 @@ public class Grid {
     }
     return score;
   }
+
+  /**
+   * The `applyGameAction` function in Java applies a `PlaceWordAction` by calling the
+   * `placeLetters` method.
+   *
+   * @param action The parameter `action` in the `applyGameAction` method is of type
+   *     `PlaceWordAction`. This parameter likely contains information about a word placement action
+   *     in a game, such as the word to be placed and the location where it should be placed.
+   */
+  public void applyGameAction(PlaceWordAction action) {
+    this.placeLetters(action);
+  }
 }

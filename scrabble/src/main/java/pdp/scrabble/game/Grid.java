@@ -273,7 +273,8 @@ public class Grid {
       score += (lettreBasePoints * letterMult);
     }
 
-    return score * multi_word;
+    return score 
+    * multi_word;
   }
 
   /**

@@ -9,6 +9,7 @@ import java.util.List;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.Word;
 import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.game.actions.GameAction;
 import pdp.scrabble.game.actions.PlaceWordAction;
 
 public class Grid {
@@ -276,5 +277,12 @@ public class Grid {
       }
     }
     return score;
+  }
+
+  // applique une game action sur le model
+  public void applyGameAction(GameAction action) {
+    if (action instanceof PlaceWordAction pwa) {
+      this.placeLetters(pwa);
+    }
   }
 }

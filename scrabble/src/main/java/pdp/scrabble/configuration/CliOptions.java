@@ -10,6 +10,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import pdp.scrabble.Utilities;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 
@@ -37,8 +38,16 @@ public class CliOptions {
     // FLAGS
     this.options.addOption(
         Option.builder("v").longOpt("verbose").desc("display additional informations").build());
+    // Debug can have an argument because of debug flags
     this.options.addOption(
-        Option.builder("d").longOpt("debug").desc("display debugging informations").build());
+        Option.builder("d")
+            .longOpt("debug")
+            .desc(
+                "display debugging informations, only messages matching given flags will be printed")
+            .hasArg()
+            .optionalArg(true)
+            .argName("flag(s)")
+            .build());
     this.options.addOption(
         Option.builder("b").longOpt("blitz").desc("launch game in blitz mode").build());
     this.options.addOption(
@@ -151,8 +160,9 @@ public class CliOptions {
 
     for (Option option : this.line.getOptions()) {
       String key = mappings.get(option.getOpt());
+      boolean isFlag = (!option.hasArg() || option.getValue() == null);
       if (key != null) {
-        if (option.hasArg()) {
+        if (!isFlag) {
           this.props.setProperty(key, option.getValue());
         } else {
           // CLI option that matches the mapping with no arg is
@@ -161,6 +171,10 @@ public class CliOptions {
         }
       }
     }
+
+    // Initiliaze the debugs flags with the string passed
+    // to the debug option, if any
+    Utilities.debugInit(line.getOptionValue("d"));
   }
 
   /**

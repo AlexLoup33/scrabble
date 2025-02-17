@@ -279,7 +279,14 @@ public class Grid {
     return score;
   }
 
-  // applique une game action sur le model
+  /**
+   * The `applyGameAction` function checks if the `GameAction` is an instance of `PlaceWordAction`
+   * and if so, calls the `placeLetters` method.
+   *
+   * @param action The `action` parameter is an object of type `GameAction`, which is being passed
+   *     to the `applyGameAction` method. The method checks if the `action` is an instance of
+   *     `PlaceWordAction` and if so, it calls the `placeLetters` method with the `Place
+   */
   public void applyGameAction(GameAction action) {
     if (action instanceof PlaceWordAction pwa) {
       this.placeLetters(pwa);

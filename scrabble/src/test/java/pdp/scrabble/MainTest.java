@@ -251,6 +251,16 @@ public class MainTest {
     }
 
     @Test
+    public void testLang() {
+        Lang lang = Lang.getLang("fr");
+        assertEquals(lang, Lang.getLang("fR"));
+        assertEquals(lang, Lang.FR);
+        assertEquals(lang.getDisplayName(), "français");
+        assertThrows(CustomError.class, () -> {Lang.getLang("pasUneLang");});
+        assertEquals(lang.getDictionaryPath(), Path.of("dictionary/fr.txt"));
+    }
+
+    @Test
     public void testLettersDrawer() {
         for (Lang lang : Lang.values()) {
             LettersDrawer drawer = new LettersDrawer(lang);

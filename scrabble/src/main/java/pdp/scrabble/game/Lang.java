@@ -1,7 +1,7 @@
 package pdp.scrabble.game;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Locale;
 
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
@@ -10,7 +10,7 @@ import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 
 public enum Lang {
-    EN("english", "en.txt") {
+    EN(Locale.ENGLISH) {
         @Override
         public LettersCounter getLettersCount() {
             LettersCounter letterCounts = new LettersCounter();
@@ -77,7 +77,7 @@ public enum Lang {
         }
     },
 
-    FR("français", "en.txt") {
+    FR(Locale.FRENCH) {
         @Override
         public LettersCounter getLettersCount() {
             LettersCounter letterCounts = new LettersCounter();
@@ -145,12 +145,36 @@ public enum Lang {
     };
 
     private static final String dictionaryDirectory = "dictionary/";
-    public final String displayName;
-    private final String fileName;
+    public static final String viewCliLangPack = "langPacks/viewCLI/pack";
 
-    private Lang(String displayName, String fileName) {
-        this.displayName = displayName;
-        this.fileName = fileName;
+    public final Locale locale;
+
+    /**
+     * create a new language available for scrable
+     * the name of the Lang must be an UPPERCASE of the lang code 
+     *  in order to keep thing easy
+     * @param locale the local to use with this lang
+     */
+    private Lang(Locale locale) {
+        this.locale = locale;
+        if (!this.getCodeLang().equals(this.locale.getLanguage())) {
+            throw new CustomError(ErrorType.MalformedLangError, 
+                "couldn't create the Lang: '" + this.name() + "'", 
+                "you can't create a Lang with name code: '" + this.getCodeLang() + 
+                "'' from Locale("+locale.getLanguage()+")");
+        }
+        if (!(this.locale.getCountry().equals(""))) {
+            throw new CustomError(ErrorType.MalformedLangError, 
+                "couldn't create the Lang: '" + this.name() + "'", 
+                "you can't create a Lang with a Local of a country '" + locale + "'");
+        }
+    }
+
+    /**
+     * @return the name of the language to be displayed (in its lang)
+     */
+    public String getDisplayName() {
+        return this.locale.getDisplayLanguage(this.locale);
     }
 
     public String getCodeLang() {
@@ -164,7 +188,7 @@ public enum Lang {
     public static Lang getLang(String codeLang) {
         codeLang = codeLang.toLowerCase();
         for (Lang lang : Lang.values()) {
-            if (lang.getCodeLang() == codeLang) {
+            if (lang.getCodeLang().equals(codeLang)) {
                 // => matching codeLang
                 return lang;
             }
@@ -175,10 +199,11 @@ public enum Lang {
     }
 
     /**
+     * the filename is constructed with 
      * @return where to find the file of the dictionary for this lang
      */
     public Path getDictionaryPath() {
-        return Path.of(Lang.dictionaryDirectory, this.fileName);
+        return Path.of(Lang.dictionaryDirectory, this.getCodeLang() + ".txt");
     }
 
     /**

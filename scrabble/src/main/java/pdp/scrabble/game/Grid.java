@@ -9,7 +9,6 @@ import java.util.List;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.Word;
 import pdp.scrabble.errorsHandling.CustomError;
-import pdp.scrabble.game.actions.GameAction;
 import pdp.scrabble.game.actions.PlaceWordAction;
 
 public class Grid {
@@ -280,16 +279,14 @@ public class Grid {
   }
 
   /**
-   * The `applyGameAction` function checks if the `GameAction` is an instance of `PlaceWordAction`
-   * and if so, calls the `placeLetters` method.
+   * The `applyGameAction` function in Java applies a `PlaceWordAction` by calling the
+   * `placeLetters` method.
    *
-   * @param action The `action` parameter is an object of type `GameAction`, which is being passed
-   *     to the `applyGameAction` method. The method checks if the `action` is an instance of
-   *     `PlaceWordAction` and if so, it calls the `placeLetters` method with the `Place
+   * @param action The parameter `action` in the `applyGameAction` method is of type
+   *     `PlaceWordAction`. This parameter likely contains information about a word placement action
+   *     in a game, such as the word to be placed and the location where it should be placed.
    */
-  public void applyGameAction(GameAction action) {
-    if (action instanceof PlaceWordAction pwa) {
-      this.placeLetters(pwa);
-    }
+  public void applyGameAction(PlaceWordAction action) {
+    this.placeLetters(action);
   }
 }

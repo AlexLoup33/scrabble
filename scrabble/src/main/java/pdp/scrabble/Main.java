@@ -7,8 +7,13 @@ package pdp.scrabble;
 
 import pdp.scrabble.configuration.ConfigurationBuilder;
 import pdp.scrabble.dictionary.Letter;
-import pdp.scrabble.game.*;
+import pdp.scrabble.game.Direction;
+import pdp.scrabble.game.GameModel;
+import pdp.scrabble.game.Grid;
+import pdp.scrabble.game.GridWordPos;
+import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.PlaceWordAction;
+import pdp.scrabble.view.ViewCLI;
 
 public class Main {
   public static void main(String[] args) throws Exception {
@@ -47,7 +52,10 @@ public class Main {
     System.out.println(
         grid.placeLetters(new PlaceWordAction(p1, 0, l2, new GridWordPos(13, 6, Direction.Right))));
 
-    grid.printGrid();
+    //grid.printGrid();
+    ViewCLI view = new ViewCLI();
+    view.displayGrid(grid);
+    view.displayPlayerLetters(p1.bag);
 
     System.out.println("--- End ---");
   }

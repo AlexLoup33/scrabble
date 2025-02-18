@@ -52,7 +52,7 @@ public class Main {
     System.out.println(
         grid.placeLetters(new PlaceWordAction(p1, 0, l2, new GridWordPos(13, 6, Direction.Right))));
 
-    //grid.printGrid();
+    // grid.printGrid();
     ViewCLI view = new ViewCLI();
     view.displayGrid(grid);
     view.displayPlayerLetters(p1.bag);

@@ -1,15 +1,15 @@
 package pdp.scrabble.game;
 
+import static pdp.scrabble.errorsHandling.ErrorType.NotAValidWord;
+import static pdp.scrabble.game.ScoreMultiplier.SIMPLE_LETTER;
+
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
-
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersPoints;
 import pdp.scrabble.dictionary.Word;
 import pdp.scrabble.errorsHandling.CustomError;
-import static pdp.scrabble.errorsHandling.ErrorType.NotAValidWord;
-import static pdp.scrabble.game.ScoreMultiplier.SIMPLE_LETTER;
 import pdp.scrabble.game.actions.PlaceWordAction;
 
 public class Grid {
@@ -29,12 +29,13 @@ public class Grid {
     this.pointsPerLetter = this.gameModel.lang.getLettersPoints();
     this.placedWords = new LinkedList<>();
 
-    // init multiplicators with DOUBLE_LETTER at pos (0,6), DOUBLE_WORD at pos (1,6), TRIPPLE_LETTER at pos (2,6) and TRIPPLE_WORD at pos (3,6)
+    // init multiplicators with DOUBLE_LETTER at pos (0,6), DOUBLE_WORD at pos (1,6), TRIPPLE_LETTER
+    // at pos (2,6) and TRIPPLE_WORD at pos (3,6)
     this.multiplicators.put(new GridPos(0, 5), ScoreMultiplier.DOUBLE_LETTER);
     this.multiplicators.put(new GridPos(1, 5), ScoreMultiplier.DOUBLE_WORD);
     this.multiplicators.put(new GridPos(2, 5), ScoreMultiplier.TRIPLE_LETTER);
     this.multiplicators.put(new GridPos(3, 5), ScoreMultiplier.TRIPLE_WORD);
-    
+
     this.multiplicators.put(new GridPos(0, 0), ScoreMultiplier.TRIPLE_WORD);
     this.multiplicators.put(new GridPos(0, 1), ScoreMultiplier.TRIPLE_LETTER);
     this.multiplicators.put(new GridPos(0, 2), ScoreMultiplier.DOUBLE_WORD);

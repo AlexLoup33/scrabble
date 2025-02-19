@@ -12,6 +12,10 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import pdp.scrabble.configuration.Configuration;
+import pdp.scrabble.configuration.ConfigurationBuilderTest;
+import pdp.scrabble.configuration.IConfiguration;
 import pdp.scrabble.dictionary.*;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.*;
@@ -22,6 +26,7 @@ public class MainTest {
   private LettersCounter lc;
   private Dictionary dict;
   private final Path path = java.nio.file.Paths.get("dictionary/fr.txt");
+  private IConfiguration config;
 
   @Before
   public void setUp() {
@@ -160,7 +165,96 @@ public class MainTest {
 
   @Test
   public void testPlaceLetters() {
-    GameModel gm = new GameModel();
+    IConfiguration config = new IConfiguration() {
+      @Override
+      public String getLanguage() {
+        return "fr"; // Langue 'fr'
+      }
+
+      @Override
+      public Path getDictFile() {
+        return Paths.get("dictionary/fr.txt"); // Chemin du fichier dictionnaire
+      }
+
+      @Override
+      public Boolean getVerbose() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getVerbose'");
+      }
+
+      @Override
+      public String getDebug() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDebug'");
+      }
+
+      @Override
+      public Boolean getBlitz() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getBlitz'");
+      }
+
+      @Override
+      public Boolean getSuperScrabble() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSuperScrabble'");
+      }
+
+      @Override
+      public Boolean getGui() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getGui'");
+      }
+
+      @Override
+      public int getPlayerCount() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPlayerCount'");
+      }
+
+      @Override
+      public int getBlitzTime() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getBlitzTime'");
+      }
+
+      @Override
+      public boolean[] getAiPlayers() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAiPlayers'");
+      }
+
+      @Override
+      public int getAiDepth() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAiDepth'");
+      }
+
+      @Override
+      public int getAiTime() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAiTime'");
+      }
+
+      @Override
+      public String getAiMode() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAiMode'");
+      }
+
+      @Override
+      public Path getContestFile() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getContestFile'");
+      }
+
+      @Override
+      public Path getHistoryFile() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getHistoryFile'");
+      }
+    };
+    GameModel gm = new GameModel(config);
     gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
 
     Player p1 = new Player("franck");

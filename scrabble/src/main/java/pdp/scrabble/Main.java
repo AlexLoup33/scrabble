@@ -21,7 +21,7 @@ public class Main {
     Configuration conf = ConfigurationInitializer.configurationInit(args);
     System.out.println("--- Start ---");
 
-    GameModel gm = new GameModel();
+    GameModel gm = new GameModel(conf); // udpate, prend config en parametre
     gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
 
     Player p1 = new Player("franck");

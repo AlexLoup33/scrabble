@@ -114,7 +114,7 @@ public class ConfigurationBuilderTest {
     Configuration cliConf = cliBuilder.getConfiguration();
 
     assertTrue(cliConf.getVerbose());
-    assertTrue(cliConf.getDebug());
+    assertEquals("+", cliConf.getDebug());
     assertTrue(cliConf.getBlitz());
     assertTrue(cliConf.getSuperScrabble());
     assertTrue(cliConf.getGui());
@@ -146,7 +146,7 @@ public class ConfigurationBuilderTest {
     Configuration cliConf = cliBuilder.getConfiguration();
 
     assertTrue(cliConf.getVerbose());
-    assertTrue(cliConf.getDebug());
+    assertEquals("+", cliConf.getDebug());
     assertEquals(5, cliConf.getBlitzTime());
   }
 

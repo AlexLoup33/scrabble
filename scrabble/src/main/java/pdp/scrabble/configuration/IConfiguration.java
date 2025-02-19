@@ -6,7 +6,7 @@ public interface IConfiguration {
   // Related to GameMode
   public Boolean getVerbose();
 
-  public Boolean getDebug();
+  public String getDebug();
 
   public Boolean getBlitz();
 

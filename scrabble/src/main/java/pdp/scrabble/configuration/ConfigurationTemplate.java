@@ -15,7 +15,7 @@ public class ConfigurationTemplate {
 
   // FLAGS
   private boolean verbose;
-  private boolean debug;
+  private String debug;
   private boolean blitz;
   private boolean superScrabble;
   private boolean gui;
@@ -47,7 +47,7 @@ public class ConfigurationTemplate {
     this.verbose = verbose;
   }
 
-  public void setDebug(Boolean debug) {
+  public void setDebug(String debug) {
     this.debug = debug;
   }
 

@@ -25,7 +25,7 @@ public class Utilities {
 
   /**
    * Print a debug message, if flag is enabled. Like printf, only with an extra argument on the
-   * front. If the flag is "+", we enable all debug messages.
+   * front.
    *
    * <p>There are some formatting differences with C's printf, you can Read The Friendly Manual:
    * https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Formatter.html#syntax

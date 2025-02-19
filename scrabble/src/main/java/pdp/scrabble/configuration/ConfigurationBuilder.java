@@ -113,7 +113,6 @@ public class ConfigurationBuilder {
       switch (confEnum) {
         // FLAGS
         case VERBOSE:
-        case DEBUG:
         case BLITZ:
         case SUPERSCRABBLE:
         case GUI:
@@ -174,6 +173,9 @@ public class ConfigurationBuilder {
             break;
           }
         // Strings
+        case DEBUG:
+          if (props.getProperty(key).equals("true"))
+            props.setProperty(key, "+"); // '+' is the all flags enabled keyword
         case AIPLAYERS:
         case LANGUAGE:
         case AIMODE:

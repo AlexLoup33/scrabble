@@ -5,7 +5,8 @@
  */
 package pdp.scrabble;
 
-import pdp.scrabble.configuration.ConfigurationBuilder;
+import pdp.scrabble.configuration.Configuration;
+import pdp.scrabble.configuration.ConfigurationInitializer;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.game.Direction;
 import pdp.scrabble.game.GameModel;
@@ -17,10 +18,10 @@ import pdp.scrabble.view.ViewCLI;
 
 public class Main {
   public static void main(String[] args) throws Exception {
-    ConfigurationBuilder cliBuilder = new ConfigurationBuilder(args);
+    Configuration conf = ConfigurationInitializer.configurationInit(args);
     System.out.println("--- Start ---");
 
-    GameModel gm = new GameModel();
+    GameModel gm = new GameModel(conf); // udpate, prend config en parametre
     gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
 
     Player p1 = new Player("franck");

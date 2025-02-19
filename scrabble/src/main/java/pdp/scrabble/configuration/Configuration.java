@@ -4,7 +4,7 @@ import java.nio.file.Path;
 
 public record Configuration(
     boolean verbose,
-    boolean debug,
+    String debug,
     boolean blitz,
     boolean superScrabble,
     boolean gui,
@@ -25,7 +25,7 @@ public record Configuration(
   }
 
   @Override
-  public Boolean getDebug() {
+  public String getDebug() {
     return this.debug;
   }
 

@@ -168,12 +168,12 @@ public class MainTest {
     IConfiguration config = new IConfiguration() {
       @Override
       public String getLanguage() {
-        return "fr"; // Langue 'fr'
+        return "fr";
       }
 
       @Override
       public Path getDictFile() {
-        return Paths.get("dictionary/fr.txt"); // Chemin du fichier dictionnaire
+        return Paths.get("dictionary/fr.txt");
       }
 
       @Override

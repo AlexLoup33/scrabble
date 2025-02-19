@@ -54,7 +54,7 @@ public class Main {
 
     // grid.printGrid();
     ViewCLI view = new ViewCLI();
-    view.displayGrid(grid);
+    view.displayGrid(grid, false);
     view.displayPlayerLetters(p1.bag);
 
     System.out.println("--- End ---");

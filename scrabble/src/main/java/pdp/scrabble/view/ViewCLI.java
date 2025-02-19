@@ -1,7 +1,10 @@
 package pdp.scrabble.view;
 
+import java.lang.Boolean;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
+import pdp.scrabble.errorsHandling.CustomError;
+import static pdp.scrabble.errorsHandling.ErrorType.UnsupportedMultiplier;
 import pdp.scrabble.game.Grid;
 import pdp.scrabble.game.GridPos;
 import pdp.scrabble.game.ScoreMultiplier;
@@ -15,7 +18,7 @@ public class ViewCLI implements IView {
   }
 
   @Override
-  public void displayGrid(Grid grid) {
+  public void displayGrid(Grid grid, Boolean isSuperScrabble) {
     // Display the first row of the grid with the column numbers
     System.out.print("  ");
     for (int i = 0; i < grid.size - 1; i++) {
@@ -37,21 +40,19 @@ public class ViewCLI implements IView {
 
         // TO-DO: Prendre en compte le mode SuperScrabble
         switch (mult) {
-          case TRIPLE_LETTER -> {
-            color = "\u001B[34m";
-            backgroundColor = "\u001B[44m";
+          case SIMPLE_LETTER, DOUBLE_LETTER, TRIPLE_LETTER, DOUBLE_WORD, TRIPLE_WORD -> {
+            color = mult.getLetterColor(isSuperScrabble).getTextColor();
+            backgroundColor = mult.getLetterColor(isSuperScrabble).getBackgroundColor();
           }
-          case TRIPLE_WORD -> {
-            color = "\u001B[35m";
-            backgroundColor = "\u001B[45m";
+          case QUADRUPLE_LETTER, QUADRUPLE_WORD -> {
+            if (!isSuperScrabble){
+              throw new CustomError(UnsupportedMultiplier, "Illegal Multiplier", "Illegal utilisation of QUADRUPLE multiplier in another game mode");
+            }
+            color = mult.getLetterColor(isSuperScrabble).getTextColor();
+            backgroundColor = mult.getLetterColor(isSuperScrabble).getBackgroundColor();
           }
-          case DOUBLE_LETTER -> {
-            color = "\u001B[36m";
-            backgroundColor = "\u001B[46m";
-          }
-          case DOUBLE_WORD -> {
-            color = "\u001B[31m";
-            backgroundColor = "\u001B[41m";
+          default -> {
+            throw new CustomError(UnsupportedMultiplier, "Unsupported Multiplier", "Unexistant Multiplier case detected while initializing the display of the grid");
           }
         }
 

@@ -1,15 +1,17 @@
 package pdp.scrabble.game;
 
-import static pdp.scrabble.errorsHandling.ErrorType.NotAValidWord;
-import static pdp.scrabble.game.ScoreMultiplier.SIMPLE_LETTER;
-
+import java.io.File;
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
+
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersPoints;
 import pdp.scrabble.dictionary.Word;
 import pdp.scrabble.errorsHandling.CustomError;
+import static pdp.scrabble.errorsHandling.ErrorType.NotAValidWord;
 import pdp.scrabble.game.actions.PlaceWordAction;
 
 public class Grid {
@@ -31,6 +33,12 @@ public class Grid {
 
     // TODO: modifier position des scores multiplicateurs si super-scrabble
 
+    try{
+      this.loadMultoplicators("multiplicators_default.conf");
+    }catch (IOException e){
+      System.out.println(e);
+    } 
+    /* 
     this.multiplicators.put(new GridPos(0, 3), ScoreMultiplier.DOUBLE_LETTER);
     this.multiplicators.put(new GridPos(0, 11), ScoreMultiplier.DOUBLE_LETTER);
     this.multiplicators.put(new GridPos(2, 6), ScoreMultiplier.DOUBLE_LETTER);
@@ -94,21 +102,47 @@ public class Grid {
     this.multiplicators.put(new GridPos(7, 14), ScoreMultiplier.TRIPLE_WORD);
     this.multiplicators.put(new GridPos(14, 0), ScoreMultiplier.TRIPLE_WORD);
     this.multiplicators.put(new GridPos(14, 7), ScoreMultiplier.TRIPLE_WORD);
-    this.multiplicators.put(new GridPos(14, 14), ScoreMultiplier.TRIPLE_WORD);
+    this.multiplicators.put(new GridPos(14, 14), ScoreMultiplier.TRIPLE_WORD);*/
   }
 
-  public void printGrid() {
-    for (int i = 0; i < size; i++) {
-      for (int j = 0; j < size; j++) {
-        if (this.placedLetters[i][j] == null) {
-          System.out.print("❎ ");
-        } else {
-          System.out.print(this.placedLetters[i][j] + "  ");
+  public void loadMultoplicators(String conf) throws IOException{
+      File file = new File(conf);
+
+      Scanner scan = new Scanner(file);
+      while(scan.hasNextLine()){
+        String[] mult = scan.nextLine().split("-");
+
+        String[] parts = mult[0].split("\\.");
+        int[] p = new int[parts.length];
+        for (int i = 0; i < parts.length; i++) {
+            p[i] = Integer.parseInt(parts[i]);
         }
+        GridPos pos = new GridPos(p[0], p[1]);
+        ScoreMultiplier multiplier = ScoreMultiplier.SIMPLE_LETTER;
+        switch (mult[1]) {
+            case "DOUBLE_LETTER" -> {
+              multiplier = ScoreMultiplier.DOUBLE_LETTER;
+            }
+            case "DOUBLE_WORD" -> {
+              multiplier = ScoreMultiplier.DOUBLE_WORD;
+            }
+            case "TRIPLE_LETTER" -> {
+              multiplier = ScoreMultiplier.TRIPLE_LETTER;
+            }
+            case "TRIPLE_WORD" -> {
+              multiplier = ScoreMultiplier.TRIPLE_WORD;
+            }
+            case "QUADRUPULE_LETTER" -> {
+              multiplier = ScoreMultiplier.QUADRUPLE_LETTER;
+            }
+            case "QUADRUPULE_WORD" -> {
+              multiplier = ScoreMultiplier.QUADRUPLE_WORD;
+            }
+        }
+        this.multiplicators.put(pos, multiplier);
       }
-      System.out.println();
+      scan.close();
     }
-  }
 
   public Letter getLetter(int row, int col) {
     return this.placedLetters[row][col];
@@ -311,7 +345,7 @@ public class Grid {
    *         default `ScoreMultiplier` object `SIMPLE_LETTER`.
    */
   public ScoreMultiplier getMultiplier(GridPos pos) {
-    return this.multiplicators.getOrDefault(pos, SIMPLE_LETTER);
+    return this.multiplicators.getOrDefault(pos, ScoreMultiplier.SIMPLE_LETTER);
   }
 
   /**

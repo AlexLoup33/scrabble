@@ -366,7 +366,7 @@ public class MainTest {
                     () -> {
                         drawer.popLetter();
                     });
-            /// assert the letters drawed are correct
+            /// assert the letters drawn are correct
             // check the letters set
             final LettersCounter langLetters = lang.getLettersCount();
             assertEquals(drawedLetters.getLettersSet(), langLetters.getLettersSet());

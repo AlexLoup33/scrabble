@@ -10,67 +10,67 @@ import pdp.scrabble.view.IView;
 
 public class GameController {
 
-  private GameModel model;
-  private IView view;
+    private GameModel model;
+    private IView view;
 
-  public GameController(GameModel model, IView view) {
-    this.model = model;
-    this.view = view;
-  }
+    public GameController(GameModel model, IView view) {
+        this.model = model;
+        this.view = view;
+    }
 
-  public void gameLoop() {
-    boolean playDone;
-    // We only play 3 table rounds for now
-    // Need to compute an end game condition to go beyond
-    Utilities.debug('l', "game loop starts\n");
-    for (int i = 0; i < 3; i++) {
-      Utilities.debug('l', "round number %d\n", i);
-      for (Player playing : model.players) {
-        playDone = false;
-        Utilities.debug('l', "%s begins his turn\n", playing.name);
-        drawLetters(playing);
-        // TODO draw.currentSize is not really the numbers of letters in draw
-        Utilities.debug('l', "numbers of letters in draw : %d\n", model.draw.getCurrentSize());
-        // view.announceTurn(Player cur); NOT IMPLEMENTED
-        // view.displayDraw(); NOT IMPLEMENTED
-        view.displayGrid(model.grid, false);
-        view.displayPlayerLetters(playing.bag);
-        while (!playDone) {
-          try {
-            GameAction played = view.askAction(playing); // blocking
-            // TODO : Check validity of played
-            playDone = applyGameAction(played);
-          } catch (Exception e) {
-            System.out.println(e);
-          }
+    public void gameLoop() {
+        boolean playDone;
+        // We only play 3 table rounds for now
+        // Need to compute an end game condition to go beyond
+        Utilities.debug('l', "game loop starts\n");
+        for (int i = 0; i < 3; i++) {
+            Utilities.debug('l', "round number %d\n", i);
+            for (Player playing : model.players) {
+                playDone = false;
+                Utilities.debug('l', "%s begins his turn\n", playing.name);
+                drawLetters(playing);
+                // TODO draw.currentSize is not really the numbers of letters in draw
+                Utilities.debug('l', "numbers of letters in draw : %d\n", model.draw.getCurrentSize());
+                // view.announceTurn(Player cur); NOT IMPLEMENTED
+                // view.displayDraw(); NOT IMPLEMENTED
+                view.displayGrid(model.grid, false);
+                view.displayPlayerLetters(playing.bag);
+                while (!playDone) {
+                    try {
+                        GameAction played = view.askAction(playing); // blocking
+                        // TODO : Check validity of played
+                        playDone = applyGameAction(played);
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
+                }
+                Utilities.debug('l', "%s ends his turn\n", playing.name);
+            }
         }
-        Utilities.debug('l', "%s ends his turn\n", playing.name);
-      }
     }
-  }
 
-  private void drawLetters(Player playing) {
-    if (model.draw.getCurrentSize() < 7) {
-      throw new Error("draw letter count is under 7");
-      // TODO endgame
+    private void drawLetters(Player playing) {
+        if (model.draw.getCurrentSize() < 7) {
+            throw new Error("draw letter count is under 7");
+            // TODO endgame
+        }
+        for (int i = playing.bag.sumValues(); i < 7; i++) {
+            playing.bag.addLetter(model.draw.popLetter());
+        }
     }
-    for (int i = playing.bag.sumValues(); i < 7; i++) {
-      playing.bag.addLetter(model.draw.popLetter());
-    }
-  }
 
-  private boolean applyGameAction(GameAction played) {
-    if (played instanceof PlaceWordAction) {
-      try {
-        model.grid.placeLetters((PlaceWordAction) played);
-        return true;
-      } catch (CustomError e) {
-        System.out.println(e);
-        // view.showError(e.toUserFormatedText()); NOT IMPLEMENTED
+    private boolean applyGameAction(GameAction played) {
+        if (played instanceof PlaceWordAction) {
+            try {
+                model.grid.placeLetters((PlaceWordAction) played);
+                return true;
+            } catch (CustomError e) {
+                System.out.println(e);
+                // view.showError(e.toUserFormatedText()); NOT IMPLEMENTED
+                return false;
+            }
+        }
+        Utilities.debug('l', "%s is playing a non implemented action\n", played.player);
         return false;
-      }
     }
-    Utilities.debug('l', "%s is playing a non implemented action\n", played.player);
-    return false;
-  }
 }

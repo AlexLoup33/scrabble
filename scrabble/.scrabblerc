@@ -1,7 +1,7 @@
 #[Default]
 #[Flags]
 verbose=false
-debug=false
+debug=l
 blitz=false
 superScrabble=false
 gui=false

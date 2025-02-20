@@ -30,5 +30,9 @@ public class Main {
 
         GameController gc = new GameController(gm, view);
         gc.gameLoop();
+
+        // F30 faire test
+        // F32 test neg
+        //
     }
 }

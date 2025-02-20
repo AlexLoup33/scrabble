@@ -128,6 +128,10 @@ public class LettersCounter {
     return this.table.keySet();
   }
 
+  public int sumValues() {
+    return this.table.values().stream().reduce(0, Integer::sum);
+  }
+
   @Override
   public String toString() {
     return "LettersCounter{" + "table=" + table + '}';

@@ -2,7 +2,6 @@ package pdp.scrabble.game;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import pdp.scrabble.configuration.IConfiguration;
 import pdp.scrabble.dictionary.Dictionary;
 import pdp.scrabble.dictionary.IDictionary;
@@ -10,7 +9,7 @@ import pdp.scrabble.dictionary.IDictionary;
 public class GameModel {
   public final Lang lang;
   public final Grid grid;
-  public final List<Player> players;
+  public List<Player> players;
   public final LettersDrawer draw; // draw = pioche en fr
   public final IDictionary dictionary;
 
@@ -36,5 +35,4 @@ public class GameModel {
     this.dictionary.loadFromFile(config.getDictFile());
     this.draw = new LettersDrawer(this.lang);
   }
-
 }

@@ -31,8 +31,9 @@ public class Main {
         GameController gc = new GameController(gm, view);
         gc.gameLoop();
 
+        // TODO
         // F30 faire test
-        // F32 test neg
-        //
+        // F32 test mot pas legal
+        // nope F22, F17, F18, F12, F29, F37
     }
 }

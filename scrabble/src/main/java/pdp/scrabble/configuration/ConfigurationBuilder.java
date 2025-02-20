@@ -176,6 +176,10 @@ public class ConfigurationBuilder {
         case DEBUG:
           if (props.getProperty(key).equals("true"))
             props.setProperty(key, "+"); // '+' is the all flags enabled keyword
+          if (props.getProperty(key).equals("false")) {
+            this.completeness.put(confEnum, true);
+            break;
+          }
         case AIPLAYERS:
         case LANGUAGE:
         case AIMODE:
@@ -268,7 +272,7 @@ public class ConfigurationBuilder {
     writer.write("#[" + name + "]\n");
     writer.write("#[Flags]\n");
     writer.write("verbose=" + conf.getVerbose() + "\n");
-    writer.write("debug=" + conf.getDebug() + "\n");
+    writer.write("debug=" + (conf.getDebug() == null ? "false" : conf.getDebug()) + "\n");
     writer.write("blitz=" + conf.getBlitz() + "\n");
     writer.write("superScrabble=" + conf.getSuperScrabble() + "\n");
     writer.write("gui=" + conf.getGui() + "\n\n");

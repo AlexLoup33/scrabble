@@ -4,6 +4,7 @@ import java.util.Objects;
 
 /** a letter class that ensure this is a valid scrable letter */
 public class Letter {
+  public final boolean isJoker;
   public final char chr;
 
   public Letter(char c) {
@@ -11,6 +12,13 @@ public class Letter {
       throw new IllegalArgumentException("the letter: " + c + '(' + (int) c + ')' + " isn't valid");
     }
     this.chr = c;
+    this.isJoker = false;
+  }
+
+  /** contructor for the joker letter */
+  public Letter() {
+    this.chr = '#';
+    this.isJoker = true;
   }
 
   @Override

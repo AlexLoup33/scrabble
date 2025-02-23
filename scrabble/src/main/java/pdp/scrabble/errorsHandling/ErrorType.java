@@ -19,7 +19,8 @@ public enum ErrorType {
   InvalidLangError(true),
   UnsupportedMultiplier(true),
   MalformedLangError(true),
-  IO(true);
+  IO(true),
+  ForfeitTwiceError(true);
 
   public final boolean isFatal;
 

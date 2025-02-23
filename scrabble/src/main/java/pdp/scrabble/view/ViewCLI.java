@@ -127,9 +127,17 @@ public class ViewCLI implements IView {
     System.out.println("Player letters:");
     System.out.print("[ ");
     // Foreach with letters.getLetterSet()
+    boolean isFirst = true;
     for (Letter letter : letters.getLettersSet()) {
-      System.out.print(letter + " | ");
+      for (int i = 0; i < letters.getLetterCount(letter); i++) {
+        if (!isFirst) {
+          System.out.print(" | ");
+        } else {
+          isFirst = false;
+        }
+        System.out.print(letter);
+      }
     }
-    System.out.println("]");
+    System.out.println(" ]");
   }
 }

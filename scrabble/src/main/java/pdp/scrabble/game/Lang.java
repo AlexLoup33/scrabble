@@ -13,6 +13,7 @@ public enum Lang {
     @Override
     public LettersCounter getLettersCount() {
       LettersCounter letterCounts = new LettersCounter();
+      letterCounts.addLetter(new Letter(), 2);
       letterCounts.addLetter(new Letter('A'), 9);
       letterCounts.addLetter(new Letter('B'), 2);
       letterCounts.addLetter(new Letter('C'), 2);
@@ -80,6 +81,7 @@ public enum Lang {
     @Override
     public LettersCounter getLettersCount() {
       LettersCounter letterCounts = new LettersCounter();
+      letterCounts.addLetter(new Letter(), 2);
       letterCounts.addLetter(new Letter('A'), 9);
       letterCounts.addLetter(new Letter('B'), 2);
       letterCounts.addLetter(new Letter('C'), 2);

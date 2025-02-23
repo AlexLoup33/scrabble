@@ -6,7 +6,6 @@
 package pdp.scrabble;
 
 import java.util.Arrays;
-
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.configuration.ConfigurationInitializer;
 import pdp.scrabble.controller.GameController;
@@ -16,24 +15,24 @@ import pdp.scrabble.game.Player;
 import pdp.scrabble.view.ViewCLI;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
-        Configuration conf = ConfigurationInitializer.configurationInit(args);
+  public static void main(String[] args) throws Exception {
+    Configuration conf = ConfigurationInitializer.configurationInit(args);
 
-        Player p1 = new Player("franck");
-        Player p2 = new Player("franck2");
-        ViewCLI view = new ViewCLI();
+    Player p1 = new Player();
+    Player p2 = new Player();
+    ViewCLI view = new ViewCLI();
 
-        GameModel gm = new GameModel(conf);
-        Grid grid = new Grid(gm, 15);
-        gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
-        gm.players = Arrays.asList(p1, p2);
+    GameModel gm = new GameModel(conf);
+    Grid grid = new Grid(gm, 15);
+    gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
+    gm.players = Arrays.asList(p1, p2);
 
-        GameController gc = new GameController(gm, view);
-        gc.gameLoop();
+    GameController gc = new GameController(gm, view);
+    gc.gameLoop();
 
-        // TODO
-        // F30 faire test
-        // F32 test mot pas legal
-        // nope F22, F17, F18, F12, F29, F37
-    }
+    // TODO
+    // F30 faire test
+    // F32 test mot pas legal
+    // nope F22, F17, F18, F12, F29, F37
+  }
 }

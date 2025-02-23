@@ -34,6 +34,7 @@ public class CliOptions {
 
     // Stops execution if found
     this.options.addOption("h", "help", false, "print this message");
+    this.options.addOption("V", "version", false, "print the version");
 
     // FLAGS
     this.options.addOption(
@@ -153,6 +154,16 @@ public class CliOptions {
     if (line.hasOption("help")) {
       HelpFormatter formatter = new HelpFormatter();
       formatter.printHelp("scrabble", options);
+      System.exit(0);
+    }
+
+    if (line.hasOption("version")) {
+      try {
+        System.out.println(Utilities.getProjetVersion());
+      } catch (CustomError e) {
+        System.out.println(e.toUserFormatedText());
+        System.exit(1);
+      }
       System.exit(0);
     }
 

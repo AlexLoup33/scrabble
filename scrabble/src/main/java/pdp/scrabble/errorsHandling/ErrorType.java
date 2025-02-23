@@ -18,7 +18,8 @@ public enum ErrorType {
   DrawerError(true),
   InvalidLangError(true),
   UnsupportedMultiplier(true),
-  MalformedLangError(true);
+  MalformedLangError(true),
+  IO(true);
 
   public final boolean isFatal;
 

@@ -1,11 +1,9 @@
 package pdp.scrabble.controller;
 
 import pdp.scrabble.Utilities;
-import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
-import pdp.scrabble.game.actions.PlaceWordAction;
 import pdp.scrabble.view.IView;
 
 public class GameController {
@@ -39,7 +37,7 @@ public class GameController {
           try {
             GameAction played = view.askAction(playing); // blocking
             // TODO : Check validity of played
-            playDone = applyGameAction(played);
+            playDone = model.applyGameAction(played);
           } catch (Exception e) {
             System.out.println(e);
           }
@@ -57,20 +55,5 @@ public class GameController {
     for (int i = playing.bag.sumValues(); i < 7; i++) {
       playing.bag.addLetter(model.draw.popLetter());
     }
-  }
-
-  private boolean applyGameAction(GameAction played) {
-    if (played instanceof PlaceWordAction) {
-      try {
-        model.grid.placeLetters((PlaceWordAction) played);
-        return true;
-      } catch (CustomError e) {
-        System.out.println(e);
-        // view.showError(e.toUserFormatedText()); NOT IMPLEMENTED
-        return false;
-      }
-    }
-    Utilities.debug('l', "%s is playing a non implemented action\n", played.player);
-    return false;
   }
 }

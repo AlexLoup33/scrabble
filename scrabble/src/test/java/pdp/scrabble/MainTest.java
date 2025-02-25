@@ -206,8 +206,7 @@ public class MainTest {
 
           @Override
           public int getPlayerCount() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'getPlayerCount'");
+            return 1;
           }
 
           @Override
@@ -255,7 +254,7 @@ public class MainTest {
     GameModel gm = new GameModel(config);
     gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
 
-    Player p1 = new Player();
+    Player p1 = gm.players.get(0);
 
     Grid grid = new Grid(gm, 15);
 

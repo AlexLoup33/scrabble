@@ -1,13 +1,23 @@
 package pdp.scrabble.view;
 
+import java.util.ResourceBundle;
+
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
+import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.Grid;
 import pdp.scrabble.game.GridPos;
 import pdp.scrabble.game.ScoreMultiplier;
 import pdp.scrabble.game.actions.GameAction;
 
 public class ViewCLI implements IView {
+
+  private final ResourceBundle langPack;
+
+  public ViewCLI(String langPackCode) {
+    this.langPack = ResourceBundle.getBundle("pack_" + langPackCode);
+  }
 
   @Override
   public GameAction askAction() {
@@ -19,8 +29,10 @@ public class ViewCLI implements IView {
     // Display the first row of the grid with the column numbers
     System.out.print("  ");
     for (int i = 0; i < grid.size - 1; i++) {
-      if (i < 8) System.out.print(i + 1 + "  ");
-      else System.out.print(i + 1 + " ");
+      if (i < 8)
+        System.out.print(i + 1 + "  ");
+      else
+        System.out.print(i + 1 + " ");
     }
     System.out.println(grid.size);
 
@@ -57,11 +69,15 @@ public class ViewCLI implements IView {
 
         Letter letter = grid.getLetter(i, j);
         if (letter == null) {
-          if (j == grid.size - 1) System.out.print(backgroundColor + "_" + colorReset);
-          else System.out.print(backgroundColor + "_" + colorReset + "  ");
+          if (j == grid.size - 1)
+            System.out.print(backgroundColor + "_" + colorReset);
+          else
+            System.out.print(backgroundColor + "_" + colorReset + "  ");
         } else {
-          if (j == grid.size - 1) System.out.print(color + letter + colorReset);
-          else System.out.print(color + letter + "  " + colorReset);
+          if (j == grid.size - 1)
+            System.out.print(color + letter + colorReset);
+          else
+            System.out.print(color + letter + "  " + colorReset);
         }
       }
       System.out.print("\n");
@@ -77,5 +93,16 @@ public class ViewCLI implements IView {
       System.out.print(letter + " | ");
     }
     System.out.println("]");
+  }
+
+  @Override
+  public String getLangPack(String key) {
+    if (!langPack.containsKey(key)) {
+      throw new CustomError(
+          ErrorType.InvalidKeyArgument,
+          "Key : " + key + " not in:" + langPack,
+          "Invalid KeyArgument. Please check the file pack_ and verify your keys");
+    }
+    return langPack.getString(key);
   }
 }

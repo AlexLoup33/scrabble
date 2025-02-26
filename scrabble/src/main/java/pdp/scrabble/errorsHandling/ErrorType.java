@@ -17,7 +17,8 @@ public enum ErrorType {
   InvalidCliArgs(true),
   DrawerError(true),
   InvalidLangError(true),
-  MalformedLangError(true);
+  MalformedLangError(true),
+  InvalidKeyArgument(true);
 
   public final boolean isFatal;
 

@@ -10,4 +10,6 @@ public interface IView {
   public void displayGrid(Grid grid);
 
   public void displayPlayerLetters(LettersCounter letters);
+
+  public String getLangPack(String identifiant);
 }

@@ -54,7 +54,7 @@ public class Main {
         grid.placeLetters(new PlaceWordAction(p1, 0, l2, new GridWordPos(13, 6, Direction.Right))));
 
     // grid.printGrid();
-    ViewCLI view = new ViewCLI();
+    ViewCLI view = new ViewCLI("fr");
     view.displayGrid(grid);
     view.displayPlayerLetters(p1.bag);
 

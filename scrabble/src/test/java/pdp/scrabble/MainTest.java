@@ -20,6 +20,7 @@ import pdp.scrabble.dictionary.*;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.*;
 import pdp.scrabble.game.actions.PlaceWordAction;
+import pdp.scrabble.view.ViewCLI;
 
 public class MainTest {
 
@@ -384,5 +385,13 @@ public class MainTest {
             drawer.pushLetter(new Letter('A'));
           });
     }
+  }
+
+  public static void PropertiesTest(String[] args) {
+    ViewCLI view = new ViewCLI("fr");
+    String result = view.getLangPack("test");
+    System.out.println(result);
+
+    assertTrue(result != null && !result.isEmpty());
   }
 }

@@ -401,11 +401,13 @@ public class MainTest {
     }
   }
 
-  public static void PropertiesTest(String[] args) {
-    ViewCLI view = new ViewCLI();
-    String result = view.getLangPack("test");
-    System.out.println(result);
-
-    assertTrue(result != null && !result.isEmpty());
-  }
+  /*
+   * public static void PropertiesTest(String[] args) {
+   * ViewCLI view = new ViewCLI();
+   * String result = view.getLangPack("test");
+   * System.out.println(result);
+   * 
+   * assertTrue(result != null && !result.isEmpty());
+   * }
+   */
 }

@@ -20,6 +20,9 @@ public class Main {
 
         ViewCLI view = new ViewCLI("fr");
 
+        String testCode = view.getLangPack("test");
+        System.out.println(testCode);
+
         GameModel gm = new GameModel(conf);
         Grid grid = new Grid(gm, 15);
         gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));

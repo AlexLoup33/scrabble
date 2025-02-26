@@ -15,6 +15,7 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.configuration.IConfiguration;
 import pdp.scrabble.dictionary.*;
 import pdp.scrabble.errorsHandling.CustomError;
@@ -24,393 +25,323 @@ import pdp.scrabble.view.ViewCLI;
 
 public class MainTest {
 
-  private LettersCounter lc;
-  private Dictionary dict;
-  private final Path path = java.nio.file.Paths.get("dictionary/fr.txt");
-  private IConfiguration config;
+    private LettersCounter lc;
+    private Dictionary dict;
+    private final Path path = java.nio.file.Paths.get("dictionary/fr.txt");
+    private IConfiguration config;
 
-  @Before
-  public void setUp() {
-    lc = new LettersCounter();
-    dict = new Dictionary();
-  }
-
-  @After
-  public void tearDown() {
-    lc = null;
-    dict = null;
-  }
-
-  @Test
-  public void testLettersCounter() {
-    // test addLetter, getLetterCount
-    lc.addLetter(new Letter('A'));
-    lc.addLetter(new Letter('B'));
-    lc.addLetter(new Letter('C'));
-    lc.addLetter(new Letter('B'));
-    assertEquals(1, lc.getLetterCount(new Letter('A')));
-    assertEquals(2, lc.getLetterCount(new Letter('B')));
-    assertEquals(1, lc.getLetterCount(new Letter('C')));
-    assertEquals(0, lc.getLetterCount(new Letter('D')));
-
-    // test removeLetter
-    lc.removeLetter(new Letter('A'));
-    assertEquals(0, lc.getLetterCount(new Letter('A')));
-    lc.removeLetter(new Letter('C'));
-    assertEquals(0, lc.getLetterCount(new Letter('C')));
-    assertEquals(0, lc.getLetterCount(new Letter('Z')));
-
-    // test getLettersSet
-    assertTrue(lc.getLettersSet().contains(new Letter('B')));
-    assertFalse(lc.getLettersSet().contains(new Letter('A')));
-  }
-
-  @Test
-  public void testRemoveNonExistingLetter() {
-    lc.addLetter(new Letter('D'));
-    assertEquals(1, lc.getLetterCount(new Letter('D')));
-    assertThrows(
-        CustomError.class,
-        () -> {
-          lc.removeLetter(new Letter('E'));
-        });
-  }
-
-  @Test
-  public void testEmptyCounter() {
-    assertEquals(0, lc.getLetterCount(new Letter('F')));
-  }
-
-  /**
-   * Test the basic functionality of the Dictionary class
-   */
-  @Test
-  public void testDictionaryBasicFunc() {
-    // test addWord, containsWord
-    Word word = new Word("test");
-    dict.addWord(word);
-    assertTrue(dict.containsWord(word));
-    assertFalse(dict.containsWord(new Word("testDeux")));
-
-    // test toString
-    Word word2 = new Word("frank");
-    dict.addWord(word2);
-    assertTrue(dict.toString().contains(word.toString()));
-    assertTrue(dict.toString().contains(word2.toString()));
-  }
-
-  @Test
-  public void testDictionaryLoadFromFile() {
-    dict.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
-    assertTrue(dict.containsWord(new Word("AALENIEN")));
-    assertFalse(dict.containsWord(new Word("cpasunmotlegalca")));
-  }
-
-  @Test
-  public void testWordsLoader() {
-    List<Word> words = WordsLoader.loadWordsFromFile(path);
-    assertFalse(words.isEmpty());
-    assertTrue(words.contains(new Word("AALENIEN")));
-
-    Path invalidPath = Paths.get("../FAKE_FILE.txt");
-    try {
-      WordsLoader.loadWordsFromFile(invalidPath);
-    } catch (Exception e) {
-      assertTrue(e instanceof IllegalArgumentException);
-    }
-  }
-
-  @Test
-  public void testDawg() {
-    Dawg dawg = new Dawg();
-    dawg.loadFromFile(path);
-
-    assertTrue(dawg.containsWord(new Word("car")));
-
-    assertFalse(dawg.containsWord(new Word("notagoodword")));
-
-    dawg.addWord(new Word("notagoodword"));
-    assertTrue(dawg.containsWord(new Word("notagoodword")));
-
-    LettersCounter lc = new LettersCounter();
-    lc.addLetter(new Letter('A'));
-    lc.addLetter(new Letter('B'));
-    lc.addLetter(new Letter('R'));
-
-    Set<Word> result = dawg.findWords(lc);
-    for (Word word : result) {
-      assertTrue(dawg.containsWord(word));
-    }
-  }
-
-  @Test
-  public void testDictionary() {
-    Dictionary Dictionary = new Dictionary();
-    Dictionary.loadFromFile(path);
-
-    assertTrue(Dictionary.containsWord(new Word("car")));
-
-    assertFalse(Dictionary.containsWord(new Word("notagoodword")));
-
-    Dictionary.addWord(new Word("notagoodword"));
-    assertTrue(Dictionary.containsWord(new Word("notagoodword")));
-
-    LettersCounter lc = new LettersCounter();
-    lc.addLetter(new Letter('A'));
-    lc.addLetter(new Letter('B'));
-    lc.addLetter(new Letter('R'));
-
-    Set<Word> result = Dictionary.findWords(lc);
-    for (Word word : result) {
-      assertTrue(Dictionary.containsWord(word));
-    }
-  }
-
-  @Test
-  public void testPlaceLetters() {
-    IConfiguration config = new IConfiguration() {
-      @Override
-      public String getLanguage() {
-        return "fr";
-      }
-
-      @Override
-      public Path getDictFile() {
-        return Paths.get("dictionary/fr.txt");
-      }
-
-      @Override
-      public Boolean getVerbose() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getVerbose'");
-      }
-
-      @Override
-      public String getDebug() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDebug'");
-      }
-
-      @Override
-      public Boolean getBlitz() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBlitz'");
-      }
-
-      @Override
-      public Boolean getSuperScrabble() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSuperScrabble'");
-      }
-
-      @Override
-      public Boolean getGui() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getGui'");
-      }
-
-      @Override
-      public int getPlayerCount() {
-        return 1;
-      }
-
-      @Override
-      public int getBlitzTime() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBlitzTime'");
-      }
-
-      @Override
-      public boolean[] getAiPlayers() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAiPlayers'");
-      }
-
-      @Override
-      public int getAiDepth() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAiDepth'");
-      }
-
-      @Override
-      public int getAiTime() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAiTime'");
-      }
-
-      @Override
-      public String getAiMode() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAiMode'");
-      }
-
-      @Override
-      public Path getContestFile() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getContestFile'");
-      }
-
-      @Override
-      public Path getHistoryFile() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getHistoryFile'");
-      }
-    };
-    GameModel gm = new GameModel(config);
-    gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
-    ViewCLI view = new ViewCLI("fr");
-
-    Player p1 = gm.players.get(0);
-
-    Letter[] l1 = new Letter[5];
-    {
-      l1[0] = new Letter('L');
-      l1[1] = new Letter('O');
-      l1[2] = new Letter('U');
-      l1[3] = new Letter('E');
-      l1[4] = new Letter('E');
+    @Before
+    public void setUp() {
+        lc = new LettersCounter();
+        dict = new Dictionary();
     }
 
-    Letter[] l2 = new Letter[4];
-    {
-      l2[0] = new Letter('T');
-      l2[1] = new Letter('I');
-      l2[2] = new Letter('S');
-      l2[3] = new Letter('A');
+    @After
+    public void tearDown() {
+        lc = null;
+        dict = null;
     }
 
-    Letter[] l3 = new Letter[4];
-    {
-      l3[0] = new Letter('Z');
-      l3[1] = new Letter('I');
-      l3[2] = new Letter('Z');
-      l3[3] = new Letter('A');
+    @Test
+    public void testLettersCounter() {
+        // test addLetter, getLetterCount
+        lc.addLetter(new Letter('A'));
+        lc.addLetter(new Letter('B'));
+        lc.addLetter(new Letter('C'));
+        lc.addLetter(new Letter('B'));
+        assertEquals(1, lc.getLetterCount(new Letter('A')));
+        assertEquals(2, lc.getLetterCount(new Letter('B')));
+        assertEquals(1, lc.getLetterCount(new Letter('C')));
+        assertEquals(0, lc.getLetterCount(new Letter('D')));
+
+        // test removeLetter
+        lc.removeLetter(new Letter('A'));
+        assertEquals(0, lc.getLetterCount(new Letter('A')));
+        lc.removeLetter(new Letter('C'));
+        assertEquals(0, lc.getLetterCount(new Letter('C')));
+        assertEquals(0, lc.getLetterCount(new Letter('Z')));
+
+        // test getLettersSet
+        assertTrue(lc.getLettersSet().contains(new Letter('B')));
+        assertFalse(lc.getLettersSet().contains(new Letter('A')));
     }
 
-    // test 1: "LOUEE" right
-    assertEquals(
-        "[OwnedWord{position=GridWordPos[row=2, col=0, direction=Right], word=LOUEE, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
-        gm.grid.placeLetters(new PlaceWordAction(p1, 0, l1, new GridWordPos(2, 0, Direction.Right)))
-            .toString());
-    // System.out.println(
-    // gm.grid.placeLetters(new PlaceWordAction(
-    // p1,
-    // 0,
-    // l1,
-    // new GridWordPos(2, 0, Direction.Right))
-    // ));
+    @Test
+    public void testRemoveNonExistingLetter() {
+        lc.addLetter(new Letter('D'));
+        assertEquals(1, lc.getLetterCount(new Letter('D')));
+        assertThrows(
+                CustomError.class,
+                () -> {
+                    lc.removeLetter(new Letter('E'));
+                });
+    }
 
-    // test 2: "TISA" down
-    assertEquals(
-        "[OwnedWord{position=GridWordPos[row=0, col=5, direction=Down], word=TISA, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
-        gm.grid.placeLetters(new PlaceWordAction(p1, 0, l2, new GridWordPos(0, 5, Direction.Down)))
-            .toString());
-    // System.out.println(
-    // gm.grid.placeLetters(new PlaceWordAction(
-    // p1,
-    // 0,
-    // l2,
-    // new GridWordPos(0, 5, Direction.Down))
-    // ));
+    @Test
+    public void testEmptyCounter() {
+        assertEquals(0, lc.getLetterCount(new Letter('F')));
+    }
 
-    // test 3: "LOUEE" dowm
-    assertEquals(
-        "[OwnedWord{position=GridWordPos[row=8, col=8, direction=Down], word=LOUEE, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
-        gm.grid.placeLetters(new PlaceWordAction(p1, 0, l1, new GridWordPos(8, 8, Direction.Down)))
-            .toString());
-    // System.out.println(
-    // gm.grid.placeLetters(new PlaceWordAction(
-    // p1,
-    // 0,
-    // l1,
-    // new GridWordPos(8, 8, Direction.Down))
-    // ));
+    /**
+     * Test the basic functionality of the Dictionary class
+     */
+    @Test
+    public void testDictionaryBasicFunc() {
+        // test addWord, containsWord
+        Word word = new Word("test");
+        dict.addWord(word);
+        assertTrue(dict.containsWord(word));
+        assertFalse(dict.containsWord(new Word("testDeux")));
 
-    // test 4: "TISA" right
-    assertEquals(
-        "[OwnedWord{position=GridWordPos[row=13, col=6, direction=Right], word=TISA, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
-        gm.grid.placeLetters(new PlaceWordAction(p1,
-            0, l2, new GridWordPos(13, 6, Direction.Right)))
-            .toString());
-    // System.out.println(
-    // gm.grid.placeLetters(new PlaceWordAction(
-    // p1,
-    // 0,
-    // l2,
-    // new GridWordPos(13, 6, Direction.Right))
-    // ));
+        // test toString
+        Word word2 = new Word("frank");
+        dict.addWord(word2);
+        assertTrue(dict.toString().contains(word.toString()));
+        assertTrue(dict.toString().contains(word2.toString()));
+    }
 
-    // test 5: "ZIZA" right, not a valid word
-    assertThrows(CustomError.class, () -> {
-      gm.grid.placeLetters(new PlaceWordAction(p1, 0, l3, new GridWordPos(13, 0, Direction.Right)))
-          .toString();
-    });
+    @Test
+    public void testDictionaryLoadFromFile() {
+        dict.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
+        assertTrue(dict.containsWord(new Word("AALENIEN")));
+        assertFalse(dict.containsWord(new Word("cpasunmotlegalca")));
+    }
 
-    // view.displayGrid(gm.grid, false);
+    @Test
+    public void testWordsLoader() {
+        List<Word> words = WordsLoader.loadWordsFromFile(path);
+        assertFalse(words.isEmpty());
+        assertTrue(words.contains(new Word("AALENIEN")));
 
-  }
-
-  @Test
-  public void testLang() {
-    Lang lang = Lang.getLang("fr");
-    assertEquals(lang, Lang.getLang("fR"));
-    assertEquals(lang, Lang.FR);
-    assertEquals(lang.getDisplayName(), "français");
-    assertThrows(
-        CustomError.class,
-        () -> {
-          Lang.getLang("pasUneLang");
-        });
-    assertEquals(lang.getDictionaryPath(), Path.of("dictionary/fr.txt"));
-  }
-
-  @Test
-  public void testLettersDrawer() {
-    for (Lang lang : Lang.values()) {
-      LettersDrawer drawer = new LettersDrawer(lang);
-      // check it can draw all the letters
-      final int totalLetters = drawer.getCurrentSize();
-      final LettersCounter drawedLetters = new LettersCounter();
-      for (int i = 0; i < totalLetters; i++) {
-        drawedLetters.addLetter(drawer.popLetter());
-      }
-      // check if the drawer is empty
-      assertThrows(
-          CustomError.class,
-          () -> {
-            drawer.popLetter();
-          });
-      /// assert the letters drawn are correct
-      // check the letters set
-      final LettersCounter langLetters = lang.getLettersCount();
-      assertEquals(drawedLetters.getLettersSet(), langLetters.getLettersSet());
-      // check the letters count
-      for (Letter letter : langLetters.getLettersSet()) {
-        assertEquals(drawedLetters.getLetterCount(letter), langLetters.getLetterCount(letter));
-      }
-      // add back all the letters
-      for (Letter letter : langLetters.getLettersSet()) {
-        for (int i = 0; i < langLetters.getLetterCount(letter); i++) {
-          drawer.pushLetter(letter);
+        Path invalidPath = Paths.get("../FAKE_FILE.txt");
+        try {
+            WordsLoader.loadWordsFromFile(invalidPath);
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
         }
-      }
-      // check if the drawer is full
-      assertThrows(
-          CustomError.class,
-          () -> {
-            drawer.pushLetter(new Letter('A'));
-          });
     }
-  }
 
-  public static void PropertiesTest(String[] args) {
-    ViewCLI view = new ViewCLI("ue");
-    assertTrue(view != null);
-    String result = view.getLangPack("test");
-    System.out.println(result);
+    @Test
+    public void testDawg() {
+        Dawg dawg = new Dawg();
+        dawg.loadFromFile(path);
 
-    assertTrue(result != null && !result.isEmpty());
-    String expected = "petit message de test en francais";
-    assertEquals(expected, result);
-  }
+        assertTrue(dawg.containsWord(new Word("car")));
+
+        assertFalse(dawg.containsWord(new Word("notagoodword")));
+
+        dawg.addWord(new Word("notagoodword"));
+        assertTrue(dawg.containsWord(new Word("notagoodword")));
+
+        LettersCounter lc = new LettersCounter();
+        lc.addLetter(new Letter('A'));
+        lc.addLetter(new Letter('B'));
+        lc.addLetter(new Letter('R'));
+
+        Set<Word> result = dawg.findWords(lc);
+        for (Word word : result) {
+            assertTrue(dawg.containsWord(word));
+        }
+    }
+
+    @Test
+    public void testDictionary() {
+        Dictionary Dictionary = new Dictionary();
+        Dictionary.loadFromFile(path);
+
+        assertTrue(Dictionary.containsWord(new Word("car")));
+
+        assertFalse(Dictionary.containsWord(new Word("notagoodword")));
+
+        Dictionary.addWord(new Word("notagoodword"));
+        assertTrue(Dictionary.containsWord(new Word("notagoodword")));
+
+        LettersCounter lc = new LettersCounter();
+        lc.addLetter(new Letter('A'));
+        lc.addLetter(new Letter('B'));
+        lc.addLetter(new Letter('R'));
+
+        Set<Word> result = Dictionary.findWords(lc);
+        for (Word word : result) {
+            assertTrue(Dictionary.containsWord(word));
+        }
+    }
+
+    @Test
+    public void testPlaceLetters() {
+        IConfiguration config = new Configuration(
+                true,
+                "d",
+                false,
+                false,
+                false,
+                4,
+                10,
+                new boolean[4],
+                15,
+                2,
+                "fr",
+                "chepa",
+                java.nio.file.Paths.get("dictionary/fr.txt"),
+                java.nio.file.Paths.get("none"),
+                java.nio.file.Paths.get("none")
+        );
+
+        GameModel gm = new GameModel(config);
+        gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
+        ViewCLI view = new ViewCLI("fr");
+
+        Player p1 = gm.players.get(0);
+
+        Letter[] l1 = new Letter[5];
+        {
+            l1[0] = new Letter('L');
+            l1[1] = new Letter('O');
+            l1[2] = new Letter('U');
+            l1[3] = new Letter('E');
+            l1[4] = new Letter('E');
+        }
+
+        Letter[] l2 = new Letter[4];
+        {
+            l2[0] = new Letter('T');
+            l2[1] = new Letter('I');
+            l2[2] = new Letter('S');
+            l2[3] = new Letter('A');
+        }
+
+        Letter[] l3 = new Letter[4];
+        {
+            l3[0] = new Letter('Z');
+            l3[1] = new Letter('I');
+            l3[2] = new Letter('Z');
+            l3[3] = new Letter('A');
+        }
+
+        // test 1: "LOUEE" right
+        assertEquals(
+                "[OwnedWord{position=GridWordPos[row=2, col=0, direction=Right], word=LOUEE, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
+                gm.grid.placeLetters(new PlaceWordAction(p1, 0, l1, new GridWordPos(2, 0, Direction.Right)))
+                        .toString());
+        // System.out.println(
+        // gm.grid.placeLetters(new PlaceWordAction(
+        // p1,
+        // 0,
+        // l1,
+        // new GridWordPos(2, 0, Direction.Right))
+        // ));
+
+        // test 2: "TISA" down
+        assertEquals(
+                "[OwnedWord{position=GridWordPos[row=0, col=5, direction=Down], word=TISA, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
+                gm.grid.placeLetters(new PlaceWordAction(p1, 0, l2, new GridWordPos(0, 5, Direction.Down)))
+                        .toString());
+        // System.out.println(
+        // gm.grid.placeLetters(new PlaceWordAction(
+        // p1,
+        // 0,
+        // l2,
+        // new GridWordPos(0, 5, Direction.Down))
+        // ));
+
+        // test 3: "LOUEE" dowm
+        assertEquals(
+                "[OwnedWord{position=GridWordPos[row=8, col=8, direction=Down], word=LOUEE, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
+                gm.grid.placeLetters(new PlaceWordAction(p1, 0, l1, new GridWordPos(8, 8, Direction.Down)))
+                        .toString());
+        // System.out.println(
+        // gm.grid.placeLetters(new PlaceWordAction(
+        // p1,
+        // 0,
+        // l1,
+        // new GridWordPos(8, 8, Direction.Down))
+        // ));
+
+        // test 4: "TISA" right
+        assertEquals(
+                "[OwnedWord{position=GridWordPos[row=13, col=6, direction=Right], word=TISA, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
+                gm.grid.placeLetters(new PlaceWordAction(p1,
+                                0, l2, new GridWordPos(13, 6, Direction.Right)))
+                        .toString());
+        // System.out.println(
+        // gm.grid.placeLetters(new PlaceWordAction(
+        // p1,
+        // 0,
+        // l2,
+        // new GridWordPos(13, 6, Direction.Right))
+        // ));
+
+        // test 5: "ZIZA" right, not a valid word
+        assertThrows(CustomError.class, () -> {
+            gm.grid.placeLetters(new PlaceWordAction(p1, 0, l3, new GridWordPos(13, 0, Direction.Right)))
+                    .toString();
+        });
+
+        // view.displayGrid(gm.grid, false);
+
+    }
+
+    @Test
+    public void testLang() {
+        Lang lang = Lang.getLang("fr");
+        assertEquals(lang, Lang.getLang("fR"));
+        assertEquals(lang, Lang.FR);
+        assertEquals(lang.getDisplayName(), "français");
+        assertThrows(
+                CustomError.class,
+                () -> {
+                    Lang.getLang("pasUneLang");
+                });
+        assertEquals(lang.getDictionaryPath(), Path.of("dictionary/fr.txt"));
+    }
+
+    @Test
+    public void testLettersDrawer() {
+        for (Lang lang : Lang.values()) {
+            LettersDrawer drawer = new LettersDrawer(lang);
+            // check it can draw all the letters
+            final int totalLetters = drawer.getCurrentSize();
+            final LettersCounter drawedLetters = new LettersCounter();
+            for (int i = 0; i < totalLetters; i++) {
+                drawedLetters.addLetter(drawer.popLetter());
+            }
+            // check if the drawer is empty
+            assertThrows(
+                    CustomError.class,
+                    () -> {
+                        drawer.popLetter();
+                    });
+            /// assert the letters drawn are correct
+            // check the letters set
+            final LettersCounter langLetters = lang.getLettersCount();
+            assertEquals(drawedLetters.getLettersSet(), langLetters.getLettersSet());
+            // check the letters count
+            for (Letter letter : langLetters.getLettersSet()) {
+                assertEquals(drawedLetters.getLetterCount(letter), langLetters.getLetterCount(letter));
+            }
+            // add back all the letters
+            for (Letter letter : langLetters.getLettersSet()) {
+                for (int i = 0; i < langLetters.getLetterCount(letter); i++) {
+                    drawer.pushLetter(letter);
+                }
+            }
+            // check if the drawer is full
+            assertThrows(
+                    CustomError.class,
+                    () -> {
+                        drawer.pushLetter(new Letter('A'));
+                    });
+        }
+    }
+
+    public static void PropertiesTest(String[] args) {
+        ViewCLI view = new ViewCLI("ue");
+        assertTrue(view != null);
+        String result = view.getLangPack("test");
+        System.out.println(result);
+
+        assertTrue(result != null && !result.isEmpty());
+        String expected = "petit message de test en francais";
+        assertEquals(expected, result);
+    }
 }

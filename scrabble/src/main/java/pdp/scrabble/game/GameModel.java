@@ -19,7 +19,6 @@ public class GameModel {
     public final List<Player> players;
     public final LettersDrawer draw; // draw = pioche en fr
     public final IDictionary dictionary;
-
     public final Configuration config;
 
     public GameModel(IConfiguration config) {

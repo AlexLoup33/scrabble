@@ -72,4 +72,9 @@ public class Word implements Comparable<Word> {
     public int compareTo(Word o) {
         return this.word.compareTo(o.word);
     }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

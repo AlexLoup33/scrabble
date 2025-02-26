@@ -49,4 +49,9 @@ public class Player {
     public String toString() {
         return "Player{id=" + id + ", name='" + name + '\'' + ", score=" + score + ", bag=" + bag + '}';
     }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

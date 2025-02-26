@@ -2,6 +2,8 @@ package pdp.scrabble.game;
 
 import pdp.scrabble.dictionary.Word;
 
+import java.util.LinkedList;
+
 public class OwnedWord {
     public final GridWordPos position;
     public final Word word;
@@ -16,5 +18,10 @@ public class OwnedWord {
     @Override
     public String toString() {
         return "OwnedWord{" + "position=" + position + ", word=" + word + ", owner=" + owner + '}';
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

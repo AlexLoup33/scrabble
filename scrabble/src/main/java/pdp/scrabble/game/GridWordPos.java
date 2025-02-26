@@ -21,4 +21,9 @@ public record GridWordPos(int row, int col, Direction direction) {
             default -> throw new IllegalArgumentException("[BUG] direction: " + direction + " isn't supported");
         }
     }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

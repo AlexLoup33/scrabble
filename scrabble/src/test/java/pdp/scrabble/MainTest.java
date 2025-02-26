@@ -260,83 +260,95 @@ public class MainTest {
                 };
         GameModel gm = new GameModel(config);
         gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
+        ViewCLI view = new ViewCLI();
 
         Player p1 = gm.players.get(0);
 
         Letter[] l1 = new Letter[5];
-        l1[0] = new Letter('L');
-        l1[1] = new Letter('O');
-        l1[2] = new Letter('U');
-        l1[3] = new Letter('E');
-        l1[4] = new Letter('E');
+        {
+            l1[0] = new Letter('L');
+            l1[1] = new Letter('O');
+            l1[2] = new Letter('U');
+            l1[3] = new Letter('E');
+            l1[4] = new Letter('E');
+        }
 
         Letter[] l2 = new Letter[4];
-        l2[0] = new Letter('T');
-        l2[1] = new Letter('Z');
-        l2[2] = new Letter('S');
-        l2[3] = new Letter('A');
+        {
+            l2[0] = new Letter('T');
+            l2[1] = new Letter('I');
+            l2[2] = new Letter('S');
+            l2[3] = new Letter('A');
+        }
 
-        ViewCLI view = new ViewCLI();
+        Letter[] l3 = new Letter[4];
+        {
+            l3[0] = new Letter('Z');
+            l3[1] = new Letter('I');
+            l3[2] = new Letter('Z');
+            l3[3] = new Letter('A');
+        }
 
-//        assertEquals(
-//                "[OwnedWord{position=GridWordPos[row=2, col=0, direction=Right], word=LOUEE, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
-//                grid.placeLetters(new PlaceWordAction(p1, 0, l1, new GridWordPos(2, 0, Direction.Right)))
-//                        .toString());
-//
-//        assertEquals(
-//                "[OwnedWord{position=GridWordPos[row=0, col=5, direction=Down], word=TISA, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}, OwnedWord{position=GridWordPos[row=0, col=5, direction=Down], word=LOUEES, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
-//                grid.placeLetters(new PlaceWordAction(p1, 0, l2, new GridWordPos(0, 5, Direction.Down)))
-//                        .toString());
-//
-//        assertEquals(
-//                "[OwnedWord{position=GridWordPos[row=8, col=8, direction=Down], word=LOUEE, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
-//                grid.placeLetters(new PlaceWordAction(p1, 0, l1, new GridWordPos(8, 8, Direction.Down)))
-//                        .toString());
-//
-//        assertEquals(
-//                "[OwnedWord{position=GridWordPos[row=13, col=6, direction=Right], word=TISA, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}, OwnedWord{position=GridWordPos[row=13, col=6, direction=Right], word=LOUEES, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
-//                grid.placeLetters(new PlaceWordAction(p1, 0, l2, new GridWordPos(13, 6, Direction.Right)))
-//                        .toString());
+        // test 1: "LOUEE" right
+        assertEquals(
+                "[OwnedWord{position=GridWordPos[row=2, col=0, direction=Right], word=LOUEE, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
+                gm.grid.placeLetters(new PlaceWordAction(p1, 0, l1, new GridWordPos(2, 0, Direction.Right)))
+                        .toString());
+//        System.out.println(
+//                gm.grid.placeLetters(new PlaceWordAction(
+//                        p1,
+//                        0,
+//                        l1,
+//                        new GridWordPos(2, 0, Direction.Right))
+//                ));
 
-        // to print:
+        // test 2: "TISA" down
+        assertEquals(
+                "[OwnedWord{position=GridWordPos[row=0, col=5, direction=Down], word=TISA, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
+                gm.grid.placeLetters(new PlaceWordAction(p1, 0, l2, new GridWordPos(0, 5, Direction.Down)))
+                        .toString());
+//        System.out.println(
+//                gm.grid.placeLetters(new PlaceWordAction(
+//                        p1,
+//                        0,
+//                        l2,
+//                        new GridWordPos(0, 5, Direction.Down))
+//                ));
 
-        // Test 1
-        System.out.println(
-                gm.grid.placeLetters(new PlaceWordAction(
-                        p1,
-                        0,
-                        l1,
-                        new GridWordPos(2, 0, Direction.Right))
-                ));
-        System.out.println(
-                gm.grid.placeLetters(new PlaceWordAction(
-                        p1,
-                        0,
-                        l2,
-                        new GridWordPos(0, 5, Direction.Down))
-                ));
+        // test 3: "LOUEE" dowm
+        assertEquals(
+                "[OwnedWord{position=GridWordPos[row=8, col=8, direction=Down], word=LOUEE, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
+                gm.grid.placeLetters(new PlaceWordAction(p1, 0, l1, new GridWordPos(8, 8, Direction.Down)))
+                        .toString());
+//        System.out.println(
+//                gm.grid.placeLetters(new PlaceWordAction(
+//                        p1,
+//                        0,
+//                        l1,
+//                        new GridWordPos(8, 8, Direction.Down))
+//                ));
 
-        view.displayGrid(gm.grid, false);
+        // test 4: "TISA" right
+        assertEquals(
+                "[OwnedWord{position=GridWordPos[row=13, col=6, direction=Right], word=TISA, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
+                gm.grid.placeLetters(new PlaceWordAction(p1,
+                                0, l2, new GridWordPos(13, 6, Direction.Right)))
+                        .toString());
+//        System.out.println(
+//                gm.grid.placeLetters(new PlaceWordAction(
+//                        p1,
+//                        0,
+//                        l2,
+//                        new GridWordPos(13, 6, Direction.Right))
+//                ));
 
-        //
-        // // Test 2
-        // System.out.println(
-        // grid.placeLetters(new PlaceWordAction(
-        // p1,
-        // 0,
-        // l1,
-        // new GridWordPos(8, 8, Direction.Down))
-        // ));
-        // System.out.println(
-        // grid.placeLetters(new PlaceWordAction(
-        // p1,
-        // 0,
-        // l2,
-        // new GridWordPos(13, 6, Direction.Right))
-        // ));
-        //
-        //
-        // grid.printGrid();
+        // test 5: "ZIZA" right, not a valid word
+        assertThrows(CustomError.class, () -> {
+            gm.grid.placeLetters(new PlaceWordAction(p1, 0, l3, new GridWordPos(13, 0, Direction.Right)))
+                    .toString();
+        });
+
+//        view.displayGrid(gm.grid, false);
 
     }
 

@@ -152,7 +152,7 @@ public class Grid {
 
     public List<OwnedWord> placeLetters(PlaceWordAction pwa) {
         Letter[][] placedLettersCopy = Letter.deepClone(this.placedLetters);
-        LinkedList<OwnedWord> placedWordsCopy = (LinkedList<OwnedWord>) this.placedWords.clone(); // TODO bad
+        LinkedList<OwnedWord> placedWordsCopy = (LinkedList<OwnedWord>) this.placedWords.clone();
 
         List<OwnedWord> result = new LinkedList<>();
 
@@ -270,12 +270,12 @@ public class Grid {
             }
             return result;
         } catch (CustomError e) {
-            this.placedLetters = placedLettersCopy;
+            this.placedLetters = placedLettersCopy; // ok
+            Utilities.debug('g', "this.placedWords:" + this.placedWords);
+            Utilities.debug('g', "placedWordsCopy: " + placedWordsCopy);
             this.placedWords = placedWordsCopy;
-            System.out.println("HERE");
-//            throw e;
+            throw e;
         }
-        return result; // TODO tmp
     }
 
     private String getVerticalWord(int row, int col_inv, Direction direction) {

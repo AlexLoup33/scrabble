@@ -180,7 +180,7 @@ public class MainTest {
                 new boolean[4],
                 15,
                 2,
-                "fr",
+                "french",
                 "chepa",
                 java.nio.file.Paths.get("dictionary/fr.txt"),
                 java.nio.file.Paths.get("none"),

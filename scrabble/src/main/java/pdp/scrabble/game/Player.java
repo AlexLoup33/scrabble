@@ -1,43 +1,57 @@
 package pdp.scrabble.game;
 
-import java.util.HashSet;
-import java.util.Set;
 import pdp.scrabble.dictionary.LettersCounter;
+import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.errorsHandling.ErrorType;
 
 public class Player {
-  public static final Set<Integer> id_set = new HashSet<>();
-  public Integer id;
-  public String name;
-  public int score;
-  public LettersCounter bag;
+    private static int nextPlayerID = 0;
 
-  public Player(String name) {
-    Integer max_id = -1;
-    for (Integer d : id_set) {
-      if (d > max_id) {
-        max_id = d;
-      }
+    public final Integer id;
+    private String name;
+    public int score;
+    public final LettersCounter bag;
+    private boolean hasForfeited;
+
+    public Player() {
+        this("Player");
     }
-    this.id = max_id + 1;
-    id_set.add(this.id);
 
-    this.name = name;
-    this.score = 0;
-    this.bag = new LettersCounter();
-  }
+    protected Player(String nameBase) {
+        this.id = Player.nextPlayerID;
+        Player.nextPlayerID += 1;
+        this.name = nameBase + this.id;
+        this.score = 0;
+        this.bag = new LettersCounter();
+        this.hasForfeited = false;
+    }
 
-  @Override
-  public String toString() {
-    return "Player{"
-        + "id="
-        + id
-        + ", name='"
-        + name
-        + '\''
-        + ", score="
-        + score
-        + ", bag="
-        + bag
-        + '}';
-  }
+    public String getName() {
+        return this.name;
+    }
+
+    public boolean getHasForfeited() {
+        return this.hasForfeited;
+    }
+
+    public void forfeit() {
+        if (this.hasForfeited) {
+            throw new CustomError(
+                    ErrorType.ForfeitTwiceError,
+                    "can't forfeit twice",
+                    this + " has alredy forfeited, can't forfeit another time");
+        }
+        // => hasn't forfeited yet
+        this.hasForfeited = true;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{id=" + id + ", name='" + name + '\'' + ", score=" + score + ", bag=" + bag + '}';
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

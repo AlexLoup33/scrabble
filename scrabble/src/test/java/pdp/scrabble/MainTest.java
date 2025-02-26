@@ -402,7 +402,7 @@ public class MainTest {
   }
 
   public static void PropertiesTest(String[] args) {
-    ViewCLI view = new ViewCLI("fr");
+    ViewCLI view = new ViewCLI();
     String result = view.getLangPack("test");
     System.out.println(result);
 

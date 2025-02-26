@@ -11,7 +11,6 @@ import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.Direction;
-import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.Grid;
 import pdp.scrabble.game.GridPos;
@@ -22,12 +21,13 @@ import pdp.scrabble.game.actions.GameAction;
 import pdp.scrabble.game.actions.PlaceWordAction;
 
 public class ViewCLI implements IView {
-
-  private final ResourceBundle langPack;
-
-  public ViewCLI(String langPackCode) {
-    this.langPack = ResourceBundle.getBundle("pack_" + langPackCode);
-  }
+  /*
+   * private final ResourceBundle langPack;
+   * 
+   * public ViewCLI(String langPackCode) {
+   * this.langPack = ResourceBundle.getBundle("pack_" + langPackCode);
+   * }
+   */
 
   @Override
   // Only place word for now
@@ -74,20 +74,6 @@ public class ViewCLI implements IView {
 
     return new PlaceWordAction(player, 0, toPlace, gwp);
   }
-  /*
-   * @Override
-   * public void displayGrid(Grid grid, Boolean isSuperScrabble) {
-   * // Display the first row of the grid with the column numbers
-   * System.out.print("  ");
-   * for (int i = 0; i < grid.size - 1; i++) {
-   * if (i < 8)
-   * System.out.print(i + 1 + "  ");
-   * else
-   * System.out.print(i + 1 + " ");
-   * }
-   * System.out.println(grid.size);
-   * }
-   */
 
   @Override
   public void displayGrid(Grid grid, Boolean isSuperScrabble) {
@@ -173,14 +159,16 @@ public class ViewCLI implements IView {
     System.out.println(" ]");
   }
 
-  @Override
-  public String getLangPack(String key) {
-    if (!langPack.containsKey(key)) {
-      throw new CustomError(
-          ErrorType.InvalidKeyArgument,
-          "Key : " + key + " not in:" + langPack,
-          "Invalid KeyArgument. Please check the file pack_ and verify your keys");
-    }
-    return langPack.getString(key);
-  }
+  /*
+   * @Override
+   * public String getLangPack(String key) {
+   * if (!langPack.containsKey(key)) {
+   * throw new CustomError(
+   * ErrorType.InvalidKeyArgument,
+   * "Key : " + key + " not in:" + langPack,
+   * "Invalid KeyArgument. Please check the file pack_ and verify your keys");
+   * }
+   * return langPack.getString(key);
+   * }
+   */
 }

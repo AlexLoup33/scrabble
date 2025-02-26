@@ -76,14 +76,17 @@ public class ViewCLI implements IView {
   }
 
   @Override
-    public void displayGrid(Grid grid, Boolean isSuperScrabble) {
-        // Display the first row of the grid with the column numbers
-        System.out.print("  ");
-        for (int i = 0; i < grid.size - 1; i++) {
-            if (i < 8) System.out.print(i + 1 + "  ");
-            else System.out.print(i + 1 + " ");
-        }
-        System.out.println(grid.size);
+  public void displayGrid(Grid grid, Boolean isSuperScrabble) {
+    // Display the first row of the grid with the column numbers
+    System.out.print("  ");
+    for (int i = 0; i < grid.size - 1; i++) {
+      if (i < 8)
+        System.out.print(i + 1 + "  ");
+      else
+        System.out.print(i + 1 + " ");
+    }
+    System.out.println(grid.size);
+  }
 
   @Override
   public void displayGrid(Grid grid) {

@@ -6,21 +6,6 @@ Exceptions occur both at runtime and compile time, can be caught and handled (=>
 */
 
 public enum ErrorType {
-<<<<<<< HEAD
-  FailedConfigFileParsing(true),
-  ConfigParsingException(true),
-  UncompletConfigexception(true),
-  InvalideLetterException(true),
-  MalformedDictionaryError(true),
-  InvalidGameStatusError(true),
-  InvalidLetterCountError(true),
-  NotAValidWord(false),
-  InvalidCliArgs(true),
-  DrawerError(true),
-  InvalidLangError(true),
-  MalformedLangError(true),
-  InvalidKeyArgument(true);
-=======
     FailedConfigFileParsing(true),
     ConfigParsingException(true),
     UncompletConfigexception(true),
@@ -35,8 +20,8 @@ public enum ErrorType {
     UnsupportedMultiplier(true),
     MalformedLangError(true),
     IO(true),
-    ForfeitTwiceError(true);
->>>>>>> cde428357562aeef88c7265a2cb258d5a7a41ed1
+    ForfeitTwiceError(true),
+    InvalidKeyArgument(true);
 
     public final boolean isFatal;
 

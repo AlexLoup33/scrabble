@@ -147,22 +147,21 @@ public class ViewCLI implements IView {
       }
       System.out.print("\n");
     }
-  }
 
-  Letter letter = grid.getLetter(i, j);if(letter==null)
-  {
-    if (j == grid.size - 1)
-      System.out.print(backgroundColor + "_" + colorReset);
-    else
-      System.out.print(backgroundColor + "_" + colorReset + "  ");
-  }else
-  {
-    if (j == grid.size - 1)
-      System.out.print(color + letter + colorReset);
-    else
-      System.out.print(color + letter + "  " + colorReset);
+    Letter letter = grid.getLetter(i, j);
+    if (letter == null) {
+      if (j == grid.size - 1)
+        System.out.print(backgroundColor + "_" + colorReset);
+      else
+        System.out.print(backgroundColor + "_" + colorReset + "  ");
+    } else {
+      if (j == grid.size - 1)
+        System.out.print(color + letter + colorReset);
+      else
+        System.out.print(color + letter + "  " + colorReset);
+    }
+    System.out.print("\n");
   }
-  }System.out.print("\n");}}
 
   @Override
   public void displayPlayerLetters(LettersCounter letters) {

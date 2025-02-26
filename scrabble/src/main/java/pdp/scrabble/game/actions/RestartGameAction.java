@@ -7,5 +7,5 @@ public class RestartGameAction extends GameAction {
     public RestartGameAction(Player player, int turn) {
         super(player, turn);
     }
-    
+
 }

@@ -1,6 +1,7 @@
 package pdp.scrabble.game.actions;
 
 import java.util.List;
+
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.game.Player;
@@ -10,12 +11,12 @@ import pdp.scrabble.game.Player;
  * if 7 or more tiles remain in the bag.
  */
 public class ExchangeLetterAction extends GameAction {
-  public final LettersCounter lettersToExchange;
+    public final LettersCounter lettersToExchange;
 
-  // the letters to remove from the players hand
+    // the letters to remove from the players hand
 
-  protected ExchangeLetterAction(Player player, int turn, List<Letter> toExchange) {
-    super(player, turn);
-    this.lettersToExchange = new LettersCounter(toExchange);
-  }
+    protected ExchangeLetterAction(Player player, int turn, List<Letter> toExchange) {
+        super(player, turn);
+        this.lettersToExchange = new LettersCounter(toExchange);
+    }
 }

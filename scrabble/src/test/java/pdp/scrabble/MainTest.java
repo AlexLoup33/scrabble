@@ -263,8 +263,6 @@ public class MainTest {
 
         Player p1 = gm.players.get(0);
 
-        Grid grid = new Grid(gm, 15);
-
         Letter[] l1 = new Letter[5];
         l1[0] = new Letter('L');
         l1[1] = new Letter('O');
@@ -274,7 +272,7 @@ public class MainTest {
 
         Letter[] l2 = new Letter[4];
         l2[0] = new Letter('T');
-        l2[1] = new Letter('I');
+        l2[1] = new Letter('Z');
         l2[2] = new Letter('S');
         l2[3] = new Letter('A');
 

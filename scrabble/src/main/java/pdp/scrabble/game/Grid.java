@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+import pdp.scrabble.Utilities;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersPoints;
 import pdp.scrabble.dictionary.Word;
@@ -150,7 +151,7 @@ public class Grid {
     }
 
     public List<OwnedWord> placeLetters(PlaceWordAction pwa) {
-        Letter[][] placedLettersCopy = this.placedLetters.clone(); // TODO bad
+        Letter[][] placedLettersCopy = Letter.deepClone(this.placedLetters);
         LinkedList<OwnedWord> placedWordsCopy = (LinkedList<OwnedWord>) this.placedWords.clone(); // TODO bad
 
         List<OwnedWord> result = new LinkedList<>();
@@ -179,10 +180,9 @@ public class Grid {
                 String vertical_created_word = getVerticalWord(pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
                 Word vertical_word = new Word(vertical_created_word);
 
-                // System.out.println("DEBUG vertical_created_word: " +
-                // vertical_created_word);
-                // System.out.println("DEBUG contains word: " +
-                // GameModel.dictionary.containsWord(new Word(vertical_created_word)));
+                Utilities.debug('g', "vertical_created_word: " + vertical_created_word);
+                Utilities.debug('g', "DEBUG vertical_created_word: " + vertical_created_word);
+                Utilities.debug('g', "DEBUG contains word: " + this.gameModel.dictionary.containsWord(new Word(vertical_created_word)));
 
                 if (this.gameModel.dictionary.containsWord(vertical_word)) {
                     OwnedWord to_add = new OwnedWord(pwa.startPosition, vertical_word, pwa.player);
@@ -192,25 +192,26 @@ public class Grid {
                     throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
                 }
 
-                // Check new horizontal word
-                int start = findStart(pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
-
-                // Check for each row if a new word is created
-                while (start < this.size && this.placedLetters[start][pwa.startPosition.col()] != null) {
-                    String new_horizontal_word = getHorizontalWord(start, pwa.startPosition.col(), Direction.Right);
-                    // System.out.println("DEBUG new_vertical_word: " +
-                    // new_horizontal_word);
-                    if (new_horizontal_word.length() >= 2) {
-                        if (this.gameModel.dictionary.containsWord(new Word(new_horizontal_word))) {
-                            OwnedWord tmp = new OwnedWord(pwa.startPosition, new Word(new_horizontal_word), pwa.player);
-                            this.placedWords.add(tmp);
-                            result.add(tmp);
-                        } else {
-                            throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
-                        }
-                    }
-                    start++;
-                }
+                // useless, but to keep for now
+//                    // Check new horizontal word
+//                    int start = findStart(pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
+//
+//                    // Check for each row if a new word is created
+//                    while (start < this.size && this.placedLetters[start][pwa.startPosition.col()] != null) {
+//                        String new_horizontal_word = getHorizontalWord(start, pwa.startPosition.col(), Direction.Right);
+//                        // System.out.println("DEBUG new_vertical_word: " +
+//                        // new_horizontal_word);
+//                        if (new_horizontal_word.length() >= 2) {
+//                            if (this.gameModel.dictionary.containsWord(new Word(new_horizontal_word))) {
+//                                OwnedWord tmp = new OwnedWord(pwa.startPosition, new Word(new_horizontal_word), pwa.player);
+//                                this.placedWords.add(tmp);
+//                                result.add(tmp);
+//                            } else {
+//                                throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
+//                            }
+//                        }
+//                        start++;
+//                    }
 
             }
             // Direction: right
@@ -246,30 +247,32 @@ public class Grid {
                     throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
                 }
 
-                // Check new vertical word
-                int start = findStart(pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
-
-                // Check for each row if a new word is created
-                while (start < this.size && this.placedLetters[pwa.startPosition.row()][start] != null) {
-                    String new_horizontal_word = getVerticalWord(pwa.startPosition.row(), start, Direction.Down);
-                    // System.out.println("DEBUG new_vertical_word: " +
-                    // new_horizontal_word);
-                    if (new_horizontal_word.length() >= 2) {
-                        if (this.gameModel.dictionary.containsWord(new Word(new_horizontal_word))) {
-                            OwnedWord tmp = new OwnedWord(pwa.startPosition, new Word(new_horizontal_word), pwa.player);
-                            this.placedWords.add(tmp);
-                            result.add(tmp);
-                        } else {
-                            throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
-                        }
-                    }
-                    start++;
-                }
+                // useless, but to keep for now
+//                // Check new vertical word
+//                int start = findStart(pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
+//
+//                // Check for each row if a new word is created
+//                while (start < this.size && this.placedLetters[pwa.startPosition.row()][start] != null) {
+//                    String new_horizontal_word = getVerticalWord(pwa.startPosition.row(), start, Direction.Down);
+//                    // System.out.println("DEBUG new_vertical_word: " +
+//                    // new_horizontal_word);
+//                    if (new_horizontal_word.length() >= 2) {
+//                        if (this.gameModel.dictionary.containsWord(new Word(new_horizontal_word))) {
+//                            OwnedWord tmp = new OwnedWord(pwa.startPosition, new Word(new_horizontal_word), pwa.player);
+//                            this.placedWords.add(tmp);
+//                            result.add(tmp);
+//                        } else {
+//                            throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
+//                        }
+//                    }
+//                    start++;
+//                }
             }
             return result;
         } catch (CustomError e) {
             this.placedLetters = placedLettersCopy;
             this.placedWords = placedWordsCopy;
+            System.out.println("HERE");
 //            throw e;
         }
         return result; // TODO tmp

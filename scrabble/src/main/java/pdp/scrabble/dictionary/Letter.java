@@ -51,4 +51,25 @@ public class Letter {
         }
         return sb.toString();
     }
+
+    public static Letter[][] deepClone(Letter[][] original) {
+        if (original == null) {
+            return null;
+        }
+
+        Letter[][] clonedArray = new Letter[original.length][original.length];
+
+        for (int i = 0; i < original.length; i++) {
+            if (original[i] != null) {
+                clonedArray[i] = new Letter[original[i].length];
+                for (int j = 0; j < original[i].length; j++) {
+                    if (original[i][j] != null) {
+                        clonedArray[i][j] = new Letter(original[i][j].chr);
+                    }
+                }
+            }
+        }
+
+        return clonedArray;
+    }
 }

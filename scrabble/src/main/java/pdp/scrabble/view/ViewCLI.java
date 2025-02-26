@@ -74,22 +74,23 @@ public class ViewCLI implements IView {
 
     return new PlaceWordAction(player, 0, toPlace, gwp);
   }
+  /*
+   * @Override
+   * public void displayGrid(Grid grid, Boolean isSuperScrabble) {
+   * // Display the first row of the grid with the column numbers
+   * System.out.print("  ");
+   * for (int i = 0; i < grid.size - 1; i++) {
+   * if (i < 8)
+   * System.out.print(i + 1 + "  ");
+   * else
+   * System.out.print(i + 1 + " ");
+   * }
+   * System.out.println(grid.size);
+   * }
+   */
 
   @Override
   public void displayGrid(Grid grid, Boolean isSuperScrabble) {
-    // Display the first row of the grid with the column numbers
-    System.out.print("  ");
-    for (int i = 0; i < grid.size - 1; i++) {
-      if (i < 8)
-        System.out.print(i + 1 + "  ");
-      else
-        System.out.print(i + 1 + " ");
-    }
-    System.out.println(grid.size);
-  }
-
-  @Override
-  public void displayGrid(Grid grid) {
     // Display the first row of the grid with the column numbers
     System.out.print("  ");
     for (int i = 0; i < grid.size - 1; i++) {
@@ -149,21 +150,8 @@ public class ViewCLI implements IView {
         }
       }
       System.out.print("\n");
-    }
 
-    Letter letter = grid.getLetter(i, j);
-    if (letter == null) {
-      if (j == grid.size - 1)
-        System.out.print(backgroundColor + "_" + colorReset);
-      else
-        System.out.print(backgroundColor + "_" + colorReset + "  ");
-    } else {
-      if (j == grid.size - 1)
-        System.out.print(color + letter + colorReset);
-      else
-        System.out.print(color + letter + "  " + colorReset);
     }
-    System.out.print("\n");
   }
 
   @Override
@@ -183,17 +171,6 @@ public class ViewCLI implements IView {
       }
     }
     System.out.println(" ]");
-  }
-
-  @Override
-  public void displayPlayerLetters(LettersCounter letters) {
-    System.out.println("Player letters:");
-    System.out.print("[ ");
-    // Foreach with letters.getLetterSet()
-    for (Letter letter : letters.getLettersSet()) {
-      System.out.print(letter + " | ");
-    }
-    System.out.println("]");
   }
 
   @Override

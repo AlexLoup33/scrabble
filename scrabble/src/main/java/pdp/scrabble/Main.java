@@ -18,7 +18,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Configuration conf = ConfigurationInitializer.configurationInit(args);
 
-        ViewCLI view = new ViewCLI();
+        ViewCLI view = new ViewCLI("fr");
 
         GameModel gm = new GameModel(conf);
         Grid grid = new Grid(gm, 15);

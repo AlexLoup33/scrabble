@@ -2,12 +2,14 @@ package pdp.scrabble;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.MissingResourceException;
 import java.util.Set;
 
 import org.junit.After;
@@ -256,7 +258,7 @@ public class MainTest {
     };
     GameModel gm = new GameModel(config);
     gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
-    ViewCLI view = new ViewCLI();
+    ViewCLI view = new ViewCLI("fr");
 
     Player p1 = gm.players.get(0);
 
@@ -401,13 +403,15 @@ public class MainTest {
     }
   }
 
-  /*
-   * public static void PropertiesTest(String[] args) {
-   * ViewCLI view = new ViewCLI();
-   * String result = view.getLangPack("test");
-   * System.out.println(result);
-   * 
-   * assertTrue(result != null && !result.isEmpty());
-   * }
-   */
+  public static void PropertiesTest(String[] args) {
+    ViewCLI view = new ViewCLI("ue");
+    assertTrue(view != null);
+    String result = view.getLangPack("test");
+    System.out.println(result);
+
+    assertTrue(result != null && !result.isEmpty());
+    String expected = "petit message de test en francais";
+    assertEquals(expected, result);
+  }
+
 }

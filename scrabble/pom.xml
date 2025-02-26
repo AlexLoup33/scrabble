@@ -50,6 +50,12 @@
           <directory>src/main/resources</directory>
           <filtering>true</filtering>
         </resource>
+        <resource>
+            <directory>langPacks/viewCLI</directory>
+            <includes>
+                <include>**/*.properties</include>
+            </includes>
+        </resource>
       </resources>
 
         <plugins>

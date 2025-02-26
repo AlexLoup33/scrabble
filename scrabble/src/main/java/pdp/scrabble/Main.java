@@ -28,6 +28,7 @@ public class Main {
         // TODO
         // F30 faire test
         // F32 test mot pas legal; a montrer
+
         // nope F22, F17, F18, F12, F29, F37
     }
 }

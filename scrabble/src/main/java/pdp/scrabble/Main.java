@@ -31,7 +31,7 @@ public class Main {
         gc.gameLoop();
 
         // TODO
-        // F30 faire test
+        // F30 test a montrer
         // F32 test mot pas legal; a montrer
 
         System.out.println("--- End ---");

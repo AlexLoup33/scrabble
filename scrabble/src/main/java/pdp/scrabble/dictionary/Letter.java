@@ -52,6 +52,18 @@ public class Letter {
         return sb.toString();
     }
 
+    /**
+     * Creates a deep clone of a two-dimensional array of {@link Letter} objects.
+     * <p>
+     * This method iterates through the provided 2D array and creates a new array
+     * where each {@link Letter} object is cloned. If the original array or any of
+     * its elements are null, the method handles these cases appropriately.
+     *
+     * @param original the original 2D array of {@link Letter} objects to be cloned.
+     *                 If this parameter is null, the method returns null.
+     * @return a new 2D array of {@link Letter} objects that is a deep clone of the
+     * original array. If the original array is null, returns null.
+     */
     public static Letter[][] deepClone(Letter[][] original) {
         if (original == null) {
             return null;

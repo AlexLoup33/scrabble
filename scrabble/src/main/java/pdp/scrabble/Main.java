@@ -30,7 +30,7 @@ public class Main {
         GameController gc = new GameController(gm, view);
         gc.gameLoop();
 
-        // ≈: val
+        // Oral W7: val
         // F30 test a montrer
         // F32 test mot pas legal; a montrer
         // TODO try F12

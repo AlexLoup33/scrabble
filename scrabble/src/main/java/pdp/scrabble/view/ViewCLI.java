@@ -2,6 +2,9 @@ package pdp.scrabble.view;
 
 import static pdp.scrabble.errorsHandling.ErrorType.UnsupportedMultiplier;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 import pdp.scrabble.Utilities;
@@ -18,10 +21,43 @@ import pdp.scrabble.game.Player;
 import pdp.scrabble.game.ScoreMultiplier;
 import pdp.scrabble.game.actions.GameAction;
 import pdp.scrabble.game.actions.PlaceWordAction;
+import pdp.scrabble.game.actions.RenamePlayerAction;
 
 public class ViewCLI implements IView {
 
+  private Scanner sc;
   private final ResourceBundle langPack;
+  private enum ActionType {
+    PLACE("p"),
+    EXCHANGE("e"),
+    RENAME("n"),
+    SKIP("s"),
+    FORFEIT("f"),
+    RESTART("r");
+
+    private final String name;
+    private static final Map<String, ActionType> ENUM_MAP;
+
+    private ActionType(String name) {
+      this.name = name;
+    }
+
+    static {
+      Map<String, ActionType> map = new HashMap<String, ActionType>();
+      for (ActionType instance : ActionType.values()) {
+        map.put(instance.toString(), instance);
+      }
+      ENUM_MAP = Collections.unmodifiableMap(map);
+    }
+
+    public String toString() {
+      return this.name;
+    }
+
+    public static ActionType get(String name) {
+      return ENUM_MAP.get(name);
+    }
+  }
 
   public ViewCLI(Lang lang) {
     this.langPack = lang.getViewCLI_langPack();
@@ -33,7 +69,38 @@ public class ViewCLI implements IView {
   // TODO: add exchange/pass/give up
   public GameAction askAction(Player player) throws Exception {
     // TODO: open scanner stdin in a reasonable place
-    Scanner sc = new Scanner(System.in);
+    this.sc = new Scanner(System.in);
+    ActionType chosen = askActionType();
+    switch (chosen) {
+      case PLACE:
+        return makePlaceWordAction(player);
+      case RENAME:
+        return makeRenameAction(player);
+      default:
+        // FIXME
+        throw new Exception("Action not implemented");
+    }
+    // return null;
+  }
+
+  private ActionType askActionType() throws Exception {
+    System.out.printf("%s\n", langPack.getString("viewcli_announce_type")); // Actions available
+    for (ActionType type : ActionType.values()) {
+      System.out.printf(
+          "'%s': %s\n",
+          type.toString(), // 'p': Place
+          langPack.getString("viewcli_type_prompt_" + type.toString()));
+    }
+    System.out.printf("%s : ", langPack.getString("viewcli_ask_type")); // Enter your action type :
+    String response = this.sc.nextLine();
+    ActionType chosen = ActionType.get(response);
+    if (chosen == null) {
+      throw new Exception("Unknown action"); // TODO: i18n
+    }
+    return chosen;
+  }
+
+  private PlaceWordAction makePlaceWordAction(Player player) throws Exception {
     Utilities.verbose(
         "pattern for move is `y-x-direction WORD`(eg. `a6h PHOTO` or `b7v STICK` )\n");
     System.out.print(this.getFromLangPack("ask_move"));
@@ -71,6 +138,12 @@ public class ViewCLI implements IView {
     Utilities.debug('v', "Length of toPlace word : %d\n", toPlace.length);
 
     return new PlaceWordAction(player, 0, toPlace, gwp);
+  }
+
+  private RenamePlayerAction makeRenameAction(Player player) {
+    System.out.print("Enter new name : ");
+    String response = this.sc.nextLine();
+    return new RenamePlayerAction(player, 0, response);
   }
 
   @Override

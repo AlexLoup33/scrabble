@@ -35,7 +35,7 @@ public class Main {
         // F32 test mot pas legal; a montrer
 
         // Oral W7: Aymeric
-        // F22, F17, F18
+        // F22, F17, F18, F20 ?, F31 ?
 
         // Oral W7: Ludo
         // TODO F37 probably

@@ -31,7 +31,7 @@ public class OwnedWord {
     public GridPos getPosAtWordIndex(int index) {
 
         if (index > this.word.getLength()) {
-            throw new CustomError(ErrorType.IndexOutOfBounds,
+            throw new CustomError(ErrorType.IndexOutOfWordBounds,
                     "IndexOutOfBounds",
                     "Try to find the position of a letter not in the word");
         }

@@ -21,9 +21,6 @@ public class Main {
         GameModel gm = new GameModel(conf);
         ViewCLI view = new ViewCLI(gm.lang);
 
-        String testCode = view.getFromLangPack("test");
-        System.out.println(testCode);
-
         GameController gc = new GameController(gm, view);
         gc.gameLoop();
 

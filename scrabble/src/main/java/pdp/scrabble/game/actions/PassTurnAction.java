@@ -7,7 +7,7 @@ import pdp.scrabble.game.Player;
  */
 public class PassTurnAction extends GameAction {
 
-    protected PassTurnAction(Player player, int turn) {
+    public PassTurnAction(Player player, int turn) {
         super(player, turn);
     }
 }

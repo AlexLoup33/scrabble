@@ -6,7 +6,7 @@ import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
 
 public interface IView {
-  public GameAction askAction(Player player) throws Exception;
+  public GameAction askAction(Player player, Integer turn);
 
   public void displayGrid(Grid grid, Boolean isSuperScrabble);
 

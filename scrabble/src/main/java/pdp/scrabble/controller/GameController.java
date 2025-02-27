@@ -21,8 +21,8 @@ public class GameController {
         // We only play 3 table rounds for now
         // Need to compute an end game condition to go beyond
         Utilities.debug('l', "game loop starts\n");
-        for (int i = 0; i < 3; i++) {
-            Utilities.debug('l', "round number %d\n", i);
+        for (int turn = 0; turn < 3; turn++) {
+            Utilities.debug('l', "round number %d\n", turn);
             for (Player playing : model.players) {
                 playDone = false;
                 Utilities.debug('l', "%s begins his turn\n", playing.getName());
@@ -34,13 +34,9 @@ public class GameController {
                 view.displayGrid(model.grid, false);
                 view.displayPlayerLetters(playing.bag);
                 while (!playDone) {
-                    try {
-                        GameAction played = view.askAction(playing); // blocking
-                        // TODO : Check validity of played
-                        playDone = model.applyGameAction(played);
-                    } catch (Exception e) {
-                        System.out.println(e);
-                    }
+                    GameAction played = view.askAction(playing, turn); // blocking
+                    playDone = model.applyGameAction(played);
+
                 }
                 Utilities.debug('l', "%s ends his turn\n", playing.getName());
             }

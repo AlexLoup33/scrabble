@@ -23,7 +23,9 @@ public enum ErrorType {
     ForfeitTwiceError(true),
     InvalidLangPackIdentifier(true),
     InvalidKeyArgument(true),
-    IndexOutOfBounds(false);
+    InvalideMoveFormat(false),
+    InvalideActionType(false),
+    IndexOutOfWordBounds(false);
 
     public final boolean isFatal;
 

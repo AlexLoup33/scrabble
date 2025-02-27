@@ -7,7 +7,8 @@ import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.game.Player;
 
 /**
- * Exchange one or more tiles for an equal number from the bag, scoring zero. This can only be done
+ * Exchange one or more tiles for an equal number from the bag, scoring zero.
+ * This can only be done
  * if 7 or more tiles remain in the bag.
  */
 public class ExchangeLetterAction extends GameAction {
@@ -15,7 +16,7 @@ public class ExchangeLetterAction extends GameAction {
 
     // the letters to remove from the players hand
 
-    protected ExchangeLetterAction(Player player, int turn, List<Letter> toExchange) {
+    public ExchangeLetterAction(Player player, int turn, List<Letter> toExchange) {
         super(player, turn);
         this.lettersToExchange = new LettersCounter(toExchange);
     }

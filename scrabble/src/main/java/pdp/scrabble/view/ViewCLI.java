@@ -2,9 +2,6 @@ package pdp.scrabble.view;
 
 import static pdp.scrabble.errorsHandling.ErrorType.UnsupportedMultiplier;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.Scanner;

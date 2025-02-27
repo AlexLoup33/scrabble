@@ -57,16 +57,15 @@ public class ViewCLI implements IView {
       case "renamePlayer":
         return this.ask_renamePlayer(player, turn);
       default:
-        throw new CustomError(ErrorType.InvalideActionType,
-            "invalide action kind", "the action: " +
-                response + " isn't a valid action use -v to see the full list");
+        throw new CustomError(
+            ErrorType.InvalideActionType,
+            "invalide action kind",
+            "the action: " + response + " isn't a valid action use -v to see the full list");
     }
-
   }
 
   private ExchangeLetterAction ask_exchangeLetter(Player player, Integer turn) {
-    Utilities.verbose(
-        "type the letters to exchange: like: 'AJTT' to exchange an A, J and 2 T\n");
+    Utilities.verbose("type the letters to exchange: like: 'AJTT' to exchange an A, J and 2 T\n");
     System.out.print(this.getFromLangPack("ask_exchange"));
     String response = this.scaner.nextLine().strip();
 
@@ -78,8 +77,7 @@ public class ViewCLI implements IView {
   }
 
   private RenamePlayerAction ask_renamePlayer(Player player, Integer turn) {
-    Utilities.verbose(
-        "type the new name for the current player\n");
+    Utilities.verbose("type the new name for the current player\n");
     System.out.print(this.getFromLangPack("ask_rename"));
     String response = this.scaner.nextLine().strip();
 
@@ -88,14 +86,15 @@ public class ViewCLI implements IView {
 
   // Very little error checking / handling
   private PlaceWordAction ask_placeWordAction(Player player, Integer turn) {
-    Utilities.verbose(
-        "pattern for move is `yxdirection WORD`(eg. `a6h photo` or `b7v STICK` )\n");
+    Utilities.verbose("pattern for move is `yxdirection WORD`(eg. `a6h photo` or `b7v STICK` )\n");
     System.out.print(this.getFromLangPack("ask_move"));
     String response = this.scaner.nextLine();
     String[] move = response.split(" ");
 
     if (move.length != 2) {
-      throw new CustomError(ErrorType.InvalideMoveFormat, "Invalid move format",
+      throw new CustomError(
+          ErrorType.InvalideMoveFormat,
+          "Invalid move format",
           "the move: " + move.toString() + " isn't valid");
     }
 
@@ -116,7 +115,9 @@ public class ViewCLI implements IView {
         gwp = new GridWordPos(row, col, Direction.Down);
         break;
       default:
-        throw new CustomError(ErrorType.InvalideMoveFormat, "invalide direction",
+        throw new CustomError(
+            ErrorType.InvalideMoveFormat,
+            "invalide direction",
             "the direction: " + direction + " isn't valid");
     }
 
@@ -135,10 +136,8 @@ public class ViewCLI implements IView {
     // Display the first row of the grid with the column numbers
     System.out.print("  ");
     for (int i = 0; i < grid.size - 1; i++) {
-      if (i < 8)
-        System.out.print(i + 1 + "  ");
-      else
-        System.out.print(i + 1 + " ");
+      if (i < 8) System.out.print(i + 1 + "  ");
+      else System.out.print(i + 1 + " ");
     }
     System.out.println(grid.size);
 
@@ -179,15 +178,11 @@ public class ViewCLI implements IView {
 
         Letter letter = grid.getLetter(i, j);
         if (letter == null) {
-          if (j == grid.size - 1)
-            System.out.print(backgroundColor + "_" + colorReset);
-          else
-            System.out.print(backgroundColor + "_" + colorReset + "  ");
+          if (j == grid.size - 1) System.out.print(backgroundColor + "_" + colorReset);
+          else System.out.print(backgroundColor + "_" + colorReset + "  ");
         } else {
-          if (j == grid.size - 1)
-            System.out.print(color + letter + colorReset);
-          else
-            System.out.print(color + letter + "  " + colorReset);
+          if (j == grid.size - 1) System.out.print(color + letter + colorReset);
+          else System.out.print(color + letter + "  " + colorReset);
         }
       }
       System.out.print("\n");

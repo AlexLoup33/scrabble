@@ -6,13 +6,11 @@ import pdp.scrabble.errorsHandling.ErrorType;
 public record GridWordPos(int row, int col, Direction direction) {
 
   /**
-   * The `getPosAtIndex` method returns the position of a letter in a word at a
-   * given index on the
+   * The `getPosAtIndex` method returns the position of a letter in a word at a given index on the
    * grid.
    *
    * @param index The index of the letter in the word.
-   * @return The position of the letter in the word at the given index as a
-   *         GridPos object.
+   * @return The position of the letter in the word at the given index as a GridPos object.
    * @throws IllegalArgumentException if the direction is not supported.
    */
   public GridPos getPosAtIndex(int index) {
@@ -24,8 +22,10 @@ public record GridWordPos(int row, int col, Direction direction) {
         return new GridPos(this.row, this.col + index);
       }
       default ->
-        throw new CustomError(ErrorType.InvalideWordDirection, "invalide direction",
-            "[BUG] direction: " + direction + " isn't supported");
+          throw new CustomError(
+              ErrorType.InvalideWordDirection,
+              "invalide direction",
+              "[BUG] direction: " + direction + " isn't supported");
     }
   }
 

@@ -4,8 +4,7 @@ import pdp.scrabble.game.Player;
 
 public class ForfeitGameAction extends GameAction {
 
-    public ForfeitGameAction(Player player, int turn) {
-        super(player, turn);
-    }
-
+  public ForfeitGameAction(Player player, int turn) {
+    super(player, turn);
+  }
 }

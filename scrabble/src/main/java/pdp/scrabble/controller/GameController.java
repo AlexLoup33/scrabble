@@ -37,12 +37,10 @@ public class GameController {
         while (!playDone) {
           GameAction played = view.askAction(playing, turn); // blocking
           playDone = model.applyGameAction(played);
-
         }
         Utilities.debug('l', "%s ends his turn\n", playing.getName());
       }
     }
-
   }
 
   private void drawLetters(Player playing) {

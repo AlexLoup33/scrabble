@@ -33,7 +33,6 @@ public class Main {
         // Oral W7: val
         // F30 test a montrer
         // F32 test mot pas legal; a montrer
-        // TODO try F12
 
         // Oral W7: Aymeric
         // F22, F17, F18

@@ -1,5 +1,6 @@
 package pdp.scrabble.game;
 
+import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.Word;
 
 import java.util.LinkedList;
@@ -24,4 +25,26 @@ public class OwnedWord {
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+//    public GridPos getPosAtWordIndex(int index) {
+//        Letter l;
+//        for (int i = 0; i < this.word.getLength(); i++) {
+//            l = this.word.getLetterAt(i);
+//            if (this.position.direction() == Direction.Down) {
+//                while (false) {
+//                    getPosAtWordIndex(index + 1);
+//                }
+//            } else {
+//
+//            }
+//        }
+//        return null;
+//    }
+
+//for each letter of the word
+    // for direction:
+    //            while there is a letter at startPos.getPosAtWordIndex(index):
+    //              index ++
+// => index
+
 }

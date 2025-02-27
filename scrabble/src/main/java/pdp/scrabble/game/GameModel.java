@@ -12,6 +12,7 @@ import pdp.scrabble.dictionary.IDictionary;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.actions.GameAction;
 import pdp.scrabble.game.actions.PlaceWordAction;
+import pdp.scrabble.game.actions.RenamePlayerAction;
 
 public class GameModel {
     public final Grid grid;
@@ -63,4 +64,10 @@ public class GameModel {
         Utilities.debug('l', "%s is playing a non implemented action\n", played.player);
         return false;
     }
+
+    public void applyGameAction(RenamePlayerAction rpa) {
+        rpa.player.rename(rpa.newName);
+    }
+
+
 }

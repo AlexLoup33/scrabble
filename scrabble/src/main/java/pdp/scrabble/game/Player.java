@@ -45,6 +45,10 @@ public class Player {
         this.hasForfeited = true;
     }
 
+    public void rename(String newName) {
+        this.name = newName + this.id;
+    }
+
     @Override
     public String toString() {
         return "Player{id=" + id + ", name='" + name + '\'' + ", score=" + score + ", bag=" + bag + '}';

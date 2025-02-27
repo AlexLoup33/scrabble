@@ -9,4 +9,5 @@ public class RenamePlayerAction extends GameAction {
     super(player, turn);
     this.newName = newName;
   }
+
 }

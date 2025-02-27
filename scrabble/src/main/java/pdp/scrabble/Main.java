@@ -8,20 +8,12 @@ package pdp.scrabble;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.configuration.ConfigurationInitializer;
 import pdp.scrabble.controller.GameController;
-import pdp.scrabble.game.GameModel;
-import pdp.scrabble.view.ViewCLI;
 
 public class Main {
   public static void main(String[] args) throws Exception {
     Configuration conf = ConfigurationInitializer.configurationInit(args);
 
-    GameModel gm = new GameModel(conf);
-    ViewCLI view = new ViewCLI(gm.lang);
-
-    String testCode = view.getFromLangPack("test");
-    System.out.println(testCode);
-
-    GameController gc = new GameController(gm, view);
+    GameController gc = new GameController(conf);
     gc.gameLoop();
 
     // Oral W7: val

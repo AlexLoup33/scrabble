@@ -39,7 +39,13 @@ public class Main {
         // F22, F17, F18
 
         // Oral W7: Ludo
-        // TODO F37
+        // TODO F37 probably
+
+        // Oral W7: Alex
+
+        // Oral W7: Matheo
+
+        // Oral W7: Jean
 
         System.out.println("--- End ---");
     }

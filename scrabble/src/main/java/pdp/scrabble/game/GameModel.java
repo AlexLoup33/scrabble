@@ -11,6 +11,7 @@ import pdp.scrabble.dictionary.Dictionary;
 import pdp.scrabble.dictionary.IDictionary;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.actions.GameAction;
+import pdp.scrabble.game.actions.PassTurnAction;
 import pdp.scrabble.game.actions.PlaceWordAction;
 import pdp.scrabble.game.actions.RenamePlayerAction;
 
@@ -65,8 +66,15 @@ public class GameModel {
         return false;
     }
 
-    public void applyGameAction(RenamePlayerAction rpa) {
+    public boolean applyGameAction(RenamePlayerAction rpa) {
         rpa.player.rename(rpa.newName);
+        return false;
+    }
+
+    public boolean applyGameAction(PassTurnAction pta) {
+        // rien a faire normalement (vérifiez svp)
+        // puis change de joueur (si il n'y a pas eut de problèmes)
+        return true;
     }
 
 

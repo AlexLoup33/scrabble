@@ -31,7 +31,7 @@ public class OwnedWord {
 //        for (int i = 0; i < this.word.getLength(); i++) {
 //            l = this.word.getLetterAt(i);
 //            if (this.position.direction() == Direction.Down) {
-//                while (false) {
+//                while () {
 //                    getPosAtWordIndex(index + 1);
 //                }
 //            } else {

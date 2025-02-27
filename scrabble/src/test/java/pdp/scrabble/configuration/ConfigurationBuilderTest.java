@@ -8,153 +8,152 @@ import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
-
 import org.junit.Test;
 import pdp.scrabble.errorsHandling.CustomError;
 
 public class ConfigurationBuilderTest {
 
-    @Test
-    public void testStandardConfInit() {
-        String[] args = {"-g", "-s", "-p", "3", "-a", "2,3", "--ai-mode", "minimax"};
-        ConfigurationBuilder rcBuilder =
-                new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/.default"));
-        ConfigurationBuilder cliBuilder = new ConfigurationBuilder(args);
-        Configuration rcConf = rcBuilder.getConfiguration();
-        Configuration cliConf = cliBuilder.getConfiguration();
+  @Test
+  public void testStandardConfInit() {
+    String[] args = {"-g", "-s", "-p", "3", "-a", "2,3", "--ai-mode", "minimax"};
+    ConfigurationBuilder rcBuilder =
+        new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/.default"));
+    ConfigurationBuilder cliBuilder = new ConfigurationBuilder(args);
+    Configuration rcConf = rcBuilder.getConfiguration();
+    Configuration cliConf = cliBuilder.getConfiguration();
 
-        rcBuilder.merge(cliBuilder);
-        Configuration merged = rcBuilder.getConfiguration();
+    rcBuilder.merge(cliBuilder);
+    Configuration merged = rcBuilder.getConfiguration();
 
-        assertEquals(merged.getGui(), cliConf.getGui());
-        assertEquals(merged.getSuperScrabble(), cliConf.getSuperScrabble());
-        assertEquals(merged.getPlayerCount(), cliConf.getPlayerCount());
-        assertEquals(merged.getAiMode(), cliConf.getAiMode());
-        assertTrue(Arrays.equals(merged.getAiPlayers(), cliConf.getAiPlayers()));
-    }
+    assertEquals(merged.getGui(), cliConf.getGui());
+    assertEquals(merged.getSuperScrabble(), cliConf.getSuperScrabble());
+    assertEquals(merged.getPlayerCount(), cliConf.getPlayerCount());
+    assertEquals(merged.getAiMode(), cliConf.getAiMode());
+    assertTrue(Arrays.equals(merged.getAiPlayers(), cliConf.getAiPlayers()));
+  }
 
-    @Test
-    public void testValidConfFile() throws CustomError {
-        ConfigurationBuilder confBuilder =
-                new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/.default"));
-        Configuration conf = confBuilder.getConfiguration();
+  @Test
+  public void testValidConfFile() throws CustomError {
+    ConfigurationBuilder confBuilder =
+        new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/.default"));
+    Configuration conf = confBuilder.getConfiguration();
 
-        assertFalse(conf.getVerbose());
-        assertEquals(conf.getBlitzTime(), 30);
-    }
+    assertFalse(conf.getVerbose());
+    assertEquals(conf.getBlitzTime(), 30);
+  }
 
-    @Test
-    public void testMissingConfFile() {
-        CustomError e =
-                assertThrows(CustomError.class, () -> new ConfigurationBuilder(Paths.get("nonExistent")));
-        assertEquals("Could not access .scrabblerc", e.message);
-    }
+  @Test
+  public void testMissingConfFile() {
+    CustomError e =
+        assertThrows(CustomError.class, () -> new ConfigurationBuilder(Paths.get("nonExistent")));
+    assertEquals("Could not access .scrabblerc", e.message);
+  }
 
-    @Test
-    public void testIncompleteConfFile() {
-        CustomError e =
-                assertThrows(
-                        CustomError.class,
-                        () -> new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/.incomplete")));
-        assertEquals("Some properties are missing from .scrabblerc", e.message);
-    }
+  @Test
+  public void testIncompleteConfFile() {
+    CustomError e =
+        assertThrows(
+            CustomError.class,
+            () -> new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/.incomplete")));
+    assertEquals("Some properties are missing from .scrabblerc", e.message);
+  }
 
-    @Test
-    public void testInvalidPlayerCount() {
-        CustomError e =
-                assertThrows(
-                        CustomError.class,
-                        () ->
-                                new ConfigurationBuilder(
-                                        Paths.get("src/test/resources/scrabblerc/.invalidPlayerCount")));
-        assertEquals(
-                "[.scrabblerc] Value `5` for key `playerCount`, expected value in range 2-4", e.message);
-    }
+  @Test
+  public void testInvalidPlayerCount() {
+    CustomError e =
+        assertThrows(
+            CustomError.class,
+            () ->
+                new ConfigurationBuilder(
+                    Paths.get("src/test/resources/scrabblerc/.invalidPlayerCount")));
+    assertEquals(
+        "[.scrabblerc] Value `5` for key `playerCount`, expected value in range 2-4", e.message);
+  }
 
-    @Test
-    public void testMerge() throws CustomError {
-        ConfigurationBuilder src =
-                new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/.default"));
-        Configuration srcConf = src.getConfiguration();
-        ConfigurationBuilder other =
-                new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/.valid"));
-        Configuration otherConf = other.getConfiguration();
+  @Test
+  public void testMerge() throws CustomError {
+    ConfigurationBuilder src =
+        new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/.default"));
+    Configuration srcConf = src.getConfiguration();
+    ConfigurationBuilder other =
+        new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/.valid"));
+    Configuration otherConf = other.getConfiguration();
 
-        src.merge(other);
-        Configuration merged = src.getConfiguration();
+    src.merge(other);
+    Configuration merged = src.getConfiguration();
 
-        // Changed from merge
-        assertEquals(merged.getVerbose(), otherConf.getVerbose());
-        assertNotEquals(merged.getVerbose(), srcConf.getVerbose());
+    // Changed from merge
+    assertEquals(merged.getVerbose(), otherConf.getVerbose());
+    assertNotEquals(merged.getVerbose(), srcConf.getVerbose());
 
-        // Same in both
-        assertEquals(merged.getDictFile(), srcConf.getDictFile());
-        assertEquals(merged.getDictFile(), otherConf.getDictFile());
-    }
+    // Same in both
+    assertEquals(merged.getDictFile(), srcConf.getDictFile());
+    assertEquals(merged.getDictFile(), otherConf.getDictFile());
+  }
 
-    @Test
-    public void testSaveConfiguration() throws Exception {
-        ConfigurationBuilder original =
-                new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/.default"));
-        Configuration originalConf = original.getConfiguration();
+  @Test
+  public void testSaveConfiguration() throws Exception {
+    ConfigurationBuilder original =
+        new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/.default"));
+    Configuration originalConf = original.getConfiguration();
 
-        ConfigurationBuilder.saveConfiguration(
-                Paths.get("src/test/resources/scrabblerc/created/.savedDefault"), originalConf);
+    ConfigurationBuilder.saveConfiguration(
+        Paths.get("src/test/resources/scrabblerc/created/.savedDefault"), originalConf);
 
-        ConfigurationBuilder created =
-                new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/created/.savedDefault"));
-        Configuration createdConf = created.getConfiguration();
+    ConfigurationBuilder created =
+        new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/created/.savedDefault"));
+    Configuration createdConf = created.getConfiguration();
 
-        assertEquals(originalConf.getDebug(), createdConf.getDebug());
-    }
+    assertEquals(originalConf.getDebug(), createdConf.getDebug());
+  }
 
-    @Test
-    public void testBooleanFlags() throws CustomError {
-        String[] args = {"-v", "-d", "-b", "-s", "-g"};
-        ConfigurationBuilder cliBuilder = new ConfigurationBuilder(args);
-        Configuration cliConf = cliBuilder.getConfiguration();
+  @Test
+  public void testBooleanFlags() throws CustomError {
+    String[] args = {"-v", "-d", "-b", "-s", "-g"};
+    ConfigurationBuilder cliBuilder = new ConfigurationBuilder(args);
+    Configuration cliConf = cliBuilder.getConfiguration();
 
-        assertTrue(cliConf.getVerbose());
-        assertEquals("+", cliConf.getDebug());
-        assertTrue(cliConf.getBlitz());
-        assertTrue(cliConf.getSuperScrabble());
-        assertTrue(cliConf.getGui());
-    }
+    assertTrue(cliConf.getVerbose());
+    assertEquals("+", cliConf.getDebug());
+    assertTrue(cliConf.getBlitz());
+    assertTrue(cliConf.getSuperScrabble());
+    assertTrue(cliConf.getGui());
+  }
 
-    @Test
-    public void testOptionsWithArguments() throws CustomError {
-        String[] args = {
-                "-t", "10",
-                "-p", "3",
-                "-l", "fr",
-                "-a", "1,2,3,4",
-                "--ai-mode", "mcts"
-        };
-        ConfigurationBuilder cliBuilder = new ConfigurationBuilder(args);
-        Configuration cliConf = cliBuilder.getConfiguration();
+  @Test
+  public void testOptionsWithArguments() throws CustomError {
+    String[] args = {
+      "-t", "10",
+      "-p", "3",
+      "-l", "fr",
+      "-a", "1,2,3,4",
+      "--ai-mode", "mcts"
+    };
+    ConfigurationBuilder cliBuilder = new ConfigurationBuilder(args);
+    Configuration cliConf = cliBuilder.getConfiguration();
 
-        assertEquals(10, cliConf.getBlitzTime());
-        assertEquals(3, cliConf.getPlayerCount());
-        assertEquals("fr", cliConf.getLanguage());
-        assertTrue(Arrays.equals(new boolean[]{true, true, true, true}, cliConf.getAiPlayers()));
-        assertEquals("mcts", cliConf.getAiMode());
-    }
+    assertEquals(10, cliConf.getBlitzTime());
+    assertEquals(3, cliConf.getPlayerCount());
+    assertEquals("fr", cliConf.getLanguage());
+    assertTrue(Arrays.equals(new boolean[] {true, true, true, true}, cliConf.getAiPlayers()));
+    assertEquals("mcts", cliConf.getAiMode());
+  }
 
-    @Test
-    public void testMultipleOptions() throws CustomError {
-        String[] args = {"-v", "-d", "-t", "5"};
-        ConfigurationBuilder cliBuilder = new ConfigurationBuilder(args);
-        Configuration cliConf = cliBuilder.getConfiguration();
+  @Test
+  public void testMultipleOptions() throws CustomError {
+    String[] args = {"-v", "-d", "-t", "5"};
+    ConfigurationBuilder cliBuilder = new ConfigurationBuilder(args);
+    Configuration cliConf = cliBuilder.getConfiguration();
 
-        assertTrue(cliConf.getVerbose());
-        assertEquals("+", cliConf.getDebug());
-        assertEquals(5, cliConf.getBlitzTime());
-    }
+    assertTrue(cliConf.getVerbose());
+    assertEquals("+", cliConf.getDebug());
+    assertEquals(5, cliConf.getBlitzTime());
+  }
 
-    @Test
-    public void testInvalidCliArg() {
-        String[] args = {"--Nonexistent"};
-        CustomError e = assertThrows(CustomError.class, () -> new ConfigurationBuilder(args));
-        assertEquals("Some cli options were incorrect, -h for help.", e.message);
-    }
+  @Test
+  public void testInvalidCliArg() {
+    String[] args = {"--Nonexistent"};
+    CustomError e = assertThrows(CustomError.class, () -> new ConfigurationBuilder(args));
+    assertEquals("Some cli options were incorrect, -h for help.", e.message);
+  }
 }

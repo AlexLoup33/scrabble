@@ -8,10 +8,7 @@ package pdp.scrabble;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.configuration.ConfigurationInitializer;
 import pdp.scrabble.controller.GameController;
-import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.game.GameModel;
-import pdp.scrabble.game.Grid;
-import pdp.scrabble.game.actions.PlaceWordAction;
 import pdp.scrabble.view.ViewCLI;
 
 public class Main {

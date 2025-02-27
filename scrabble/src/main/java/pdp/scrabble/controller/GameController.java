@@ -41,7 +41,10 @@ public class GameController {
                 Utilities.debug('l', "%s ends his turn\n", playing.getName());
             }
         }
+        Utilities.debug('l', "%s ends his turn\n", playing.getName());
     }
+
+    }}
 
     private void drawLetters(Player playing) {
         if (model.draw.getCurrentSize() < 7) {

@@ -28,8 +28,41 @@ import pdp.scrabble.game.actions.RestartGameAction;
 
 public class ViewCLI implements IView {
 
+  private Scanner sc;
   private final ResourceBundle langPack;
   private final Scanner scaner;
+
+  private enum ActionType {
+    PLACE("p"),
+    EXCHANGE("e"),
+    RENAME("n"),
+    SKIP("s"),
+    FORFEIT("f"),
+    RESTART("r");
+
+    private final String name;
+    private static final Map<String, ActionType> ENUM_MAP;
+
+    private ActionType(String name) {
+      this.name = name;
+    }
+
+    static {
+      Map<String, ActionType> map = new HashMap<String, ActionType>();
+      for (ActionType instance : ActionType.values()) {
+        map.put(instance.toString(), instance);
+      }
+      ENUM_MAP = Collections.unmodifiableMap(map);
+    }
+
+    public String toString() {
+      return this.name;
+    }
+
+    public static ActionType get(String name) {
+      return ENUM_MAP.get(name);
+    }
+  }
 
   public ViewCLI(Lang lang) {
     this.langPack = lang.getViewCLI_langPack();
@@ -134,15 +167,19 @@ public class ViewCLI implements IView {
     return new PlaceWordAction(player, turn, toPlace, gwp);
   }
 
+  private RenamePlayerAction makeRenameAction(Player player) {
+    System.out.print("Enter new name : ");
+    String response = this.sc.nextLine();
+    return new RenamePlayerAction(player, 0, response);
+  }
+
   @Override
   public void displayGrid(Grid grid, Boolean isSuperScrabble) {
     // Display the first row of the grid with the column numbers
     System.out.print("  ");
     for (int i = 0; i < grid.size - 1; i++) {
-      if (i < 8)
-        System.out.print(i + 1 + "  ");
-      else
-        System.out.print(i + 1 + " ");
+      if (i < 8) System.out.print(i + 1 + "  ");
+      else System.out.print(i + 1 + " ");
     }
     System.out.println(grid.size);
 
@@ -183,15 +220,11 @@ public class ViewCLI implements IView {
 
         Letter letter = grid.getLetter(i, j);
         if (letter == null) {
-          if (j == grid.size - 1)
-            System.out.print(backgroundColor + "_" + colorReset);
-          else
-            System.out.print(backgroundColor + "_" + colorReset + "  ");
+          if (j == grid.size - 1) System.out.print(backgroundColor + "_" + colorReset);
+          else System.out.print(backgroundColor + "_" + colorReset + "  ");
         } else {
-          if (j == grid.size - 1)
-            System.out.print(color + letter + colorReset);
-          else
-            System.out.print(color + letter + "  " + colorReset);
+          if (j == grid.size - 1) System.out.print(color + letter + colorReset);
+          else System.out.print(color + letter + "  " + colorReset);
         }
       }
       System.out.print("\n");

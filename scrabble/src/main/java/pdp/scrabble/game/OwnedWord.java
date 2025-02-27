@@ -27,7 +27,10 @@ public class OwnedWord {
     }
 
 //    public GridPos getPosAtWordIndex(int index) {
+////      ca renvoi la position de la lettre a l'index donné
 //        Letter l;
+//        GridPos result;
+//
 //        for (int i = 0; i < this.word.getLength(); i++) {
 //            l = this.word.getLetterAt(i);
 //            if (this.position.direction() == Direction.Down) {
@@ -38,7 +41,7 @@ public class OwnedWord {
 //
 //            }
 //        }
-//        return null;
+//        return result;
 //    }
 
 //for each letter of the word

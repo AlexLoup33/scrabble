@@ -2,6 +2,8 @@ package pdp.scrabble.game;
 
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.Word;
+import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.errorsHandling.ErrorType;
 
 import java.util.LinkedList;
 
@@ -26,28 +28,19 @@ public class OwnedWord {
         return super.clone();
     }
 
-//    public GridPos getPosAtWordIndex(int index) {
-////      ca renvoi la position de la lettre a l'index donné
-//        Letter l;
-//        GridPos result;
-//
-//        for (int i = 0; i < this.word.getLength(); i++) {
-//            l = this.word.getLetterAt(i);
-//            if (this.position.direction() == Direction.Down) {
-//                while () {
-//                    getPosAtWordIndex(index + 1);
-//                }
-//            } else {
-//
-//            }
-//        }
-//        return result;
-//    }
+    public GridPos getPosAtWordIndex(int index) {
 
-//for each letter of the word
-    // for direction:
-    //            while there is a letter at startPos.getPosAtWordIndex(index):
-    //              index ++
-// => index
+        if (index > this.word.getLength()) {
+            throw new CustomError(ErrorType.IndexOutOfBounds,
+                    "IndexOutOfBounds",
+                    "Try to find the position of a letter not in the word");
+        }
+
+        if (this.position.direction() == Direction.Down) {
+            return new GridPos(this.position.row() + index, this.position.col());
+        } else {
+            return new GridPos(this.position.row(), this.position.col() + index);
+        }
+    }
 
 }

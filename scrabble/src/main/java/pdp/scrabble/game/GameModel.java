@@ -77,5 +77,12 @@ public class GameModel {
         return true;
     }
 
+//    public void applyGameAction(ForfeitAction fa) {
+//        // forfeit le joueur (avec la méthode de joueur)
+//        // puis change de joueur (si il n'y a pas eut de problèmes)
+//    }
+
+
+
 
 }

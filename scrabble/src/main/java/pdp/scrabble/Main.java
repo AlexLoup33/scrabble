@@ -8,42 +8,39 @@ package pdp.scrabble;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.configuration.ConfigurationInitializer;
 import pdp.scrabble.controller.GameController;
-import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.game.GameModel;
-import pdp.scrabble.game.Grid;
-import pdp.scrabble.game.actions.PlaceWordAction;
 import pdp.scrabble.view.ViewCLI;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
-        Configuration conf = ConfigurationInitializer.configurationInit(args);
+  public static void main(String[] args) throws Exception {
+    Configuration conf = ConfigurationInitializer.configurationInit(args);
 
-        GameModel gm = new GameModel(conf);
-        ViewCLI view = new ViewCLI(gm.lang);
+    GameModel gm = new GameModel(conf);
+    ViewCLI view = new ViewCLI(gm.lang);
 
-        String testCode = view.getFromLangPack("test");
-        System.out.println(testCode);
+    String testCode = view.getFromLangPack("test");
+    System.out.println(testCode);
 
-        GameController gc = new GameController(gm, view);
-        gc.gameLoop();
+    GameController gc = new GameController(gm, view);
+    gc.gameLoop();
 
-        // Oral W7: val
-        // F30 test a montrer
-        // F32 test mot pas legal; a montrer
+    // Oral W7: val
+    // F30 test a montrer
+    // F32 test mot pas legal; a montrer
 
-        // Oral W7: Aymeric
-        // F22, F17, F18, F20 ?, F31 ?
+    // Oral W7: Aymeric
+    // F22, F17, F18, F20 ?, F31 ?
 
-        // Oral W7: Ludo
-        // TODO F37 probably
+    // Oral W7: Ludo
+    // TODO F37 probably
 
-        // Oral W7: Alex
+    // Oral W7: Alex
 
-        // Oral W7: Matheo
+    // Oral W7: Matheo
 
-        // Oral W7: Jean
+    // Oral W7: Jean
 
-        System.out.println("--- End ---");
-    }
-    // nope F12, F29, F37
+    System.out.println("--- End ---");
+  }
+  // nope F12, F29, F37
 }

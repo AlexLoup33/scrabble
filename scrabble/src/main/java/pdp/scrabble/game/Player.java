@@ -58,4 +58,8 @@ public class Player {
   protected Object clone() throws CloneNotSupportedException {
     return super.clone();
   }
+
+  public int getScore() {
+    return this.score;
+  }
 }

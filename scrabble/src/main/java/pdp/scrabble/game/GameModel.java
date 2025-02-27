@@ -83,4 +83,19 @@ public class GameModel {
   //        // puis change de joueur (si il n'y a pas eut de problèmes)
   //    }
 
+  /**
+   * This function returns a list of active players by filtering out players who have forfeited.
+   *
+   * @return The method `getActivePlayers` returns a list of active players, which are players who
+   *     have not forfeited the game.
+   */
+  public List<Player> getActivePlayers() {
+    List<Player> activePlayers = new ArrayList<>();
+    for (Player player : players) {
+      if (!player.getHasForfeited()) {
+        activePlayers.add(player);
+      }
+    }
+    return activePlayers;
+  }
 }

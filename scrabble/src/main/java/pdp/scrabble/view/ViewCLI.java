@@ -27,6 +27,7 @@ public class ViewCLI implements IView {
 
   private Scanner sc;
   private final ResourceBundle langPack;
+
   private enum ActionType {
     PLACE("p"),
     EXCHANGE("e"),
@@ -151,10 +152,8 @@ public class ViewCLI implements IView {
     // Display the first row of the grid with the column numbers
     System.out.print("  ");
     for (int i = 0; i < grid.size - 1; i++) {
-      if (i < 8)
-        System.out.print(i + 1 + "  ");
-      else
-        System.out.print(i + 1 + " ");
+      if (i < 8) System.out.print(i + 1 + "  ");
+      else System.out.print(i + 1 + " ");
     }
     System.out.println(grid.size);
 
@@ -195,15 +194,11 @@ public class ViewCLI implements IView {
 
         Letter letter = grid.getLetter(i, j);
         if (letter == null) {
-          if (j == grid.size - 1)
-            System.out.print(backgroundColor + "_" + colorReset);
-          else
-            System.out.print(backgroundColor + "_" + colorReset + "  ");
+          if (j == grid.size - 1) System.out.print(backgroundColor + "_" + colorReset);
+          else System.out.print(backgroundColor + "_" + colorReset + "  ");
         } else {
-          if (j == grid.size - 1)
-            System.out.print(color + letter + colorReset);
-          else
-            System.out.print(color + letter + "  " + colorReset);
+          if (j == grid.size - 1) System.out.print(color + letter + colorReset);
+          else System.out.print(color + letter + "  " + colorReset);
         }
       }
       System.out.print("\n");
@@ -238,5 +233,53 @@ public class ViewCLI implements IView {
           "Invalid KeyArgument. Please check the file pack_ and verify your keys");
     }
     return langPack.getString(key);
+  }
+
+  @Override
+  public void showScore(Player player) {
+    System.out.printf(
+        "%s %s %d\n", langPack.getString("viewcli_score"), player.getName(), player.getScore());
+  }
+
+  @Override
+  public void displayDrawer(LettersCounter draw) {
+    System.out.println("Drawer:");
+    System.out.print("[ ");
+    // Foreach with draw.getLetterSet()
+    boolean isFirst = true;
+    for (Letter letter : draw.getLettersSet()) {
+      for (int i = 0; i < draw.getLetterCount(letter); i++) {
+        if (!isFirst) {
+          System.out.print(" | ");
+        } else {
+          isFirst = false;
+        }
+        System.out.print(letter);
+      }
+    }
+    System.out.println(" ]");
+  }
+
+  @Override
+  public void announceTurn(Player currentPlayer) {
+    System.out.printf(
+        "%s %s\n", langPack.getString("viewcli_announce_turn"), currentPlayer.getName());
+  }
+
+  @Override
+  public void showError(CustomError e) {
+    System.out.printf("Error: %s\n", e.toUserFormatedText());
+  }
+
+  @Override
+  public void showError(Exception e) {
+    System.out.printf("Error: %s\n", e.getMessage());
+  }
+
+  @Override
+  public void showScore(java.util.List<Player> players) {
+    for (Player player : players) {
+      showScore(player);
+    }
   }
 }

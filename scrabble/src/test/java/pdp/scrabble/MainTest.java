@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.junit.After;
@@ -182,16 +183,14 @@ public class MainTest {
                 new boolean[4],
                 15,
                 2,
-                "french",
+                "fr",
                 "chepa",
                 java.nio.file.Paths.get("dictionary/fr.txt"),
                 java.nio.file.Paths.get("none"),
-                java.nio.file.Paths.get("none")
-        );
+                java.nio.file.Paths.get("none"));
 
         GameModel gm = new GameModel(config);
         gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
-        ViewCLI view = new ViewCLI("fr");
 
         Player p1 = gm.players.get(0);
 
@@ -263,7 +262,7 @@ public class MainTest {
         assertEquals(
                 "[OwnedWord{position=GridWordPos[row=13, col=6, direction=Right], word=TISA, owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
                 gm.grid.placeLetters(new PlaceWordAction(p1,
-                                0, l2, new GridWordPos(13, 6, Direction.Right)))
+                        0, l2, new GridWordPos(13, 6, Direction.Right)))
                         .toString());
         // System.out.println(
         // gm.grid.placeLetters(new PlaceWordAction(
@@ -336,14 +335,14 @@ public class MainTest {
         }
     }
 
-    public static void PropertiesTest(String[] args) {
-        ViewCLI view = new ViewCLI("ue");
-        assertTrue(view != null);
-        String result = view.getLangPack("test");
-        System.out.println(result);
+    @Test
+    public void testLangPack() {
+        ResourceBundle langPack = Lang.EN.getViewCLI_langPack();
+        assertTrue(langPack != null);
+        String result = langPack.getString("test");
 
         assertTrue(result != null && !result.isEmpty());
-        String expected = "petit message de test en francais";
+        String expected = "a small tests message in english";
         assertEquals(expected, result);
     }
 
@@ -360,17 +359,15 @@ public class MainTest {
                 new boolean[4],
                 15,
                 2,
-                "french",
+                "fr",
                 "chepa",
                 java.nio.file.Paths.get("dictionary/fr.txt"),
                 java.nio.file.Paths.get("none"),
-                java.nio.file.Paths.get("none")
-        );
+                java.nio.file.Paths.get("none"));
 
         GameModel gm = new GameModel(config);
         gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
-        ViewCLI view = new ViewCLI("fr");
-        Player p1 = gm.players.get(0);
+        ViewCLI view = new ViewCLI(gm.lang);
 
         final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;

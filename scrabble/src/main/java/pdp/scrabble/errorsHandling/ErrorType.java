@@ -21,7 +21,7 @@ public enum ErrorType {
     MalformedLangError(true),
     IO(true),
     ForfeitTwiceError(true),
-    InvalidKeyArgument(true);
+    InvalidLangPackIdentifier(true);
 
     public final boolean isFatal;
 

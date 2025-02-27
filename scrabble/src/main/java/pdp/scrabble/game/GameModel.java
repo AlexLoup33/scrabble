@@ -33,16 +33,8 @@ public class GameModel {
         this.dictionary = new Dictionary();
         this.dictionary.loadFromFile(config.getDictFile());
 
-        Lang tmp;
-        if (this.config.getLanguage().equalsIgnoreCase("ENGLISH")) {
-            tmp = Lang.EN;
-        } else if (this.config.getLanguage().equalsIgnoreCase("FRENCH")) {
-            tmp = Lang.FR;
-        } else {
-            tmp = Lang.EN;
-        }
-        this.lang = tmp;
-        this.draw = new LettersDrawer(tmp);
+        this.lang = Lang.getLang(this.config.getLanguage());
+        this.draw = new LettersDrawer(this.lang);
 
         if (!config.getSuperScrabble()) {
             this.grid = new Grid(this, 15);
@@ -76,6 +68,5 @@ public class GameModel {
         // puis change de joueur (si il n'y a pas eut de problèmes)
         return true;
     }
-
 
 }

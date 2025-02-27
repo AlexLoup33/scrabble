@@ -2,6 +2,7 @@ package pdp.scrabble.game;
 
 import java.nio.file.Path;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
@@ -147,12 +148,13 @@ public enum Lang {
     };
 
     private static final String dictionaryDirectory = "dictionary/";
-    public static final String viewCliLangPack = "langPacks/viewCLI/pack";
+    private static final String viewCliLangPack = "pack_cli_";
 
     public final Locale locale;
 
     /**
-     * create a new language available for scrable the name of the Lang must be an UPPERCASE of the
+     * create a new language available for scrable the name of the Lang must be an
+     * UPPERCASE of the
      * lang code in order to keep thing easy
      *
      * @param locale the local to use with this lang
@@ -214,6 +216,13 @@ public enum Lang {
      */
     public Path getDictionaryPath() {
         return Path.of(Lang.dictionaryDirectory, this.getCodeLang() + ".txt");
+    }
+
+    /**
+     * @return the ressource bundle for the ViewCLI
+     */
+    public ResourceBundle getViewCLI_langPack() {
+        return ResourceBundle.getBundle(Lang.viewCliLangPack + this.getCodeLang());
     }
 
     /**

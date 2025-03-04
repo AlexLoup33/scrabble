@@ -1,5 +1,6 @@
 package pdp.scrabble.controller;
 
+import javafx.application.Application;
 import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.game.GameModel;
@@ -11,13 +12,17 @@ import pdp.scrabble.view.ViewGUI;
 
 public class GameController {
 
-  private GameModel model;
-  private IView view;
+  private final GameModel model;
+  private final IView view;
 
   public GameController(Configuration conf) {
     this.model = new GameModel(conf);
     if (conf.getGui()) {
-      this.view = new ViewGUI(this.model.lang);
+      this.view = new ViewGUI();
+
+      ViewGUI.setLang(this.model.lang);
+
+      Application.launch(ViewGUI.class, new String[] {});
     } else {
       this.view = new ViewCLI(this.model.lang);
     }

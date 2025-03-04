@@ -1,6 +1,7 @@
 package pdp.scrabble.game.actions;
 
 import pdp.scrabble.dictionary.Letter;
+import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.GridWordPos;
 import pdp.scrabble.game.Player;
 
@@ -17,5 +18,9 @@ public class PlaceWordAction extends GameAction {
     super(player, turn);
     this.toPlace = toPlace.clone();
     this.startPosition = startPos;
+  }
+  @Override
+  public boolean applyGameAction(GameModel gameModel) {
+    return gameModel.applyGameAction(this);
   }
 }

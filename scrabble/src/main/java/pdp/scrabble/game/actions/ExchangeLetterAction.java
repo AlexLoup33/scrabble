@@ -3,6 +3,7 @@ package pdp.scrabble.game.actions;
 import java.util.List;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
+import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Player;
 
 /**
@@ -17,5 +18,10 @@ public class ExchangeLetterAction extends GameAction {
   public ExchangeLetterAction(Player player, int turn, List<Letter> toExchange) {
     super(player, turn);
     this.lettersToExchange = new LettersCounter(toExchange);
+  }
+
+  @Override
+  public boolean applyGameAction(GameModel gameModel) {
+    return gameModel.applyGameAction(this);
   }
 }

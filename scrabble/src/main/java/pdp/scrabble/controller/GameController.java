@@ -36,7 +36,7 @@ public class GameController {
         view.displayPlayerLetters(playing.bag);
         while (!playDone) {
           GameAction played = view.askAction(playing, turn); // blocking
-          playDone = model.applyGameAction(played);
+          playDone = model.applyGameActionDispatch(played);
         }
         Utilities.debug('l', "%s ends his turn\n", playing.getName());
       }

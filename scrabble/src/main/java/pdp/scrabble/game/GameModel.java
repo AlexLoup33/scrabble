@@ -8,10 +8,7 @@ import pdp.scrabble.configuration.IConfiguration;
 import pdp.scrabble.dictionary.Dictionary;
 import pdp.scrabble.dictionary.IDictionary;
 import pdp.scrabble.errorsHandling.CustomError;
-import pdp.scrabble.game.actions.GameAction;
-import pdp.scrabble.game.actions.PassTurnAction;
-import pdp.scrabble.game.actions.PlaceWordAction;
-import pdp.scrabble.game.actions.RenamePlayerAction;
+import pdp.scrabble.game.actions.*;
 
 public class GameModel {
   public final Grid grid;
@@ -41,30 +38,14 @@ public class GameModel {
     }
   }
 
-  public boolean applyGameAction(GameAction played) {
-    if (played instanceof PlaceWordAction) {
-      try {
-        grid.placeLetters((PlaceWordAction) played);
-        return true;
-      } catch (CustomError e) {
-        System.out.println(e);
-        // view.showError(e.toUserFormatedText()); NOT IMPLEMENTED
-        return false;
-      }
-    }
-    if (played instanceof RenamePlayerAction) {
-      try {
-        RenamePlayerAction renaming = (RenamePlayerAction) played;
-        renaming.player.rename(renaming.newName);
-        return true;
-      } catch (CustomError e) {
-        System.out.println(e);
-        // view.showError(e.toUserFormatedText()); NOT IMPLEMENTED
-        return false;
-      }
-    }
-    Utilities.debug('l', "%s is playing a non implemented action\n", played.player);
-    return false;
+  /**
+   * dispatch the game action to the correct methode of applyGameAction
+   * 
+   * @param played
+   * @return whether the turn is finished
+   */
+  public boolean applyGameActionDispatch(GameAction played) {
+    return played.applyGameAction(this); // use double dispatch
   }
 
   public boolean applyGameAction(RenamePlayerAction rpa) {
@@ -73,21 +54,38 @@ public class GameModel {
   }
 
   public boolean applyGameAction(PassTurnAction pta) {
-    // rien a faire normalement (vérifiez svp)
+    // TODO: rien a faire normalement (vérifiez svp)
     // puis change de joueur (si il n'y a pas eut de problèmes)
     return true;
   }
 
-  //    public void applyGameAction(ForfeitAction fa) {
-  //        // forfeit le joueur (avec la méthode de joueur)
-  //        // puis change de joueur (si il n'y a pas eut de problèmes)
-  //    }
+  public boolean applyGameAction(ExchangeLetterAction exchangeLetterAction) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'applyGameAction'");
+  }
+
+  public boolean applyGameAction(ForfeitGameAction forfeitGameAction) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'applyGameAction'");
+  }
+
+  public boolean applyGameAction(PlaceWordAction placeWordAction) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'applyGameAction'");
+  }
+
+  public boolean applyGameAction(RestartGameAction restartGameAction) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'applyGameAction'");
+  }
 
   /**
-   * This function returns a list of active players by filtering out players who have forfeited.
+   * This function returns a list of active players by filtering out players who
+   * have forfeited.
    *
-   * @return The method `getActivePlayers` returns a list of active players, which are players who
-   *     have not forfeited the game.
+   * @return The method `getActivePlayers` returns a list of active players, which
+   *         are players who
+   *         have not forfeited the game.
    */
   public List<Player> getActivePlayers() {
     List<Player> activePlayers = new ArrayList<>();

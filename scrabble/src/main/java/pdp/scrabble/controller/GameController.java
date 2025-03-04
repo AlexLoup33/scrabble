@@ -7,6 +7,7 @@ import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
 import pdp.scrabble.view.IView;
 import pdp.scrabble.view.ViewCLI;
+import pdp.scrabble.view.ViewGUI;
 
 public class GameController {
 
@@ -15,7 +16,11 @@ public class GameController {
 
   public GameController(Configuration conf) {
     this.model = new GameModel(conf);
-    this.view = new ViewCLI(this.model.lang);
+    if (conf.getGui()) {
+      this.view = new ViewGUI(this.model.lang);
+    } else {
+      this.view = new ViewCLI(this.model.lang);
+    }
   }
 
   public void gameLoop() {

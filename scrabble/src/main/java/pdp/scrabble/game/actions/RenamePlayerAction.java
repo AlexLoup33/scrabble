@@ -10,6 +10,7 @@ public class RenamePlayerAction extends GameAction {
     super(player, turn);
     this.newName = newName;
   }
+
   @Override
   public boolean applyGameAction(GameModel gameModel) {
     return gameModel.applyGameAction(this);

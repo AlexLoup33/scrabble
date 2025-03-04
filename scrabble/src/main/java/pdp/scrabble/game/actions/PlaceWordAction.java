@@ -19,6 +19,7 @@ public class PlaceWordAction extends GameAction {
     this.toPlace = toPlace.clone();
     this.startPosition = startPos;
   }
+
   @Override
   public boolean applyGameAction(GameModel gameModel) {
     return gameModel.applyGameAction(this);

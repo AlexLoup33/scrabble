@@ -2,12 +2,10 @@ package pdp.scrabble.game;
 
 import java.util.ArrayList;
 import java.util.List;
-import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.configuration.IConfiguration;
 import pdp.scrabble.dictionary.Dictionary;
 import pdp.scrabble.dictionary.IDictionary;
-import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.actions.*;
 
 public class GameModel {
@@ -40,7 +38,7 @@ public class GameModel {
 
   /**
    * dispatch the game action to the correct methode of applyGameAction
-   * 
+   *
    * @param played
    * @return whether the turn is finished
    */
@@ -80,12 +78,10 @@ public class GameModel {
   }
 
   /**
-   * This function returns a list of active players by filtering out players who
-   * have forfeited.
+   * This function returns a list of active players by filtering out players who have forfeited.
    *
-   * @return The method `getActivePlayers` returns a list of active players, which
-   *         are players who
-   *         have not forfeited the game.
+   * @return The method `getActivePlayers` returns a list of active players, which are players who
+   *     have not forfeited the game.
    */
   public List<Player> getActivePlayers() {
     List<Player> activePlayers = new ArrayList<>();

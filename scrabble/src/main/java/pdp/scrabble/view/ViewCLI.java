@@ -44,23 +44,29 @@ public class ViewCLI implements IView {
     String response = this.scaner.nextLine().strip();
 
     switch (response) {
-      case "placeWord":
+      case "placeWord" -> {
         return this.ask_placeWordAction(player, turn);
-      case "passTurn":
+      }
+      case "passTurn" -> {
         return new PassTurnAction(player, turn);
-      case "forfeitPlayer":
+      }
+      case "forfeitPlayer" -> {
         return new ForfeitGameAction(player, turn);
-      case "restartGame":
+      }
+      case "restartGame" -> {
         return new RestartGameAction(player, turn);
-      case "exchangeLetter":
+      }
+      case "exchangeLetter" -> {
         return this.ask_exchangeLetter(player, turn);
-      case "renamePlayer":
+      }
+      case "renamePlayer" -> {
         return this.ask_renamePlayer(player, turn);
-      default:
-        throw new CustomError(
-            ErrorType.InvalideActionType,
-            "invalide action kind",
-            "the action: " + response + " isn't a valid action use -v to see the full list");
+      }
+      default ->
+          throw new CustomError(
+              ErrorType.InvalideActionType,
+              "invalide action kind",
+              "the action: " + response + " isn't a valid action use -v to see the full list");
     }
   }
 
@@ -107,19 +113,16 @@ public class ViewCLI implements IView {
     GridWordPos gwp;
 
     final char direction = move[0].charAt(2);
-    switch (direction) {
-      case 'h':
-        gwp = new GridWordPos(row, col, Direction.Right);
-        break;
-      case 'v':
-        gwp = new GridWordPos(row, col, Direction.Down);
-        break;
-      default:
-        throw new CustomError(
-            ErrorType.InvalideMoveFormat,
-            "invalide direction",
-            "the direction: " + direction + " isn't valid");
-    }
+    gwp =
+        switch (direction) {
+          case 'h' -> new GridWordPos(row, col, Direction.Right);
+          case 'v' -> new GridWordPos(row, col, Direction.Down);
+          default ->
+              throw new CustomError(
+                  ErrorType.InvalideMoveFormat,
+                  "invalide direction",
+                  "the direction: " + direction + " isn't valid");
+        };
 
     Word word = new Word(move[1]);
     Letter[] toPlace = new Letter[word.getLength()];

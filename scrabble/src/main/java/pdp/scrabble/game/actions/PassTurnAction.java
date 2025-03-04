@@ -4,8 +4,11 @@ import pdp.scrabble.game.Player;
 
 /** forfeiting the turn and scoring zero */
 public class PassTurnAction extends GameAction {
-
   public PassTurnAction(Player player, int turn) {
     super(player, turn);
+  }
+
+  public static PassTurnAction create(Player player, int turn) {
+    return new PassTurnAction(player, turn);
   }
 }

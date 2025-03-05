@@ -85,14 +85,14 @@ public class GameModel {
         for (Letter l : pwa.toPlace) {
             if (pwa.player.bag.getLetterCount(l) >= toPlace.getLetterCount(l) && hasLetters) {
                 hasLetters = false;
-                Utilities.debug('g', "Player doesn't have the letter");
+                Utilities.debug('g', pwa.player.getName() + " doesn't have the letter: " + l);
             }
         }
 
         if (!hasLetters) {
             throw new CustomError(PlayerDoesntHaveLettersInIsBag,
                     "PlayerDoesntHaveLettersInIsBag",
-                    "Player doesn't have letters in is bag");
+                    pwa.player.getName() + " doesn't have letters in is bag");
         }
 
         // place les lettres sur la grille

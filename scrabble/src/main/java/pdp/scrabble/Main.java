@@ -29,9 +29,10 @@ public class Main {
 
         // F35 OK
         // F13 OK
-        // F23 OK, TODO renommer -lang en --language
+        // F23 OK
+        // nope F12, F29, F37
 
         System.out.println("--- End ---");
     }
-    // nope F12, F29, F37
+
 }

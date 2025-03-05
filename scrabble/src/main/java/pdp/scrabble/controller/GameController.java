@@ -12,54 +12,54 @@ import pdp.scrabble.view.ViewGUI;
 
 public class GameController {
 
-  private final GameModel model;
-  private final IView view;
+    private final GameModel model;
+    private final IView view;
 
-  public GameController(Configuration conf) {
-    this.model = new GameModel(conf);
-    if (conf.getGui()) {
-      this.view = new ViewGUI();
+    public GameController(Configuration conf) {
+        this.model = new GameModel(conf);
+        if (conf.getGui()) {
+            this.view = new ViewGUI();
 
-      ViewGUI.setLang(this.model.lang);
+            ViewGUI.setLang(this.model.lang);
 
-      Application.launch(ViewGUI.class, new String[] {});
-    } else {
-      this.view = new ViewCLI(this.model.lang);
-    }
-  }
-
-  public void gameLoop() {
-    boolean playDone;
-    // We only play 3 table rounds for now
-    // Need to compute an end game condition to go beyond
-    Utilities.debug('l', "game loop starts\n");
-    for (int turn = 0; turn < 3; turn++) {
-      Utilities.debug('l', "round number %d\n", turn);
-      for (Player playing : model.players) {
-        playDone = false;
-        Utilities.debug('l', "%s begins his turn\n", playing.getName());
-        drawLetters(playing);
-        Utilities.debug('l', "numbers of letters in draw : %d\n", model.draw.getCurrentSize());
-        // view.announceTurn(Player cur); NOT IMPLEMENTED
-        // view.displayDraw(); NOT IMPLEMENTED
-        view.displayGrid(model.grid, false);
-        view.displayPlayerLetters(playing.bag);
-        while (!playDone) {
-          GameAction played = view.askAction(playing, turn); // blocking
-          playDone = model.applyGameActionDispatch(played);
+            Application.launch(ViewGUI.class, new String[]{});
+        } else {
+            this.view = new ViewCLI(this.model.lang);
         }
-        Utilities.debug('l', "%s ends his turn\n", playing.getName());
-      }
     }
-  }
 
-  private void drawLetters(Player playing) {
-    if (model.draw.getCurrentSize() < 7) {
-      throw new Error("draw letter count is under 7");
-      // TODO endgame
+    public void gameLoop() {
+        boolean playDone;
+        // We only play 3 table rounds for now
+        // Need to compute an end game condition to go beyond
+        Utilities.debug('l', "game loop starts\n");
+        for (int turn = 0; turn < 3; turn++) {
+            Utilities.debug('l', "round number %d\n", turn);
+            for (Player playing : model.players) {
+                playDone = false;
+                Utilities.debug('l', "%s begins his turn\n", playing.getName());
+                drawLetters(playing);
+                Utilities.debug('l', "numbers of letters in draw : %d\n", model.draw.getCurrentSize());
+                // view.announceTurn(Player cur); NOT IMPLEMENTED
+                // view.displayDraw(); NOT IMPLEMENTED
+                view.displayGrid(model.grid, false);
+                view.displayPlayerLetters(playing.bag);
+                while (!playDone) {
+                    GameAction played = view.askAction(playing, turn); // blocking
+                    playDone = model.applyGameActionDispatch(played);
+                }
+                Utilities.debug('l', "%s ends his turn\n", playing.getName());
+            }
+        }
     }
-    for (int i = playing.bag.sumValues(); i < 7; i++) {
-      playing.bag.addLetter(model.draw.popLetter());
+
+    private void drawLetters(Player playing) {
+        if (model.draw.getCurrentSize() < 7) {
+            throw new Error("draw letter count is under 7");
+            // TODO endgame
+        }
+        for (int i = playing.bag.sumValues(); i < 7; i++) {
+            playing.bag.addLetter(model.draw.popLetter());
+        }
     }
-  }
 }

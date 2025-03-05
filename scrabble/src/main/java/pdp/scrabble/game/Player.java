@@ -26,6 +26,12 @@ public class Player {
         this.hasForfeited = false;
     }
 
+    public void reset() {
+        this.score = 0;
+        this.bag.reset();
+        this.hasForfeited = false;
+    }
+
     public String getName() {
         return this.name;
     }

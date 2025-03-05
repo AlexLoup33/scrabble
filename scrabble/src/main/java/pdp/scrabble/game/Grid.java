@@ -21,7 +21,7 @@ public class Grid {
     private Letter[][] placedLetters;
     private LinkedList<OwnedWord> placedWords;
     private final Hashtable<GridPos, ScoreMultiplier> multiplicators;
-    private final LettersPoints pointsPerLetter;
+    private LettersPoints pointsPerLetter;
     // in order to cach the points for the letters
     private final GameModel gameModel;
 
@@ -426,5 +426,15 @@ public class Grid {
      */
     public void applyGameAction(PlaceWordAction action) {
         this.placeLetters(action);
+    }
+
+    public void reset() {
+        for (int i = 0; i < this.size; i++) {
+            for (int j = 0; j < this.size; j++) {
+                this.placedLetters[i][j] = null;
+            }
+        }
+
+        this.placedWords.clear();
     }
 }

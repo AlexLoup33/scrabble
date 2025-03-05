@@ -22,6 +22,10 @@ public class LettersCounter {
         this.table = new Hashtable<>();
     }
 
+    public void reset() {
+        this.table.clear();
+    }
+
     public LettersCounter(List<Letter> letters) {
         this();
         for (Letter letter : letters) {

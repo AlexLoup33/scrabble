@@ -6,6 +6,7 @@ import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
+import pdp.scrabble.game.actions.RestartGameAction;
 import pdp.scrabble.view.IView;
 import pdp.scrabble.view.ViewCLI;
 import pdp.scrabble.view.ViewGUI;
@@ -30,11 +31,14 @@ public class GameController {
 
     public void gameLoop() {
         boolean playDone;
-        // We only play 3 table rounds for now
-        // Need to compute an end game condition to go beyond
+        int turn = 0;
+        ControllerAction controllerAction = null;
+
         Utilities.debug('l', "game loop starts\n");
-        for (int turn = 0; turn < 3; turn++) {
+
+        while (!this.isGameFinished()) {
             Utilities.debug('l', "round number %d\n", turn);
+
             for (Player playing : model.players) {
                 playDone = false;
                 Utilities.debug('l', "%s begins his turn\n", playing.getName());
@@ -42,13 +46,17 @@ public class GameController {
                 Utilities.debug('l', "numbers of letters in draw : %d\n", model.draw.getCurrentSize());
                 // view.announceTurn(Player cur); NOT IMPLEMENTED
                 // view.displayDraw(); NOT IMPLEMENTED
+
                 view.displayGrid(model.grid, false);
                 view.displayPlayerLetters(playing.bag);
+
                 while (!playDone) {
                     GameAction played = view.askAction(playing, turn); // blocking
                     playDone = model.applyGameActionDispatch(played);
                 }
+
                 Utilities.debug('l', "%s ends his turn\n", playing.getName());
+                turn++;
             }
         }
     }
@@ -61,5 +69,10 @@ public class GameController {
         for (int i = playing.bag.sumValues(); i < 7; i++) {
             playing.bag.addLetter(model.draw.popLetter());
         }
+    }
+
+    public boolean isGameFinished() {
+        // TODO compute based of real Scrabble rules
+        return false;
     }
 }

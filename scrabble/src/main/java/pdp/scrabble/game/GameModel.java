@@ -16,12 +16,12 @@ import pdp.scrabble.game.actions.*;
 import static pdp.scrabble.errorsHandling.ErrorType.PlayerDoesntHaveLettersInIsBag;
 
 public class GameModel {
-    public final Grid grid;
-    public final Lang lang;
-    public final List<Player> players;
-    public final LettersDrawer draw; // draw = pioche en fr
-    public final IDictionary dictionary;
-    public final Configuration config;
+    public Grid grid;
+    public Lang lang;
+    public List<Player> players;
+    public LettersDrawer draw; // draw = pioche en fr
+    public IDictionary dictionary;
+    public Configuration config;
 
     public GameModel(IConfiguration config) {
         this.config = (Configuration) config;
@@ -40,6 +40,14 @@ public class GameModel {
             this.grid = new Grid(this, 15);
         } else {
             this.grid = new Grid(this, 21);
+        }
+    }
+
+    public void reset() {
+        this.grid.reset();
+        this.draw.reset();
+        for (Player player : this.players) {
+            player.reset();
         }
     }
 
@@ -106,8 +114,8 @@ public class GameModel {
     }
 
     public boolean applyGameAction(RestartGameAction restartGameAction) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'applyGameAction'");
+        this.reset();
+        return true;
     }
 
     /**

@@ -76,6 +76,7 @@ public class GameModel {
         // soustrait les lettres du player (si pas possible throw erreur)
 
         boolean hasLetters = true;
+        ArrayList<Letter> missLetter = new ArrayList<>();
         LettersCounter toPlace = new LettersCounter();
         // for each letter to place
         for (Letter l : pwa.toPlace) {
@@ -85,6 +86,7 @@ public class GameModel {
         for (Letter l : pwa.toPlace) {
             if (pwa.player.bag.getLetterCount(l) >= toPlace.getLetterCount(l) && hasLetters) {
                 hasLetters = false;
+                missLetter.add(l);
                 Utilities.debug('g', pwa.player.getName() + " doesn't have the letter: " + l);
             }
         }
@@ -92,7 +94,7 @@ public class GameModel {
         if (!hasLetters) {
             throw new CustomError(PlayerDoesntHaveLettersInIsBag,
                     "PlayerDoesntHaveLettersInIsBag",
-                    pwa.player.getName() + " doesn't have letters in is bag");
+                    pwa.player.getName() + " doesn't have" + missLetter + " in is bag");
         }
 
         // place les lettres sur la grille

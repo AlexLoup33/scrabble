@@ -64,7 +64,7 @@ public class ViewCLI implements IView {
       }
       default ->
           throw new CustomError(
-              ErrorType.InvalideActionType,
+              ErrorType.InvalidActionType,
               "invalide action kind",
               "the action: " + response + " isn't a valid action use -v to see the full list");
     }
@@ -99,7 +99,7 @@ public class ViewCLI implements IView {
 
     if (move.length != 2) {
       throw new CustomError(
-          ErrorType.InvalideMoveFormat,
+          ErrorType.InvalidMoveFormat,
           "Invalid move format",
           "the move: " + move.toString() + " isn't valid");
     }
@@ -119,7 +119,7 @@ public class ViewCLI implements IView {
           case 'v' -> new GridWordPos(row, col, Direction.Down);
           default ->
               throw new CustomError(
-                  ErrorType.InvalideMoveFormat,
+                  ErrorType.InvalidMoveFormat,
                   "invalide direction",
                   "the direction: " + direction + " isn't valid");
         };

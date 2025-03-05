@@ -3,11 +3,17 @@ package pdp.scrabble.game;
 import java.util.ArrayList;
 import java.util.List;
 
+import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.configuration.IConfiguration;
 import pdp.scrabble.dictionary.Dictionary;
 import pdp.scrabble.dictionary.IDictionary;
+import pdp.scrabble.dictionary.Letter;
+import pdp.scrabble.dictionary.LettersCounter;
+import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.actions.*;
+
+import static pdp.scrabble.errorsHandling.ErrorType.PlayerDoesntHaveLettersInIsBag;
 
 public class GameModel {
     public final Grid grid;
@@ -66,9 +72,35 @@ public class GameModel {
         throw new UnsupportedOperationException("Unimplemented method 'applyGameAction'");
     }
 
-    public boolean applyGameAction(PlaceWordAction placeWordAction) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'applyGameAction'");
+    public boolean applyGameAction(PlaceWordAction pwa) {
+        // soustrait les lettres du player (si pas possible throw erreur)
+
+        boolean hasLetters = true;
+        LettersCounter toPlace = new LettersCounter();
+        // for each letter to place
+        for (Letter l : pwa.toPlace) {
+            // convert into LettersCounter to fix multiple times same letter
+            toPlace.addLetter(l);
+        }
+        for (Letter l : pwa.toPlace) {
+            if (pwa.player.bag.getLetterCount(l) >= toPlace.getLetterCount(l) && hasLetters) {
+                hasLetters = false;
+                Utilities.debug('g', "Player doesn't have the letter");
+            }
+        }
+
+        if (!hasLetters) {
+            throw new CustomError(PlayerDoesntHaveLettersInIsBag,
+                    "PlayerDoesntHaveLettersInIsBag",
+                    "Player doesn't have letters in is bag");
+        }
+
+        // place les lettres sur la grille
+        this.grid.placeLetters(pwa);
+
+
+        // puis change de joueur (si il n'y a pas eut de problèmes)
+        return true;
     }
 
     public boolean applyGameAction(RestartGameAction restartGameAction) {

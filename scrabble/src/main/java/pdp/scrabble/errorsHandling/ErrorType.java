@@ -8,8 +8,8 @@ Exceptions occur both at runtime and compile time, can be caught and handled (=>
 public enum ErrorType {
     FailedConfigFileParsing(true),
     ConfigParsingException(true),
-    UncompletConfigexception(true),
-    InvalideLetterException(true),
+    IncompleteConfigException(true),
+    InvalidLetterException(true),
     MalformedDictionaryError(true),
     InvalidGameStatusError(true),
     InvalidLetterCountError(true),
@@ -23,10 +23,11 @@ public enum ErrorType {
     ForfeitTwiceError(true),
     InvalidLangPackIdentifier(true),
     InvalidKeyArgument(true),
-    InvalideMoveFormat(false),
-    InvalideActionType(false),
-    InvalideWordDirection(true),
-    IndexOutOfWordBounds(false);
+    InvalidMoveFormat(false),
+    InvalidActionType(false),
+    InvalidWordDirection(true),
+    IndexOutOfWordBounds(false),
+    PlayerDoesntHaveLettersInIsBag(false);
 
     public final boolean isFatal;
 

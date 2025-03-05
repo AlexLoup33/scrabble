@@ -5,12 +5,12 @@ import pdp.scrabble.game.Player;
 
 public class RestartGameAction extends GameAction {
 
-  public RestartGameAction(Player player, int turn) {
-    super(player, turn);
-  }
+    public RestartGameAction(Player player, int turn) {
+        super(player, turn);
+    }
 
-  @Override
-  public boolean applyGameAction(GameModel gameModel) {
-    return gameModel.applyGameAction(this);
-  }
+    @Override
+    public boolean applyGameAction(GameModel gameModel) {
+        return gameModel.applyGameAction(this);
+    }
 }

@@ -1,6 +1,6 @@
 package pdp.scrabble.game;
 
 public enum Direction {
-    Down,
-    Right;
+  Down,
+  Right;
 }

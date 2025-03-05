@@ -1,7 +1,8 @@
 /**
  * Compile on Mac: mvn package
  *
- * <p>Run on Mac: java -classpath target/classes pdp.scrabble.Main
+ * <p>Run on Mac: java -classpath target/classes pdp.scrabble.Main</p>
+ * <p>mvn spotless:apply</p>
  */
 package pdp.scrabble;
 

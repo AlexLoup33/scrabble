@@ -4,10 +4,10 @@ public final class CustomError extends Error {
   public final ErrorType type; /* Type of error that happends */
   public final String message; /* Short explaination of what happend, for the user */
   public final String details; /*
-                                 * a message as long as needed, to explain all is needed to understand what
-                                 * happend,if the error is expected or if it is a bug, this message is intended
-                                 * for the devs and will be logged later
-                                 */
+     * a message as long as needed, to explain all is needed to understand what
+     * happend,if the error is expected or if it is a bug, this message is intended
+     * for the devs and will be logged later
+     */
 
   public CustomError(ErrorType type, String message, String details) {
     this.type = type;

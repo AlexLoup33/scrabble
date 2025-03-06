@@ -436,4 +436,8 @@ public class Grid {
 
     this.placedWords.clear();
   }
+
+  public int getGridSize() {
+    return this.size;
+  }
 }

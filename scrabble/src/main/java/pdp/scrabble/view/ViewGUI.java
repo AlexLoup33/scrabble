@@ -2,12 +2,15 @@ package pdp.scrabble.view;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.game.Grid;
 import pdp.scrabble.game.Lang;
 import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
@@ -25,13 +28,20 @@ public class ViewGUI extends Application implements IView {
   @Override
   public void start(Stage primaryStage) {
     String message = getLocalizedMessage();
-    String quitButtonText = lang == Lang.FR ? "Quitter" : "Quit";
+
+    MenuBar menuBar = new MenuBar();
+    Menu fileMenu = new Menu("File");
+    MenuItem newMenuItem = new MenuItem("New");
+    newMenuItem.setOnAction(e -> System.out.println("New..."));
+    fileMenu.getItems().add(newMenuItem);
+    Menu gameMenu = new Menu("Game");
+    Menu aboutMenu = new Menu("About");
+    menuBar.getMenus().addAll(fileMenu, gameMenu, aboutMenu);
+    menuBar.setStyle("-fx-start-margin: 200px;");
 
     Label label = new Label(message);
-    Button quitButton = new Button(quitButtonText);
-    quitButton.setOnAction(e -> primaryStage.close());
 
-    VBox root = new VBox(10, label, quitButton);
+    VBox root = new VBox(menuBar, label);
     Scene scene = new Scene(root, 400, 300);
 
     primaryStage.setTitle("Scrabble - GUI");
@@ -68,9 +78,7 @@ public class ViewGUI extends Application implements IView {
   }
 
   @Override
-  public void displayGrid(pdp.scrabble.game.Grid grid, Boolean isSuperScrabble) {
-    throw new UnsupportedOperationException("Unimplemented method 'displayGrid'");
-  }
+  public void displayGrid(Grid grid, Boolean isSuperScrabble) {}
 
   @Override
   public void displayPlayerLetters(LettersCounter letters) {

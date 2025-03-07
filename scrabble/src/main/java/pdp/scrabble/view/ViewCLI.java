@@ -16,6 +16,7 @@ import pdp.scrabble.game.Grid;
 import pdp.scrabble.game.GridPos;
 import pdp.scrabble.game.GridWordPos;
 import pdp.scrabble.game.Lang;
+import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
 import pdp.scrabble.game.ScoreMultiplier;
 import pdp.scrabble.game.actions.ExchangeLetterAction;
@@ -229,28 +230,13 @@ public class ViewCLI implements IView {
   }
 
   @Override
-  public void displayDrawer(LettersCounter draw) {
-    System.out.println("Drawer:");
-    System.out.print("[ ");
-    // Foreach with draw.getLetterSet()
-    boolean isFirst = true;
-    for (Letter letter : draw.getLettersSet()) {
-      for (int i = 0; i < draw.getLetterCount(letter); i++) {
-        if (!isFirst) {
-          System.out.print(" | ");
-        } else {
-          isFirst = false;
-        }
-        System.out.print(letter);
-      }
-    }
-    System.out.println(" ]");
+  public void displayDraw(LettersDrawer draw) {
+    System.out.println(langPack.getString("display_draw") + " " + draw.getCurrentSize());
   }
 
   @Override
   public void announceTurn(Player currentPlayer) {
-    System.out.printf(
-        "%s %s\n", langPack.getString("viewcli_announce_turn"), currentPlayer.getName());
+    System.out.printf(langPack.getString("announce_turn") + "\n", currentPlayer.getName());
   }
 
   @Override

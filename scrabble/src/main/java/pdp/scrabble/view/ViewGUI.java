@@ -12,6 +12,7 @@ import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.Grid;
 import pdp.scrabble.game.Lang;
+import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
 
@@ -101,8 +102,8 @@ public class ViewGUI extends Application implements IView {
   }
 
   @Override
-  public void displayDrawer(LettersCounter draw) {
-    throw new UnsupportedOperationException("Unimplemented method 'displayDrawer'");
+  public void displayDraw(LettersDrawer draw) {
+    throw new UnsupportedOperationException("Unimplemented method 'displayDraw'");
   }
 
   @Override

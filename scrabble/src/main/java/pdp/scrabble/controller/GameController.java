@@ -43,8 +43,10 @@ public class GameController {
         Utilities.debug('l', "%s begins his turn\n", playing.getName());
         drawLetters(playing);
         Utilities.debug('l', "numbers of letters in draw : %d\n", model.draw.getCurrentSize());
-        // view.announceTurn(Player cur); NOT IMPLEMENTED
-        // view.displayDraw(); NOT IMPLEMENTED
+        view.announceTurn(playing);
+        // Implemented but maybe need to draw every letters before
+        // actually showing number
+        // view.displayDraw(model.draw);
 
         view.displayGrid(model.grid, false);
         view.displayPlayerLetters(playing.bag);

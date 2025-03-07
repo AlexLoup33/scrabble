@@ -4,6 +4,7 @@ import java.util.List;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.Grid;
+import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
 
@@ -20,7 +21,7 @@ public interface IView {
 
   public void showScore(List<Player> players);
 
-  public void displayDrawer(LettersCounter draw);
+  public void displayDraw(LettersDrawer draw);
 
   public void announceTurn(Player currentPlayer);
 

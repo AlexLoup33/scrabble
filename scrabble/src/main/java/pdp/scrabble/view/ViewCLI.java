@@ -108,7 +108,8 @@ public class ViewCLI implements IView {
     Utilities.debug('v', "move[0] = %s / move[1] = %s\n", move[0], move[1]);
     // WARNING WARNING WARNING REMOVE MODULO
     int row = (move[0].charAt(0) - 97) % 15;
-    int col = Integer.parseInt(move[0].replaceAll("[\\D]", ""));
+    // [\\D] = remove everything but numbers
+    int col = Integer.parseInt(move[0].replaceAll("[\\D]", "")) - 1;
     Utilities.debug('v', "row = %d / col = %d\n", row, col);
 
     GridWordPos gwp;

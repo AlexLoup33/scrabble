@@ -166,7 +166,6 @@ public class Grid {
         } else {
           throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
         }
-
       }
       return result;
     } catch (CustomError e) {

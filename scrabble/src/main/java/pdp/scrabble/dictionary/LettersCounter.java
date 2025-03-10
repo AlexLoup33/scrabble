@@ -44,8 +44,7 @@ public class LettersCounter {
    *
    * @param count must be >= 0
    * @return the new count for this letter (don't store the given letter)
-   *         <p>
-   *         Modif: addLetter en public car utiliser dans la classe Lang
+   *     <p>Modif: addLetter en public car utiliser dans la classe Lang
    */
   public int addLetter(Letter letter, int count) {
     if (count < 0) {
@@ -72,9 +71,8 @@ public class LettersCounter {
    * remove count of the given Letter
    *
    * @param count the number of times to remove the letter (must be >= 0)
-   * @return the new count for this letter throw an error if there isn't enougth
-   *         letters in the
-   *         counter (don't store the given letter)
+   * @return the new count for this letter throw an error if there isn't enougth letters in the
+   *     counter (don't store the given letter)
    */
   public int removeLetter(Letter letter, int count) {
     if (count < 0) {
@@ -105,9 +103,8 @@ public class LettersCounter {
   /**
    * remove 1 of the given Letter
    *
-   * @return the new count for this letter throw an error if there isn't enougth
-   *         letters in the
-   *         counter (don't store the given letter)
+   * @return the new count for this letter throw an error if there isn't enougth letters in the
+   *     counter (don't store the given letter)
    */
   public int removeLetter(Letter letter) {
     int newCount = this.table.getOrDefault(letter, 0) - 1;

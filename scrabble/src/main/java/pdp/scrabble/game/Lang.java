@@ -152,8 +152,7 @@ public enum Lang {
   public final Locale locale;
 
   /**
-   * create a new language available for scrable the name of the Lang must be an
-   * UPPERCASE of the
+   * create a new language available for scrable the name of the Lang must be an UPPERCASE of the
    * lang code in order to keep thing easy
    *
    * @param locale the local to use with this lang

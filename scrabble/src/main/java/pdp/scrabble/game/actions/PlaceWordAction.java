@@ -9,8 +9,8 @@ import pdp.scrabble.game.GridWordPos;
 import pdp.scrabble.game.Player;
 
 /**
- * Play at least one tile on the board, adding the value of all words formed to
- * the player's cumulative score
+ * Play at least one tile on the board, adding the value of all words formed to the player's
+ * cumulative score
  */
 public class PlaceWordAction extends GameAction {
   public final Letter[] toPlace;
@@ -30,7 +30,7 @@ public class PlaceWordAction extends GameAction {
 
   /**
    * convert the letters toPlace to a LetterCounter
-   * 
+   *
    * @return
    */
   private LettersCounter getToPlaceAsCounter() {
@@ -57,9 +57,7 @@ public class PlaceWordAction extends GameAction {
     return missing;
   }
 
-  /**
-   * assert the player has the required letters in his bag
-   */
+  /** assert the player has the required letters in his bag */
   public void assertHasLettersToPlace() {
     LettersCounter missing = this.getMissingLetters();
 
@@ -70,16 +68,17 @@ public class PlaceWordAction extends GameAction {
       throw new CustomError(
           ErrorType.PlayerDoesntHaveLettersInIsBag,
           "the following letters: " + missing.toString() + " are missing (before jokers)",
-          this.player.getName() + " doesn't have the following letters in his bag: "
-              + missing.toString() + " in is bag (before appling jokers)");
+          this.player.getName()
+              + " doesn't have the following letters in his bag: "
+              + missing.toString()
+              + " in is bag (before appling jokers)");
     }
   }
 
   /**
-   * remove from the bag the letters placed
-   * you must check if the player has the letters before !
+   * remove from the bag the letters placed you must check if the player has the letters before !
    * (it will be asserted before removing the letters)
-   * 
+   *
    * @param pwa the action played
    */
   public void removeLettersPlaced() {

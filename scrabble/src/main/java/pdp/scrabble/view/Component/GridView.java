@@ -1,10 +1,7 @@
 package pdp.scrabble.view.Component;
 
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.text.Text;
+import pdp.scrabble.game.ScoreMultiplier;
 
 public class GridView extends GridPane {
 
@@ -15,19 +12,33 @@ public class GridView extends GridPane {
 
   public GridView(int width, int height) {
     // scrabbleBoard = new GridPane();
-
     this.width = width;
     this.height = height;
 
-    this.getRowConstraints().add(new RowConstraints(width + 1));
-    this.getColumnConstraints().add(new ColumnConstraints(height + 1));
+    /*Style*/
+    this.setStyle(
+        "-fx-background-color: #FFFFFF; -fx-border-color: #000000; -fx-border-width: 2px;");
+    this.setGridLinesVisible(true);
+    this.setHgap(this.width + 1);
+    this.setVgap(this.height + 1);
+    this.setPadding(new javafx.geometry.Insets(10, 10, 10, 10));
+    //
 
-    for (int i = 1; i < width + 1; i++) {
-      Pane emptyPane = new Pane();
-      Text num = new Text(i + "");
-
-      emptyPane.getChildren().add(num);
-      this.add(emptyPane, i, 0);
+    for (int i = 0; i < this.width; i++) {
+      Cell cell = new Cell(i, 0, null, false);
+      cell.setLetter((i + 1) + "");
+      GridPane.setConstraints(cell, i, 0);
+      this.getChildren().add(cell);
     }
+    for (int j = 0; j < this.height; j++) {
+      Cell cell = new Cell(0, j, null, false);
+      cell.setLetter((char) (j + 97) + "");
+      GridPane.setConstraints(cell, 0, j);
+      this.add(cell, 0, j);
+    }
+
+    Cell tmp = new Cell(width, height, ScoreMultiplier.SIMPLE_LETTER, false);
+    tmp.setLetter("A");
+    this.add(tmp, width, width);
   }
 }

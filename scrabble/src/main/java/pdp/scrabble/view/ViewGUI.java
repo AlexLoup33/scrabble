@@ -130,7 +130,7 @@ public class ViewGUI extends Application implements IView {
     VBox root = new VBox(menuBar, label, this.gridView);
     root.setPadding(new Insets(10, 10, 10, 10));
 
-    Scene scene = new Scene(root, 400, 300);
+    Scene scene = new Scene(root, 1200, 800);
 
     primaryStage.setTitle("Scrabble - GUI");
     primaryStage.setScene(scene);

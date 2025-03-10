@@ -1,17 +1,11 @@
 package pdp.scrabble.game;
 
-import static pdp.scrabble.errorsHandling.ErrorType.PlayerDoesntHaveLettersInIsBag;
-
 import java.util.ArrayList;
 import java.util.List;
-import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.configuration.IConfiguration;
 import pdp.scrabble.dictionary.Dictionary;
 import pdp.scrabble.dictionary.IDictionary;
-import pdp.scrabble.dictionary.Letter;
-import pdp.scrabble.dictionary.LettersCounter;
-import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.actions.*;
 
 public class GameModel {
@@ -95,8 +89,15 @@ public class GameModel {
    * This function returns a list of active players by filtering out players who
    * have forfeited.
    *
+   * <<<<<<< HEAD
+   * 
    * @return The method `getActivePlayers` returns a list of active players, which
    *         are players who have not forfeited the game.
+   *         =======
+   * @return The method `getActivePlayers` returns a list of active players, which
+   *         are players who
+   *         have not forfeited the game.
+   *         >>>>>>> 3751731ee445fa8332134eb82ab31f8e1424469a
    */
   public List<Player> getActivePlayers() {
     List<Player> activePlayers = new ArrayList<>();

@@ -31,13 +31,12 @@ public class ViewGUI extends Application implements IView {
     // Debug message at the top of the window
     String message = getLocalizedMessage();
 
-
     // MENU BAR INITIALIZATION
     MenuBar menuBar = new MenuBar();
 
     // First -> File : New Game | Load Game | Save Game | Help | Settings | Quit
     Menu fileMenu = new Menu("File");
-    
+
     // Declaration of the Items
     MenuItem newGameItem = new MenuItem("New Game");
     MenuItem loadGameItem = new MenuItem("Load Game");
@@ -47,7 +46,7 @@ public class ViewGUI extends Application implements IView {
     MenuItem quitItem = new MenuItem("Quit");
 
     // Actions for Items
-    
+
     // New Game
     // TO-DO: Ask the controller to create a new game.
     newGameItem.setOnAction(e -> System.out.println("New Game..."));
@@ -65,7 +64,7 @@ public class ViewGUI extends Application implements IView {
     helpItem.setOnAction(e -> System.out.println("Help..."));
 
     // Settings
-    //TO-DO: Implement settings window who change style.
+    // TO-DO: Implement settings window who change style.
     settingsItem.setOnAction(e -> System.out.println("Settings..."));
 
     // Quit
@@ -77,9 +76,10 @@ public class ViewGUI extends Application implements IView {
     fileMenu.getItems().add(newMenuItem);*/
 
     // Adding all item to fileMenu
-    fileMenu.getItems().addAll(newGameItem, loadGameItem, saveGameItem, helpItem, settingsItem, quitItem);
+    fileMenu
+        .getItems()
+        .addAll(newGameItem, loadGameItem, saveGameItem, helpItem, settingsItem, quitItem);
 
-    
     // Second -> Game : Hint | Undo | Redo
     Menu gameMenu = new Menu("Game");
 
@@ -103,7 +103,6 @@ public class ViewGUI extends Application implements IView {
     // Third -> About : Version | Author | Licence
     Menu aboutMenu = new Menu("About");
 
-
     MenuItem versionItem = new MenuItem("Version");
     MenuItem authorItem = new MenuItem("Author");
     MenuItem licenceItem = new MenuItem("Licence");
@@ -120,7 +119,6 @@ public class ViewGUI extends Application implements IView {
     licenceItem.setOnAction(e -> System.out.println("Licence..."));
 
     aboutMenu.getItems().addAll(versionItem, authorItem, licenceItem);
-    
 
     // Adding all the Menu in the MenuBar and adding a bit of style
     menuBar.getMenus().addAll(fileMenu, gameMenu, aboutMenu);

@@ -73,6 +73,9 @@ public class GameController {
 
   public boolean isGameFinished() {
     // TODO compute based of real Scrabble rules
+    if (model.draw.getCurrentSize() <= 0) {
+      return true;
+    }
     return false;
   }
 }

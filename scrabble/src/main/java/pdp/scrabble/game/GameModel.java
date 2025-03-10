@@ -91,7 +91,7 @@ public class GameModel {
       toPlace.addLetter(l);
     }
     for (Letter l : pwa.toPlace) {
-      if (pwa.player.bag.getLetterCount(l) >= toPlace.getLetterCount(l) && hasLetters) {
+      if (pwa.player.bag.getLetterCount(l) < toPlace.getLetterCount(l) && hasLetters) {
         hasLetters = false;
         missLetter.add(l);
         Utilities.debug('g', pwa.player.getName() + " doesn't have the letter: " + l);

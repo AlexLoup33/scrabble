@@ -28,21 +28,110 @@ public class ViewGUI extends Application implements IView {
 
   @Override
   public void start(Stage primaryStage) {
+    // Debug message at the top of the window
     String message = getLocalizedMessage();
 
+
+    // MENU BAR INITIALIZATION
     MenuBar menuBar = new MenuBar();
+
+    // First -> File : New Game | Load Game | Save Game | Help | Settings | Quit
     Menu fileMenu = new Menu("File");
+    
+    // Declaration of the Items
+    MenuItem newGameItem = new MenuItem("New Game");
+    MenuItem loadGameItem = new MenuItem("Load Game");
+    MenuItem saveGameItem = new MenuItem("Save Game");
+    MenuItem helpItem = new MenuItem("Help");
+    MenuItem settingsItem = new MenuItem("Settings");
+    MenuItem quitItem = new MenuItem("Quit");
+
+    // Actions for Items
+    
+    // New Game
+    // TO-DO: Ask the controller to create a new game.
+    newGameItem.setOnAction(e -> System.out.println("New Game..."));
+
+    // Load Game
+    // TO-DO: Open a file selector to load a game.
+    loadGameItem.setOnAction(e -> System.out.println("Load Game..."));
+
+    // Save Game
+    // TO-DO: Open a file selector to save the game.
+    saveGameItem.setOnAction(e -> System.out.println("Save Game..."));
+
+    // Help
+    // TO-DO: Display a window with the rules and the different actions possible.
+    helpItem.setOnAction(e -> System.out.println("Help..."));
+
+    // Settings
+    //TO-DO: Implement settings window who change style.
+    settingsItem.setOnAction(e -> System.out.println("Settings..."));
+
+    // Quit
+    quitItem.setOnAction(e -> System.exit(0));
+
+    /*
     MenuItem newMenuItem = new MenuItem("New");
     newMenuItem.setOnAction(e -> System.out.println("New..."));
-    fileMenu.getItems().add(newMenuItem);
+    fileMenu.getItems().add(newMenuItem);*/
+
+    // Adding all item to fileMenu
+    fileMenu.getItems().addAll(newGameItem, loadGameItem, saveGameItem, helpItem, settingsItem, quitItem);
+
+    
+    // Second -> Game : Hint | Undo | Redo
     Menu gameMenu = new Menu("Game");
+
+    MenuItem hintItem = new MenuItem("Hint");
+    MenuItem undoItem = new MenuItem("Undo");
+    MenuItem redoItem = new MenuItem("Redo");
+
+    // Action for Items
+
+    // TO-DO: Display colored letters hint on the grid
+    hintItem.setOnAction(e -> System.out.println("Hint..."));
+
+    // TO-DO: Undo the last action
+    undoItem.setOnAction(e -> System.out.println("Undo..."));
+
+    // TO-DO: Redo the last action
+    redoItem.setOnAction(e -> System.out.println("Redo..."));
+
+    gameMenu.getItems().addAll(hintItem, undoItem, redoItem);
+
+    // Third -> About : Version | Author | Licence
     Menu aboutMenu = new Menu("About");
+
+
+    MenuItem versionItem = new MenuItem("Version");
+    MenuItem authorItem = new MenuItem("Author");
+    MenuItem licenceItem = new MenuItem("Licence");
+
+    // Actions for Items
+
+    // TO-DO: Display the version of the game
+    versionItem.setOnAction(e -> System.out.println("Version..."));
+
+    // TO-DO: Display the author of the game
+    authorItem.setOnAction(e -> System.out.println("Author..."));
+
+    // TO-DO: Display the licence of the game
+    licenceItem.setOnAction(e -> System.out.println("Licence..."));
+
+    aboutMenu.getItems().addAll(versionItem, authorItem, licenceItem);
+    
+
+    // Adding all the Menu in the MenuBar and adding a bit of style
     menuBar.getMenus().addAll(fileMenu, gameMenu, aboutMenu);
     menuBar.setStyle("-fx-start-margin: 200px;");
 
     Label label = new Label(message);
 
+    // GRID INITIALIZATION
+
     VBox root = new VBox(menuBar, label);
+
     Scene scene = new Scene(root, 400, 300);
 
     primaryStage.setTitle("Scrabble - GUI");

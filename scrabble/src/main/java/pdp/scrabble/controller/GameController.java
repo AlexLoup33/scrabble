@@ -31,7 +31,6 @@ public class GameController {
   public void gameLoop() {
     boolean playDone;
     int turn = 0;
-    ControllerAction controllerAction = null;
 
     Utilities.debug('l', "game loop starts\n");
 
@@ -74,6 +73,9 @@ public class GameController {
 
   public boolean isGameFinished() {
     // TODO compute based of real Scrabble rules
+    if (model.draw.getCurrentSize() <= 0) {
+      return true;
+    }
     return false;
   }
 }

@@ -75,8 +75,8 @@ public class GameModel {
   }
 
   public boolean applyGameAction(ForfeitGameAction forfeitGameAction) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'applyGameAction'");
+    forfeitGameAction.player.forfeit();
+    return true;
   }
 
   public boolean applyGameAction(PlaceWordAction pwa) {

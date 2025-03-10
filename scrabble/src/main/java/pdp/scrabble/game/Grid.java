@@ -20,7 +20,7 @@ public class Grid {
   private Letter[][] placedLetters;
   private LinkedList<OwnedWord> placedWords;
   private final Hashtable<GridPos, ScoreMultiplier> multiplicators;
-  private LettersPoints pointsPerLetter;
+  private final LettersPoints pointsPerLetter;
   // in order to cach the points for the letters
   private final GameModel gameModel;
 

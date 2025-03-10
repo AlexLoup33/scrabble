@@ -39,7 +39,6 @@ public class MainTest {
   private LettersCounter lc;
   private Dictionary dict;
   private final Path path = java.nio.file.Paths.get("dictionary/fr.txt");
-  private IConfiguration config;
   private static final ReentrantLock lock = new ReentrantLock();
 
   @Before
@@ -181,23 +180,22 @@ public class MainTest {
 
   @Test
   public void testPlaceLetters() {
-    IConfiguration config =
-        new Configuration(
-            true,
-            "d",
-            false,
-            false,
-            false,
-            4,
-            10,
-            new boolean[4],
-            15,
-            2,
-            "fr",
-            "chepa",
-            java.nio.file.Paths.get("dictionary/fr.txt"),
-            java.nio.file.Paths.get("none"),
-            java.nio.file.Paths.get("none"));
+    IConfiguration config = new Configuration(
+        true,
+        "d",
+        false,
+        false,
+        false,
+        4,
+        10,
+        new boolean[4],
+        15,
+        2,
+        "fr",
+        "chepa",
+        java.nio.file.Paths.get("dictionary/fr.txt"),
+        java.nio.file.Paths.get("none"),
+        java.nio.file.Paths.get("none"));
 
     GameModel gm = new GameModel(config);
     gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
@@ -362,26 +360,25 @@ public class MainTest {
     assertEquals(expected, result);
   }
 
-  // @Test
+  @Test
   public void testPrintGrid() {
     PrintStream originalOut = System.out;
-    IConfiguration config =
-        new Configuration(
-            true,
-            "d",
-            false,
-            false,
-            false,
-            4,
-            10,
-            new boolean[4],
-            15,
-            2,
-            "fr",
-            "chepa",
-            java.nio.file.Paths.get("dictionary/fr.txt"),
-            java.nio.file.Paths.get("none"),
-            java.nio.file.Paths.get("none"));
+    IConfiguration config = new Configuration(
+        true,
+        "d",
+        false,
+        false,
+        false,
+        4,
+        10,
+        new boolean[4],
+        15,
+        2,
+        "fr",
+        "chepa",
+        java.nio.file.Paths.get("dictionary/fr.txt"),
+        java.nio.file.Paths.get("none"),
+        java.nio.file.Paths.get("none"));
 
     GameModel gm = new GameModel(config);
     gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
@@ -394,24 +391,23 @@ public class MainTest {
       view.displayGrid(gm.grid, false);
       String output = outputStreamCaptor.toString().trim();
 
-      String expectedOutput =
-          """
-                        1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
-                        a [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
-                        b _[0m  [41m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m
-                        c _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
-                        d [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m
-                        e _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m
-                        f _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m
-                        g _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m
-                        h [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
-                        i _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m
-                        j _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m
-                        k _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m
-                        l [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m
-                        m _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
-                        n _[0m  [41m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m
-                        o [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m""";
+      String expectedOutput = """
+          1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+          a [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
+          b _[0m  [41m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m
+          c _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
+          d [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m
+          e _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m
+          f _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m
+          g _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m
+          h [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
+          i _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m
+          j _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m
+          k _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m
+          l [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m
+          m _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
+          n _[0m  [41m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m
+          o [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m""";
 
       assertEquals(expectedOutput, output);
     } finally {

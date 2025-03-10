@@ -118,10 +118,12 @@ public class GameModel {
   }
 
   /**
-   * This function returns a list of active players by filtering out players who have forfeited.
+   * This function returns a list of active players by filtering out players who
+   * have forfeited.
    *
-   * @return The method `getActivePlayers` returns a list of active players, which are players who
-   *     have not forfeited the game.
+   * @return The method `getActivePlayers` returns a list of active players, which
+   *         are players who
+   *         have not forfeited the game.
    */
   public List<Player> getActivePlayers() {
     List<Player> activePlayers = new ArrayList<>();

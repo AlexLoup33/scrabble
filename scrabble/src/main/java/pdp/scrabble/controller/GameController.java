@@ -31,7 +31,6 @@ public class GameController {
   public void gameLoop() {
     boolean playDone;
     int turn = 0;
-    ControllerAction controllerAction = null;
 
     Utilities.debug('l', "game loop starts\n");
 

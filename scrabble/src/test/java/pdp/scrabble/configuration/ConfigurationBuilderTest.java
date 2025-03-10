@@ -19,7 +19,6 @@ public class ConfigurationBuilderTest {
     ConfigurationBuilder rcBuilder =
         new ConfigurationBuilder(Paths.get("src/test/resources/scrabblerc/.default"));
     ConfigurationBuilder cliBuilder = new ConfigurationBuilder(args);
-    Configuration rcConf = rcBuilder.getConfiguration();
     Configuration cliConf = cliBuilder.getConfiguration();
 
     rcBuilder.merge(cliBuilder);

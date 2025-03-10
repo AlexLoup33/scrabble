@@ -31,7 +31,6 @@ public class GameController {
   public void gameLoop() {
     boolean playDone;
     int turn = 0;
-    ControllerAction controllerAction = null;
 
     Utilities.debug('l', "game loop starts\n");
 
@@ -44,6 +43,7 @@ public class GameController {
         drawLetters(playing);
         Utilities.debug('l', "numbers of letters in draw : %d\n", model.draw.getCurrentSize());
         view.announceTurn(playing);
+        view.showScore(playing);
         // Implemented but maybe need to draw every letters before
         // actually showing number
         // view.displayDraw(model.draw);
@@ -67,13 +67,16 @@ public class GameController {
       throw new Error("draw letter count is under 7");
       // TODO endgame
     }
-    for (int i = playing.bag.sumValues(); i < 7; i++) {
+    for (int i = playing.bag.size(); i < 7; i++) {
       playing.bag.addLetter(model.draw.popLetter());
     }
   }
 
   public boolean isGameFinished() {
     // TODO compute based of real Scrabble rules
+    if (model.draw.getCurrentSize() <= 0) {
+      return true;
+    }
     return false;
   }
 }

@@ -132,7 +132,7 @@ public class LettersCounter {
     return this.table.keySet();
   }
 
-  public int sumValues() {
+  public int size() {
     return this.table.values().stream().reduce(0, Integer::sum);
   }
 

@@ -108,7 +108,8 @@ public class ViewCLI implements IView {
     Utilities.debug('v', "move[0] = %s / move[1] = %s\n", move[0], move[1]);
     // WARNING WARNING WARNING REMOVE MODULO
     int row = (move[0].charAt(0) - 97) % 15;
-    int col = Integer.parseInt(move[0].replaceAll("[\\D]", ""));
+    // [\\D] = remove everything but numbers
+    int col = Integer.parseInt(move[0].replaceAll("[\\D]", "")) - 1;
     Utilities.debug('v', "row = %d / col = %d\n", row, col);
 
     GridWordPos gwp;
@@ -226,7 +227,7 @@ public class ViewCLI implements IView {
   @Override
   public void showScore(Player player) {
     System.out.printf(
-        "%s %s %d\n", langPack.getString("viewcli_score"), player.getName(), player.getScore());
+        langPack.getString("viewcli_score") + "\n", player.getName(), player.getScore());
   }
 
   @Override
@@ -237,6 +238,20 @@ public class ViewCLI implements IView {
   @Override
   public void announceTurn(Player currentPlayer) {
     System.out.printf(langPack.getString("announce_turn") + "\n", currentPlayer.getName());
+    /*
+     * for (int i = 3; i > 0; i--) {
+     * System.out.println(i);
+     * try {
+     * Thread.sleep(1000);
+     * } catch (InterruptedException e) {
+     * // Can never happen as long as the app is single-threaded
+     * System.out.println(e);
+     * }
+     * }
+     * System.out.print("\033c");
+     * System.out.printf(langPack.getString("turn_begin") + "\n",
+     * currentPlayer.getName());
+     */
   }
 
   @Override

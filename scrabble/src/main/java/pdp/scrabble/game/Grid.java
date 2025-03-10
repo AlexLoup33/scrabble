@@ -20,7 +20,7 @@ public class Grid {
   private Letter[][] placedLetters;
   private LinkedList<OwnedWord> placedWords;
   private final Hashtable<GridPos, ScoreMultiplier> multiplicators;
-  private LettersPoints pointsPerLetter;
+  private final LettersPoints pointsPerLetter;
   // in order to cach the points for the letters
   private final GameModel gameModel;
 
@@ -39,71 +39,6 @@ public class Grid {
     } catch (IOException e) {
       System.out.println(e);
     }
-    /*
-    this.multiplicators.put(new GridPos(0, 3), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(0, 11), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(2, 6), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(2, 8), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(3, 0), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(3, 7), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(3, 14), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(6, 2), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(6, 6), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(6, 8), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(6, 12), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(7, 3), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(7, 11), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(8, 2), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(8, 6), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(8, 8), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(8, 12), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(11, 0), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(11, 7), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(11, 14), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(12, 6), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(12, 8), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(14, 3), ScoreMultiplier.DOUBLE_LETTER);
-    this.multiplicators.put(new GridPos(14, 11), ScoreMultiplier.DOUBLE_LETTER);
-
-    this.multiplicators.put(new GridPos(1, 5), ScoreMultiplier.TRIPLE_LETTER);
-    this.multiplicators.put(new GridPos(1, 9), ScoreMultiplier.TRIPLE_LETTER);
-    this.multiplicators.put(new GridPos(5, 1), ScoreMultiplier.TRIPLE_LETTER);
-    this.multiplicators.put(new GridPos(5, 5), ScoreMultiplier.TRIPLE_LETTER);
-    this.multiplicators.put(new GridPos(5, 9), ScoreMultiplier.TRIPLE_LETTER);
-    this.multiplicators.put(new GridPos(5, 13), ScoreMultiplier.TRIPLE_LETTER);
-    this.multiplicators.put(new GridPos(9, 1), ScoreMultiplier.TRIPLE_LETTER);
-    this.multiplicators.put(new GridPos(9, 5), ScoreMultiplier.TRIPLE_LETTER);
-    this.multiplicators.put(new GridPos(9, 9), ScoreMultiplier.TRIPLE_LETTER);
-    this.multiplicators.put(new GridPos(9, 13), ScoreMultiplier.TRIPLE_LETTER);
-    this.multiplicators.put(new GridPos(13, 5), ScoreMultiplier.TRIPLE_LETTER);
-    this.multiplicators.put(new GridPos(13, 9), ScoreMultiplier.TRIPLE_LETTER);
-
-    this.multiplicators.put(new GridPos(1, 1), ScoreMultiplier.DOUBLE_WORD);
-    this.multiplicators.put(new GridPos(1, 13), ScoreMultiplier.DOUBLE_WORD);
-    this.multiplicators.put(new GridPos(2, 2), ScoreMultiplier.DOUBLE_WORD);
-    this.multiplicators.put(new GridPos(2, 12), ScoreMultiplier.DOUBLE_WORD);
-    this.multiplicators.put(new GridPos(3, 3), ScoreMultiplier.DOUBLE_WORD);
-    this.multiplicators.put(new GridPos(3, 11), ScoreMultiplier.DOUBLE_WORD);
-    this.multiplicators.put(new GridPos(4, 4), ScoreMultiplier.DOUBLE_WORD);
-    this.multiplicators.put(new GridPos(4, 10), ScoreMultiplier.DOUBLE_WORD);
-    this.multiplicators.put(new GridPos(7, 7), ScoreMultiplier.DOUBLE_WORD);
-    this.multiplicators.put(new GridPos(10, 4), ScoreMultiplier.DOUBLE_WORD);
-    this.multiplicators.put(new GridPos(10, 10), ScoreMultiplier.DOUBLE_WORD);
-    this.multiplicators.put(new GridPos(11, 3), ScoreMultiplier.DOUBLE_WORD);
-    this.multiplicators.put(new GridPos(11, 11), ScoreMultiplier.DOUBLE_WORD);
-    this.multiplicators.put(new GridPos(12, 2), ScoreMultiplier.DOUBLE_WORD);
-    this.multiplicators.put(new GridPos(12, 12), ScoreMultiplier.DOUBLE_WORD);
-    this.multiplicators.put(new GridPos(13, 1), ScoreMultiplier.DOUBLE_WORD);
-    this.multiplicators.put(new GridPos(13, 13), ScoreMultiplier.DOUBLE_WORD);
-
-    this.multiplicators.put(new GridPos(0, 0), ScoreMultiplier.TRIPLE_WORD);
-    this.multiplicators.put(new GridPos(0, 7), ScoreMultiplier.TRIPLE_WORD);
-    this.multiplicators.put(new GridPos(0, 14), ScoreMultiplier.TRIPLE_WORD);
-    this.multiplicators.put(new GridPos(7, 0), ScoreMultiplier.TRIPLE_WORD);
-    this.multiplicators.put(new GridPos(7, 14), ScoreMultiplier.TRIPLE_WORD);
-    this.multiplicators.put(new GridPos(14, 0), ScoreMultiplier.TRIPLE_WORD);
-    this.multiplicators.put(new GridPos(14, 7), ScoreMultiplier.TRIPLE_WORD);
-    this.multiplicators.put(new GridPos(14, 14), ScoreMultiplier.TRIPLE_WORD);*/
   }
 
   public void loadMultoplicators(String conf) throws IOException {
@@ -196,33 +131,6 @@ public class Grid {
           throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
         }
 
-        // useless, but to keep for now
-        //                    // Check new horizontal word
-        //                    int start = findStart(pwa.startPosition.row(),
-        // pwa.startPosition.col(), pwa.startPosition.direction());
-        //
-        //                    // Check for each row if a new word is created
-        //                    while (start < this.size &&
-        // this.placedLetters[start][pwa.startPosition.col()] != null) {
-        //                        String new_horizontal_word = getHorizontalWord(start,
-        // pwa.startPosition.col(), Direction.Right);
-        //                        // System.out.println("DEBUG new_vertical_word: " +
-        //                        // new_horizontal_word);
-        //                        if (new_horizontal_word.length() >= 2) {
-        //                            if (this.gameModel.dictionary.containsWord(new
-        // Word(new_horizontal_word))) {
-        //                                OwnedWord tmp = new OwnedWord(pwa.startPosition, new
-        // Word(new_horizontal_word), pwa.player);
-        //                                this.placedWords.add(tmp);
-        //                                result.add(tmp);
-        //                            } else {
-        //                                throw new CustomError(NotAValidWord, "NotAValidWord",
-        // "NotAValidWord");
-        //                            }
-        //                        }
-        //                        start++;
-        //                    }
-
       }
       // Direction: right
       else {
@@ -258,33 +166,6 @@ public class Grid {
         } else {
           throw new CustomError(NotAValidWord, "NotAValidWord", "NotAValidWord");
         }
-
-        // useless, but to keep for now
-        //                // Check new vertical word
-        //                int start = findStart(pwa.startPosition.row(), pwa.startPosition.col(),
-        // pwa.startPosition.direction());
-        //
-        //                // Check for each row if a new word is created
-        //                while (start < this.size &&
-        // this.placedLetters[pwa.startPosition.row()][start] != null) {
-        //                    String new_horizontal_word = getVerticalWord(pwa.startPosition.row(),
-        // start, Direction.Down);
-        //                    // System.out.println("DEBUG new_vertical_word: " +
-        //                    // new_horizontal_word);
-        //                    if (new_horizontal_word.length() >= 2) {
-        //                        if (this.gameModel.dictionary.containsWord(new
-        // Word(new_horizontal_word))) {
-        //                            OwnedWord tmp = new OwnedWord(pwa.startPosition, new
-        // Word(new_horizontal_word), pwa.player);
-        //                            this.placedWords.add(tmp);
-        //                            result.add(tmp);
-        //                        } else {
-        //                            throw new CustomError(NotAValidWord, "NotAValidWord",
-        // "NotAValidWord");
-        //                        }
-        //                    }
-        //                    start++;
-        //                }
       }
       return result;
     } catch (CustomError e) {

@@ -16,7 +16,7 @@ public class Letter {
   }
 
   /** contructor for the joker letter */
-  public Letter() {
+  private Letter() {
     this.chr = '#';
     this.isJoker = true;
   }
@@ -79,5 +79,12 @@ public class Letter {
     }
 
     return clonedArray;
+  }
+
+  /**
+   * @return a joker letter
+   */
+  public static Letter joker() {
+    return new Letter();
   }
 }

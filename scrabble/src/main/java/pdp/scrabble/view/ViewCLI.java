@@ -64,10 +64,10 @@ public class ViewCLI implements IView {
         return this.ask_renamePlayer(player, turn);
       }
       default ->
-        throw new CustomError(
-            ErrorType.InvalidActionType,
-            "invalide action kind",
-            "the action: " + response + " isn't a valid action use -v to see the full list");
+          throw new CustomError(
+              ErrorType.InvalidActionType,
+              "invalide action kind",
+              "the action: " + response + " isn't a valid action use -v to see the full list");
     }
   }
 
@@ -115,15 +115,16 @@ public class ViewCLI implements IView {
     GridWordPos gwp;
 
     final char direction = move[0].charAt(2);
-    gwp = switch (direction) {
-      case 'h' -> new GridWordPos(row, col, Direction.Right);
-      case 'v' -> new GridWordPos(row, col, Direction.Down);
-      default ->
-        throw new CustomError(
-            ErrorType.InvalidMoveFormat,
-            "invalide direction",
-            "the direction: " + direction + " isn't valid");
-    };
+    gwp =
+        switch (direction) {
+          case 'h' -> new GridWordPos(row, col, Direction.Right);
+          case 'v' -> new GridWordPos(row, col, Direction.Down);
+          default ->
+              throw new CustomError(
+                  ErrorType.InvalidMoveFormat,
+                  "invalide direction",
+                  "the direction: " + direction + " isn't valid");
+        };
 
     Word word = new Word(move[1]);
     Letter[] toPlace = new Letter[word.getLength()];
@@ -140,10 +141,8 @@ public class ViewCLI implements IView {
     // Display the first row of the grid with the column numbers
     System.out.print("  ");
     for (int i = 0; i < grid.size - 1; i++) {
-      if (i < 8)
-        System.out.print(i + 1 + "  ");
-      else
-        System.out.print(i + 1 + " ");
+      if (i < 8) System.out.print(i + 1 + "  ");
+      else System.out.print(i + 1 + " ");
     }
     System.out.println(grid.size);
 
@@ -184,15 +183,11 @@ public class ViewCLI implements IView {
 
         Letter letter = grid.getLetter(i, j);
         if (letter == null) {
-          if (j == grid.size - 1)
-            System.out.print(backgroundColor + "_" + colorReset);
-          else
-            System.out.print(backgroundColor + "_" + colorReset + "  ");
+          if (j == grid.size - 1) System.out.print(backgroundColor + "_" + colorReset);
+          else System.out.print(backgroundColor + "_" + colorReset + "  ");
         } else {
-          if (j == grid.size - 1)
-            System.out.print(color + letter + colorReset);
-          else
-            System.out.print(color + letter + "  " + colorReset);
+          if (j == grid.size - 1) System.out.print(color + letter + colorReset);
+          else System.out.print(color + letter + "  " + colorReset);
         }
       }
       System.out.print("\n");
@@ -232,7 +227,7 @@ public class ViewCLI implements IView {
   @Override
   public void showScore(Player player) {
     System.out.printf(
-        "%s %s %d\n", langPack.getString("viewcli_score"), player.getName(), player.getScore());
+        langPack.getString("viewcli_score") + "\n", player.getName(), player.getScore());
   }
 
   @Override

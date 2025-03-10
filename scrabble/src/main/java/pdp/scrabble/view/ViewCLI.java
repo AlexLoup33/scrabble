@@ -237,6 +237,17 @@ public class ViewCLI implements IView {
   @Override
   public void announceTurn(Player currentPlayer) {
     System.out.printf(langPack.getString("announce_turn") + "\n", currentPlayer.getName());
+    for (int i = 3; i > 0; i--) {
+      System.out.println(i);
+      try {
+        Thread.sleep(1000);
+      } catch (InterruptedException e) {
+        // Can never happen as long as the app is single-threaded
+        System.out.println(e);
+      }
+    }
+    System.out.print("\033c");
+    System.out.printf(langPack.getString("turn_begin") + "\n", currentPlayer.getName());
   }
 
   @Override

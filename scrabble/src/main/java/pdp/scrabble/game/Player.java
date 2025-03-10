@@ -30,6 +30,7 @@ public class Player {
     this.score = 0;
     this.bag.reset();
     this.hasForfeited = false;
+    // don't reset the player name
   }
 
   public String getName() {

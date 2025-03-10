@@ -15,12 +15,12 @@ import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.actions.*;
 
 public class GameModel {
-  public Grid grid;
-  public Lang lang;
-  public List<Player> players;
-  public LettersDrawer draw; // draw = pioche en fr
-  public IDictionary dictionary;
-  public Configuration config;
+  public final Grid grid;
+  public final Lang lang;
+  public final List<Player> players;
+  public final LettersDrawer draw; // draw = pioche en fr
+  public final IDictionary dictionary;
+  public final Configuration config;
 
   public GameModel(IConfiguration config) {
     this.config = (Configuration) config;
@@ -80,35 +80,9 @@ public class GameModel {
   }
 
   public boolean applyGameAction(PlaceWordAction pwa) {
-    // soustrait les lettres du player (si pas possible throw erreur)
-
-    boolean hasLetters = true;
-    ArrayList<Letter> missLetter = new ArrayList<>();
-    LettersCounter toPlace = new LettersCounter();
-    // for each letter to place
-    for (Letter l : pwa.toPlace) {
-      // convert into LettersCounter to fix multiple times same letter
-      toPlace.addLetter(l);
-    }
-    for (Letter l : pwa.toPlace) {
-      if (pwa.player.bag.getLetterCount(l) < toPlace.getLetterCount(l) && hasLetters) {
-        hasLetters = false;
-        missLetter.add(l);
-        Utilities.debug('g', pwa.player.getName() + " doesn't have the letter: " + l);
-      }
-    }
-
-    if (!hasLetters) {
-      throw new CustomError(
-          PlayerDoesntHaveLettersInIsBag,
-          "PlayerDoesntHaveLettersInIsBag",
-          pwa.player.getName() + " doesn't have" + missLetter + " in is bag");
-    }
-
-    // place les lettres sur la grille
+    pwa.assertHasLettersToPlace();
     this.grid.placeLetters(pwa);
-
-    // puis change de joueur (si il n'y a pas eut de problèmes)
+    pwa.removeLettersPlaced();
     return true;
   }
 
@@ -118,10 +92,11 @@ public class GameModel {
   }
 
   /**
-   * This function returns a list of active players by filtering out players who have forfeited.
+   * This function returns a list of active players by filtering out players who
+   * have forfeited.
    *
-   * @return The method `getActivePlayers` returns a list of active players, which are players who
-   *     have not forfeited the game.
+   * @return The method `getActivePlayers` returns a list of active players, which
+   *         are players who have not forfeited the game.
    */
   public List<Player> getActivePlayers() {
     List<Player> activePlayers = new ArrayList<>();

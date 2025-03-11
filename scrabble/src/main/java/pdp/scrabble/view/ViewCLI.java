@@ -30,14 +30,16 @@ import pdp.scrabble.game.actions.RestartGameAction;
 public class ViewCLI implements IView {
   private final ResourceBundle langPack;
   private final Scanner scaner;
+  private final boolean superScrabble;
 
-  public ViewCLI(Lang lang) {
+  public ViewCLI(Lang lang, boolean superScrabble) {
     this.langPack = lang.getViewCLI_langPack();
     this.scaner = new Scanner(System.in);
+    this.superScrabble = superScrabble;
   }
 
   @Override
-  public GameAction askAction(Player player, Integer turn) {
+  public GameAction askAction(Player player, Integer turn) throws CustomError {
     Utilities.verbose(
         "possible actions are: placeWord | exchangeLetter | passTurn "
             + "| renamePlayer | forfeitPlayer | restartGame\n");
@@ -91,7 +93,6 @@ public class ViewCLI implements IView {
     return new RenamePlayerAction(player, 0, response);
   }
 
-  // Very little error checking / handling
   private PlaceWordAction ask_placeWordAction(Player player, Integer turn) {
     Utilities.verbose("pattern for move is `yxdirection WORD`(eg. `a6h photo` or `b7v STICK` )\n");
     System.out.print(this.getFromLangPack("ask_move"));
@@ -101,20 +102,41 @@ public class ViewCLI implements IView {
     if (move.length != 2) {
       throw new CustomError(
           ErrorType.InvalidMoveFormat,
-          "Invalid move format",
-          "the move: " + move.toString() + " isn't valid");
+          "pattern for move is `yxdirection WORD`(eg. `a6h photo` or `b7v STICK` )",
+          "the move: " + response + " isn't valid");
     }
 
     Utilities.debug('v', "move[0] = %s / move[1] = %s\n", move[0], move[1]);
-    // WARNING WARNING WARNING REMOVE MODULO
-    int row = (move[0].charAt(0) - 97) % 15;
-    // [\\D] = remove everything but numbers
-    int col = Integer.parseInt(move[0].replaceAll("[\\D]", "")) - 1;
+    int maxRange = superScrabble ? 20 : 14;
+    int row = (Character.toLowerCase(move[0].charAt(0)) - 97);
+    if (row < 0 || row > maxRange) {
+      throw new CustomError(
+          ErrorType.InvalidMoveFormat,
+          "row must be between a and " + (char) (97 + maxRange),
+          "the move: " + response + " isn't valid");
+    }
+    int col;
+    try {
+      // actual col value from model starts from 0
+      // [\\D] = remove everything but numbers
+      col = Integer.parseInt(move[0].replaceAll("[\\D]", "")) - 1;
+    } catch (NumberFormatException e) {
+      throw new CustomError(
+          ErrorType.InvalidMoveFormat,
+          "pattern for move is `yxdirection WORD`(eg. `a6h photo` or `b7v STICK` )",
+          "the move: " + response + " isn't valid");
+    }
+    if (col < 0 || col > maxRange) {
+      throw new CustomError(
+          ErrorType.InvalidMoveFormat,
+          "col must be between 1 and " + (maxRange + 1),
+          "the move: " + response + " isn't valid");
+    }
     Utilities.debug('v', "row = %d / col = %d\n", row, col);
 
     GridWordPos gwp;
 
-    final char direction = move[0].charAt(2);
+    final char direction = move[0].charAt(move[0].length() - 1);
     gwp =
         switch (direction) {
           case 'h' -> new GridWordPos(row, col, Direction.Right);
@@ -122,7 +144,7 @@ public class ViewCLI implements IView {
           default ->
               throw new CustomError(
                   ErrorType.InvalidMoveFormat,
-                  "invalide direction",
+                  "invalid direction",
                   "the direction: " + direction + " isn't valid");
         };
 
@@ -237,7 +259,7 @@ public class ViewCLI implements IView {
 
   @Override
   public void announceTurn(Player currentPlayer) {
-    System.out.printf(langPack.getString("announce_turn") + "\n", currentPlayer.getName());
+    System.out.printf(langPack.getString("turn_begin") + "\n", currentPlayer.getName());
     /*
      * for (int i = 3; i > 0; i--) {
      * System.out.println(i);

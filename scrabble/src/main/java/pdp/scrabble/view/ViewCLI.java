@@ -154,6 +154,7 @@ public class ViewCLI implements IView {
       toPlace[i] = word.getLetterAt(i);
     }
     Utilities.debug('v', "Length of toPlace word : %d\n", toPlace.length);
+    player.addScore(0);
 
     return new PlaceWordAction(player, turn, toPlace, gwp);
   }

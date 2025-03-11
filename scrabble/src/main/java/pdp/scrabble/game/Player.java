@@ -69,4 +69,8 @@ public class Player {
   public int getScore() {
     return this.score;
   }
+
+  public void addScore(int points){
+    this.score = score + points;
+  }
 }

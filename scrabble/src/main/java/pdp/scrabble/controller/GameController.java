@@ -43,7 +43,9 @@ public class GameController {
         drawLetters(playing);
         Utilities.debug('l', "numbers of letters in draw : %d\n", model.draw.getCurrentSize());
         view.announceTurn(playing);
-        view.showScore(playing);
+        for (Player onGames : model.players) {
+          view.showScore(onGames);
+        }
         // Implemented but maybe need to draw every letters before
         // actually showing number
         // view.displayDraw(model.draw);

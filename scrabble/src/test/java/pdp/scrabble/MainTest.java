@@ -384,7 +384,7 @@ public class MainTest {
 
     GameModel gm = new GameModel(config);
     gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
-    ViewCLI view = new ViewCLI(gm.lang);
+    ViewCLI view = new ViewCLI(gm.lang, config.getSuperScrabble());
 
     final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
     PrintStream outStremCap = new PrintStream(outputStreamCaptor);

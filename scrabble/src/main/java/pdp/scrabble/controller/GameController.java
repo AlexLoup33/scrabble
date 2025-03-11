@@ -24,7 +24,7 @@ public class GameController {
 
       Application.launch(ViewGUI.class, new String[] {});
     } else {
-      this.view = new ViewCLI(this.model.lang);
+      this.view = new ViewCLI(this.model.lang, conf.getSuperScrabble());
     }
   }
 

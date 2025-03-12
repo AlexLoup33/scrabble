@@ -59,6 +59,7 @@ public class GameModel {
     return false;
   }
 
+  // F33
   public boolean applyGameAction(PassTurnAction pta) {
     return true;
   }
@@ -68,6 +69,7 @@ public class GameModel {
     throw new UnsupportedOperationException("Unimplemented method 'applyGameAction'");
   }
 
+  // F36
   public boolean applyGameAction(ForfeitGameAction forfeitGameAction) {
     forfeitGameAction.player.forfeit();
     return true;
@@ -80,6 +82,7 @@ public class GameModel {
     return true;
   }
 
+  // F41
   public boolean applyGameAction(RestartGameAction restartGameAction) {
     this.reset();
     return true;

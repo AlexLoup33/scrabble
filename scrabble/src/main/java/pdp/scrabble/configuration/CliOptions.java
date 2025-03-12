@@ -140,10 +140,8 @@ public class CliOptions {
   }
 
   /**
-   * Fills the props attribute, intended to be used by Configuration builder to
-   * create a
-   * Configuration instance with CLI args Warning: some flags will exit the
-   * program (e.g help)
+   * Fills the props attribute, intended to be used by Configuration builder to create a
+   * Configuration instance with CLI args Warning: some flags will exit the program (e.g help)
    *
    * @param args command line arguments
    * @throws CustomError If user specify a non existent CliOption

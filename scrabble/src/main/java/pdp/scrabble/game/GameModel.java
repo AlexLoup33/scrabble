@@ -24,15 +24,15 @@ public class GameModel {
     for (int i = 0; i < this.config.getPlayerCount(); i++) {
       this.players.add(new Player());
     }
-    
+
     this.lang = Lang.getLang(this.config.getLanguage());
     if (this.config.getDictFile() != null) {
       this.lang.set_customDictPath(this.config.getDictFile());
     }
-    
+
     this.dictionary = new Dictionary();
     this.dictionary.loadFromFile(this.lang.getDictionaryPath());
-    
+
     this.draw = new LettersDrawer(this.lang);
 
     if (!config.getSuperScrabble()) {
@@ -101,7 +101,7 @@ public class GameModel {
 
   /**
    * This function returns a list of active players by filtering out players who have forfeited.
-   * 
+   *
    * @return The method `getActivePlayers` returns a list of active players, which are players who
    *     have not forfeited the game.
    */

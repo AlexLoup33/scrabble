@@ -40,8 +40,8 @@ public class LettersDrawer {
   }
 
   /**
-   * draw a random letter from the LetterDrawer, done in O(1) the drawer must
-   * still have some letters remaining
+   * draw a random letter from the LetterDrawer, done in O(1) the drawer must still have some
+   * letters remaining
    *
    * @return the poped letter from the drawer
    */
@@ -87,8 +87,7 @@ public class LettersDrawer {
   }
 
   /**
-   * add all the the letters to the LetterDrawer the drawer must have enougth
-   * space remaining to add
+   * add all the the letters to the LetterDrawer the drawer must have enougth space remaining to add
    * all letters
    *
    * @param letters all the letters add
@@ -100,11 +99,10 @@ public class LettersDrawer {
   }
 
   /**
-   * add multiple times the letter to the LetterDrawer the drawer must have
-   * enougth space remaining to add
-   * all letters
+   * add multiple times the letter to the LetterDrawer the drawer must have enougth space remaining
+   * to add all letters
    *
-   * @param letters  all the letters add
+   * @param letters all the letters add
    * @param nbToPush the number of times to add it
    */
   public void pushLetter(Letter letter, int nbToPush) {
@@ -112,8 +110,12 @@ public class LettersDrawer {
       throw new CustomError(
           ErrorType.DrawerError,
           "not enougth space to push the letters",
-          "can't push " + nbToPush + " letters in the drawer of current size: " +
-              this.currentSize + " and of maxSize: " + this.maxSize);
+          "can't push "
+              + nbToPush
+              + " letters in the drawer of current size: "
+              + this.currentSize
+              + " and of maxSize: "
+              + this.maxSize);
     }
 
     for (int i = 0; i < nbToPush; i++) {
@@ -123,7 +125,7 @@ public class LettersDrawer {
 
   /**
    * draw a certain number of letters from the drawer
-   * 
+   *
    * @param nbToDraw the number of letters to draw
    * @return the letters poped
    */
@@ -132,7 +134,10 @@ public class LettersDrawer {
       throw new CustomError(
           ErrorType.DrawerError,
           "not enougth letters to draw",
-          "can't pop " + nbToDraw + " letters from the drawer of current size: " + this.currentSize);
+          "can't pop "
+              + nbToDraw
+              + " letters from the drawer of current size: "
+              + this.currentSize);
     }
 
     LettersCounter drawedletters = new LettersCounter();

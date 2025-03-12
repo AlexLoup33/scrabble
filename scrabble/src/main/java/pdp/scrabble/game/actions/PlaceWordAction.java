@@ -57,9 +57,7 @@ public class PlaceWordAction extends GameAction {
     return missing;
   }
 
-  /**
-   * assert the player has the required letters in his bag
-   */
+  /** assert the player has the required letters in his bag */
   public void assertHasLettersToPlace() {
     LettersCounter missing = this.getMissingLetters();
 

@@ -110,8 +110,9 @@ public class Grid {
         }
 
         // 2 Find the new word created
-        String vertical_created_word = getVerticalWord(
-            pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
+        String vertical_created_word =
+            getVerticalWord(
+                pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
         Word vertical_word = new Word(vertical_created_word);
 
         Utilities.debug('g', "vertical_created_word: " + vertical_created_word);
@@ -126,8 +127,10 @@ public class Grid {
           this.placedWords.add(to_add);
           result.add(to_add);
         } else {
-          throw new CustomError(ErrorType.NotAValidWord,
-              "word not the the dictionary", "the word: " + vertical_word + " isn't in the dictionary");
+          throw new CustomError(
+              ErrorType.NotAValidWord,
+              "word not the the dictionary",
+              "the word: " + vertical_word + " isn't in the dictionary");
         }
 
         /* // useless, but to keep for now
@@ -173,8 +176,9 @@ public class Grid {
         }
 
         // 2 Find the new word created
-        String horizontal_created_word = getHorizontalWord(
-            pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
+        String horizontal_created_word =
+            getHorizontalWord(
+                pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
         Word horizontal_word = new Word(horizontal_created_word);
 
         // System.out.println("DEBUG vertical formed word: " +
@@ -187,8 +191,10 @@ public class Grid {
           this.placedWords.add(to_place);
           result.add(to_place);
         } else {
-          throw new CustomError(ErrorType.NotAValidWord,
-              "word not the the dictionary", "the word: " + horizontal_word + " isn't in the dictionary");
+          throw new CustomError(
+              ErrorType.NotAValidWord,
+              "word not the the dictionary",
+              "the word: " + horizontal_word + " isn't in the dictionary");
         }
         /* // useless, but to keep for now
         // Check new vertical word
@@ -275,22 +281,16 @@ public class Grid {
   }
 
   /**
-   * The function `getMultiplier` returns the ScoreMultiplier associated with a
-   * given GridPos or a
+   * The function `getMultiplier` returns the ScoreMultiplier associated with a given GridPos or a
    * default value if none is found.
    *
-   * @param pos The `pos` parameter in the `getMultiplier` method represents the
-   *            position on the
-   *            grid for which you want to retrieve the score multiplier. It is of
-   *            type `GridPos`, which
-   *            likely contains the coordinates or location information necessary
-   *            to identify a specific
-   *            cell or tile on the game grid.
-   * @return The method `getMultiplier` is returning a `ScoreMultiplier` object
-   *         associated with the
-   *         given `GridPos` `pos`. If there is no mapping found for the `pos`, it
-   *         will return the
-   *         default `ScoreMultiplier` object `SIMPLE_LETTER`.
+   * @param pos The `pos` parameter in the `getMultiplier` method represents the position on the
+   *     grid for which you want to retrieve the score multiplier. It is of type `GridPos`, which
+   *     likely contains the coordinates or location information necessary to identify a specific
+   *     cell or tile on the game grid.
+   * @return The method `getMultiplier` is returning a `ScoreMultiplier` object associated with the
+   *     given `GridPos` `pos`. If there is no mapping found for the `pos`, it will return the
+   *     default `ScoreMultiplier` object `SIMPLE_LETTER`.
    */
   public ScoreMultiplier getMultiplier(GridPos pos) {
     if (this.multiplicatorsUsed[pos.row()][pos.col()]) {
@@ -300,18 +300,14 @@ public class Grid {
   }
 
   /**
-   * This function calculates the score of a word on a grid, taking into account
-   * any score multipliers.
+   * This function calculates the score of a word on a grid, taking into account any score
+   * multipliers.
    *
-   * @param word OwnedWord - a class representing a word that is owned by a player
-   *             in a game. It
-   *             contains information about the word itself and its position on
-   *             the game board.
-   * @return The method is returning the product of the `score` and `multi_word`
-   *         variables. However,
-   *         the `score` variable is never updated within the method, so it will
-   *         always be 0. Therefore,
-   *         the method will always return 0.
+   * @param word OwnedWord - a class representing a word that is owned by a player in a game. It
+   *     contains information about the word itself and its position on the game board.
+   * @return The method is returning the product of the `score` and `multi_word` variables. However,
+   *     the `score` variable is never updated within the method, so it will always be 0. Therefore,
+   *     the method will always return 0.
    */
   public int getScore(OwnedWord word) {
     int score = 0;
@@ -331,26 +327,31 @@ public class Grid {
       }
       Letter letter = word.word.getLetterAt(i);
       int lettreBasePoints = this.getLetterPoints(letter);
-      System.out.println("adding points for letter: " + letter + " at " + pos + " basePoints=" + lettreBasePoints
-          + " and with letterMult=" + letterMult + " (multi_word=" + multi_word + ")");
+      System.out.println(
+          "adding points for letter: "
+              + letter
+              + " at "
+              + pos
+              + " basePoints="
+              + lettreBasePoints
+              + " and with letterMult="
+              + letterMult
+              + " (multi_word="
+              + multi_word
+              + ")");
       score += (lettreBasePoints * letterMult);
     }
     System.out.println("-> score=" + score + ", multi_word=" + multi_word + ")");
     return score * multi_word;
   }
 
-
   /**
-   * The `applyGameAction` function in Java applies a `PlaceWordAction` by calling
-   * the
+   * The `applyGameAction` function in Java applies a `PlaceWordAction` by calling the
    * `placeLetters` method.
    *
-   * @param action The parameter `action` in the `applyGameAction` method is of
-   *               type
-   *               `PlaceWordAction`. This parameter likely contains information
-   *               about a word placement action
-   *               in a game, such as the word to be placed and the location where
-   *               it should be placed.
+   * @param action The parameter `action` in the `applyGameAction` method is of type
+   *     `PlaceWordAction`. This parameter likely contains information about a word placement action
+   *     in a game, such as the word to be placed and the location where it should be placed.
    */
   public void applyGameAction(PlaceWordAction action) {
     this.placeLetters(action);

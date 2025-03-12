@@ -70,7 +70,7 @@ public class Player {
     return this.score;
   }
 
-  public void addScore(int points){
+  public void addScore(int points) {
     this.score = score + points;
   }
 }

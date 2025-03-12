@@ -9,28 +9,23 @@ import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 
 public class LettersDrawer {
-  private Random rng;
+  private final Random rng;
   private int currentSize;
   private final int maxSize;
-  private final ArrayList<Letter> table = new ArrayList<>();
+  private final ArrayList<Letter> table;
   private Lang lang;
 
   public LettersDrawer(Lang lang) {
     this.lang = lang;
     this.rng = new Random();
-    LettersCounter initialLetters = this.lang.getLettersCount();
-    for (Letter l : initialLetters.getLettersSet()) {
-      for (int i = 0; i < initialLetters.getLetterCount(l); i++) {
-        this.table.add(l);
-        this.currentSize += 1;
-      }
-    }
+    this.table = new ArrayList<>();
+    this.reset();
     this.maxSize = this.currentSize;
   }
 
   public void reset() {
-    this.rng = new Random();
-
+    this.table.clear();
+    this.currentSize = 0;
     LettersCounter initialLetters = this.lang.getLettersCount();
     for (Letter l : initialLetters.getLettersSet()) {
       for (int i = 0; i < initialLetters.getLetterCount(l); i++) {

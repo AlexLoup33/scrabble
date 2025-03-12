@@ -46,7 +46,7 @@ public class Player {
       throw new CustomError(
           ErrorType.ForfeitTwiceError,
           "can't forfeit twice",
-          this + " has alredy forfeited, can't forfeit another time");
+          this + " has already forfeited, can't forfeit another time");
     }
     // => hasn't forfeited yet
     this.hasForfeited = true;
@@ -70,7 +70,7 @@ public class Player {
     return this.score;
   }
 
-  public void addScore(int points){
+  public void addScore(int points) {
     this.score = score + points;
   }
 }

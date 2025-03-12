@@ -1,8 +1,6 @@
 package pdp.scrabble.view;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -18,7 +16,6 @@ import pdp.scrabble.game.Lang;
 import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
-import pdp.scrabble.game.actions.RestartGameAction;
 import pdp.scrabble.view.Component.GridView;
 
 public class ViewGUI extends Application implements IView {
@@ -56,7 +53,7 @@ public class ViewGUI extends Application implements IView {
     // New Game
     // TO-DO: Ask the controller to create a new game.
     // --> TO-DO: implement restartGameAction
-    //newGameItem.setOnAction(e -> RestartGameAction.restart());
+    // newGameItem.setOnAction(e -> RestartGameAction.restart());
     newGameItem.setOnAction(e -> System.out.println("restart Game..."));
 
     // Load Game

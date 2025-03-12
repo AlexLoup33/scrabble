@@ -1,8 +1,10 @@
 package pdp.scrabble.view;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -110,13 +112,48 @@ public class ViewGUI extends Application implements IView {
     // Actions for Items
 
     // TO-DO: Display the version of the game
-    versionItem.setOnAction(e -> System.out.println("Version..."));
+    versionItem.setOnAction(
+        (ActionEvent event) -> {
+          Alert alert = new Alert(Alert.AlertType.INFORMATION);
+          alert.setTitle("Version");
+          alert.setHeaderText(null);
+          alert.setContentText("Version 1.0.0");
+          alert.showAndWait();
+        });
 
     // TO-DO: Display the author of the game
-    authorItem.setOnAction(e -> System.out.println("Author..."));
+    authorItem.setOnAction(
+        (ActionEvent event) -> {
+          Alert alert = new Alert(Alert.AlertType.INFORMATION);
+          alert.setTitle("Author");
+          alert.setHeaderText(null);
+          alert.setContentText(
+              """
+                             Andrieu Ludovic
+                             Cassard Aymeric
+                             Cazet Valentin
+                             Lou-Poueyou Alexandre
+                             Mayol Jean
+                             Petry Math\u00e9o
+                             """);
+          alert.showAndWait();
+        });
 
     // TO-DO: Display the licence of the game
-    licenceItem.setOnAction(e -> System.out.println("Licence..."));
+    licenceItem.setOnAction(
+        (ActionEvent event) -> {
+          Alert alert = new Alert(Alert.AlertType.INFORMATION);
+          alert.setTitle("Licence");
+          alert.setHeaderText(null);
+          alert.setContentText(
+              """
+                             This game is licensed under the MIT License.
+                             You can do whatever you want with it, as long as you include the original license.
+                             """);
+          alert.setContentText(
+              alert.getContentText() + "\n\n" + "https://opensource.org/licenses/MIT");
+          alert.showAndWait();
+        });
 
     aboutMenu.getItems().addAll(versionItem, authorItem, licenceItem);
 

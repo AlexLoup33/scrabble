@@ -120,10 +120,14 @@ public class ConfigurationTemplate {
 
   public void setDictFile(String dictFile) throws CustomError {
     try {
-      this.dictFile = Path.of(dictFile);
-      if (!Files.isRegularFile(this.dictFile)) {
-        throw createError(
-            "Value `" + dictFile + "` for key `dictFile`" + ", expected a regular file");
+      if (dictFile.equals("null")) {
+        this.dictFile = null;
+      } else {
+        this.dictFile = Path.of(dictFile);
+        if (!Files.isRegularFile(this.dictFile)) {
+          throw createError(
+              "Value `" + dictFile + "` for key `dictFile`" + ", expected a regular file");
+        }
       }
     } catch (InvalidPathException e) {
       throw createError("Invalid dictfile, reason : " + e.getReason());

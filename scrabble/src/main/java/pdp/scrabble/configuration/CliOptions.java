@@ -128,6 +128,13 @@ public class CliOptions {
             .hasArg()
             .argName("file")
             .build());
+    this.options.addOption(
+        Option.builder("zz")
+            .longOpt("seed")
+            .desc("seed to start the game")
+            .hasArg()
+            .argName("seed")
+            .build());
 
     parseCliOptions(args); // this can throw
   }

@@ -97,4 +97,54 @@ public class LettersDrawer {
       this.pushLetter(letter);
     }
   }
+
+  /**
+   * add multiple times the letter to the LetterDrawer the drawer must have enougth space remaining
+   * to add all letters
+   *
+   * @param letters all the letters add
+   * @param nbToPush the number of times to add it
+   */
+  public void pushLetter(Letter letter, int nbToPush) {
+    if (this.maxSize < this.currentSize + nbToPush) {
+      throw new CustomError(
+          ErrorType.DrawerError,
+          "not enougth space to push the letters",
+          "can't push "
+              + nbToPush
+              + " letters in the drawer of current size: "
+              + this.currentSize
+              + " and of maxSize: "
+              + this.maxSize);
+    }
+
+    for (int i = 0; i < nbToPush; i++) {
+      this.pushLetter(letter);
+    }
+  }
+
+  /**
+   * draw a certain number of letters from the drawer
+   *
+   * @param nbToDraw the number of letters to draw
+   * @return the letters poped
+   */
+  public LettersCounter popLetter(int nbToDraw) {
+    if (this.currentSize < nbToDraw) {
+      throw new CustomError(
+          ErrorType.DrawerError,
+          "not enougth letters to draw",
+          "can't pop "
+              + nbToDraw
+              + " letters from the drawer of current size: "
+              + this.currentSize);
+    }
+
+    LettersCounter drawedletters = new LettersCounter();
+    for (int i = 0; i < nbToDraw; i++) {
+      drawedletters.addLetter(this.popLetter());
+    }
+
+    return drawedletters;
+  }
 }

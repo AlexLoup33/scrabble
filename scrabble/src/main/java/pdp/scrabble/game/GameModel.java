@@ -24,10 +24,15 @@ public class GameModel {
     for (int i = 0; i < this.config.getPlayerCount(); i++) {
       this.players.add(new Player());
     }
-    this.dictionary = new Dictionary();
-    this.dictionary.loadFromFile(config.getDictFile());
 
     this.lang = Lang.getLang(this.config.getLanguage());
+    if (this.config.getDictFile() != null) {
+      this.lang.set_customDictPath(this.config.getDictFile());
+    }
+
+    this.dictionary = new Dictionary();
+    this.dictionary.loadFromFile(this.lang.getDictionaryPath());
+
     this.draw = new LettersDrawer(this.lang);
 
     if (!config.getSuperScrabble()) {
@@ -66,8 +71,9 @@ public class GameModel {
   }
 
   public void applyGameAction(ExchangeLetterAction exchangeLetterAction) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'applyGameAction'");
+    exchangeLetterAction.assertHasLettersToPlace();
+    exchangeLetterAction.exchangeLetters(this.draw);
+    this.currentPlayer = getNextPlayerIndex();
   }
 
   // F36
@@ -78,8 +84,12 @@ public class GameModel {
 
   public void applyGameAction(PlaceWordAction pwa) {
     pwa.assertHasLettersToPlace();
-    this.grid.placeLetters(pwa);
+    List<OwnedWord> scoredWords = this.grid.placeLetters(pwa);
     pwa.removeLettersPlaced();
+    for (OwnedWord ownedWord : scoredWords) {
+      System.out.println("adding score of: " + ownedWord);
+      pwa.player.addScore(this.grid.getScore(ownedWord));
+    }
     this.currentPlayer = getNextPlayerIndex();
   }
 
@@ -92,12 +102,8 @@ public class GameModel {
   /**
    * This function returns a list of active players by filtering out players who have forfeited.
    *
-   * <p><<<<<<< HEAD
-   *
    * @return The method `getActivePlayers` returns a list of active players, which are players who
-   *     have not forfeited the game. =======
-   * @return The method `getActivePlayers` returns a list of active players, which are players who
-   *     have not forfeited the game. >>>>>>> 3751731ee445fa8332134eb82ab31f8e1424469a
+   *     have not forfeited the game.
    */
   public List<Player> getActivePlayers() {
     List<Player> activePlayers = new ArrayList<>();

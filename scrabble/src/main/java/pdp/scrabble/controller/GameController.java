@@ -97,11 +97,7 @@ public class GameController {
   }
 
   private void terminateProgram(Throwable e) {
-    if (e.getClass() == Exception.class) {
-      view.showError((Exception) e);
-    } else {
-      System.out.println(e);
-    }
+    view.showError(e);
     System.exit(1);
   }
 
@@ -113,8 +109,11 @@ public class GameController {
   public boolean isGameFinished() {
     // TODO compute based of real Scrabble rules
     if (model.draw.getCurrentSize() <= 0) {
-      return true;
+      return true; // end game when not enougth letters
     }
-    return false;
+    if (model.getActivePlayers().size() <= 1) {
+      return true; // end game when players forfeited
+    }
+    return false; // game not finished
   }
 }

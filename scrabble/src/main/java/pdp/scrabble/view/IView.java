@@ -27,7 +27,7 @@ public interface IView {
 
   public void showError(CustomError e);
 
-  public void showError(Exception e);
+  public void showError(Throwable e);
 
   // public void showAbout(); //FIXME: J'ai pas compris alors help me
 }

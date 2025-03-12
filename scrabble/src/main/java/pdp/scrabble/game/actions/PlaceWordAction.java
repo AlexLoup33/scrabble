@@ -78,8 +78,6 @@ public class PlaceWordAction extends GameAction {
   /**
    * remove from the bag the letters placed you must check if the player has the letters before !
    * (it will be asserted before removing the letters)
-   *
-   * @param pwa the action played
    */
   public void removeLettersPlaced() {
     this.assertHasLettersToPlace(); // avoid breaking anything

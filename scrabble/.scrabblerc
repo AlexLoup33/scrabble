@@ -19,5 +19,5 @@ aiTime=5
 
 #[Storage]
 historyFile=null
-dictFile=./dictionary/en.txt
+dictFile=null
 contestFile=null

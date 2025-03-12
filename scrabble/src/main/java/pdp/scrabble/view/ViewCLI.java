@@ -28,6 +28,10 @@ import pdp.scrabble.game.actions.RenamePlayerAction;
 import pdp.scrabble.game.actions.RestartGameAction;
 
 public class ViewCLI implements IView {
+  public static final String ANSI_RESET = "\u001B[0m";
+  public static final String ANSI_RED = "\u001B[31m";
+  public static final String ANSI_YELLOW = "\u001B[33m";
+
   private final ResourceBundle langPack;
   private final Scanner scaner;
   private final boolean superScrabble;
@@ -80,7 +84,8 @@ public class ViewCLI implements IView {
 
     LinkedList<Letter> letters = new LinkedList<>();
     for (int index = 0; index < response.length(); index++) {
-      letters.push(new Letter(response.charAt(index)));
+      char c = response.charAt(index);
+      letters.push(new Letter(Character.toUpperCase(c)));
     }
     return new ExchangeLetterAction(player, turn, letters);
   }
@@ -279,12 +284,15 @@ public class ViewCLI implements IView {
 
   @Override
   public void showError(CustomError e) {
-    System.out.printf("Error: %s\n", e.toUserFormatedText());
+    String color = e.isFatal() ? ANSI_RED : ANSI_YELLOW;
+    System.out.printf("%sError: %s%s\n", color, e.toString(), ANSI_RESET);
   }
 
   @Override
-  public void showError(Exception e) {
-    System.out.printf("Error: %s\n", e.getMessage());
+  public void showError(Throwable e) {
+    System.out.print(ANSI_RED + e.toString());
+    e.printStackTrace(System.out);
+    System.out.println(ViewCLI.ANSI_RESET);
   }
 
   @Override

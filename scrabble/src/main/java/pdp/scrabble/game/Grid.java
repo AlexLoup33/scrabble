@@ -316,7 +316,7 @@ public class Grid {
   public int getScore(OwnedWord word) {
     int score = 0;
     int multi_word = 1;
-
+    // TODO: ajouter le suport des mots scrables (7+ letters)
     for (int i = 0; i < word.word.getLength(); i++) {
       GridPos pos = word.position.getPosAtIndex(i);
       ScoreMultiplier multi = this.getMultiplier(pos);
@@ -339,31 +339,6 @@ public class Grid {
     return score * multi_word;
   }
 
-  /**
-   * The `getScore` function calculates the total score of a player based on the
-   * words they own in a
-   * game.
-   *
-   * @param player The `player` parameter in the `getScore` method represents the
-   *               player for whom
-   *               you want to calculate the score. The method iterates through
-   *               the `placedWords` and checks
-   *               if the owner of each word is the same as the provided player.
-   *               If it is, the score of that
-   *               word is
-   * @return The `getScore` method is returning the total score of the player
-   *         based on the words
-   *         they own in the `placedWords` list.
-   */
-  public int getScore(Player player) {
-    int score = 0;
-    for (OwnedWord word : this.placedWords) {
-      if (word.owner.equals(player)) {
-        score += this.getScore(word);
-      }
-    }
-    return score;
-  }
 
   /**
    * The `applyGameAction` function in Java applies a `PlaceWordAction` by calling

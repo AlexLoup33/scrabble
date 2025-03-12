@@ -206,7 +206,7 @@ public class ViewGUI extends Application implements IView {
   }
 
   @Override
-  public void showError(Exception e) {
+  public void showError(Throwable e) {
     throw new UnsupportedOperationException("Unimplemented method 'showError'");
   }
 }

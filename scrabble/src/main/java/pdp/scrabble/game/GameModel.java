@@ -71,8 +71,9 @@ public class GameModel {
   }
 
   public void applyGameAction(ExchangeLetterAction exchangeLetterAction) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'applyGameAction'");
+    exchangeLetterAction.assertHasLettersToPlace();
+    exchangeLetterAction.exchangeLetters(this.draw);
+    this.currentPlayer = getNextPlayerIndex();
   }
 
   // F36

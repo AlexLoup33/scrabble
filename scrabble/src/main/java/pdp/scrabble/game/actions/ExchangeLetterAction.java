@@ -3,11 +3,15 @@ package pdp.scrabble.game.actions;
 import java.util.List;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
+import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.GameModel;
+import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
 
 /**
- * Exchange one or more tiles for an equal number from the bag, scoring zero. This can only be done
+ * Exchange one or more tiles for an equal number from the bag, scoring zero.
+ * This can only be done
  * if 7 or more tiles remain in the bag.
  */
 public class ExchangeLetterAction extends GameAction {
@@ -23,5 +27,52 @@ public class ExchangeLetterAction extends GameAction {
   @Override
   public void applyGameAction(GameModel gameModel) {
     gameModel.applyGameAction(this);
+  }
+
+  /**
+   * assert the player has the required letters in his bag
+   */
+  public void assertHasLettersToPlace() {
+    LettersCounter missing = new LettersCounter();
+
+    for (Letter letter : this.lettersToExchange.getLettersSet()) {
+      int nbToExchange = this.lettersToExchange.getLetterCount(letter);
+      int nbInBag = this.player.bag.getLetterCount(letter);
+      if (nbToExchange > nbInBag) {
+        // => not enougth letters to exchange
+        missing.addLetter(letter, nbToExchange - nbInBag);
+      }
+    }
+    if (missing.size() != 0) {
+      throw new CustomError(
+          ErrorType.PlayerDoesntHaveLettersInIsBag,
+          "the following letters: " + missing + " are missing",
+          this.player.getName()
+              + " doesn't have the following letters in his bag: "
+              + missing + " in is bag");
+    }
+  }
+
+  /**
+   * remove from the bag the letters exchnaged and draw the new letters,
+   * you must check if the player has the letters before !
+   * (it will be asserted before removing the letters)
+   * 
+   * @param draw the drawer of the GameModel
+   */
+  public void exchangeLetters(LettersDrawer draw) {
+    this.assertHasLettersToPlace(); // avoid breaking anything
+    // remove the letters from the player's bag and put them in the draw
+    for (Letter letter : this.lettersToExchange.getLettersSet()) {
+      int nbToExchange = this.lettersToExchange.getLetterCount(letter);
+      this.player.bag.removeLetter(letter, nbToExchange);
+      draw.pushLetter(letter, nbToExchange);
+    }
+    // draw the new letters and put them in the player's bag
+    LettersCounter drawedLetters = draw.popLetter(this.lettersToExchange.size());
+    for (Letter letter : drawedLetters.getLettersSet()) {
+      int nbDrawed = drawedLetters.getLetterCount(letter);
+      this.player.bag.addLetter(letter, nbDrawed);
+    }
   }
 }

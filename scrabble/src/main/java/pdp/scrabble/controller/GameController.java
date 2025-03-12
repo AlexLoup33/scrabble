@@ -97,11 +97,7 @@ public class GameController {
   }
 
   private void terminateProgram(Throwable e) {
-    if (e.getClass() == Exception.class) {
-      view.showError((Exception) e);
-    } else {
-      System.out.println(e);
-    }
+    view.showError(e);
     System.exit(1);
   }
 

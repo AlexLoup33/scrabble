@@ -73,4 +73,11 @@ public class Player {
   public void addScore(int points) {
     this.score = score + points;
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null || obj.getClass() != this.getClass()) return false;
+    Player compared = (Player) obj;
+    return this.id == compared.id;
+  }
 }

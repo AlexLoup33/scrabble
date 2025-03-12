@@ -150,6 +150,7 @@ public enum Lang {
   private static final String viewCliLangPack = "pack_cli_";
 
   public final Locale locale;
+  private Path customDictPath;
 
   /**
    * create a new language available for scrable the name of the Lang must be an UPPERCASE of the
@@ -175,6 +176,12 @@ public enum Lang {
           "couldn't create the Lang: '" + this.name() + "'",
           "you can't create a Lang with a Local of a country '" + locale + "'");
     }
+    // handle custom dictionary path
+    this.customDictPath = null;
+  }
+
+  void set_customDictPath(Path customDictPath) {
+    this.customDictPath = customDictPath;
   }
 
   /**
@@ -213,7 +220,10 @@ public enum Lang {
    * @return where to find the file of the dictionary for this lang
    */
   public Path getDictionaryPath() {
-    return Path.of(Lang.dictionaryDirectory, this.getCodeLang() + ".txt");
+    if (this.customDictPath == null) {
+      return Path.of(Lang.dictionaryDirectory, this.getCodeLang() + ".txt");
+    }
+    return this.customDictPath;
   }
 
   /**

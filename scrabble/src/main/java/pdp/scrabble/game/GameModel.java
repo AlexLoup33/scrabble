@@ -15,6 +15,7 @@ public class GameModel {
   public final LettersDrawer draw; // draw = pioche en fr
   public final IDictionary dictionary;
   public final Configuration config;
+  public int currentPlayer;
 
   public GameModel(IConfiguration config) {
     this.config = (Configuration) config;
@@ -23,10 +24,15 @@ public class GameModel {
     for (int i = 0; i < this.config.getPlayerCount(); i++) {
       this.players.add(new Player());
     }
-    this.dictionary = new Dictionary();
-    this.dictionary.loadFromFile(config.getDictFile());
-
+    
     this.lang = Lang.getLang(this.config.getLanguage());
+    if (this.config.getDictFile() != null) {
+      this.lang.set_customDictPath(this.config.getDictFile());
+    }
+    
+    this.dictionary = new Dictionary();
+    this.dictionary.loadFromFile(this.lang.getDictionaryPath());
+    
     this.draw = new LettersDrawer(this.lang);
 
     if (!config.getSuperScrabble()) {
@@ -34,6 +40,7 @@ public class GameModel {
     } else {
       this.grid = new Grid(this, 21);
     }
+    this.currentPlayer = 0;
   }
 
   public void reset() {
@@ -50,45 +57,45 @@ public class GameModel {
    * @param played
    * @return whether the turn is finished
    */
-  public boolean applyGameActionDispatch(GameAction played) {
-    return played.applyGameAction(this); // use double dispatch
+  public void applyGameActionDispatch(GameAction played) {
+    played.applyGameAction(this); // use double dispatch
   }
 
-  public boolean applyGameAction(RenamePlayerAction rpa) {
+  public void applyGameAction(RenamePlayerAction rpa) {
     rpa.player.rename(rpa.newName);
-    return false;
   }
 
   // F33
-  public boolean applyGameAction(PassTurnAction pta) {
-    return true;
+  public void applyGameAction(PassTurnAction pta) {
+    this.currentPlayer = getNextPlayerIndex();
   }
 
-  public boolean applyGameAction(ExchangeLetterAction exchangeLetterAction) {
+  public void applyGameAction(ExchangeLetterAction exchangeLetterAction) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'applyGameAction'");
   }
 
   // F36
-  public boolean applyGameAction(ForfeitGameAction forfeitGameAction) {
+  public void applyGameAction(ForfeitGameAction forfeitGameAction) {
     forfeitGameAction.player.forfeit();
-    return true;
+    this.currentPlayer = getNextPlayerIndex();
   }
 
-  public boolean applyGameAction(PlaceWordAction pwa) {
+  public void applyGameAction(PlaceWordAction pwa) {
     pwa.assertHasLettersToPlace();
     List<OwnedWord> scoredWords = this.grid.placeLetters(pwa);
     pwa.removeLettersPlaced();
     for (OwnedWord ownedWord : scoredWords) {
+      System.out.println("adding score of: " + ownedWord);
       pwa.player.addScore(this.grid.getScore(ownedWord));
     }
-    return true;
+    this.currentPlayer = getNextPlayerIndex();
   }
 
   // F41
-  public boolean applyGameAction(RestartGameAction restartGameAction) {
+  public void applyGameAction(RestartGameAction restartGameAction) {
     this.reset();
-    return true;
+    this.currentPlayer = getNextPlayerIndex();
   }
 
   /**
@@ -105,5 +112,18 @@ public class GameModel {
       }
     }
     return activePlayers;
+  }
+
+  public Player getCurrentActivePlayer() {
+    Player next = this.players.get(currentPlayer);
+    while (next.getHasForfeited()) {
+      this.currentPlayer = getNextPlayerIndex();
+      next = this.players.get(currentPlayer);
+    }
+    return next;
+  }
+
+  public int getNextPlayerIndex() {
+    return (this.currentPlayer + 1) % (config.getPlayerCount());
   }
 }

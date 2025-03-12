@@ -279,7 +279,7 @@ public class ViewCLI implements IView {
 
   @Override
   public void showError(CustomError e) {
-    System.out.printf("Error: %s\n", e.toUserFormatedText());
+    System.out.printf("Error: %s\n", e.toDevFormatedText());
   }
 
   @Override

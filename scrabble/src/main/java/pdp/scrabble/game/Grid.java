@@ -19,6 +19,7 @@ public class Grid {
   private Letter[][] placedLetters;
   private LinkedList<OwnedWord> placedWords;
   private final Hashtable<GridPos, ScoreMultiplier> multiplicators;
+  private final boolean[][] multiplicatorsUsed;
   private final LettersPoints pointsPerLetter;
   // in order to cach the points for the letters
   private final GameModel gameModel;
@@ -28,10 +29,9 @@ public class Grid {
     this.size = size;
     this.multiplicators = new Hashtable<>();
     this.placedLetters = new Letter[size][size];
+    this.multiplicatorsUsed = new boolean[size][size];
     this.pointsPerLetter = this.gameModel.lang.getLettersPoints();
     this.placedWords = new LinkedList<>();
-
-    // TODO: modifier position des scores multiplicateurs si super-scrabble
 
     try {
       this.loadMultoplicators("multiplicators_default.conf");
@@ -130,6 +130,31 @@ public class Grid {
               "word not the the dictionary", "the word: " + vertical_word + " isn't in the dictionary");
         }
 
+        /* // useless, but to keep for now
+        // Check new horizontal word
+        int start = findStart(pwa.startPosition.row(),
+            pwa.startPosition.col(), pwa.startPosition.direction());
+
+        // Check for each row if a new word is created
+        while (start < this.size &&
+            this.placedLetters[start][pwa.startPosition.col()] != null) {
+          String new_horizontal_word = getHorizontalWord(start,
+              pwa.startPosition.col(), Direction.Right);
+          // System.out.println("DEBUG new_vertical_word: " +
+          // new_horizontal_word);
+          if (new_horizontal_word.length() >= 2) {
+            if (this.gameModel.dictionary.containsWord(new Word(new_horizontal_word))) {
+              OwnedWord tmp = new OwnedWord(pwa.startPosition, new Word(new_horizontal_word), pwa.player);
+              this.placedWords.add(tmp);
+              result.add(tmp);
+            } else {
+              throw new CustomError(ErrorType.NotAValidWord,
+                  "word not the the dictionary", "the word: " + vertical_word + " isn't in the dictionary");
+            }
+          }
+          start++;
+        } */
+
       }
       // Direction: right
       else {
@@ -165,6 +190,29 @@ public class Grid {
           throw new CustomError(ErrorType.NotAValidWord,
               "word not the the dictionary", "the word: " + horizontal_word + " isn't in the dictionary");
         }
+        /* // useless, but to keep for now
+        // Check new vertical word
+        int start = findStart(pwa.startPosition.row(), pwa.startPosition.col(),
+            pwa.startPosition.direction());
+
+        // Check for each row if a new word is created
+        while (start < this.size &&
+            this.placedLetters[pwa.startPosition.row()][start] != null) {
+          String new_horizontal_word = getVerticalWord(pwa.startPosition.row(),
+              start, Direction.Down);
+          // System.out.println("DEBUG new_vertical_word: " + new_horizontal_word);
+          if (new_horizontal_word.length() >= 2) {
+            if (this.gameModel.dictionary.containsWord(new Word(new_horizontal_word))) {
+              OwnedWord tmp = new OwnedWord(pwa.startPosition, new Word(new_horizontal_word), pwa.player);
+              this.placedWords.add(tmp);
+              result.add(tmp);
+            } else {
+              throw new CustomError(ErrorType.NotAValidWord,
+                  "word not the the dictionary", "the word: " + horizontal_word + " isn't in the dictionary");
+            }
+          }
+          start++;
+        } */
       }
       return result;
     } catch (CustomError e) {
@@ -245,13 +293,15 @@ public class Grid {
    *         default `ScoreMultiplier` object `SIMPLE_LETTER`.
    */
   public ScoreMultiplier getMultiplier(GridPos pos) {
+    if (this.multiplicatorsUsed[pos.row()][pos.col()]) {
+      return ScoreMultiplier.SIMPLE_LETTER;
+    }
     return this.multiplicators.getOrDefault(pos, ScoreMultiplier.SIMPLE_LETTER);
   }
 
   /**
    * This function calculates the score of a word on a grid, taking into account
-   * any score
-   * multipliers.
+   * any score multipliers.
    *
    * @param word OwnedWord - a class representing a word that is owned by a player
    *             in a game. It
@@ -273,15 +323,19 @@ public class Grid {
       int letterMult = 1;
       if (!multi.isLetterMultiplier()) {
         multi_word *= multi.getMultiplier();
+        this.multiplicatorsUsed[pos.row()][pos.col()] = true;
       } else {
         // => is a letter mult
         letterMult = multi.getMultiplier();
+        this.multiplicatorsUsed[pos.row()][pos.col()] = true;
       }
       Letter letter = word.word.getLetterAt(i);
       int lettreBasePoints = this.getLetterPoints(letter);
+      System.out.println("adding points for letter: " + letter + " at " + pos + " basePoints=" + lettreBasePoints
+          + " and with letterMult=" + letterMult + " (multi_word=" + multi_word + ")");
       score += (lettreBasePoints * letterMult);
     }
-
+    System.out.println("-> score=" + score + ", multi_word=" + multi_word + ")");
     return score * multi_word;
   }
 

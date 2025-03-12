@@ -80,6 +80,10 @@
                     <target>17</target>
                 </configuration>
             </plugin>
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <version>2.19.1</version>
+            </plugin>
 
             <plugin>
                 <groupId>org.jacoco</groupId>

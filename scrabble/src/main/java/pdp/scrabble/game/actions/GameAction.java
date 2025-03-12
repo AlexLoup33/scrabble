@@ -12,5 +12,5 @@ public abstract class GameAction {
     this.turn = turn;
   }
 
-  public abstract boolean applyGameAction(GameModel gameModel);
+  public abstract void applyGameAction(GameModel gameModel);
 }

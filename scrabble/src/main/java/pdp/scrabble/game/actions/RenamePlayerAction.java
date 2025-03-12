@@ -12,7 +12,7 @@ public class RenamePlayerAction extends GameAction {
   }
 
   @Override
-  public boolean applyGameAction(GameModel gameModel) {
-    return gameModel.applyGameAction(this);
+  public void applyGameAction(GameModel gameModel) {
+    gameModel.applyGameAction(this);
   }
 }

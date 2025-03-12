@@ -77,8 +77,11 @@ public class GameModel {
 
   public boolean applyGameAction(PlaceWordAction pwa) {
     pwa.assertHasLettersToPlace();
-    this.grid.placeLetters(pwa);
+    List<OwnedWord> scoredWords = this.grid.placeLetters(pwa);
     pwa.removeLettersPlaced();
+    for (OwnedWord ownedWord : scoredWords) {
+      pwa.player.addScore(this.grid.getScore(ownedWord));
+    }
     return true;
   }
 
@@ -90,13 +93,9 @@ public class GameModel {
 
   /**
    * This function returns a list of active players by filtering out players who have forfeited.
-   *
-   * <p><<<<<<< HEAD
-   *
+   * 
    * @return The method `getActivePlayers` returns a list of active players, which are players who
-   *     have not forfeited the game. =======
-   * @return The method `getActivePlayers` returns a list of active players, which are players who
-   *     have not forfeited the game. >>>>>>> 3751731ee445fa8332134eb82ab31f8e1424469a
+   *     have not forfeited the game.
    */
   public List<Player> getActivePlayers() {
     List<Player> activePlayers = new ArrayList<>();

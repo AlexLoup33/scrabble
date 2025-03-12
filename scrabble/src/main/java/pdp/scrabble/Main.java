@@ -18,15 +18,6 @@ public class Main {
     GameController gc = new GameController(conf);
     gc.gameLoop();
 
-    // Oral W8: val
-    // F33, F41
-
-    // Oral W8: Ludo
-    // F36
-    // TODO F34, 37
-
-    // nope F12, F29
-
     System.out.println("--- End ---");
   }
 }

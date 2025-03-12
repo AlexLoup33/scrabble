@@ -264,8 +264,8 @@ public class ViewCLI implements IView {
   }
 
   @Override
-  public void announceTurn(Player currentPlayer) {
-    System.out.printf(langPack.getString("turn_begin") + "\n", currentPlayer.getName());
+  public void announceTurn(Player currentPlayer, int turn) {
+    System.out.printf(langPack.getString("turn_begin") + "\n", currentPlayer.getName(), turn);
     /*
      * for (int i = 3; i > 0; i--) {
      * System.out.println(i);

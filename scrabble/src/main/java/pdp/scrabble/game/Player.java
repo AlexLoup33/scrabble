@@ -34,6 +34,9 @@ public class Player {
   }
 
   public String getName() {
+    if (this.hasForfeited) {
+      return this.name + "(forfeited)";
+    }
     return this.name;
   }
 

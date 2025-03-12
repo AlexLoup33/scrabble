@@ -23,7 +23,7 @@ public interface IView {
 
   public void displayDraw(LettersDrawer draw);
 
-  public void announceTurn(Player currentPlayer);
+  public void announceTurn(Player currentPlayer, int turn);
 
   public void showError(CustomError e);
 

@@ -196,7 +196,7 @@ public class ViewGUI extends Application implements IView {
   }
 
   @Override
-  public void announceTurn(Player currentPlayer) {
+  public void announceTurn(Player currentPlayer, int turn) {
     throw new UnsupportedOperationException("Unimplemented method 'announceTurn'");
   }
 

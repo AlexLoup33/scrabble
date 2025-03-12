@@ -2,6 +2,7 @@ package pdp.scrabble.game;
 
 import java.util.ArrayList;
 import java.util.List;
+import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.configuration.IConfiguration;
 import pdp.scrabble.dictionary.Dictionary;
@@ -15,7 +16,8 @@ public class GameModel {
   public final LettersDrawer draw; // draw = pioche en fr
   public final IDictionary dictionary;
   public final Configuration config;
-  public int currentPlayer;
+  private Player currentPlayer;
+  private int gameTurn;
 
   public GameModel(IConfiguration config) {
     this.config = (Configuration) config;
@@ -34,13 +36,9 @@ public class GameModel {
     this.dictionary.loadFromFile(this.lang.getDictionaryPath());
 
     this.draw = new LettersDrawer(this.lang);
-
-    if (!config.getSuperScrabble()) {
-      this.grid = new Grid(this, 15);
-    } else {
-      this.grid = new Grid(this, 21);
-    }
-    this.currentPlayer = 0;
+    this.grid = new Grid(this, (config.getSuperScrabble() ? 21 : 15));
+    this.currentPlayer = this.players.get(0);
+    this.gameTurn = 1;
   }
 
   public void reset() {
@@ -49,6 +47,8 @@ public class GameModel {
     for (Player player : this.players) {
       player.reset();
     }
+    this.currentPlayer = this.players.get(0);
+    this.gameTurn = 1;
   }
 
   /**
@@ -67,19 +67,19 @@ public class GameModel {
 
   // F33
   public void applyGameAction(PassTurnAction pta) {
-    this.currentPlayer = getNextPlayerIndex();
+    this.endPlayerTurn();
   }
 
   public void applyGameAction(ExchangeLetterAction exchangeLetterAction) {
     exchangeLetterAction.assertHasLettersToPlace();
     exchangeLetterAction.exchangeLetters(this.draw);
-    this.currentPlayer = getNextPlayerIndex();
+    this.endPlayerTurn();
   }
 
   // F36
   public void applyGameAction(ForfeitGameAction forfeitGameAction) {
     forfeitGameAction.player.forfeit();
-    this.currentPlayer = getNextPlayerIndex();
+    this.endPlayerTurn();
   }
 
   public void applyGameAction(PlaceWordAction pwa) {
@@ -87,16 +87,18 @@ public class GameModel {
     List<OwnedWord> scoredWords = this.grid.placeLetters(pwa);
     pwa.removeLettersPlaced();
     for (OwnedWord ownedWord : scoredWords) {
-      System.out.println("adding score of: " + ownedWord);
-      pwa.player.addScore(this.grid.getScore(ownedWord));
+      int wordScore = this.grid.getScore(ownedWord);
+      Utilities.verbose(
+          " -> placed the word: " + ownedWord.word.toString() + " (" + wordScore + " pts)");
+      pwa.player.addScore(wordScore);
     }
-    this.currentPlayer = getNextPlayerIndex();
+    this.endPlayerTurn();
   }
 
   // F41
   public void applyGameAction(RestartGameAction restartGameAction) {
     this.reset();
-    this.currentPlayer = getNextPlayerIndex();
+    this.endPlayerTurn();
   }
 
   /**
@@ -115,16 +117,29 @@ public class GameModel {
     return activePlayers;
   }
 
-  public Player getCurrentActivePlayer() {
-    Player next = this.players.get(currentPlayer);
-    while (next.getHasForfeited()) {
-      this.currentPlayer = getNextPlayerIndex();
-      next = this.players.get(currentPlayer);
+  private void endPlayerTurn() {
+    if (this.getActivePlayers().size() == 0) {
+      this.gameTurn += 1;
+      return; // avoid infinit loop
     }
-    return next;
+    // => safe to loop (there is at least an active player to select)
+    // select the next player to play and update the game turn
+    do {
+      int currentPlayerIndex = this.players.indexOf(this.currentPlayer);
+      int nextPlayerIndex = (currentPlayerIndex + 1) % this.players.size();
+      if (nextPlayerIndex == 0) {
+        // update the game turn (can't loop twice)
+        this.gameTurn += 1;
+      }
+      this.currentPlayer = this.players.get(nextPlayerIndex);
+    } while (this.currentPlayer.getHasForfeited());
   }
 
-  public int getNextPlayerIndex() {
-    return (this.currentPlayer + 1) % (config.getPlayerCount());
+  public int getTurn() {
+    return this.gameTurn;
+  }
+
+  public Player getCurrentPlayer() {
+    return this.currentPlayer;
   }
 }

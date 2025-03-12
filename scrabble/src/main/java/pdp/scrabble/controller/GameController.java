@@ -30,19 +30,19 @@ public class GameController {
   }
 
   public void gameLoop() {
-    int turn = 1;
     CustomError recoverableException = null;
 
     Utilities.debug('l', "game loop starts\n");
 
     while (!this.isGameFinished()) {
+      int turn = model.getTurn();
       Utilities.debug('l', "round number %d\n", turn);
       try {
-        Player playing = model.getCurrentActivePlayer();
+        Player playing = model.getCurrentPlayer();
         Utilities.debug('l', "%s begins his turn\n", playing.getName());
         drawLetters(playing);
         Utilities.debug('l', "numbers of letters in draw : %d\n", model.draw.getCurrentSize());
-        view.announceTurn(playing);
+        view.announceTurn(playing, turn);
         for (Player onGames : model.players) {
           view.showScore(onGames);
         }
@@ -61,9 +61,7 @@ public class GameController {
 
         // Player 0 is start of table round except when player 0 chose a
         // non turn ending action (eg. rename)
-        boolean isRoundOver =
-            (model.currentPlayer == 0 && model.getCurrentActivePlayer() != playing);
-        if (isRoundOver) turn++;
+
         Utilities.debug('l', "%s ends his turn\n", playing.getName());
         recoverableException = null;
       } catch (Exception | Error e) {
@@ -74,8 +72,7 @@ public class GameController {
 
   private void drawLetters(Player playing) {
     if (model.draw.getCurrentSize() < 7) {
-      throw new Error("draw letter count is under 7");
-      // TODO endgame
+      throw new Error("[BUG] draw letter count is strictly under 7");
     }
     for (int i = playing.bag.size(); i < 7; i++) {
       playing.bag.addLetter(model.draw.popLetter());
@@ -108,7 +105,7 @@ public class GameController {
 
   public boolean isGameFinished() {
     // TODO compute based of real Scrabble rules
-    if (model.draw.getCurrentSize() <= 0) {
+    if (model.draw.getCurrentSize() < 7) {
       return true; // end game when not enougth letters
     }
     if (model.getActivePlayers().size() <= 1) {

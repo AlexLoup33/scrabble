@@ -1,7 +1,5 @@
 package pdp.scrabble.controller;
 
-import java.util.List;
-
 import javafx.application.Application;
 import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;

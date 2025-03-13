@@ -106,12 +106,10 @@ public class GameModel {
   }
 
   /**
-   * This function returns a list of active players by filtering out players who
-   * have forfeited.
+   * This function returns a list of active players by filtering out players who have forfeited.
    *
-   * @return The method `getActivePlayers` returns a list of active players, which
-   *         are players who
-   *         have not forfeited the game.
+   * @return The method `getActivePlayers` returns a list of active players, which are players who
+   *     have not forfeited the game.
    */
   public List<Player> getActivePlayers() {
     List<Player> activePlayers = new ArrayList<>();
@@ -141,9 +139,7 @@ public class GameModel {
     } while (this.currentPlayer.getHasForfeited());
   }
 
-  /**
-   * to be called when all players finished there turn
-   */
+  /** to be called when all players finished there turn */
   private void endGameTurn() {
     if (this.getActivePlayers().stream().allMatch(Player::hasPassed)) {
       // => every remaining players has passed

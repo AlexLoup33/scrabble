@@ -36,9 +36,7 @@ public class Player {
     // don't reset the player name
   }
 
-  /**
-   * tell the player he passed his turn
-   */
+  /** tell the player he passed his turn */
   public void playerPassedTurn() {
     this.hasPassed = true;
   }
@@ -50,9 +48,7 @@ public class Player {
     return this.hasPassed;
   }
 
-  /**
-   * to be called when the game turn (for all players) is finished
-   */
+  /** to be called when the game turn (for all players) is finished */
   public void endGameTurn() {
     this.hasPassed = false;
   }
@@ -103,8 +99,7 @@ public class Player {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == null || obj.getClass() != this.getClass())
-      return false;
+    if (obj == null || obj.getClass() != this.getClass()) return false;
     Player compared = (Player) obj;
     return this.id == compared.id;
   }

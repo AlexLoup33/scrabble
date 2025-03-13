@@ -183,16 +183,15 @@ public class ViewGUI extends Application implements IView {
 
     Scene scene = new Scene(root, 1200, 800);
 
-    
     stage.setTitle("Scrabble - GUI");
     stage.setScene(scene);
-    
+
     stage.setOnCloseRequest(
-      event -> {
-        stage.close();
-        System.exit(0);
-      });
-      
+        event -> {
+          stage.close();
+          System.exit(0);
+        });
+
     stage.setResizable(false);
     stage.show();
   }

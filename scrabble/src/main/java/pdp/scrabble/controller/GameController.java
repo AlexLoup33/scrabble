@@ -22,6 +22,7 @@ public class GameController {
       this.view = new ViewGUI();
 
       ViewGUI.setLang(this.model.lang);
+      ViewGUI.setSuperScrabble(conf.getSuperScrabble());
 
       Application.launch(ViewGUI.class, new String[] {});
     } else {

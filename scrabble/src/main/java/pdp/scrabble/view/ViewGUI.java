@@ -2,7 +2,6 @@ package pdp.scrabble.view;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -18,12 +17,14 @@ import pdp.scrabble.game.Lang;
 import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
-import pdp.scrabble.view.Component.GridView;
+import pdp.scrabble.view.Component.ScrabbleBoard;
 
 public class ViewGUI extends Application implements IView {
 
   private static Lang lang;
-  private GridView gridView;
+  private static Boolean isSuperScrabble;
+
+  private ScrabbleBoard scrabbleBoard;
 
   public ViewGUI() {}
 
@@ -31,8 +32,12 @@ public class ViewGUI extends Application implements IView {
     ViewGUI.lang = lang;
   }
 
+  public static void setSuperScrabble(Boolean superScrabble) {
+    isSuperScrabble = superScrabble;
+  }
+
   @Override
-  public void start(Stage primaryStage) {
+  public void start(Stage stage) {
     // Debug message at the top of the window
     String message = getLocalizedMessage();
 
@@ -53,25 +58,25 @@ public class ViewGUI extends Application implements IView {
     // Actions for Items
 
     // New Game
-    // TO-DO: Ask the controller to create a new game.
-    // --> TO-DO: implement restartGameAction
+    // TODO: Ask the controller to create a new game.
+    // --> TODO: implement restartGameAction
     // newGameItem.setOnAction(e -> RestartGameAction.restart());
     newGameItem.setOnAction(e -> System.out.println("restart Game..."));
 
     // Load Game
-    // TO-DO: Open a file selector to load a game.
+    // TODO: Open a file selector to load a game.
     loadGameItem.setOnAction(e -> System.out.println("Load Game..."));
 
     // Save Game
-    // TO-DO: Open a file selector to save the game.
+    // TODO: Open a file selector to save the game.
     saveGameItem.setOnAction(e -> System.out.println("Save Game..."));
 
     // Help
-    // TO-DO: Display a window with the rules and the different actions possible.
+    // TODO: Display a window with the rules and the different actions possible.
     helpItem.setOnAction(e -> System.out.println("Help..."));
 
     // Settings
-    // TO-DO: Implement settings window who change style.
+    // TODO: Implement settings window who change style.
     settingsItem.setOnAction(e -> System.out.println("Settings..."));
 
     // Quit
@@ -86,21 +91,29 @@ public class ViewGUI extends Application implements IView {
     Menu gameMenu = new Menu("Game");
 
     MenuItem hintItem = new MenuItem("Hint");
+    MenuItem undoAllItem = new MenuItem("Undo All");
     MenuItem undoItem = new MenuItem("Undo");
     MenuItem redoItem = new MenuItem("Redo");
+    MenuItem redoAllItem = new MenuItem("Redo All");
 
     // Action for Items
 
-    // TO-DO: Display colored letters hint on the grid
+    // TODO: Display colored letters hint on the grid
     hintItem.setOnAction(e -> System.out.println("Hint..."));
 
-    // TO-DO: Undo the last action
+    // TODO: Undo all actions
+    undoAllItem.setOnAction(e -> System.out.println("Undo All..."));
+
+    // TODO: Undo the last action
     undoItem.setOnAction(e -> System.out.println("Undo..."));
 
-    // TO-DO: Redo the last action
+    // TODO: Redo the last action
     redoItem.setOnAction(e -> System.out.println("Redo..."));
 
-    gameMenu.getItems().addAll(hintItem, undoItem, redoItem);
+    // TODO: Redo all actions
+    redoAllItem.setOnAction(e -> System.out.println("Redo All..."));
+
+    gameMenu.getItems().addAll(hintItem, undoAllItem, undoItem, redoItem, redoAllItem);
 
     // Third -> About : Version | Author | Licence
     Menu aboutMenu = new Menu("About");
@@ -111,7 +124,7 @@ public class ViewGUI extends Application implements IView {
 
     // Actions for Items
 
-    // TO-DO: Display the version of the game
+    // TODO: Display the version of the game
     versionItem.setOnAction(
         (ActionEvent event) -> {
           Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -121,7 +134,7 @@ public class ViewGUI extends Application implements IView {
           alert.showAndWait();
         });
 
-    // TO-DO: Display the author of the game
+    // TODO: Display the author of the game
     authorItem.setOnAction(
         (ActionEvent event) -> {
           Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -139,7 +152,7 @@ public class ViewGUI extends Application implements IView {
           alert.showAndWait();
         });
 
-    // TO-DO: Display the licence of the game
+    // TODO: Display the licence of the game
     licenceItem.setOnAction(
         (ActionEvent event) -> {
           Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -164,16 +177,24 @@ public class ViewGUI extends Application implements IView {
     Label label = new Label(message);
 
     // GRID INITIALIZATION
-    this.gridView = new GridView(15, 15);
+    this.scrabbleBoard = new ScrabbleBoard();
 
-    VBox root = new VBox(menuBar, label, this.gridView);
-    root.setPadding(new Insets(10, 10, 10, 10));
+    VBox root = new VBox(menuBar, label, scrabbleBoard);
 
     Scene scene = new Scene(root, 1200, 800);
 
-    primaryStage.setTitle("Scrabble - GUI");
-    primaryStage.setScene(scene);
-    primaryStage.show();
+    
+    stage.setTitle("Scrabble - GUI");
+    stage.setScene(scene);
+    
+    stage.setOnCloseRequest(
+      event -> {
+        stage.close();
+        System.exit(0);
+      });
+      
+    stage.setResizable(false);
+    stage.show();
   }
 
   private String getLocalizedMessage() {

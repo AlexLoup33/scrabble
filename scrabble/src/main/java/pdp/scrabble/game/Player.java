@@ -9,9 +9,10 @@ public class Player {
 
   public final Integer id;
   private String name;
-  public int score;
+  private int score;
   public final LettersCounter bag;
   private boolean hasForfeited;
+  private boolean hasPassed;
 
   public Player() {
     this("Player");
@@ -24,13 +25,36 @@ public class Player {
     this.score = 0;
     this.bag = new LettersCounter();
     this.hasForfeited = false;
+    this.hasPassed = false;
   }
 
   public void reset() {
     this.score = 0;
     this.bag.reset();
     this.hasForfeited = false;
+    this.hasPassed = false;
     // don't reset the player name
+  }
+
+  /**
+   * tell the player he passed his turn
+   */
+  public void playerPassedTurn() {
+    this.hasPassed = true;
+  }
+
+  /**
+   * @return whether the player passed his turn
+   */
+  public boolean hasPassed() {
+    return this.hasPassed;
+  }
+
+  /**
+   * to be called when the game turn (for all players) is finished
+   */
+  public void endGameTurn() {
+    this.hasPassed = false;
   }
 
   public String getName() {
@@ -79,7 +103,8 @@ public class Player {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == null || obj.getClass() != this.getClass()) return false;
+    if (obj == null || obj.getClass() != this.getClass())
+      return false;
     Player compared = (Player) obj;
     return this.id == compared.id;
   }

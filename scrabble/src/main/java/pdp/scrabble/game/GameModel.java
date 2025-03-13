@@ -18,6 +18,7 @@ public class GameModel {
   public final Configuration config;
   private Player currentPlayer;
   private int gameTurn;
+  private int everyonePassedTurnStreak;
 
   public GameModel(IConfiguration config) {
     this.config = (Configuration) config;
@@ -39,6 +40,7 @@ public class GameModel {
     this.grid = new Grid(this, (config.getSuperScrabble() ? 21 : 15));
     this.currentPlayer = this.players.get(0);
     this.gameTurn = 1;
+    this.everyonePassedTurnStreak = 0;
   }
 
   public void reset() {
@@ -49,6 +51,7 @@ public class GameModel {
     }
     this.currentPlayer = this.players.get(0);
     this.gameTurn = 1;
+    this.everyonePassedTurnStreak = 0;
   }
 
   /**
@@ -67,6 +70,7 @@ public class GameModel {
 
   // F33
   public void applyGameAction(PassTurnAction pta) {
+    pta.player.playerPassedTurn();
     this.endPlayerTurn();
   }
 
@@ -102,10 +106,12 @@ public class GameModel {
   }
 
   /**
-   * This function returns a list of active players by filtering out players who have forfeited.
+   * This function returns a list of active players by filtering out players who
+   * have forfeited.
    *
-   * @return The method `getActivePlayers` returns a list of active players, which are players who
-   *     have not forfeited the game.
+   * @return The method `getActivePlayers` returns a list of active players, which
+   *         are players who
+   *         have not forfeited the game.
    */
   public List<Player> getActivePlayers() {
     List<Player> activePlayers = new ArrayList<>();
@@ -129,10 +135,28 @@ public class GameModel {
       int nextPlayerIndex = (currentPlayerIndex + 1) % this.players.size();
       if (nextPlayerIndex == 0) {
         // update the game turn (can't loop twice)
-        this.gameTurn += 1;
+        this.endGameTurn();
       }
       this.currentPlayer = this.players.get(nextPlayerIndex);
     } while (this.currentPlayer.getHasForfeited());
+  }
+
+  /**
+   * to be called when all players finished there turn
+   */
+  private void endGameTurn() {
+    if (this.getActivePlayers().stream().allMatch(Player::hasPassed)) {
+      // => every remaining players has passed
+      this.everyonePassedTurnStreak += 1;
+    } else {
+      // => one of the remaining players has played
+      this.everyonePassedTurnStreak = 0;
+    }
+
+    for (Player player : this.players) {
+      player.endGameTurn();
+    }
+    this.gameTurn += 1;
   }
 
   public int getTurn() {
@@ -141,5 +165,9 @@ public class GameModel {
 
   public Player getCurrentPlayer() {
     return this.currentPlayer;
+  }
+
+  public int nbEveryonePassedTurn() {
+    return this.everyonePassedTurnStreak;
   }
 }

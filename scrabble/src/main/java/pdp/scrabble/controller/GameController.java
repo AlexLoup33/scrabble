@@ -1,5 +1,7 @@
 package pdp.scrabble.controller;
 
+import java.util.List;
+
 import javafx.application.Application;
 import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
@@ -105,12 +107,20 @@ public class GameController {
 
   public boolean isGameFinished() {
     // TODO compute based of real Scrabble rules
+
+    // test if there are enougth letters to be drawed
     if (model.draw.getCurrentSize() < 7) {
-      return true; // end game when not enougth letters
+      return true;
     }
-    if (model.getActivePlayers().size() <= 1) {
-      return true; // end game when players forfeited
+    // test if enougth players remain
+    if (this.model.getActivePlayers().size() <= 1) {
+      return true;
     }
+    // test: 3 game turn with everyone passing
+    if (this.model.nbEveryonePassedTurn() >= 3) {
+      return true;
+    }
+
     return false; // game not finished
   }
 }

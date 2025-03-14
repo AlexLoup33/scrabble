@@ -1,15 +1,24 @@
 package pdp.scrabble.view;
 
+import java.util.List;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.Grid;
@@ -179,7 +188,159 @@ public class ViewGUI extends Application implements IView {
     // GRID INITIALIZATION
     this.scrabbleBoard = new ScrabbleBoard();
 
-    VBox root = new VBox(menuBar, label, scrabbleBoard);
+    // ACTION BUTTONS
+    Button placeWordButton = new Button("Place Word");
+    placeWordButton.setOnAction(e -> System.out.println("Place Word action triggered"));
+
+    Button exchangeLetterButton = new Button("Exchange Letter");
+    exchangeLetterButton.setOnAction(
+        e -> {
+          // Assuming there is a method to get the current player's LettersCounter
+          // TODO: Replace `getCurrentPlayerLetters()` with the actual method to retrieve the
+          // player's letters
+          LettersCounter letters = new LettersCounter();
+          letters.addLetter(new Letter('A'));
+          letters.addLetter(new Letter('E'));
+          letters.addLetter(new Letter('I'));
+          letters.addLetter(new Letter('O'));
+          letters.addLetter(new Letter('U'));
+          letters.addLetter(new Letter('L'));
+          letters.addLetter(new Letter('N'));
+
+          // Create a dialog for selecting letters to exchange
+          Dialog<java.util.List<Letter>> dialog = new Dialog<>();
+          dialog.setTitle("Exchange Letters");
+          dialog.setHeaderText("Select the letters to exchange");
+
+          VBox content = new VBox();
+          content.setSpacing(10);
+
+          // Create toggle buttons for each letter and arrange them in rows
+          List<ToggleButton> toggleButtons = new java.util.ArrayList<>();
+          HBox row = new HBox(10); // Horizontal row with spacing
+          int buttonsPerRow = 5; // Number of buttons per row
+          int count = 0;
+
+          for (Letter letter : letters.getLettersSet()) {
+            for (int i = 0; i < letters.getLetterCount(letter); i++) {
+              ToggleButton toggleButton = new ToggleButton(letter.toString());
+              toggleButtons.add(toggleButton);
+              row.getChildren().add(toggleButton);
+              count++;
+
+              // If the row is full, add it to the content and start a new row
+              if (count % buttonsPerRow == 0) {
+                content.getChildren().add(row);
+                row = new HBox(10);
+              }
+            }
+          }
+
+          // Add the last row if it has buttons
+          if (!row.getChildren().isEmpty()) {
+            content.getChildren().add(row);
+          }
+
+          dialog.getDialogPane().setContent(content);
+
+          // Add OK and Cancel buttons
+          ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+          dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+
+          // Handle the result
+          dialog.setResultConverter(
+              dialogButton -> {
+                if (dialogButton == okButtonType) {
+                  List<Letter> selectedLetters = new java.util.ArrayList<>();
+                  for (ToggleButton toggleButton : toggleButtons) {
+                    if (toggleButton.isSelected()) {
+                      selectedLetters.add(new Letter(toggleButton.getText().charAt(0)));
+                    }
+                  }
+                  // TODO: Replace with an askAction call to handle the selected letters
+                  return selectedLetters;
+                }
+                return null;
+              });
+
+          // Show the dialog and process the selected letters
+          dialog
+              .showAndWait()
+              .ifPresent(
+                  selectedLetters -> {
+                    if (!selectedLetters.isEmpty()) {
+                      System.out.println("Selected letters to exchange: " + selectedLetters);
+                    } else {
+                      System.out.println("No letters selected for exchange.");
+                    }
+                  });
+        });
+
+    Button passTurnButton = new Button("Pass Turn");
+    passTurnButton.setOnAction(e -> System.out.println("Pass Turn action triggered"));
+
+    Button renamePlayerButton = new Button("Rename Player");
+    renamePlayerButton.setOnAction(
+        (ActionEvent event) -> {
+          // Création de la boîte de dialogue
+          Dialog<String> dialog = new Dialog<>();
+          dialog.setTitle("Rename Player");
+
+          // Boutons OK et Annuler
+          ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+          dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+
+          // Champ de texte pour entrer le nouveau nom
+          TextField nameField = new TextField();
+          nameField.setPromptText("New player name");
+
+          VBox content = new VBox();
+          content.setSpacing(10);
+          content.getChildren().addAll(new Label("Enter the new name of the player:"), nameField);
+
+          dialog.getDialogPane().setContent(content);
+
+          // Récupération du nom entré
+          dialog.setResultConverter(
+              dialogButton -> {
+                if (dialogButton == okButtonType) {
+                  return nameField.getText().trim();
+                }
+                return null;
+              });
+
+          // Affichage de la boîte de dialogue
+          dialog
+              .showAndWait()
+              .ifPresent(
+                  newName -> {
+                    if (!newName.isEmpty()) {
+                      System.out.println(
+                          "Rename Player action triggered with new name: "
+                              + newName); // TODO : Replace with a askAction call
+                    }
+                  });
+        });
+
+    Button forfeitPlayerButton = new Button("Forfeit Player");
+    forfeitPlayerButton.setOnAction(e -> System.out.println("Forfeit Player action triggered"));
+
+    Button restartGameButton = new Button("Restart Game");
+    restartGameButton.setOnAction(e -> System.out.println("Restart Game action triggered"));
+
+    // Adding buttons to the layout in a horizontal line
+    HBox actionButtons =
+        new HBox(
+            10,
+            placeWordButton,
+            exchangeLetterButton,
+            passTurnButton,
+            renamePlayerButton,
+            forfeitPlayerButton,
+            restartGameButton);
+    actionButtons.setStyle("-fx-padding: 10px; -fx-alignment: center;");
+
+    VBox root = new VBox(menuBar, label, scrabbleBoard, actionButtons);
 
     Scene scene = new Scene(root, 1200, 800);
 

@@ -137,10 +137,16 @@ public class ConfigurationBuilder {
         case BLITZTIME:
         case AIDEPTH:
         case AITIME:
+        case SEED:
           {
             int value = 0;
             try {
-              value = Integer.parseUnsignedInt(props.getProperty(key));
+              if (confEnum == ConfigurationPropertiesEnum.SEED) {
+                // only seed can be negative
+                value = Integer.valueOf(props.getProperty(key));
+              } else {
+                value = Integer.parseUnsignedInt(props.getProperty(key));
+              }
             } catch (NumberFormatException e) {
               throw new CustomError(
                   errType,
@@ -280,7 +286,8 @@ public class ConfigurationBuilder {
     writer.write("#[Game]\n");
     writer.write("language=" + conf.getLanguage() + "\n");
     writer.write("playerCount=" + conf.getPlayerCount() + "\n");
-    writer.write("blitzTime=" + conf.getBlitzTime() + "\n\n");
+    writer.write("blitzTime=" + conf.getBlitzTime() + "\n");
+    writer.write("seed=" + conf.getSeed() + "\n\n");
 
     writer.write("#[AI]\n");
     writer.write("aiPlayers=" + aiPlayersToString(conf.getAiPlayers()) + "\n");

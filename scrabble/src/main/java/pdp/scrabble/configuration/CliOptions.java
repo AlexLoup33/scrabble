@@ -129,9 +129,9 @@ public class CliOptions {
             .argName("file")
             .build());
     this.options.addOption(
-        Option.builder("zz")
+        Option.builder("S")
             .longOpt("seed")
-            .desc("seed to start the game")
+            .desc("pass a seed to random generator")
             .hasArg()
             .argName("seed")
             .build());
@@ -216,6 +216,7 @@ public class CliOptions {
     mappings.put("l", "language");
     mappings.put("p", "playerCount");
     mappings.put("s", "superScrabble");
+    mappings.put("S", "seed");
     mappings.put("v", "verbose");
 
     return mappings;

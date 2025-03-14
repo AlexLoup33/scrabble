@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
-import pdp.scrabble.configuration.IConfiguration;
 import pdp.scrabble.dictionary.Dictionary;
 import pdp.scrabble.dictionary.IDictionary;
 import pdp.scrabble.game.actions.*;
@@ -20,7 +19,7 @@ public class GameModel {
   private int gameTurn;
   private int everyonePassedTurnStreak;
 
-  public GameModel(IConfiguration config) {
+  public GameModel(Configuration config) {
     this.config = (Configuration) config;
 
     this.players = new ArrayList<>(this.config.getPlayerCount());

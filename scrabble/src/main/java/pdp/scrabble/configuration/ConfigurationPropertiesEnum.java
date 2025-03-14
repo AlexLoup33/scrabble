@@ -19,6 +19,7 @@ public enum ConfigurationPropertiesEnum {
   HISTORYFILE("historyFile"),
   LANGUAGE("language"),
   PLAYERCOUNT("playerCount"),
+  SEED("seed"),
   SUPERSCRABBLE("superScrabble"),
   VERBOSE("verbose");
 

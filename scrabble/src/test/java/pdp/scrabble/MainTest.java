@@ -17,7 +17,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import pdp.scrabble.configuration.Configuration;
-import pdp.scrabble.configuration.IConfiguration;
 import pdp.scrabble.dictionary.Dawg;
 import pdp.scrabble.dictionary.Dictionary;
 import pdp.scrabble.dictionary.Letter;
@@ -180,7 +179,7 @@ public class MainTest {
 
   @Test
   public void testPlaceLetters() {
-    IConfiguration config =
+    Configuration config =
         new Configuration(
             true,
             "d",
@@ -192,6 +191,7 @@ public class MainTest {
             new boolean[4],
             15,
             2,
+            -1,
             "fr",
             "chepa",
             java.nio.file.Paths.get("dictionary/fr.txt"),
@@ -364,7 +364,7 @@ public class MainTest {
   @Test
   public void testPrintGrid() {
     PrintStream originalOut = System.out;
-    IConfiguration config =
+    Configuration config =
         new Configuration(
             true,
             "d",
@@ -376,6 +376,7 @@ public class MainTest {
             new boolean[4],
             15,
             2,
+            -1,
             "fr",
             "chepa",
             java.nio.file.Paths.get("dictionary/fr.txt"),

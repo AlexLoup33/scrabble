@@ -10,6 +10,7 @@ gui=false
 language=en
 playerCount=2
 blitzTime=30
+seed=-1
 
 #[AI]
 aiPlayers=2

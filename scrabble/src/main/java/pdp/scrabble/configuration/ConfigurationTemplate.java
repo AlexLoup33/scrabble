@@ -21,6 +21,7 @@ public class ConfigurationTemplate {
   private boolean gui;
 
   private int playerCount;
+  private int seed;
   // Only relevant with blitz on
   private int blitzTime;
 
@@ -100,6 +101,10 @@ public class ConfigurationTemplate {
 
   public void setAiTime(int aiTime) {
     this.aiTime = aiTime;
+  }
+
+  public void setSeed(int seed) {
+    this.seed = seed;
   }
 
   public void setLanguage(String language) {
@@ -224,6 +229,9 @@ public class ConfigurationTemplate {
         + "aiTime="
         + Integer.toString(aiTime)
         + " | "
+        + "seed="
+        + Integer.toString(seed)
+        + " | "
         + "language="
         // + language.toString()
         + language
@@ -272,6 +280,7 @@ public class ConfigurationTemplate {
         aiPlayers,
         aiDepth,
         aiTime,
+        seed,
         language,
         aiMode,
         dictFile,

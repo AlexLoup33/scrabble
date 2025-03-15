@@ -54,7 +54,7 @@ public class LettersDrawer {
     if (lastIndex == 0) {
       popIndex = 0;
     } else {
-      popIndex = RandomAPI.get().nextInt(0, lastIndex);
+      popIndex = RandomAPI.getInt(0, lastIndex);
     }
     Letter popedLetter = this.table.get(popIndex);
     // move the current end at the poped letter

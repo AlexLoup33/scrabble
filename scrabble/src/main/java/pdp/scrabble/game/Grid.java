@@ -338,8 +338,9 @@ public class Grid {
 
   /**
    * set the multiplicators that has been used with the following words
+   *
    * @param wordsPlaced all the words placed this turn (probably overkill but safe)
-  */
+   */
   public void useMultiplicators(List<OwnedWord> wordsPlaced) {
     for (OwnedWord word : wordsPlaced) {
       for (int i = 0; i < word.word.getLength(); i++) {

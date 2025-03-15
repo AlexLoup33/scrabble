@@ -2,7 +2,6 @@ package pdp.scrabble.game;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Dictionary;
@@ -91,7 +90,7 @@ public class GameModel {
   public void applyGameAction(PlaceWordAction pwa) {
     pwa.assertHasLettersToPlace();
     List<OwnedWord> scoredWords = this.grid.placeLetters(pwa);
-    pwa.removeLettersPlaced(); // 
+    pwa.removeLettersPlaced(); //
     for (OwnedWord ownedWord : scoredWords) {
       int wordScore = this.grid.getScore(ownedWord);
       Utilities.verbose(
@@ -109,11 +108,10 @@ public class GameModel {
   }
 
   /**
-   * This function returns a list of active players by filtering out players who
-   * have forfeited.
+   * This function returns a list of active players by filtering out players who have forfeited.
    *
-   * @return The method `getActivePlayers` returns a list of active players, which
-   *         are players who have not forfeited the game.
+   * @return The method `getActivePlayers` returns a list of active players, which are players who
+   *     have not forfeited the game.
    */
   public List<Player> getActivePlayers() {
     List<Player> activePlayers = new ArrayList<>();

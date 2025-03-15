@@ -2,14 +2,12 @@ package pdp.scrabble.game;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 
 public class LettersDrawer {
-  private final Random rng;
   private int currentSize;
   private final int maxSize;
   private final ArrayList<Letter> table;
@@ -17,7 +15,6 @@ public class LettersDrawer {
 
   public LettersDrawer(Lang lang) {
     this.lang = lang;
-    this.rng = new Random();
     this.table = new ArrayList<>();
     this.reset();
     this.maxSize = this.currentSize;
@@ -57,7 +54,7 @@ public class LettersDrawer {
     if (lastIndex == 0) {
       popIndex = 0;
     } else {
-      popIndex = this.rng.nextInt(0, lastIndex);
+      popIndex = RandomAPI.get().nextInt(0, lastIndex);
     }
     Letter popedLetter = this.table.get(popIndex);
     // move the current end at the poped letter

@@ -17,7 +17,6 @@ import pdp.scrabble.game.actions.PlaceWordAction;
 public class Grid {
   public final int size;
   private Letter[][] placedLetters;
-  private LinkedList<OwnedWord> placedWords;
   private final Hashtable<GridPos, ScoreMultiplier> multiplicators;
   private final boolean[][] multiplicatorsUsed;
   private final LettersPoints pointsPerLetter;
@@ -31,7 +30,6 @@ public class Grid {
     this.placedLetters = new Letter[size][size];
     this.multiplicatorsUsed = new boolean[size][size];
     this.pointsPerLetter = this.gameModel.lang.getLettersPoints();
-    this.placedWords = new LinkedList<>();
 
     try {
       this.loadMultoplicators("multiplicators_default.conf");
@@ -85,7 +83,6 @@ public class Grid {
 
   public List<OwnedWord> placeLetters(PlaceWordAction pwa) {
     Letter[][] placedLettersCopy = Letter.deepClone(this.placedLetters);
-    LinkedList<OwnedWord> placedWordsCopy = (LinkedList<OwnedWord>) this.placedWords.clone();
 
     List<OwnedWord> result = new LinkedList<>();
 
@@ -124,7 +121,6 @@ public class Grid {
 
         if (this.gameModel.dictionary.containsWord(vertical_word)) {
           OwnedWord to_add = new OwnedWord(pwa.startPosition, vertical_word, pwa.player);
-          this.placedWords.add(to_add);
           result.add(to_add);
         } else {
           throw new CustomError(
@@ -192,7 +188,6 @@ public class Grid {
 
         if (this.gameModel.dictionary.containsWord(horizontal_word)) {
           OwnedWord to_place = new OwnedWord(pwa.startPosition, horizontal_word, pwa.player);
-          this.placedWords.add(to_place);
           result.add(to_place);
         } else {
           throw new CustomError(
@@ -231,9 +226,6 @@ public class Grid {
       return result;
     } catch (CustomError e) {
       this.placedLetters = placedLettersCopy; // ok
-      Utilities.debug('g', "this.placedWords:" + this.placedWords);
-      Utilities.debug('g', "placedWordsCopy: " + placedWordsCopy);
-      this.placedWords = placedWordsCopy;
       throw e;
     }
   }
@@ -327,11 +319,9 @@ public class Grid {
       int letterMult = 1;
       if (!multi.isLetterMultiplier()) {
         multi_word *= multi.getMultiplier();
-        this.multiplicatorsUsed[pos.row()][pos.col()] = true;
       } else {
         // => is a letter mult
         letterMult = multi.getMultiplier();
-        this.multiplicatorsUsed[pos.row()][pos.col()] = true;
       }
       Letter letter = word.word.getLetterAt(i);
       int lettreBasePoints = this.getLetterPoints(letter);
@@ -347,25 +337,25 @@ public class Grid {
   }
 
   /**
-   * The `applyGameAction` function in Java applies a `PlaceWordAction` by calling the
-   * `placeLetters` method.
-   *
-   * @param action The parameter `action` in the `applyGameAction` method is of type
-   *     `PlaceWordAction`. This parameter likely contains information about a word placement action
-   *     in a game, such as the word to be placed and the location where it should be placed.
-   */
-  public void applyGameAction(PlaceWordAction action) {
-    this.placeLetters(action);
+   * set the multiplicators that has been used with the following words
+   * @param wordsPlaced all the words placed this turn (probably overkill but safe)
+  */
+  public void useMultiplicators(List<OwnedWord> wordsPlaced) {
+    for (OwnedWord word : wordsPlaced) {
+      for (int i = 0; i < word.word.getLength(); i++) {
+        GridPos pos = word.position.getPosAtIndex(i);
+        this.multiplicatorsUsed[pos.row()][pos.col()] = true;
+      }
+    }
   }
 
   public void reset() {
     for (int i = 0; i < this.size; i++) {
       for (int j = 0; j < this.size; j++) {
         this.placedLetters[i][j] = null;
+        this.multiplicatorsUsed[i][j] = false;
       }
     }
-
-    this.placedWords.clear();
   }
 
   public int getGridSize() {

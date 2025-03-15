@@ -2,6 +2,7 @@ package pdp.scrabble.game;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Dictionary;
@@ -21,6 +22,7 @@ public class GameModel {
 
   public GameModel(Configuration config) {
     this.config = (Configuration) config;
+    RandomAPI.configure(this.config.getSeed());
 
     this.players = new ArrayList<>(this.config.getPlayerCount());
     for (int i = 0; i < this.config.getPlayerCount(); i++) {
@@ -43,6 +45,7 @@ public class GameModel {
   }
 
   public void reset() {
+    RandomAPI.reset(); // way safer to keep this line the first !!
     this.grid.reset();
     this.draw.reset();
     for (Player player : this.players) {
@@ -88,13 +91,14 @@ public class GameModel {
   public void applyGameAction(PlaceWordAction pwa) {
     pwa.assertHasLettersToPlace();
     List<OwnedWord> scoredWords = this.grid.placeLetters(pwa);
-    pwa.removeLettersPlaced();
+    pwa.removeLettersPlaced(); // 
     for (OwnedWord ownedWord : scoredWords) {
       int wordScore = this.grid.getScore(ownedWord);
       Utilities.verbose(
           " -> placed the word: " + ownedWord.word.toString() + " (" + wordScore + " pts)");
       pwa.player.addScore(wordScore);
     }
+    this.grid.useMultiplicators(scoredWords);
     this.endPlayerTurn();
   }
 
@@ -105,10 +109,11 @@ public class GameModel {
   }
 
   /**
-   * This function returns a list of active players by filtering out players who have forfeited.
+   * This function returns a list of active players by filtering out players who
+   * have forfeited.
    *
-   * @return The method `getActivePlayers` returns a list of active players, which are players who
-   *     have not forfeited the game.
+   * @return The method `getActivePlayers` returns a list of active players, which
+   *         are players who have not forfeited the game.
    */
   public List<Player> getActivePlayers() {
     List<Player> activePlayers = new ArrayList<>();

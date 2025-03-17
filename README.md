@@ -57,3 +57,117 @@ For more information about the options, you can run the script with the `-h` opt
 * **Lou-Poueyou Alexandre - alexandre.lou-poueyou@etu.u-bordeaux.fr**
 * **Mayol Jean - jean.mayol@etu.u-bordeaux.fr**
 * **Petry Mathéo - matheo.petry@etu.u-bordeaux.fr**
+
+
+# PdP Java Projects HOWTO
+
+## List dependencies
+
+```console
+#> mvn site
+#> firefox target/site/dependencies.html
+```
+
+## Build and tests
+
+```console
+#> mvn clean install
+#> mvn package
+#> mvn test
+```
+
+The `package` target should generate a `target/*.jar` file.
+
+The coverage is obtained with:
+
+```console
+#> mvn jacoco:report
+#> firefox target/site/jacoco/index.html
+```
+
+## Documentation
+
+```console
+#> mvn javadoc:javadoc
+#> firefox target/site/apidocs/index.html
+```
+
+If you want to try to fix some javadoc errors, you can try (but it is not always
+working):
+
+```console
+#> mvn javadoc:fix
+```
+
+## Checkstyle
+
+If you want to check if the code is compliant with the Google Java Style, you need to check that the following plugin is present in the `pom.xml` file:
+
+```xml
+<build>
+    <plugins>
+      ...
+      <!-- Checkstyle Plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>3.6.0</version>
+        <configuration>
+          <configLocation>google_checks.xml</configLocation>
+        </configuration>
+      </plugin>
+      ...
+    </plugins>
+  </build>
+```
+
+Then, you can run the checkstyle with:
+
+```console
+#> mvn checkstyle:checkstyle
+#> firefox target/reports/checkstyle.html
+```
+
+## PMD Static Analysis
+
+If you want to run the PMD static analysis, you need to check that the following plugin is present in the `pom.xml` file:
+
+```xml
+  <build>
+    <plugins>
+      ...
+      <!-- PMD Plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.26.0</version>
+        <configuration>
+          <rulesets>
+            <!-- If you want to start small, take only this line -->
+            <!-- <ruleset>/rulesets/java/quickstart.xml</ruleset> -->
+            <!-- All the rulesets -->
+            <ruleset>/category/java/bestpractices.xml</ruleset>
+            <ruleset>/category/java/codestyle.xml</ruleset>
+            <ruleset>/category/java/design.xml</ruleset>
+            <ruleset>/category/java/documentation.xml</ruleset>
+            <ruleset>/category/java/errorprone.xml</ruleset>
+            <ruleset>/category/java/multithreading.xml</ruleset>
+            <ruleset>/category/java/performance.xml</ruleset>
+            <ruleset>/category/java/security.xml</ruleset>
+          </rulesets>
+        </configuration>
+      </plugin>
+      ...
+    </plugins>
+  </build>
+```
+
+Using only `quickstart.xml` is already a really good start and might be sufficient. It’s not about addressing all the suggestions, but rather the ones that seem most relevant.
+
+Then, you can run the PMD static analysis with:
+
+```console
+#> mvn pmd:pmd
+#> mvn pmd:check
+#> firefox target/reports/pmd.html
+```

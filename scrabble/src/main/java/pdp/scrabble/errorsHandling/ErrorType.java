@@ -27,7 +27,8 @@ public enum ErrorType {
   InvalidActionType(false),
   InvalidWordDirection(true),
   IndexOutOfWordBounds(false),
-  PlayerDoesntHaveLettersInIsBag(false);
+  PlayerDoesntHaveLettersInIsBag(false),
+  InvalidIndexOutOfGird(false);
 
   public final boolean isFatal;
 

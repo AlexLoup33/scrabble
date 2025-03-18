@@ -388,7 +388,7 @@ public class MainTest {
   @Test
   public void testLettersDrawer() {
     for (Lang lang : Lang.values()) {
-      LettersDrawer drawer = new LettersDrawer(lang);
+      LettersDrawer drawer = new LettersDrawer(lang, new RandomAPI(-1));
       // check it can draw all the letters
       final int totalLetters = drawer.getCurrentSize();
       final LettersCounter drawedLetters = new LettersCounter();

@@ -9,6 +9,7 @@ import pdp.scrabble.dictionary.IDictionary;
 import pdp.scrabble.game.actions.*;
 
 public class GameModel {
+  private final RandomAPI rngGenerator;
   public final Grid grid;
   public final Lang lang;
   public final List<Player> players;
@@ -22,7 +23,7 @@ public class GameModel {
 
   public GameModel(Configuration config) {
     this.config = (Configuration) config;
-    RandomAPI.configure(this.config.getSeed());
+    this.rngGenerator = new RandomAPI(this.config.getSeed());
 
     this.nextPlayerID = 0;
     this.players = new ArrayList<>(this.config.getPlayerCount());
@@ -39,7 +40,7 @@ public class GameModel {
     this.dictionary = new Dictionary();
     this.dictionary.loadFromFile(this.lang.getDictionaryPath());
 
-    this.draw = new LettersDrawer(this.lang);
+    this.draw = new LettersDrawer(this.lang, this.rngGenerator);
     this.grid = new Grid(this, (config.getSuperScrabble() ? 21 : 15));
     this.currentPlayer = this.players.get(0);
     this.gameTurn = 1;
@@ -47,7 +48,7 @@ public class GameModel {
   }
 
   public void reset() {
-    RandomAPI.reset(); // way safer to keep this line the first !!
+    this.rngGenerator.reset(); // way safer to keep this line the first !!
     this.grid.reset();
     this.draw.reset();
     for (Player player : this.players) {

@@ -8,12 +8,14 @@ import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 
 public class LettersDrawer {
-  private int currentSize;
-  private final int maxSize;
+  private final RandomUser rng;
+  private final Lang lang;
   private final ArrayList<Letter> table;
-  private Lang lang;
+  private final int maxSize;
+  private int currentSize;
 
-  public LettersDrawer(Lang lang) {
+  public LettersDrawer(Lang lang, RandomUser rngGenerator) {
+    this.rng = rngGenerator;
     this.lang = lang;
     this.table = new ArrayList<>();
     this.reset();
@@ -54,7 +56,7 @@ public class LettersDrawer {
     if (lastIndex == 0) {
       popIndex = 0;
     } else {
-      popIndex = RandomAPI.getInt(0, lastIndex);
+      popIndex = this.rng.getInt(0, lastIndex);
     }
     Letter popedLetter = this.table.get(popIndex);
     // move the current end at the poped letter

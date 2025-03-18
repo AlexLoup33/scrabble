@@ -56,6 +56,7 @@ public final class CustomError extends Error {
 
   /**
    * re-throw all the CustomError that dont have expectedType
+   *
    * @param expectedType to type of error to let pass
    * @throws CustomError
    */

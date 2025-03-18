@@ -18,14 +18,17 @@ public class GameModel {
   private Player currentPlayer;
   private int gameTurn;
   private int everyonePassedTurnStreak;
+  public int nextPlayerID;
 
   public GameModel(Configuration config) {
     this.config = (Configuration) config;
     RandomAPI.configure(this.config.getSeed());
 
+    this.nextPlayerID = 0;
     this.players = new ArrayList<>(this.config.getPlayerCount());
     for (int i = 0; i < this.config.getPlayerCount(); i++) {
-      this.players.add(new Player());
+      this.players.add(new Player(nextPlayerID));
+      this.nextPlayerID++;
     }
 
     this.lang = Lang.getLang(this.config.getLanguage());

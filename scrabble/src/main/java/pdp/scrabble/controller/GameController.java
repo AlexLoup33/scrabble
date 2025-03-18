@@ -33,7 +33,7 @@ public class GameController {
   public void gameLoop() {
     CustomError recoverableException = null;
 
-    Utilities.debug('l', "game loop starts\n");
+    Utilities.debug('l', "GameLoop start\n");
 
     while (!this.isGameFinished()) {
       int turn = model.getTurn();
@@ -42,12 +42,12 @@ public class GameController {
         Player playing = model.getCurrentPlayer();
         Utilities.debug('l', "%s begins his turn\n", playing.getName());
         drawLetters(playing);
-        Utilities.debug('l', "numbers of letters in draw : %d\n", model.draw.getCurrentSize());
+        Utilities.debug('l', "numbers of letters in draw: %d\n", model.draw.getCurrentSize());
         view.announceTurn(playing, turn);
         for (Player onGames : model.players) {
           view.showScore(onGames);
         }
-        // Implemented but maybe need to draw every letters before
+        // Implemented but maybe need to draw every letter before
         // actually showing number at turn 1
         // view.displayDraw(model.draw);
 
@@ -61,7 +61,7 @@ public class GameController {
         model.applyGameActionDispatch(played);
 
         // Player 0 is start of table round except when player 0 chose a
-        // non turn ending action (eg. rename)
+        // non turn ending action (e.g. rename)
 
         Utilities.debug('l', "%s ends his turn\n", playing.getName());
         recoverableException = null;

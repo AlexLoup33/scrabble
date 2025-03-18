@@ -5,7 +5,6 @@ import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 
 public class Player {
-  private static int nextPlayerID = 0;
 
   public final Integer id;
   private String name;
@@ -14,13 +13,12 @@ public class Player {
   private boolean hasForfeited;
   private boolean hasPassed;
 
-  public Player() {
-    this("Player");
+  public Player(int nextPlayerID) {
+    this("Player", nextPlayerID);
   }
 
-  protected Player(String nameBase) {
-    this.id = Player.nextPlayerID;
-    Player.nextPlayerID += 1;
+  protected Player(String nameBase, int nextPlayerID) {
+    this.id = nextPlayerID;
     this.name = nameBase + this.id;
     this.score = 0;
     this.bag = new LettersCounter();

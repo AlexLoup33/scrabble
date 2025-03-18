@@ -13,7 +13,7 @@ public enum ErrorType {
   MalformedDictionaryError(true),
   InvalidGameStatusError(true),
   InvalidLetterCountError(true),
-  NotAValidWord(false),
+  UnknownWord(false),
   InvalidCliArgs(true),
   DrawerError(true),
   InvalidLangError(true),
@@ -27,7 +27,9 @@ public enum ErrorType {
   InvalidActionType(false),
   InvalidWordDirection(true),
   IndexOutOfWordBounds(false),
-  PlayerDoesntHaveLettersInIsBag(false);
+  PlayerDoesntHaveLettersInIsBag(false),
+  InvalidePlaceLetterAction(false),
+  PositionOutOfGird(true);
 
   public final boolean isFatal;
 

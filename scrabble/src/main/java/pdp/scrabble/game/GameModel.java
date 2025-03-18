@@ -94,7 +94,7 @@ public class GameModel {
     for (OwnedWord ownedWord : scoredWords) {
       int wordScore = this.grid.getScore(ownedWord);
       Utilities.verbose(
-          " -> placed the word: " + ownedWord.word.toString() + " (" + wordScore + " pts)");
+          " -> placed the word: " + ownedWord.word.toString() + " (" + wordScore + " pts)\n");
       pwa.player.addScore(wordScore);
     }
     this.grid.useMultiplicators(scoredWords);

@@ -1,5 +1,6 @@
 package pdp.scrabble.game.actions;
 
+import java.util.Arrays;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
@@ -96,5 +97,22 @@ public class PlaceWordAction extends GameAction {
         this.player.bag.removeLetter(Letter.joker(), nbMissing);
       }
     }
+  }
+
+  @Override
+  public String toString() {
+    String lettersList =
+        Arrays.stream(this.toPlace)
+            .map(arg0 -> "" + arg0.chr)
+            .reduce("", (arg0, arg1) -> arg0 + arg1 + ", ");
+    return this.getClass().getSimpleName()
+        + "{"
+        + "toPlace=["
+        + lettersList
+        + "], startPosition="
+        + startPosition
+        + ", playerID:"
+        + this.player.id
+        + '}';
   }
 }

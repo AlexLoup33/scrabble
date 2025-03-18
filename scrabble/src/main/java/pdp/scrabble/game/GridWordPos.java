@@ -33,4 +33,8 @@ public record GridWordPos(int row, int col, Direction direction) {
   protected Object clone() throws CloneNotSupportedException {
     return super.clone();
   }
+
+  public GridPos toGridPos() {
+    return new GridPos(this.row, this.col);
+  }
 }

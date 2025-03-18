@@ -53,4 +53,15 @@ public final class CustomError extends Error {
     /* For the user to read what he need: type of error and message only */
     return "ErrorType: " + this.type.name() + "\nMessage: " + this.message;
   }
+
+  /**
+   * re-throw all the CustomError that dont have expectedType
+   * @param expectedType to type of error to let pass
+   * @throws CustomError
+   */
+  public void handleIfErrorType(ErrorType expectedType) throws CustomError {
+    if (this.type != expectedType) {
+      throw this;
+    }
+  }
 }

@@ -2,11 +2,11 @@ package pdp.scrabble.game;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
-import pdp.scrabble.Utilities;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersPoints;
 import pdp.scrabble.dictionary.Word;
@@ -81,199 +81,245 @@ public class Grid {
     return this.placedLetters[row][col];
   }
 
-  public List<OwnedWord> placeLetters(PlaceWordAction pwa) {
-    Letter[][] placedLettersCopy = Letter.deepClone(this.placedLetters);
-
-    List<OwnedWord> result = new LinkedList<>();
-
-    // try to place the letter
-    // we will try every action, and only if one of the sub-action isn't possible,
-    // we roll back
-    try {
-      // Direction: down
-      if (pwa.startPosition.direction() == Direction.Down) {
-        // 1 Place letter
-        int letter_index = 0;
-        int row = pwa.startPosition.row();
-        // place every letter on the grid
-        while (letter_index < pwa.toPlace.length && row < this.size) {
-          // if there is no other letter
-          if (this.placedLetters[row][pwa.startPosition.col()] == null) {
-            // place letter
-            this.placedLetters[row][pwa.startPosition.col()] = pwa.toPlace[letter_index];
-            letter_index++;
-          }
-          row++;
-        }
-
-        // 2 Find the new word created
-        String vertical_created_word =
-            getVerticalWord(
-                pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
-        Word vertical_word = new Word(vertical_created_word);
-
-        Utilities.debug('g', "vertical_created_word: " + vertical_created_word);
-        Utilities.debug('g', "DEBUG vertical_created_word: " + vertical_created_word);
-        Utilities.debug(
-            'g',
-            "DEBUG contains word: "
-                + this.gameModel.dictionary.containsWord(new Word(vertical_created_word)));
-
-        if (this.gameModel.dictionary.containsWord(vertical_word)) {
-          OwnedWord to_add = new OwnedWord(pwa.startPosition, vertical_word, pwa.player);
-          result.add(to_add);
-        } else {
-          throw new CustomError(
-              ErrorType.NotAValidWord,
-              "word not the the dictionary",
-              "the word: " + vertical_word + " isn't in the dictionary");
-        }
-
-        /*
-         * // useless, but to keep for now
-         * // Check new horizontal word
-         * int start = findStart(pwa.startPosition.row(),
-         * pwa.startPosition.col(), pwa.startPosition.direction());
-         *
-         * // Check for each row if a new word is created
-         * while (start < this.size &&
-         * this.placedLetters[start][pwa.startPosition.col()] != null) {
-         * String new_horizontal_word = getHorizontalWord(start,
-         * pwa.startPosition.col(), Direction.Right);
-         * // System.out.println("DEBUG new_vertical_word: " +
-         * // new_horizontal_word);
-         * if (new_horizontal_word.length() >= 2) {
-         * if (this.gameModel.dictionary.containsWord(new Word(new_horizontal_word))) {
-         * OwnedWord tmp = new OwnedWord(pwa.startPosition, new
-         * Word(new_horizontal_word), pwa.player);
-         * this.placedWords.add(tmp);
-         * result.add(tmp);
-         * } else {
-         * throw new CustomError(ErrorType.NotAValidWord,
-         * "word not the the dictionary", "the word: " + vertical_word +
-         * " isn't in the dictionary");
-         * }
-         * }
-         * start++;
-         * }
-         */
-
-      }
-      // Direction: right
-      else {
-        // 1 Place letter
-        int letter_index = 0;
-        int col = pwa.startPosition.col();
-        // place every letter on the grid
-        while (letter_index < pwa.toPlace.length && col < this.size) {
-          // if there is no other letter
-          if (this.placedLetters[pwa.startPosition.row()][col] == null) {
-            // place letter
-            this.placedLetters[pwa.startPosition.row()][col] = pwa.toPlace[letter_index];
-            letter_index++;
-          }
-          col++;
-        }
-
-        // 2 Find the new word created
-        String horizontal_created_word =
-            getHorizontalWord(
-                pwa.startPosition.row(), pwa.startPosition.col(), pwa.startPosition.direction());
-        Word horizontal_word = new Word(horizontal_created_word);
-
-        // System.out.println("DEBUG vertical formed word: " +
-        // horizontal_created_word);
-        // System.out.println("DEBUG contains word: " +
-        // GameModel.dictionary.containsWord(new Word(horizontal_created_word)));
-
-        if (this.gameModel.dictionary.containsWord(horizontal_word)) {
-          OwnedWord to_place = new OwnedWord(pwa.startPosition, horizontal_word, pwa.player);
-          result.add(to_place);
-        } else {
-          throw new CustomError(
-              ErrorType.NotAValidWord,
-              "word not the the dictionary",
-              "the word: " + horizontal_word + " isn't in the dictionary");
-        }
-        /*
-         * // useless, but to keep for now
-         * // Check new vertical word
-         * int start = findStart(pwa.startPosition.row(), pwa.startPosition.col(),
-         * pwa.startPosition.direction());
-         *
-         * // Check for each row if a new word is created
-         * while (start < this.size &&
-         * this.placedLetters[pwa.startPosition.row()][start] != null) {
-         * String new_horizontal_word = getVerticalWord(pwa.startPosition.row(),
-         * start, Direction.Down);
-         * // System.out.println("DEBUG new_vertical_word: " + new_horizontal_word);
-         * if (new_horizontal_word.length() >= 2) {
-         * if (this.gameModel.dictionary.containsWord(new Word(new_horizontal_word))) {
-         * OwnedWord tmp = new OwnedWord(pwa.startPosition, new
-         * Word(new_horizontal_word), pwa.player);
-         * this.placedWords.add(tmp);
-         * result.add(tmp);
-         * } else {
-         * throw new CustomError(ErrorType.NotAValidWord,
-         * "word not the the dictionary", "the word: " + horizontal_word +
-         * " isn't in the dictionary");
-         * }
-         * }
-         * start++;
-         * }
-         */
-      }
-      return result;
-    } catch (CustomError e) {
-      this.placedLetters = placedLettersCopy; // ok
-      throw e;
-    }
+  public boolean isInBounds(GridPos pos) {
+    return (pos.col() >= 0 && pos.col() < this.size) && (pos.row() >= 0 && pos.row() < this.size);
   }
 
-  private String getVerticalWord(int row, int col_inv, Direction direction) {
-    int start = findStart(row, col_inv, direction);
-
-    StringBuilder sb = new StringBuilder();
-    while (start < this.size && this.placedLetters[start][col_inv] != null) {
-      sb.append(this.placedLetters[start][col_inv]);
-      start++;
+  private GridPos assertInBound(GridPos pos) {
+    if (!this.isInBounds(pos)) {
+      throw new CustomError(
+          ErrorType.PositionOutOfGird,
+          "position out of bounds",
+          "position: " + pos + " is out of the grid");
     }
-    return sb.toString();
+    return pos;
   }
 
-  private String getHorizontalWord(int row_inv, int col, Direction direction) {
-    int start = findStart(row_inv, col, direction);
-
-    StringBuilder sb = new StringBuilder();
-    while (start < this.size && this.placedLetters[row_inv][start] != null) {
-      sb.append(this.placedLetters[row_inv][start]);
-      start++;
-    }
-    return sb.toString();
-  }
-
-  private int findStart(int row, int col, Direction direction) {
-    // find start
-    int start;
+  /**
+   * Gets the next position in the grid based on the current position and direction.
+   *
+   * @param currentPos The current position in the grid, must not be null.
+   * @param direction The direction to move, must be a valid word direction.
+   * @return A new GridPos representing the next position if the move is valid.
+   * @throws CustomError If the next position is out of bounds.
+   */
+  private GridPos getNextPos(GridPos currentPos, Direction direction) {
     if (direction == Direction.Down) {
-      start = row;
-      while (this.placedLetters[start][col] != null && row != 0 && start > 0) {
-        start--;
-      }
-      if (start > 0) {
-        start++;
-      }
-      return start;
-    } else { // direction == Direction.Right
-      start = col;
-      while (this.placedLetters[row][start] != null && col != 0 && start > 0) {
-        start--;
-      }
-      if (start > 0) {
-        start++;
-      }
-      return start;
+      return assertInBound(new GridPos(currentPos.row() + 1, currentPos.col()));
+    } else if (direction == Direction.Right) {
+      return assertInBound(new GridPos(currentPos.row(), currentPos.col() + 1));
+    } else {
+      throw new CustomError(
+          ErrorType.PositionOutOfGird,
+          "weird direction for a word",
+          "invalide word direction: " + direction);
     }
+  }
+
+  /**
+   * Gets the previous position in the grid based on the current position and direction.
+   *
+   * @param currentPos The current position in the grid, must not be null.
+   * @param direction The of the word (will move the opposit of direction), must be a valid word
+   *     direction.
+   * @return A new GridPos representing the previous position if the move is valid.
+   * @throws CustomError If the next position is out of bounds.
+   */
+  private GridPos getPrevPos(GridPos currentPos, Direction direction) {
+    if (direction == Direction.Down) {
+      return assertInBound(new GridPos(currentPos.row() - 1, currentPos.col()));
+    } else if (direction == Direction.Right) {
+      return assertInBound(new GridPos(currentPos.row(), currentPos.col() - 1));
+    } else {
+      throw new CustomError(
+          ErrorType.InvalidWordDirection,
+          "weird direction for a word",
+          "invalide word direction: " + direction);
+    }
+  }
+
+  /**
+   * @param currPos is the position of the letter to be placed
+   * @return the position of the first letter of the word before the letter to place currPos will be
+   *     returned if there is no word before
+   */
+  private GridPos getWordFirstLetterPos(final GridPos currPos, Direction wordDir) {
+    GridPos lastWordPos = currPos;
+    GridPos prevPos = lastWordPos;
+    do {
+      // => the prevPos is on the word
+      lastWordPos = prevPos;
+      // determine next prevPos
+      try {
+        prevPos = this.getPrevPos(lastWordPos, wordDir);
+      } catch (CustomError e) {
+        e.handleIfErrorType(ErrorType.PositionOutOfGird);
+        // => there is no prevPos
+        return lastWordPos;
+      }
+      // => prevPos got updated
+    } while (this.placedLetters[prevPos.row()][prevPos.col()] != null);
+    return lastWordPos;
+  }
+
+  /**
+   * @param currPos is the position of the letter to be placed
+   * @return the position of the last letter of the word after the letter to place currPos will be
+   *     returned if there is no word after
+   */
+  private GridPos getWordLastLetterPos(final GridPos currPos, Direction wordDir) {
+    GridPos lastWordPos = currPos;
+    GridPos nextPos = lastWordPos;
+    do {
+      // => the nextPos is on the word
+      lastWordPos = nextPos;
+      // determine next nextPos
+      try {
+        nextPos = this.getNextPos(lastWordPos, wordDir);
+      } catch (CustomError e) {
+        e.handleIfErrorType(ErrorType.PositionOutOfGird);
+        // => there is no nextPos
+        return lastWordPos;
+      }
+      // => prevPos got updated
+    } while (this.placedLetters[nextPos.row()][nextPos.col()] != null);
+    return lastWordPos;
+  }
+
+  private OwnedWord constructMainNewWord(
+      final GridPos firstPos,
+      final GridPos lastPos,
+      final List<GridPos> lettersPlaced,
+      PlaceWordAction pwa) {
+    final LinkedList<Letter> newWord = new LinkedList<>();
+    final Direction wordDir = pwa.startPosition.direction();
+    int indexNextNewLetter = 0;
+    for (GridPos letterPos : firstPos.getPath(lastPos)) {
+      Letter letter = this.placedLetters[letterPos.row()][letterPos.col()];
+      if (letter == null) {
+        assert indexNextNewLetter < pwa.toPlace.length : "has alredy put all the new letters";
+        letter = pwa.toPlace[indexNextNewLetter];
+        indexNextNewLetter++;
+      }
+      newWord.add(letter);
+    }
+    // construct the word
+    Word w = new Word(newWord.toArray(new Letter[0]));
+    GridWordPos gwp = new GridWordPos(firstPos.row(), firstPos.col(), wordDir);
+    return new OwnedWord(gwp, w, pwa.player);
+  }
+
+  private OwnedWord constructAuxNewWord(
+      final GridPos firstPos, final GridPos lastPos, Letter newLetter, PlaceWordAction pwa) {
+    final LinkedList<Letter> newWord = new LinkedList<>();
+    final Direction wordDir = pwa.startPosition.direction().getOppositDirection();
+    boolean hasPlacedNewLetter = false;
+    for (GridPos letterPos : firstPos.getPath(lastPos)) {
+      Letter letter = this.placedLetters[letterPos.row()][letterPos.col()];
+      if (letter == null) {
+        assert !hasPlacedNewLetter : "has alredy put the new letter";
+        letter = newLetter;
+        hasPlacedNewLetter = true;
+      }
+      newWord.add(letter);
+    }
+    // construct the word
+    Word w = new Word(newWord.toArray(new Letter[0]));
+    GridWordPos gwp = new GridWordPos(firstPos.row(), firstPos.col(), wordDir);
+    return new OwnedWord(gwp, w, pwa.player);
+  }
+
+  public List<OwnedWord> placeLetters(PlaceWordAction pwa) {
+    if (pwa.toPlace.length == 0) {
+      throw new CustomError(
+          ErrorType.UnknownWord, "can't place no letters", "trying to place 0 letters");
+    }
+    if (!this.isInBounds(pwa.startPosition.toGridPos())) {
+      throw new CustomError(
+          ErrorType.InvalidePlaceLetterAction,
+          "can't place the letters out of the grid",
+          "cant execute a placeWordAction that starts out of the grid: " + pwa);
+    }
+    {
+      GridPos startPos = pwa.startPosition.toGridPos();
+      if (this.placedLetters[startPos.row()][startPos.col()] != null) {
+        throw new CustomError(
+            ErrorType.InvalidePlaceLetterAction,
+            "there is alredy a letter here",
+            "a placeWordAction must start on an empty spot: " + pwa);
+      }
+    }
+
+    final LinkedList<OwnedWord> result = new LinkedList<>();
+    final Direction wordDirection = pwa.startPosition.direction();
+    final Direction wordOppositDirection = wordDirection.getOppositDirection();
+
+    // ** determine the position where the letters will be placed
+    final ArrayList<GridPos> lettersPos = new ArrayList<>();
+    // index -> pos of the letter of the same index in pwa
+    {
+      GridPos currPos = pwa.startPosition.toGridPos();
+      for (int index = 0; index < pwa.toPlace.length; index++) {
+        final boolean islastLetterOfWord = (index + 1 == pwa.toPlace.length);
+        // => currPos is the pos of the letter at index
+        lettersPos.add(currPos);
+        if (!islastLetterOfWord) {
+          // => not the last letter to place, search the pos of next letter
+          currPos = getWordLastLetterPos(currPos, wordDirection);
+          // => currPos is one before next position
+          try {
+            currPos = this.getNextPos(currPos, wordDirection);
+          } catch (CustomError e) {
+            e.handleIfErrorType(ErrorType.PositionOutOfGird);
+            throw new CustomError(
+                ErrorType.InvalidePlaceLetterAction,
+                "can't place the letters on the grid",
+                "reached the end of the grid while trying to execute: " + pwa);
+          }
+          // => currPos is on the next empty case to place a letter
+        }
+      }
+    }
+
+    // ** determine all the words constructed
+    {
+      // the main word placed on the grid
+      final GridPos wordStartPos = this.getWordFirstLetterPos(lettersPos.get(0), wordDirection);
+      final GridPos wordLastPos =
+          this.getWordLastLetterPos(lettersPos.get(lettersPos.size() - 1), wordDirection);
+      result.add(this.constructMainNewWord(wordStartPos, wordLastPos, lettersPos, pwa));
+    }
+    for (int indexNextNewLetter = 0;
+        indexNextNewLetter < pwa.toPlace.length;
+        indexNextNewLetter++) {
+      // the auxiliary word placed on the grid
+      final GridPos letterPos = lettersPos.get(indexNextNewLetter);
+      final Letter letter = pwa.toPlace[indexNextNewLetter];
+      final GridPos wordStartPos = this.getWordFirstLetterPos(letterPos, wordOppositDirection);
+      final GridPos wordLastPos = this.getWordLastLetterPos(letterPos, wordOppositDirection);
+      if (wordStartPos == wordLastPos) {
+        continue; // => not a new word
+      }
+      result.add(this.constructAuxNewWord(wordStartPos, wordLastPos, letter, pwa));
+    }
+
+    // ** check the new words all are in the dictionary
+    for (Word newWord : result.stream().map(word -> word.word).toList()) {
+      if (!this.gameModel.dictionary.containsWord(newWord)) {
+        throw new CustomError(
+            ErrorType.UnknownWord,
+            "word not in the dictionary",
+            "the word: '" + newWord + "' isn't in the dictionary");
+      }
+    }
+
+    // ** place the letters on the grid
+    for (int index = 0; index < pwa.toPlace.length; index++) {
+      final GridPos currPos = lettersPos.get(index);
+      this.placedLetters[currPos.row()][currPos.col()] = pwa.toPlace[index];
+    }
+
+    return result;
   }
 
   private int getLetterPoints(Letter letter) {
@@ -325,11 +371,13 @@ public class Grid {
       }
       Letter letter = word.word.getLetterAt(i);
       int lettreBasePoints = this.getLetterPoints(letter);
-      /* Utilities.verbose(
-      "adding points for letter: "
-          + letter + " at " + pos + " basePoints=" + lettreBasePoints
-          + " and with letterMult=" + letterMult +
-          " (multi_word=" + multi_word + ")"); */
+      /*
+       * Utilities.verbose(
+       * "adding points for letter: "
+       * + letter + " at " + pos + " basePoints=" + lettreBasePoints
+       * + " and with letterMult=" + letterMult +
+       * " (multi_word=" + multi_word + ")");
+       */
       score += (lettreBasePoints * letterMult);
     }
     // Utilities.verbose("-> score=" + score + ", multi_word=" + multi_word + ")");

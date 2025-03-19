@@ -30,7 +30,8 @@ public enum ErrorType {
   PlayerDoesntHaveLettersInIsBag(false),
   InvalidePlaceLetterAction(false),
   PositionOutOfGird(true),
-  InvalidIndexOutOfGird(false);
+  InvalidIndexOutOfGird(false), 
+  NoHistoryAvailable(false);
 
   public final boolean isFatal;
 

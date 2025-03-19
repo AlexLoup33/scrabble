@@ -2,11 +2,8 @@ package pdp.scrabble.view;
 
 import java.util.List;
 import java.util.ResourceBundle;
-<<<<<<< HEAD
-=======
 import java.util.concurrent.CountDownLatch;
 
->>>>>>> f57ce13 (javafx major fix)
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;

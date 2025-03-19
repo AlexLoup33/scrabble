@@ -3,7 +3,6 @@ package pdp.scrabble.view;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
@@ -59,7 +58,7 @@ public class ViewGUI extends Application implements IView {
 
   @Override
   public void initialize(Configuration conf) {
-      System.out.println("ViewGUI initialized");
+    System.out.println("ViewGUI initialized");
   }
 
   public static void setLang(Lang lang) {
@@ -275,7 +274,8 @@ public class ViewGUI extends Application implements IView {
     exchangeLetterButton.setOnAction(
         e -> {
           // Retrieve the current player's LettersCounter
-          // LettersCounter letters = getCurrentPlayerLetters(); // Replace with the actual method to retrieve the LettersCounter
+          // LettersCounter letters = getCurrentPlayerLetters(); // Replace with the actual method
+          // to retrieve the LettersCounter
           LettersCounter letters = new LettersCounter();
 
           // Create a dialog for selecting letters to exchange
@@ -462,7 +462,6 @@ public class ViewGUI extends Application implements IView {
   @Override
   public void displayGrid(Grid grid, Boolean isSuperScrabble) {}
 
-  
   @Override
   public void displayPlayerLetters(LettersCounter letters) {
     this.playerHand.updateLetters(letters);

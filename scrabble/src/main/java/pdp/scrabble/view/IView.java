@@ -1,7 +1,6 @@
 package pdp.scrabble.view;
 
 import java.util.List;
-
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;

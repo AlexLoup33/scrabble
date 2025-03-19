@@ -1,7 +1,6 @@
 package pdp.scrabble.controller;
 
 import java.util.concurrent.CountDownLatch;
-
 import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.errorsHandling.CustomError;
@@ -23,23 +22,25 @@ public class GameController {
       CountDownLatch latch = new CountDownLatch(1);
 
       // Lancer JavaFX dans un thread séparé
-      new Thread(() -> {
-          ViewGUI.setLang(this.model.lang);
-          ViewGUI.setSuperScrabble(conf.getSuperScrabble());
-          ViewGUI.launchJavaFX(latch); // Démarrer JavaFX
-      }).start();
+      new Thread(
+              () -> {
+                ViewGUI.setLang(this.model.lang);
+                ViewGUI.setSuperScrabble(conf.getSuperScrabble());
+                ViewGUI.launchJavaFX(latch); // Démarrer JavaFX
+              })
+          .start();
 
       try {
-          latch.await(); // Attendre que JavaFX soit prêt
-          view = ViewGUI.getInstance(); // Récupérer l'instance de la vue
-          view.initialize(conf); // Initialiser la vue
+        latch.await(); // Attendre que JavaFX soit prêt
+        view = ViewGUI.getInstance(); // Récupérer l'instance de la vue
+        view.initialize(conf); // Initialiser la vue
       } catch (InterruptedException e) {
-          e.printStackTrace();
+        e.printStackTrace();
       }
-  } else {
+    } else {
       this.view = new ViewCLI(this.model.lang, conf.getSuperScrabble());
+    }
   }
-}
 
   public void gameLoop() {
     CustomError recoverableException = null;

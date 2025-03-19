@@ -17,7 +17,6 @@ public class Main {
 
     GameController gc = new GameController(conf);
     gc.gameLoop();
-    
 
     System.out.println("--- End ---");
   }

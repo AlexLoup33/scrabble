@@ -10,13 +10,11 @@ public class History<T> {
     private int nextNodeID;
     private HistNode<T> currentNode;
     private final HistNode<T> nullNode;
-    private int lastSavedID;
 
     public History() {
         this.nextNodeID = 0;
         this.nullNode = new HistNode<>(this.giveNextID(), null, null);
         this.currentNode = this.nullNode;
-        this.lastSavedID = -1; // never saved
     }
 
     /**
@@ -85,14 +83,12 @@ public class History<T> {
     }
 
     public void saveCurrentToFile(Path filePath) {
-        // get current value and serialize it
-        // save it to the file
-        // update this.lastSavedID with getCurrentNodeID
+        // get current value and serialize it and save it to the file
         throw new UnsupportedOperationException("Unimplemented method 'saveToFile'");
     }
 
     public void loadModelFromFile(Path filePath, GameModel gm) {
-        // load from the file and deserialize it
+        // load value from the file and deserialize it
         // loadGameModel from the loaded checkPoint
         // clear the history (the hist of a game isn't saved)
         throw new UnsupportedOperationException("Unimplemented method 'loadModelFromFile'");

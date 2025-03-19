@@ -2,6 +2,7 @@ package pdp.scrabble.view;
 
 import java.util.List;
 import java.util.ResourceBundle;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -189,7 +190,7 @@ public class ViewGUI extends Application implements IView {
     menuBar.setStyle("-fx-start-margin: 200px;");
 
     // GRID INITIALIZATION
-    this.scrabbleBoard = new ScrabbleBoard();
+    this.scrabbleBoard = new ScrabbleBoard(600, 600, 15);
 
     // Main du joueur provisoir :
     // player's letters

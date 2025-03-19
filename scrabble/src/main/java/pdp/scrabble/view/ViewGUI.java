@@ -2,7 +2,6 @@ package pdp.scrabble.view;
 
 import java.util.List;
 import java.util.ResourceBundle;
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -54,7 +53,7 @@ public class ViewGUI extends Application implements IView {
   @Override
   public void start(Stage stage) {
     // Debug message at the top of the window
-    String message = getLocalizedMessage();
+    getLocalizedLang();
 
     // MENU BAR INITIALIZATION
     MenuBar menuBar = new MenuBar();
@@ -189,8 +188,6 @@ public class ViewGUI extends Application implements IView {
     menuBar.getMenus().addAll(fileMenu, gameMenu, aboutMenu);
     menuBar.setStyle("-fx-start-margin: 200px;");
 
-    Label label = new Label(message);
-
     // GRID INITIALIZATION
     this.scrabbleBoard = new ScrabbleBoard();
 
@@ -211,36 +208,34 @@ public class ViewGUI extends Application implements IView {
     playerHand.setStyle("-fx-alignment: center;"); // Center the HBox
 
     for (Letter letter : letters.getLettersSet()) {
-        for (int i = 0; i < letters.getLetterCount(letter); i++) {
-            // Création de la case (carré)
-            StackPane letterBox = new StackPane();
-            letterBox.setStyle("-fx-background-color: lightgray; -fx-border-color: black;");
-            letterBox.setPrefSize(50, 50); // Taille carrée de chaque case
+      for (int i = 0; i < letters.getLetterCount(letter); i++) {
+        // Création de la case (carré)
+        StackPane letterBox = new StackPane();
+        letterBox.setStyle("-fx-background-color: lightgray; -fx-border-color: black;");
+        letterBox.setPrefSize(50, 50); // Taille carrée de chaque case
 
-            // Affichage de la lettre au centre du carré
-            Label letterLabel = new Label(letter.toString());
-            letterLabel.setStyle("-fx-font-size: 20; -fx-font-weight: bold;");
-            letterLabel.setAlignment(Pos.CENTER);  // Centrer la lettre dans le StackPane
+        // Affichage de la lettre au centre du carré
+        Label letterLabel = new Label(letter.toString());
+        letterLabel.setStyle("-fx-font-size: 20; -fx-font-weight: bold;");
+        letterLabel.setAlignment(Pos.CENTER); // Centrer la lettre dans le StackPane
 
-            // Affichage du score de la lettre en bas à droite
-            Label scoreLabel = new Label(String.valueOf(-69));  // Remplace -69 par le vrai score
-            scoreLabel.setStyle("-fx-font-size: 10;");
-            
-            // Ajouter le score en bas à droite
-            StackPane.setAlignment(scoreLabel, Pos.BOTTOM_RIGHT);
-            StackPane.setMargin(scoreLabel, new Insets(0, 2, 0, 0)); // Décalage du score pour qu'il ne soit pas collé au bord
-            
-            // Ajouter la lettre et le score au StackPane
-            letterBox.getChildren().addAll(letterLabel, scoreLabel);
+        // Affichage du score de la lettre en bas à droite
+        Label scoreLabel = new Label(String.valueOf(-69)); // Remplace -69 par le vrai score
+        scoreLabel.setStyle("-fx-font-size: 10;");
 
-            // Ajouter la case au HBox de la main du joueur
-            playerHand.getChildren().add(letterBox);
-        }
+        // Ajouter le score en bas à droite
+        StackPane.setAlignment(scoreLabel, Pos.BOTTOM_RIGHT);
+        StackPane.setMargin(
+            scoreLabel,
+            new Insets(0, 2, 0, 0)); // Décalage du score pour qu'il ne soit pas collé au bord
+
+        // Ajouter la lettre et le score au StackPane
+        letterBox.getChildren().addAll(letterLabel, scoreLabel);
+
+        // Ajouter la case au HBox de la main du joueur
+        playerHand.getChildren().add(letterBox);
+      }
     }
-
-
-
-
 
     // ACTION BUTTONS --------------------------------------------
     Button placeWordButton = new Button(langPack.getString("placew"));
@@ -385,7 +380,7 @@ public class ViewGUI extends Application implements IView {
             restartGameButton);
     actionButtons.setStyle("-fx-padding: 10px; -fx-alignment: center;");
 
-    VBox root = new VBox(menuBar, label, scrabbleBoard, playerHand, actionButtons);
+    VBox root = new VBox(menuBar, scrabbleBoard, playerHand, actionButtons);
 
     Scene scene = new Scene(root, 1200, 800);
 
@@ -402,25 +397,21 @@ public class ViewGUI extends Application implements IView {
     stage.show();
   }
 
-  private String getLocalizedMessage() {
+  private void getLocalizedLang() {
     // the lang pack is in scrabble/src/main/resources/GUI_pack_en.properties and
     // GUI_pack_fr.properties
     if (lang == null) {
       langPack = ResourceBundle.getBundle("GUI_pack_en");
-      return "No language set";
     } else
       switch (lang) {
         case EN -> {
           langPack = ResourceBundle.getBundle("GUI_pack_en");
-          return "Welcome to the Scrabble game!";
         }
         case FR -> {
           langPack = ResourceBundle.getBundle("GUI_pack_fr");
-          return "Bienvenue au jeu du Scrabble !";
         }
         default -> {
           langPack = ResourceBundle.getBundle("GUI_pack_en");
-          return "Welcome to the Scrabble !";
         }
       }
   }

@@ -2,8 +2,11 @@ package pdp.scrabble.view;
 
 import java.util.List;
 import java.util.ResourceBundle;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -17,6 +20,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pdp.scrabble.dictionary.Letter;
@@ -190,6 +194,54 @@ public class ViewGUI extends Application implements IView {
     // GRID INITIALIZATION
     this.scrabbleBoard = new ScrabbleBoard();
 
+    // Main du joueur provisoir :
+    // player's letters
+    LettersCounter letters = new LettersCounter();
+    letters.addLetter(new Letter('A'));
+    letters.addLetter(new Letter('E'));
+    letters.addLetter(new Letter('I'));
+    letters.addLetter(new Letter('O'));
+    letters.addLetter(new Letter('U'));
+    letters.addLetter(new Letter('L'));
+    letters.addLetter(new Letter('N'));
+
+    // Player hand
+    HBox playerHand = new HBox();
+    playerHand.setSpacing(10);
+    playerHand.setStyle("-fx-alignment: center;"); // Center the HBox
+
+    for (Letter letter : letters.getLettersSet()) {
+        for (int i = 0; i < letters.getLetterCount(letter); i++) {
+            // Création de la case (carré)
+            StackPane letterBox = new StackPane();
+            letterBox.setStyle("-fx-background-color: lightgray; -fx-border-color: black;");
+            letterBox.setPrefSize(50, 50); // Taille carrée de chaque case
+
+            // Affichage de la lettre au centre du carré
+            Label letterLabel = new Label(letter.toString());
+            letterLabel.setStyle("-fx-font-size: 20; -fx-font-weight: bold;");
+            letterLabel.setAlignment(Pos.CENTER);  // Centrer la lettre dans le StackPane
+
+            // Affichage du score de la lettre en bas à droite
+            Label scoreLabel = new Label(String.valueOf(-69));  // Remplace -69 par le vrai score
+            scoreLabel.setStyle("-fx-font-size: 10;");
+            
+            // Ajouter le score en bas à droite
+            StackPane.setAlignment(scoreLabel, Pos.BOTTOM_RIGHT);
+            StackPane.setMargin(scoreLabel, new Insets(0, 2, 0, 0)); // Décalage du score pour qu'il ne soit pas collé au bord
+            
+            // Ajouter la lettre et le score au StackPane
+            letterBox.getChildren().addAll(letterLabel, scoreLabel);
+
+            // Ajouter la case au HBox de la main du joueur
+            playerHand.getChildren().add(letterBox);
+        }
+    }
+
+
+
+
+
     // ACTION BUTTONS --------------------------------------------
     Button placeWordButton = new Button(langPack.getString("placew"));
     placeWordButton.setOnAction(e -> System.out.println("Place Word action triggered"));
@@ -199,15 +251,6 @@ public class ViewGUI extends Application implements IView {
         e -> {
           // Assuming there is a method to get the current player's LettersCounter
           // TODO: Replace `getCurrentPlayerLetters()` with the actual method to retrieve the
-          // player's letters
-          LettersCounter letters = new LettersCounter();
-          letters.addLetter(new Letter('A'));
-          letters.addLetter(new Letter('E'));
-          letters.addLetter(new Letter('I'));
-          letters.addLetter(new Letter('O'));
-          letters.addLetter(new Letter('U'));
-          letters.addLetter(new Letter('L'));
-          letters.addLetter(new Letter('N'));
 
           // Create a dialog for selecting letters to exchange
           Dialog<java.util.List<Letter>> dialog = new Dialog<>();
@@ -342,7 +385,7 @@ public class ViewGUI extends Application implements IView {
             restartGameButton);
     actionButtons.setStyle("-fx-padding: 10px; -fx-alignment: center;");
 
-    VBox root = new VBox(menuBar, label, scrabbleBoard, actionButtons);
+    VBox root = new VBox(menuBar, label, scrabbleBoard, playerHand, actionButtons);
 
     Scene scene = new Scene(root, 1200, 800);
 

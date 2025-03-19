@@ -1,6 +1,7 @@
 package pdp.scrabble.controller;
 
-import javafx.application.Application;
+import java.util.concurrent.CountDownLatch;
+
 import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.errorsHandling.CustomError;
@@ -14,21 +15,31 @@ import pdp.scrabble.view.ViewGUI;
 public class GameController {
 
   private final GameModel model;
-  private final IView view;
+  private IView view;
 
   public GameController(Configuration conf) {
     this.model = new GameModel(conf);
     if (conf.getGui()) {
-      this.view = new ViewGUI();
+      CountDownLatch latch = new CountDownLatch(1);
 
-      ViewGUI.setLang(this.model.lang);
-      ViewGUI.setSuperScrabble(conf.getSuperScrabble());
+      // Lancer JavaFX dans un thread séparé
+      new Thread(() -> {
+          ViewGUI.setLang(this.model.lang);
+          ViewGUI.setSuperScrabble(conf.getSuperScrabble());
+          ViewGUI.launchJavaFX(latch); // Démarrer JavaFX
+      }).start();
 
-      Application.launch(ViewGUI.class, new String[] {});
-    } else {
+      try {
+          latch.await(); // Attendre que JavaFX soit prêt
+          view = ViewGUI.getInstance(); // Récupérer l'instance de la vue
+          view.initialize(conf); // Initialiser la vue
+      } catch (InterruptedException e) {
+          e.printStackTrace();
+      }
+  } else {
       this.view = new ViewCLI(this.model.lang, conf.getSuperScrabble());
-    }
   }
+}
 
   public void gameLoop() {
     CustomError recoverableException = null;
@@ -50,7 +61,6 @@ public class GameController {
         // Implemented but maybe need to draw every letter before
         // actually showing number at turn 1
         // view.displayDraw(model.draw);
-
         view.displayGrid(model.grid, false);
         view.displayPlayerLetters(playing.bag);
         if (recoverableException != null) {

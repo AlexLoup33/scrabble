@@ -2,9 +2,13 @@ package pdp.scrabble.view;
 
 import java.util.List;
 import java.util.ResourceBundle;
+<<<<<<< HEAD
+=======
+import java.util.concurrent.CountDownLatch;
+
+>>>>>>> f57ce13 (javafx major fix)
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -22,6 +26,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
@@ -30,17 +35,35 @@ import pdp.scrabble.game.Lang;
 import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
+import pdp.scrabble.view.Component.PlayerHand;
 import pdp.scrabble.view.Component.ScrabbleBoard;
 
 public class ViewGUI extends Application implements IView {
-
+  private static ViewGUI instance;
+  private Stage primaryStage;
+  private static CountDownLatch latch;
   private static Lang lang;
   private static Boolean isSuperScrabble;
   private ResourceBundle langPack;
 
   private ScrabbleBoard scrabbleBoard;
+  private PlayerHand playerHand;
 
   public ViewGUI() {}
+
+  public static void launchJavaFX(CountDownLatch latch) {
+    ViewGUI.latch = latch;
+    Application.launch(ViewGUI.class);
+  }
+
+  public static ViewGUI getInstance() {
+    return instance;
+  }
+
+  @Override
+  public void initialize(Configuration conf) {
+      System.out.println("ViewGUI initialized");
+  }
 
   public static void setLang(Lang lang) {
     ViewGUI.lang = lang;
@@ -51,7 +74,10 @@ public class ViewGUI extends Application implements IView {
   }
 
   @Override
-  public void start(Stage stage) {
+  public void start(Stage primaryStage) {
+    instance = this;
+    latch.countDown();
+    this.primaryStage = primaryStage;
     // Debug message at the top of the window
     getLocalizedLang();
 
@@ -230,49 +256,19 @@ public class ViewGUI extends Application implements IView {
 
     // Main du joueur provisoir :
     // player's letters
-    LettersCounter letters = new LettersCounter();
-    letters.addLetter(new Letter('A'));
-    letters.addLetter(new Letter('E'));
-    letters.addLetter(new Letter('I'));
-    letters.addLetter(new Letter('O'));
-    letters.addLetter(new Letter('U'));
-    letters.addLetter(new Letter('L'));
-    letters.addLetter(new Letter('N'));
+    // LettersCounter letters = new LettersCounter();
+    // letters.addLetter(new Letter('A'));
+    // letters.addLetter(new Letter('P'));
+    // letters.addLetter(new Letter('Q'));
+    // letters.addLetter(new Letter('O'));
+    // letters.addLetter(new Letter('W'));
+    // letters.addLetter(new Letter('V'));
+    // letters.addLetter(new Letter('M'));
 
-    // Player hand
-    HBox playerHand = new HBox();
-    playerHand.setSpacing(10);
-    playerHand.setStyle("-fx-alignment: center;"); // Center the HBox
+    // Player Hand
 
-    for (Letter letter : letters.getLettersSet()) {
-      for (int i = 0; i < letters.getLetterCount(letter); i++) {
-        // Création de la case (carré)
-        StackPane letterBox = new StackPane();
-        letterBox.setStyle("-fx-background-color: lightgray; -fx-border-color: black;");
-        letterBox.setPrefSize(50, 50); // Taille carrée de chaque case
-
-        // Affichage de la lettre au centre du carré
-        Label letterLabel = new Label(letter.toString());
-        letterLabel.setStyle("-fx-font-size: 20; -fx-font-weight: bold;");
-        letterLabel.setAlignment(Pos.CENTER); // Centrer la lettre dans le StackPane
-
-        // Affichage du score de la lettre en bas à droite
-        Label scoreLabel = new Label(String.valueOf(-69)); // Remplace -69 par le vrai score
-        scoreLabel.setStyle("-fx-font-size: 10;");
-
-        // Ajouter le score en bas à droite
-        StackPane.setAlignment(scoreLabel, Pos.BOTTOM_RIGHT);
-        StackPane.setMargin(
-            scoreLabel,
-            new Insets(0, 2, 0, 0)); // Décalage du score pour qu'il ne soit pas collé au bord
-
-        // Ajouter la lettre et le score au StackPane
-        letterBox.getChildren().addAll(letterLabel, scoreLabel);
-
-        // Ajouter la case au HBox de la main du joueur
-        playerHand.getChildren().add(letterBox);
-      }
-    }
+    this.playerHand = new PlayerHand(lang);
+    // this.playerHand.updateLetters(letters);
 
     // ACTION BUTTONS --------------------------------------------
     Button placeWordButton = new Button(langPack.getString("placew"));
@@ -281,8 +277,9 @@ public class ViewGUI extends Application implements IView {
     Button exchangeLetterButton = new Button(langPack.getString("exchange"));
     exchangeLetterButton.setOnAction(
         e -> {
-          // Assuming there is a method to get the current player's LettersCounter
-          // TODO: Replace `getCurrentPlayerLetters()` with the actual method to retrieve the
+          // Retrieve the current player's LettersCounter
+          // LettersCounter letters = getCurrentPlayerLetters(); // Replace with the actual method to retrieve the LettersCounter
+          LettersCounter letters = new LettersCounter();
 
           // Create a dialog for selecting letters to exchange
           Dialog<java.util.List<Letter>> dialog = new Dialog<>();
@@ -334,7 +331,8 @@ public class ViewGUI extends Application implements IView {
                       selectedLetters.add(new Letter(toggleButton.getText().charAt(0)));
                     }
                   }
-                  // TODO: Replace with an askAction call to handle the selected letters
+                  // Call askAction to handle the selected letters
+                  askAction(null, null); // Replace null with appropriate parameters
                   return selectedLetters;
                 }
                 return null;
@@ -421,17 +419,17 @@ public class ViewGUI extends Application implements IView {
 
     Scene scene = new Scene(root, 1200, 800);
 
-    stage.setTitle("Scrabble - GUI");
-    stage.setScene(scene);
+    primaryStage.setTitle("Scrabble - GUI");
+    primaryStage.setScene(scene);
 
-    stage.setOnCloseRequest(
+    primaryStage.setOnCloseRequest(
         event -> {
-          stage.close();
+          primaryStage.close();
           System.exit(0);
         });
 
-    stage.setResizable(false);
-    stage.show();
+    primaryStage.setResizable(false);
+    primaryStage.show();
   }
 
   private void getLocalizedLang() {
@@ -467,9 +465,10 @@ public class ViewGUI extends Application implements IView {
   @Override
   public void displayGrid(Grid grid, Boolean isSuperScrabble) {}
 
+  
   @Override
   public void displayPlayerLetters(LettersCounter letters) {
-    throw new UnsupportedOperationException("Unimplemented method 'displayPlayerLetters'");
+    this.playerHand.updateLetters(letters);
   }
 
   @Override

@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -237,24 +238,6 @@ public class MainTest {
     // Next turn reached
     //        System.out.println(this.gameModel.getTurn());
     assertEquals(2, this.gameModel.getTurn());
-  }
-
-  @Test
-  public void testF34() {
-    // TODO
-    //        System.out.println(this.gameModel.getCurrentPlayer().bag);
-    //
-    //        List<Letter> toExchange = new ArrayList<>();
-    //        toExchange.add(new Letter('A'));
-    //        toExchange.add(new Letter('B'));
-    //        toExchange.add(new Letter('R'));
-    //        GameAction ga =
-    //                new ExchangeLetterAction(
-    //                        this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(),
-    // toExchange);
-    //        this.gameModel.applyGameActionDispatch(ga);
-    //
-    //        System.out.println(this.gameModel.getCurrentPlayer().bag);
   }
 
   @Test
@@ -629,5 +612,62 @@ public class MainTest {
     assertEquals(0, this.gameModel.players.get(0).getScore());
     assertEquals(1, this.gameModel.getTurn());
     assertEquals(0, (int) this.gameModel.getCurrentPlayer().id);
+  }
+
+  @Test
+  public void testF34() {
+    assertEquals(69, this.gameModel.config.getSeed());
+
+    // Fill player's bag
+    LettersCounter newLetters = this.gameModel.draw.popLetter(7);
+    for (Letter l : newLetters.getLettersSet()) {
+      this.gameModel.getCurrentPlayer().bag.addLetter(l);
+    }
+    assertEquals(
+        "LettersCounter{table={L=1, A=1, U=1, I=1, H=1, R=1}}",
+        this.gameModel.players.get(0).bag.toString());
+    //        System.out.println(this.gameModel.players.get(0).bag);
+
+    List<Letter> toExchange = new ArrayList<>();
+    toExchange.add(new Letter('L'));
+    toExchange.add(new Letter('A'));
+
+    GameAction ga =
+        new ExchangeLetterAction(
+            this.gameModel.players.get(0), this.gameModel.getTurn(), toExchange);
+    this.gameModel.applyGameActionDispatch(ga);
+
+    //        System.out.println(this.gameModel.players.get(0).bag);
+    assertEquals(
+        "LettersCounter{table={U=1, I=2, H=1, R=1, E=1}}",
+        this.gameModel.players.get(0).bag.toString());
+
+    // Try illegal action
+    List<Letter> toExchange2 = new ArrayList<>();
+    toExchange2.add(new Letter('Z'));
+    GameAction ga2 =
+        new ExchangeLetterAction(
+            this.gameModel.players.get(0), this.gameModel.getTurn(), toExchange2);
+
+    assertThrows(CustomError.class, () -> this.gameModel.applyGameActionDispatch(ga2));
+
+    // With empty draw
+    this.gameModel.draw.popLetter(95); // clear draw
+
+    assertEquals(
+        "LettersCounter{table={U=1, I=2, H=1, R=1, E=1}}",
+        this.gameModel.players.get(0).bag.toString());
+
+    List<Letter> toExchange3 = new ArrayList<>();
+    toExchange3.add(new Letter('U'));
+
+    GameAction ga3 =
+        new ExchangeLetterAction(
+            this.gameModel.players.get(0), this.gameModel.getTurn(), toExchange3);
+    this.gameModel.applyGameActionDispatch(ga3);
+
+    assertEquals(
+        "LettersCounter{table={U=1, I=2, H=1, R=1, E=1}}",
+        this.gameModel.players.get(0).bag.toString());
   }
 }

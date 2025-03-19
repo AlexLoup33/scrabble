@@ -17,8 +17,11 @@ public class Main {
 
     GameController gc = new GameController(conf);
     gc.gameLoop();
-    
 
-    System.out.println("--- End ---");
+
+    // Question:
+
+    // give-up des features ?
+    // F1 to F9, how ?? peut rendre early ?
   }
 }

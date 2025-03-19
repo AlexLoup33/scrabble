@@ -108,7 +108,7 @@ public class LettersDrawer {
     if (this.maxSize < this.currentSize + nbToPush) {
       throw new CustomError(
           ErrorType.DrawerError,
-          "not enougth space to push the letters",
+          "not enough space to push the letters",
           "can't push "
               + nbToPush
               + " letters in the drawer of current size: "

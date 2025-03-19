@@ -79,6 +79,7 @@ public class GameModel {
     this.endPlayerTurn();
   }
 
+  // F34
   public void applyGameAction(ExchangeLetterAction exchangeLetterAction) {
     exchangeLetterAction.assertHasLettersToPlace();
     exchangeLetterAction.exchangeLetters(this.draw);

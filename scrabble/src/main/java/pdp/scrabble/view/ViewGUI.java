@@ -189,8 +189,45 @@ public class ViewGUI extends Application implements IView {
     menuBar.getMenus().addAll(fileMenu, gameMenu, aboutMenu);
     menuBar.setStyle("-fx-start-margin: 200px;");
 
+    // Historique des actions
+    // Create a gray square aligned with the ScrabbleBoard
+    StackPane histo = new StackPane();
+    histo.setStyle("-fx-background-color: lightgray; -fx-border-color: black;");
+    histo.setPrefSize(200, 400);
+
     // GRID INITIALIZATION
     this.scrabbleBoard = new ScrabbleBoard(600, 600, 15);
+
+    // Player score
+    VBox playerScores = new VBox();
+    playerScores.setSpacing(10);
+    playerScores.setStyle("-fx-alignment: center;"); // Center the VBox
+
+    // Example players and scores (replace with actual player data)
+    List<String> players = List.of("Player 1: 10", "Player 2: 20", "Player 3: 30", "Player 4: 40");
+
+    for (String player : players) {
+      // Create a gray square for each player
+      StackPane playerBox = new StackPane();
+      playerBox.setStyle("-fx-background-color: lightgray; -fx-border-color: black;");
+      playerBox.setPrefSize(200, 50); // Size of each square
+
+      // Display the player's name and score
+      String[] playerData = player.split(": ");
+      Label playerLabel = new Label(playerData[0] + ": " + playerData[1]);
+      playerLabel.setStyle("-fx-font-size: 14; -fx-font-weight: bold;");
+      playerLabel.setAlignment(Pos.CENTER);
+
+      // Add the label to the square
+      playerBox.getChildren().add(playerLabel);
+
+      // Add the square to the VBox
+      playerScores.getChildren().add(playerBox);
+    }
+
+    // Combine histo, scrabbleBoard, and playerScores into a single row
+    HBox mainRow = new HBox(10, histo, scrabbleBoard, playerScores);
+    mainRow.setStyle("-fx-alignment: center; -fx-padding: 10px;");
 
     // Main du joueur provisoir :
     // player's letters
@@ -381,7 +418,7 @@ public class ViewGUI extends Application implements IView {
             restartGameButton);
     actionButtons.setStyle("-fx-padding: 10px; -fx-alignment: center;");
 
-    VBox root = new VBox(menuBar, scrabbleBoard, playerHand, actionButtons);
+    VBox root = new VBox(menuBar, mainRow, playerHand, actionButtons);
 
     Scene scene = new Scene(root, 1200, 800);
 

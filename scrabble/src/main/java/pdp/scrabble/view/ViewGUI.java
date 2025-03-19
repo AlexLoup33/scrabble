@@ -1,6 +1,7 @@
 package pdp.scrabble.view;
 
 import java.util.List;
+import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
@@ -32,6 +33,7 @@ public class ViewGUI extends Application implements IView {
 
   private static Lang lang;
   private static Boolean isSuperScrabble;
+  private ResourceBundle langPack;
 
   private ScrabbleBoard scrabbleBoard;
 
@@ -54,15 +56,15 @@ public class ViewGUI extends Application implements IView {
     MenuBar menuBar = new MenuBar();
 
     // First -> File : New Game | Load Game | Save Game | Help | Settings | Quit
-    Menu fileMenu = new Menu("File");
+    Menu fileMenu = new Menu(langPack.getString("file"));
 
     // Declaration of the Items
-    MenuItem newGameItem = new MenuItem("New Game");
-    MenuItem loadGameItem = new MenuItem("Load Game");
-    MenuItem saveGameItem = new MenuItem("Save Game");
-    MenuItem helpItem = new MenuItem("Help");
-    MenuItem settingsItem = new MenuItem("Settings");
-    MenuItem quitItem = new MenuItem("Quit");
+    MenuItem newGameItem = new MenuItem(langPack.getString("ngame"));
+    MenuItem loadGameItem = new MenuItem(langPack.getString("lgame"));
+    MenuItem saveGameItem = new MenuItem(langPack.getString("sgame"));
+    MenuItem helpItem = new MenuItem(langPack.getString("help"));
+    MenuItem settingsItem = new MenuItem(langPack.getString("settings"));
+    MenuItem quitItem = new MenuItem(langPack.getString("quit"));
 
     // Actions for Items
 
@@ -97,13 +99,13 @@ public class ViewGUI extends Application implements IView {
         .addAll(newGameItem, loadGameItem, saveGameItem, helpItem, settingsItem, quitItem);
 
     // Second -> Game : Hint | Undo | Redo
-    Menu gameMenu = new Menu("Game");
+    Menu gameMenu = new Menu(langPack.getString("game"));
 
-    MenuItem hintItem = new MenuItem("Hint");
-    MenuItem undoAllItem = new MenuItem("Undo All");
-    MenuItem undoItem = new MenuItem("Undo");
-    MenuItem redoItem = new MenuItem("Redo");
-    MenuItem redoAllItem = new MenuItem("Redo All");
+    MenuItem hintItem = new MenuItem(langPack.getString("hint"));
+    MenuItem undoAllItem = new MenuItem(langPack.getString("undoall"));
+    MenuItem undoItem = new MenuItem(langPack.getString("undo"));
+    MenuItem redoItem = new MenuItem(langPack.getString("redo"));
+    MenuItem redoAllItem = new MenuItem(langPack.getString("redoall"));
 
     // Action for Items
 
@@ -125,11 +127,11 @@ public class ViewGUI extends Application implements IView {
     gameMenu.getItems().addAll(hintItem, undoAllItem, undoItem, redoItem, redoAllItem);
 
     // Third -> About : Version | Author | Licence
-    Menu aboutMenu = new Menu("About");
+    Menu aboutMenu = new Menu(langPack.getString("about"));
 
-    MenuItem versionItem = new MenuItem("Version");
-    MenuItem authorItem = new MenuItem("Author");
-    MenuItem licenceItem = new MenuItem("Licence");
+    MenuItem versionItem = new MenuItem(langPack.getString("version"));
+    MenuItem authorItem = new MenuItem(langPack.getString("author"));
+    MenuItem licenceItem = new MenuItem(langPack.getString("license"));
 
     // Actions for Items
 
@@ -137,7 +139,7 @@ public class ViewGUI extends Application implements IView {
     versionItem.setOnAction(
         (ActionEvent event) -> {
           Alert alert = new Alert(Alert.AlertType.INFORMATION);
-          alert.setTitle("Version");
+          alert.setTitle(langPack.getString("version"));
           alert.setHeaderText(null);
           alert.setContentText("Version 1.0.0");
           alert.showAndWait();
@@ -147,7 +149,7 @@ public class ViewGUI extends Application implements IView {
     authorItem.setOnAction(
         (ActionEvent event) -> {
           Alert alert = new Alert(Alert.AlertType.INFORMATION);
-          alert.setTitle("Author");
+          alert.setTitle(langPack.getString("author"));
           alert.setHeaderText(null);
           alert.setContentText(
               """
@@ -165,7 +167,7 @@ public class ViewGUI extends Application implements IView {
     licenceItem.setOnAction(
         (ActionEvent event) -> {
           Alert alert = new Alert(Alert.AlertType.INFORMATION);
-          alert.setTitle("Licence");
+          alert.setTitle(langPack.getString("licence"));
           alert.setHeaderText(null);
           alert.setContentText(
               """
@@ -188,11 +190,11 @@ public class ViewGUI extends Application implements IView {
     // GRID INITIALIZATION
     this.scrabbleBoard = new ScrabbleBoard();
 
-    // ACTION BUTTONS
-    Button placeWordButton = new Button("Place Word");
+    // ACTION BUTTONS --------------------------------------------
+    Button placeWordButton = new Button(langPack.getString("placew"));
     placeWordButton.setOnAction(e -> System.out.println("Place Word action triggered"));
 
-    Button exchangeLetterButton = new Button("Exchange Letter");
+    Button exchangeLetterButton = new Button(langPack.getString("exchange"));
     exchangeLetterButton.setOnAction(
         e -> {
           // Assuming there is a method to get the current player's LettersCounter
@@ -209,8 +211,8 @@ public class ViewGUI extends Application implements IView {
 
           // Create a dialog for selecting letters to exchange
           Dialog<java.util.List<Letter>> dialog = new Dialog<>();
-          dialog.setTitle("Exchange Letters");
-          dialog.setHeaderText("Select the letters to exchange");
+          dialog.setTitle(langPack.getString("exchange"));
+          dialog.setHeaderText(langPack.getString("exchangetxt"));
 
           VBox content = new VBox();
           content.setSpacing(10);
@@ -276,15 +278,15 @@ public class ViewGUI extends Application implements IView {
                   });
         });
 
-    Button passTurnButton = new Button("Pass Turn");
+    Button passTurnButton = new Button(langPack.getString("pass"));
     passTurnButton.setOnAction(e -> System.out.println("Pass Turn action triggered"));
 
-    Button renamePlayerButton = new Button("Rename Player");
+    Button renamePlayerButton = new Button(langPack.getString("rename"));
     renamePlayerButton.setOnAction(
         (ActionEvent event) -> {
           // Création de la boîte de dialogue
           Dialog<String> dialog = new Dialog<>();
-          dialog.setTitle("Rename Player");
+          dialog.setTitle(langPack.getString("rename"));
 
           // Boutons OK et Annuler
           ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
@@ -292,11 +294,11 @@ public class ViewGUI extends Application implements IView {
 
           // Champ de texte pour entrer le nouveau nom
           TextField nameField = new TextField();
-          nameField.setPromptText("New player name");
+          nameField.setPromptText(langPack.getString("renametxt1"));
 
           VBox content = new VBox();
           content.setSpacing(10);
-          content.getChildren().addAll(new Label("Enter the new name of the player:"), nameField);
+          content.getChildren().addAll(new Label(langPack.getString("renametxt2")), nameField);
 
           dialog.getDialogPane().setContent(content);
 
@@ -322,10 +324,10 @@ public class ViewGUI extends Application implements IView {
                   });
         });
 
-    Button forfeitPlayerButton = new Button("Forfeit Player");
+    Button forfeitPlayerButton = new Button(langPack.getString("forfeit"));
     forfeitPlayerButton.setOnAction(e -> System.out.println("Forfeit Player action triggered"));
 
-    Button restartGameButton = new Button("Restart Game");
+    Button restartGameButton = new Button(langPack.getString("restart"));
     restartGameButton.setOnAction(e -> System.out.println("Restart Game action triggered"));
 
     // Adding buttons to the layout in a horizontal line
@@ -358,17 +360,23 @@ public class ViewGUI extends Application implements IView {
   }
 
   private String getLocalizedMessage() {
+    // the lang pack is in scrabble/src/main/resources/GUI_pack_en.properties and
+    // GUI_pack_fr.properties
     if (lang == null) {
+      langPack = ResourceBundle.getBundle("GUI_pack_en");
       return "No language set";
     } else
       switch (lang) {
         case EN -> {
+          langPack = ResourceBundle.getBundle("GUI_pack_en");
           return "Welcome to the Scrabble game!";
         }
         case FR -> {
+          langPack = ResourceBundle.getBundle("GUI_pack_fr");
           return "Bienvenue au jeu du Scrabble !";
         }
         default -> {
+          langPack = ResourceBundle.getBundle("GUI_pack_en");
           return "Welcome to the Scrabble !";
         }
       }

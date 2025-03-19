@@ -2,7 +2,6 @@ package pdp.scrabble.view;
 
 import java.util.List;
 import java.util.ResourceBundle;
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;

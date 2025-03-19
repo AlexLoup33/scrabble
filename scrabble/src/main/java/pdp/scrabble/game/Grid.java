@@ -2,11 +2,7 @@ package pdp.scrabble.game;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersPoints;
 import pdp.scrabble.dictionary.Word;
@@ -409,5 +405,23 @@ public class Grid {
 
   public int getGridSize() {
     return this.size;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+
+    for (int i = 0; i < this.size; i++) {
+      for (int j = 0; j < this.size; j++) {
+        if (this.placedLetters[i][j] != null) {
+          sb.append(this.placedLetters[i][j].toString() + " ");
+        } else {
+          sb.append("_ ");
+        }
+      }
+      sb.append("\n");
+    }
+
+    return sb.toString();
   }
 }

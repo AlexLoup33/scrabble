@@ -146,4 +146,20 @@ public class LettersDrawer {
 
     return drawedletters;
   }
+
+  @Override
+  public String toString() {
+    return "LettersDrawer{"
+        + "rng="
+        + rng
+        + ", lang="
+        + lang
+        + ", table="
+        + table
+        + ", maxSize="
+        + maxSize
+        + ", currentSize="
+        + currentSize
+        + '}';
+  }
 }

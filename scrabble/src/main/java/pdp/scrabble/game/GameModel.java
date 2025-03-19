@@ -108,7 +108,8 @@ public class GameModel {
   // F41
   public void applyGameAction(RestartGameAction restartGameAction) {
     this.reset();
-    this.endPlayerTurn();
+    //        this.endPlayerTurn();
+    this.currentPlayer = this.players.get(0);
   }
 
   /**
@@ -128,9 +129,9 @@ public class GameModel {
   }
 
   private void endPlayerTurn() {
-    if (this.getActivePlayers().size() == 0) {
+    if (this.getActivePlayers().isEmpty()) {
       this.gameTurn += 1;
-      return; // avoid infinit loop
+      return; // avoid infinite loop
     }
     // => safe to loop (there is at least an active player to select)
     // select the next player to play and update the game turn

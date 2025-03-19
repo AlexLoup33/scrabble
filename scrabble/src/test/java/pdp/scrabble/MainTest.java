@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -26,9 +27,7 @@ import pdp.scrabble.dictionary.Word;
 import pdp.scrabble.dictionary.WordsLoader;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.*;
-import pdp.scrabble.game.actions.GameAction;
-import pdp.scrabble.game.actions.PassTurnAction;
-import pdp.scrabble.game.actions.RenamePlayerAction;
+import pdp.scrabble.game.actions.*;
 import pdp.scrabble.view.ViewCLI;
 
 public class MainTest {
@@ -239,6 +238,54 @@ public class MainTest {
     // Next turn reached
     //        System.out.println(this.gameModel.getTurn());
     assertEquals(2, this.gameModel.getTurn());
+  }
+
+  @Test
+  public void testF34() {
+    // TODO
+    System.out.println(this.gameModel.getCurrentPlayer().bag);
+
+    List<Letter> toExchange = new ArrayList<>();
+    toExchange.add(new Letter('A'));
+    toExchange.add(new Letter('B'));
+    toExchange.add(new Letter('R'));
+    GameAction ga =
+        new ExchangeLetterAction(
+            this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange);
+    this.gameModel.applyGameActionDispatch(ga);
+
+    System.out.println(this.gameModel.getCurrentPlayer().bag);
+  }
+
+  @Test
+  public void testF36() {
+    // F36. Abandon
+    // Le programme devra permettre à un joueur d’abandonner la partie en cours.
+
+    // Before
+    assertFalse(this.gameModel.getCurrentPlayer().getHasForfeited());
+    assertEquals(
+        "[Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}, Player{id=1, name='Player1', score=0, bag=LettersCounter{table={}}}, Player{id=2, name='Player2', score=0, bag=LettersCounter{table={}}}, Player{id=3, name='Player3', score=0, bag=LettersCounter{table={}}}]",
+        this.gameModel.getActivePlayers().toString());
+
+    // Player forfeit
+    GameAction ga =
+        new ForfeitGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
+    this.gameModel.applyGameActionDispatch(ga);
+
+    // check forfeit
+    assertTrue(this.gameModel.players.get(0).getHasForfeited());
+    assertEquals(
+        "[Player{id=1, name='Player1', score=0, bag=LettersCounter{table={}}}, Player{id=2, name='Player2', score=0, bag=LettersCounter{table={}}}, Player{id=3, name='Player3', score=0, bag=LettersCounter{table={}}}]",
+        this.gameModel.getActivePlayers().toString());
+
+    // Now pass all other players to reach the next turn
+    for (int i = 0; i < this.config.getPlayerCount() - 1; i++) {
+      ga = new PassTurnAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
+      this.gameModel.applyGameActionDispatch(ga);
+    }
+
+    assertEquals(1, (int) this.gameModel.getCurrentPlayer().id);
   }
 
   @Test

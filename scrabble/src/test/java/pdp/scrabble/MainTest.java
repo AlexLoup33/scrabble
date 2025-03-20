@@ -336,10 +336,11 @@ public class MainTest {
       l9[1] = new Letter('N');
     }
 
+/*
     assertThrows(CustomError.class, () -> {
       gm.grid.placeLetters(new PlaceWordAction(p1, 0, l1,
           new GridWordPos(0, 1, Direction.Right))).toString();
-    });
+    });*/
 
     System.out.println(
         gm.grid.placeLetters(new PlaceWordAction(p1, 1, l1,

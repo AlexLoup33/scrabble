@@ -336,42 +336,47 @@ public class MainTest {
       l9[1] = new Letter('N');
     }
 
+    assertThrows(CustomError.class, () -> {
+      gm.grid.placeLetters(new PlaceWordAction(p1, 0, l1,
+          new GridWordPos(0, 1, Direction.Right))).toString();
+    });
+
     System.out.println(
-        gm.grid.placeLetters(new PlaceWordAction(p1, 0, l1,
+        gm.grid.placeLetters(new PlaceWordAction(p1, 1, l1,
             new GridWordPos(6, 6, Direction.Right))));
 
     System.out.println(
-        gm.grid.placeLetters(new PlaceWordAction(p1, 0, l4,
+        gm.grid.placeLetters(new PlaceWordAction(p1, 2, l4,
             new GridWordPos(6, 11, Direction.Down))));
 
     assertThrows(NullPointerException.class, () -> {
-      gm.grid.placeLetters(new PlaceWordAction(p1, 0, l5,
+      gm.grid.placeLetters(new PlaceWordAction(p1, 3, l5,
           new GridWordPos(10, 12, Direction.Right))).toString();
     });
 
     System.out.println(
-        gm.grid.placeLetters(new PlaceWordAction(p1, 0, l2,
+        gm.grid.placeLetters(new PlaceWordAction(p1, 4, l2,
             new GridWordPos(7, 10, Direction.Right))));
 
     System.out.println(
-        gm.grid.placeLetters(new PlaceWordAction(p1, 0, l6,
+        gm.grid.placeLetters(new PlaceWordAction(p1, 5, l6,
             new GridWordPos(9, 12, Direction.Right))));
 
     assertThrows(CustomError.class, () -> {
-      gm.grid.placeLetters(new PlaceWordAction(p1, 0, l7,
+      gm.grid.placeLetters(new PlaceWordAction(p1, 6, l7,
           new GridWordPos(10, 12, Direction.Right))).toString();
     });
 
     System.out.println(
-        gm.grid.placeLetters(new PlaceWordAction(p1, 0, l8,
+        gm.grid.placeLetters(new PlaceWordAction(p1, 7, l8,
             new GridWordPos(8, 5, Direction.Right))));
 
     System.out.println(
-        gm.grid.placeLetters(new PlaceWordAction(p1, 0, l9,
+        gm.grid.placeLetters(new PlaceWordAction(p1, 8, l9,
             new GridWordPos(7, 6, Direction.Right))));
 
     assertThrows(CustomError.class, () -> {
-      gm.grid.placeLetters(new PlaceWordAction(p1, 0, l3,
+      gm.grid.placeLetters(new PlaceWordAction(p1, 9, l3,
           new GridWordPos(9, 5, Direction.Right))).toString();
     });
     // test 1: "LOUEE" right

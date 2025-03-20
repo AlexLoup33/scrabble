@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static pdp.scrabble.errorsHandling.ErrorType.UnknownWord;
 import static pdp.scrabble.game.Lang.FR;
 
 import java.io.ByteArrayOutputStream;
@@ -46,24 +47,23 @@ public class MainTest {
     dict = new Dictionary();
 
     // DO NOT CHANGE WITHOUT ANY REASONS
-    this.config =
-        new Configuration(
-            true,
-            "d",
-            false,
-            false,
-            false,
-            4,
-            10,
-            new boolean[4],
-            15,
-            2,
-            69,
-            "fr",
-            "idk",
-            java.nio.file.Paths.get("dictionary/fr.txt"),
-            java.nio.file.Paths.get("none"),
-            java.nio.file.Paths.get("none"));
+    this.config = new Configuration(
+        true,
+        "d",
+        false,
+        false,
+        false,
+        4,
+        10,
+        new boolean[4],
+        15,
+        2,
+        69,
+        "fr",
+        "idk",
+        java.nio.file.Paths.get("dictionary/fr.txt"),
+        java.nio.file.Paths.get("none"),
+        java.nio.file.Paths.get("none"));
 
     gameModel = new GameModel(config);
   }
@@ -202,30 +202,29 @@ public class MainTest {
 
   @Test
   public void testF31() {
-    //        System.out.println(this.gameModel.getCurrentPlayer().getName());
+    // System.out.println(this.gameModel.getCurrentPlayer().getName());
     assertEquals("Player0", this.gameModel.getCurrentPlayer().getName());
 
-    GameAction ga =
-        new RenamePlayerAction(
-            this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), "franck");
+    GameAction ga = new RenamePlayerAction(
+        this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), "franck");
     this.gameModel.applyGameActionDispatch(ga);
 
-    //        System.out.println(this.gameModel.getCurrentPlayer().getName());
+    // System.out.println(this.gameModel.getCurrentPlayer().getName());
     assertEquals("franck", this.gameModel.getCurrentPlayer().getName());
   }
 
   @Test
   public void testF33() {
-    //        System.out.println(this.gameModel.getCurrentPlayer().getName());
-    //        System.out.println(this.gameModel.getTurn());
+    // System.out.println(this.gameModel.getCurrentPlayer().getName());
+    // System.out.println(this.gameModel.getTurn());
     assertEquals("Player0", this.gameModel.getCurrentPlayer().getName());
     assertEquals(1, this.gameModel.getTurn());
 
     GameAction ga = new PassTurnAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
     this.gameModel.applyGameActionDispatch(ga);
 
-    //        System.out.println(this.gameModel.getCurrentPlayer().getName());
-    //        System.out.println(this.gameModel.getTurn());
+    // System.out.println(this.gameModel.getCurrentPlayer().getName());
+    // System.out.println(this.gameModel.getTurn());
     assertEquals("Player1", this.gameModel.getCurrentPlayer().getName());
     assertEquals(1, this.gameModel.getTurn());
 
@@ -236,7 +235,7 @@ public class MainTest {
     }
 
     // Next turn reached
-    //        System.out.println(this.gameModel.getTurn());
+    // System.out.println(this.gameModel.getTurn());
     assertEquals(2, this.gameModel.getTurn());
   }
 
@@ -252,8 +251,7 @@ public class MainTest {
         this.gameModel.getActivePlayers().toString());
 
     // Player forfeit
-    GameAction ga =
-        new ForfeitGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
+    GameAction ga = new ForfeitGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
     this.gameModel.applyGameActionDispatch(ga);
 
     // check forfeit
@@ -273,24 +271,23 @@ public class MainTest {
 
   @Test
   public void testPlaceLetters() {
-    Configuration config =
-        new Configuration(
-            true,
-            "d",
-            false,
-            false,
-            false,
-            4,
-            10,
-            new boolean[4],
-            15,
-            2,
-            -1,
-            "fr",
-            "idk",
-            java.nio.file.Paths.get("dictionary/fr.txt"),
-            java.nio.file.Paths.get("none"),
-            java.nio.file.Paths.get("none"));
+    Configuration config = new Configuration(
+        true,
+        "d",
+        false,
+        false,
+        false,
+        4,
+        10,
+        new boolean[4],
+        15,
+        2,
+        -1,
+        "fr",
+        "idk",
+        java.nio.file.Paths.get("dictionary/fr.txt"),
+        java.nio.file.Paths.get("none"),
+        java.nio.file.Paths.get("none"));
     ViewCLI view = new ViewCLI(FR, false);
 
     GameModel gm = new GameModel(config);
@@ -307,46 +304,123 @@ public class MainTest {
       l1[4] = new Letter('E');
     }
 
-    Letter[] l2 = new Letter[4];
+    Letter[] l2 = new Letter[1];
     {
-      l2[0] = new Letter('T');
-      l2[1] = new Letter('I');
-      l2[2] = new Letter('S');
-      l2[3] = new Letter('A');
+      l2[0] = new Letter('H');
     }
 
-    Letter[] l3 = new Letter[4];
+    Letter[] l3 = new Letter[2];
     {
-      l3[0] = new Letter('Z');
-      l3[1] = new Letter('I');
-      l3[2] = new Letter('Z');
-      l3[3] = new Letter('A');
+      l3[0] = new Letter('E');
+      l3[1] = new Letter('E');
     }
 
+    Letter[] l4 = new Letter[4];
+    {
+      l4[0] = new Letter('S');
+      l4[1] = new Letter('E');
+      l4[2] = new Letter('U');
+      l4[3] = new Letter('L');
+    }
+
+    Letter[] l5 = new Letter[8];
+    {
+      l5[0] = new Letter('E');
+      l5[1] = new Letter('L');
+      l5[2] = new Letter('E');
+      l5[3] = new Letter('G');
+      l5[4] = new Letter('A');
+      l5[2] = new Letter('N');
+      l5[3] = new Letter('T');
+      l5[4] = new Letter('E');
+    }
+
+    Letter[] l6 = new Letter[1];
+    {
+      l6[0] = new Letter('U');
+    }
+
+    Letter[] l7 = new Letter[2];
+    {
+      l7[0] = new Letter('R');
+      l7[1] = new Letter('E');
+    }
+
+    Letter[] l8 = new Letter[3];
+    {
+      l8[0] = new Letter('L');
+      l8[1] = new Letter('E');
+      l8[2] = new Letter('T');
+    }
+
+    Letter[] l9 = new Letter[2];
+    {
+      l9[0] = new Letter('I');
+      l9[1] = new Letter('N');
+    }
+
+    System.out.println(
+        gm.grid.placeLetters(new PlaceWordAction(p1, 0, l1,
+            new GridWordPos(6, 6, Direction.Right))));
+
+    System.out.println(
+        gm.grid.placeLetters(new PlaceWordAction(p1, 0, l4,
+            new GridWordPos(6, 11, Direction.Down))));
+
+    assertThrows(NullPointerException.class, () -> {
+      gm.grid.placeLetters(new PlaceWordAction(p1, 0, l5,
+          new GridWordPos(10, 12, Direction.Right))).toString();
+    });
+
+    System.out.println(
+        gm.grid.placeLetters(new PlaceWordAction(p1, 0, l2,
+            new GridWordPos(7, 10, Direction.Right))));
+
+    System.out.println(
+        gm.grid.placeLetters(new PlaceWordAction(p1, 0, l6,
+            new GridWordPos(9, 12, Direction.Right))));
+
+    assertThrows(CustomError.class, () -> {
+      gm.grid.placeLetters(new PlaceWordAction(p1, 0, l7,
+          new GridWordPos(10, 12, Direction.Right))).toString();
+    });
+
+    System.out.println(
+        gm.grid.placeLetters(new PlaceWordAction(p1, 0, l8,
+            new GridWordPos(8, 5, Direction.Right))));
+
+    System.out.println(
+        gm.grid.placeLetters(new PlaceWordAction(p1, 0, l9,
+            new GridWordPos(7, 6, Direction.Right))));
+
+    assertThrows(CustomError.class, () -> {
+      gm.grid.placeLetters(new PlaceWordAction(p1, 0, l3,
+          new GridWordPos(9, 5, Direction.Right))).toString();
+    });
     // test 1: "LOUEE" right
-    //        assertEquals(
-    //                "[OwnedWord{position=GridWordPos[row=2, col=0, direction=Right], word=LOUEE,
+    // assertEquals(
+    // "[OwnedWord{position=GridWordPos[row=2, col=0, direction=Right], word=LOUEE,
     // owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
-    //                gm.grid
-    //                        .placeLetters(new PlaceWordAction(p1, 0, l1, new GridWordPos(2, 0,
+    // gm.grid
+    // .placeLetters(new PlaceWordAction(p1, 0, l1, new GridWordPos(2, 0,
     // Direction.Right)))
-    //                        .toString());
-    //        System.out.println(
-    //                gm.grid.placeLetters(new PlaceWordAction(
-    //                        p1,
-    //                        0,
-    //                        l1,
-    //                        new GridWordPos(2, 2, Direction.Right))
-    //                ));
+    // .toString());
+    // System.out.println(
+    // gm.grid.placeLetters(new PlaceWordAction(
+    // p1,
+    // 0,
+    // l1,
+    // new GridWordPos(2, 2, Direction.Right))
+    // ));
 
     // test 2: "TISA" down
-    //        assertEquals(
-    //                "[OwnedWord{position=GridWordPos[row=0, col=5, direction=Down], word=TISA,
+    // assertEquals(
+    // "[OwnedWord{position=GridWordPos[row=0, col=5, direction=Down], word=TISA,
     // owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
-    //                gm.grid
-    //                        .placeLetters(new PlaceWordAction(p1, 0, l2, new GridWordPos(0, 5,
+    // gm.grid
+    // .placeLetters(new PlaceWordAction(p1, 0, l2, new GridWordPos(0, 5,
     // Direction.Down)))
-    //                        .toString());
+    // .toString());
     // System.out.println(
     // gm.grid.placeLetters(new PlaceWordAction(
     // p1,
@@ -356,13 +430,13 @@ public class MainTest {
     // ));
 
     // test 3: "LOUEE" dowm
-    //        assertEquals(
-    //                "[OwnedWord{position=GridWordPos[row=8, col=8, direction=Down], word=LOUEE,
+    // assertEquals(
+    // "[OwnedWord{position=GridWordPos[row=8, col=8, direction=Down], word=LOUEE,
     // owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
-    //                gm.grid
-    //                        .placeLetters(new PlaceWordAction(p1, 0, l1, new GridWordPos(8, 8,
+    // gm.grid
+    // .placeLetters(new PlaceWordAction(p1, 0, l1, new GridWordPos(8, 8,
     // Direction.Down)))
-    //                        .toString());
+    // .toString());
     // System.out.println(
     // gm.grid.placeLetters(new PlaceWordAction(
     // p1,
@@ -372,13 +446,13 @@ public class MainTest {
     // ));
 
     // test 4: "TISA" right
-    //        assertEquals(
-    //                "[OwnedWord{position=GridWordPos[row=13, col=6, direction=Right], word=TISA,
+    // assertEquals(
+    // "[OwnedWord{position=GridWordPos[row=13, col=6, direction=Right], word=TISA,
     // owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
-    //                gm.grid
-    //                        .placeLetters(new PlaceWordAction(p1, 0, l2, new GridWordPos(13, 6,
+    // gm.grid
+    // .placeLetters(new PlaceWordAction(p1, 0, l2, new GridWordPos(13, 6,
     // Direction.Right)))
-    //                        .toString());
+    // .toString());
     // System.out.println(
     // gm.grid.placeLetters(new PlaceWordAction(
     // p1,
@@ -388,16 +462,16 @@ public class MainTest {
     // ));
 
     // test 5: "ZIZA" right, not a valid word
-    //        assertThrows(
-    //                CustomError.class,
-    //                () -> {
-    //                    gm.grid
-    //                            .placeLetters(new PlaceWordAction(p1, 0, l3, new GridWordPos(13,
+    // assertThrows(
+    // CustomError.class,
+    // () -> {
+    // gm.grid
+    // .placeLetters(new PlaceWordAction(p1, 0, l3, new GridWordPos(13,
     // 0, Direction.Right)))
-    //                            .toString();
-    //                });
+    // .toString();
+    // });
 
-    //        view.displayGrid(gm.grid, false);
+    // view.displayGrid(gm.grid, false);
 
   }
 
@@ -468,24 +542,23 @@ public class MainTest {
   @Test
   public void testPrintGrid() {
     PrintStream originalOut = System.out;
-    Configuration config =
-        new Configuration(
-            true,
-            "d",
-            false,
-            false,
-            false,
-            4,
-            10,
-            new boolean[4],
-            15,
-            2,
-            -1,
-            "fr",
-            "idk",
-            java.nio.file.Paths.get("dictionary/fr.txt"),
-            java.nio.file.Paths.get("none"),
-            java.nio.file.Paths.get("none"));
+    Configuration config = new Configuration(
+        true,
+        "d",
+        false,
+        false,
+        false,
+        4,
+        10,
+        new boolean[4],
+        15,
+        2,
+        -1,
+        "fr",
+        "idk",
+        java.nio.file.Paths.get("dictionary/fr.txt"),
+        java.nio.file.Paths.get("none"),
+        java.nio.file.Paths.get("none"));
 
     GameModel gm = new GameModel(config);
     gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
@@ -498,24 +571,23 @@ public class MainTest {
       view.displayGrid(gm.grid, false);
       String output = outputStreamCaptor.toString().trim();
 
-      String expectedOutput =
-          """
-                            1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
-                            a [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
-                            b _[0m  [41m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m
-                            c _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
-                            d [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m
-                            e _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m
-                            f _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m
-                            g _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m
-                            h [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
-                            i _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m
-                            j _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m
-                            k _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m
-                            l [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m
-                            m _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
-                            n _[0m  [41m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m
-                            o [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m""";
+      String expectedOutput = """
+          1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+          a [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
+          b _[0m  [41m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m
+          c _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
+          d [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m
+          e _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m
+          f _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m
+          g _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m
+          h [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
+          i _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m
+          j _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m
+          k _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m
+          l [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m
+          m _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
+          n _[0m  [41m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m
+          o [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m""";
 
       assertEquals(expectedOutput, output);
     } finally {
@@ -551,22 +623,22 @@ public class MainTest {
     // Test grid
     assertEquals(
         """
-                        T E S T _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        """,
+            T E S T _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            """,
         this.gameModel.grid.toString());
 
     // ------- Player score ++
@@ -585,29 +657,28 @@ public class MainTest {
     assertEquals(2, this.gameModel.getTurn());
 
     // ------- Player restart
-    GameAction ga2 =
-        new RestartGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
+    GameAction ga2 = new RestartGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
     this.gameModel.applyGameActionDispatch(ga2);
 
     // ------- After------------------------------------
     assertEquals(
         """
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        """,
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            """,
         this.gameModel.grid.toString());
     assertEquals(0, this.gameModel.players.get(0).getScore());
     assertEquals(1, this.gameModel.getTurn());
@@ -626,18 +697,17 @@ public class MainTest {
     assertEquals(
         "LettersCounter{table={L=1, A=1, U=1, I=1, H=1, R=1}}",
         this.gameModel.players.get(0).bag.toString());
-    //        System.out.println(this.gameModel.players.get(0).bag);
+    // System.out.println(this.gameModel.players.get(0).bag);
 
     List<Letter> toExchange = new ArrayList<>();
     toExchange.add(new Letter('L'));
     toExchange.add(new Letter('A'));
 
-    GameAction ga =
-        new ExchangeLetterAction(
-            this.gameModel.players.get(0), this.gameModel.getTurn(), toExchange);
+    GameAction ga = new ExchangeLetterAction(
+        this.gameModel.players.get(0), this.gameModel.getTurn(), toExchange);
     this.gameModel.applyGameActionDispatch(ga);
 
-    //        System.out.println(this.gameModel.players.get(0).bag);
+    // System.out.println(this.gameModel.players.get(0).bag);
     assertEquals(
         "LettersCounter{table={U=1, I=2, H=1, R=1, E=1}}",
         this.gameModel.players.get(0).bag.toString());
@@ -645,9 +715,8 @@ public class MainTest {
     // Try illegal action
     List<Letter> toExchange2 = new ArrayList<>();
     toExchange2.add(new Letter('Z'));
-    GameAction ga2 =
-        new ExchangeLetterAction(
-            this.gameModel.players.get(0), this.gameModel.getTurn(), toExchange2);
+    GameAction ga2 = new ExchangeLetterAction(
+        this.gameModel.players.get(0), this.gameModel.getTurn(), toExchange2);
 
     assertThrows(CustomError.class, () -> this.gameModel.applyGameActionDispatch(ga2));
 
@@ -661,9 +730,8 @@ public class MainTest {
     List<Letter> toExchange3 = new ArrayList<>();
     toExchange3.add(new Letter('U'));
 
-    GameAction ga3 =
-        new ExchangeLetterAction(
-            this.gameModel.players.get(0), this.gameModel.getTurn(), toExchange3);
+    GameAction ga3 = new ExchangeLetterAction(
+        this.gameModel.players.get(0), this.gameModel.getTurn(), toExchange3);
     this.gameModel.applyGameActionDispatch(ga3);
 
     assertEquals(

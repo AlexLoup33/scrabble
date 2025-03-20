@@ -3,6 +3,7 @@ package pdp.scrabble.view;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
@@ -37,6 +38,7 @@ import pdp.scrabble.view.Component.ScrabbleBoard;
 public class ViewGUI extends Application implements IView {
   private static ViewGUI instance;
   private Stage primaryStage;
+  private HBox mainRow;
   private static CountDownLatch latch;
   private static Lang lang;
   private static Boolean isSuperScrabble;
@@ -247,7 +249,7 @@ public class ViewGUI extends Application implements IView {
     }
 
     // Combine histo, scrabbleBoard, and playerScores into a single row
-    HBox mainRow = new HBox(10, histo, scrabbleBoard, playerScores);
+    mainRow = new HBox(10, histo, scrabbleBoard, playerScores);
     mainRow.setStyle("-fx-alignment: center; -fx-padding: 10px;");
 
     // Main du joueur provisoir :
@@ -460,7 +462,13 @@ public class ViewGUI extends Application implements IView {
   }
 
   @Override
-  public void displayGrid(Grid grid, Boolean isSuperScrabble) {}
+  public void displayGrid(Grid grid, Boolean isSuperScrabble) {
+    // Update the scrabble board with the new grid
+    System.out.println("Updating scrabble board with new grid");
+    this.mainRow.getChildren().remove(scrabbleBoard);
+    this.scrabbleBoard.update(grid, isSuperScrabble);
+    this.mainRow.getChildren().add(1, scrabbleBoard);
+  }
 
   @Override
   public void displayPlayerLetters(LettersCounter letters) {
@@ -499,6 +507,11 @@ public class ViewGUI extends Application implements IView {
 
   @Override
   public void showError(Throwable e) {
-    throw new UnsupportedOperationException("Unimplemented method 'showError'");
+    //Dialog to display the error message
+    Alert alert = new Alert(Alert.AlertType.ERROR);
+    alert.setTitle(langPack.getString("error"));
+    alert.setHeaderText(langPack.getString("error"));
+    alert.setContentText(e.getMessage());
+    alert.showAndWait();
   }
 }

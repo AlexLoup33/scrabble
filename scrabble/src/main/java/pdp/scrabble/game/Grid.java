@@ -312,6 +312,7 @@ public class Grid {
       }
     }
 
+    /*
     int score_tot = 0;
     boolean playCenter = false;
     for (Player onGames : this.gameModel.players) {
@@ -331,6 +332,7 @@ public class Grid {
             "the first move: '" + score_tot + " not play to the center (need to touch h8)");
       }
     }
+    */
 
     // ** place the letters on the grid
     for (int index = 0; index < pwa.toPlace.length; index++) {

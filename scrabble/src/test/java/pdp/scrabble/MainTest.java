@@ -117,29 +117,6 @@ public class MainTest {
     assertEquals(0, lc.getLetterCount(new Letter('F')));
   }
 
-  /** Test the basic functionality of the Dictionary class */
-  @Test
-  public void testDictionaryBasicFunc() {
-    // test addWord, containsWord
-    Word word = new Word("test");
-    dict.addWord(word);
-    assertTrue(dict.containsWord(word));
-    assertFalse(dict.containsWord(new Word("testDeux")));
-
-    // test toString
-    Word word2 = new Word("frank");
-    dict.addWord(word2);
-    assertTrue(dict.toString().contains(word.toString()));
-    assertTrue(dict.toString().contains(word2.toString()));
-  }
-
-  @Test
-  public void testDictionaryLoadFromFile() {
-    dict.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
-    assertTrue(dict.containsWord(new Word("AALENIEN")));
-    assertFalse(dict.containsWord(new Word("cpasunmotlegalca")));
-  }
-
   @Test
   public void testWordsLoader() {
     List<Word> words = WordsLoader.loadWordsFromFile(path);

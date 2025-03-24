@@ -32,7 +32,8 @@ public enum ErrorType {
   PositionOutOfGird(true),
   InvalidIndexOutOfGird(false),
   NoHistoryAvailable(false),
-  FirstMoveIllegal(false);
+  FirstMoveIllegal(false),
+  NotPlaceNextToAWord(false);
 
   public final boolean isFatal;
 

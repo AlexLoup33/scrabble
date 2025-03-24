@@ -6,6 +6,9 @@ import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Dictionary;
 import pdp.scrabble.dictionary.IDictionary;
+import pdp.scrabble.dictionary.Letter;
+import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.actions.*;
 
 public class GameModel {
@@ -95,7 +98,25 @@ public class GameModel {
   public void applyGameAction(PlaceWordAction pwa) {
     pwa.assertHasLettersToPlace();
     List<OwnedWord> scoredWords = this.grid.placeLetters(pwa);
-    pwa.removeLettersPlaced(); //
+    // modified for test if the word need to be play next to a word
+    int score_tot = 0;
+    for (Player onGames : this.players) {
+      score_tot += onGames.getScore();
+    }
+    for (OwnedWord ownedWord : scoredWords) {
+      StringBuilder sb = new StringBuilder();
+      for (Letter letter : pwa.toPlace) {
+        sb.append(String.valueOf(letter));
+      }
+      if (scoredWords.size() == 1 && score_tot != 0 && sb.toString().equals(ownedWord.word.toString())) {
+        scoredWords.clear();
+        throw new CustomError(
+            ErrorType.NotPlaceNextToAWord,
+            "Not the right move, need to put next to the word",
+            "the move: '" + sb.toString() + " play alone whithout touching another word");
+      } // modified
+    }
+    pwa.removeLettersPlaced();
     for (OwnedWord ownedWord : scoredWords) {
       int wordScore = this.grid.getScore(ownedWord);
       Utilities.verbose(
@@ -109,15 +130,17 @@ public class GameModel {
   // F41
   public void applyGameAction(RestartGameAction restartGameAction) {
     this.reset();
-    //        this.endPlayerTurn();
+    // this.endPlayerTurn();
     this.currentPlayer = this.players.get(0);
   }
 
   /**
-   * This function returns a list of active players by filtering out players who have forfeited.
+   * This function returns a list of active players by filtering out players who
+   * have forfeited.
    *
-   * @return The method `getActivePlayers` returns a list of active players, which are players who
-   *     have not forfeited the game.
+   * @return The method `getActivePlayers` returns a list of active players, which
+   *         are players who
+   *         have not forfeited the game.
    */
   public List<Player> getActivePlayers() {
     List<Player> activePlayers = new ArrayList<>();

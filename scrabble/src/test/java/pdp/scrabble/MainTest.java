@@ -375,15 +375,20 @@ public class MainTest {
           new GridWordPos(11, 12, Direction.Right)));
     });
 
-    gm.applyGameActionDispatch(new PlaceWordAction(p1, 7, l8,
-        new GridWordPos(9, 5, Direction.Right)));
-
     gm.applyGameActionDispatch(new PlaceWordAction(p1, 8, l9,
         new GridWordPos(8, 6, Direction.Right)));
+
+    gm.applyGameActionDispatch(new PlaceWordAction(p1, 7, l8,
+        new GridWordPos(9, 5, Direction.Right)));
 
     assertThrows(CustomError.class, () -> {
       gm.applyGameAction(new PlaceWordAction(p1, 9, l3,
           new GridWordPos(10, 5, Direction.Right)));
+    });
+
+    assertThrows(CustomError.class, () -> {
+      gm.applyGameAction(new PlaceWordAction(p1, 10, l8,
+          new GridWordPos(2, 2, Direction.Right)));
     });
     // view.displayGrid(gm.grid, false);
 

@@ -312,16 +312,15 @@ public class Grid {
       }
     }
 
-    /*
     int score_tot = 0;
     boolean playCenter = false;
     for (Player onGames : this.gameModel.players) {
       score_tot += onGames.getScore();
     }
-    if (score_tot == 0 && this.gameModel.getTurn() == 0) {
+    if (score_tot == 0) {
       for (int index = 0; index < pwa.toPlace.length; index++) {
         final GridPos currPos = lettersPos.get(index);
-        if (currPos.row() == 8 && currPos.col() == 8) {
+        if (currPos.row() == 7 && currPos.col() == 7) {
           playCenter = true;
         }
       }
@@ -332,7 +331,6 @@ public class Grid {
             "the first move: '" + score_tot + " not play to the center (need to touch h8)");
       }
     }
-    */
 
     // ** place the letters on the grid
     for (int index = 0; index < pwa.toPlace.length; index++) {

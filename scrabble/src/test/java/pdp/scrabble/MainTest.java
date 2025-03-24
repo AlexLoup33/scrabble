@@ -274,186 +274,117 @@ public class MainTest {
 
     Letter[] l1 = new Letter[5];
     {
-      l1[0] = new Letter('L');
-      l1[1] = new Letter('O');
-      l1[2] = new Letter('U');
-      l1[3] = new Letter('E');
-      l1[4] = new Letter('E');
+      String w = "LOUEE";
+      for (int i = 0; i < w.length(); i++) {
+        l1[i] = new Letter(w.charAt(i));
+        p1.bag.addLetter(l1[i]);
+      }
     }
 
     Letter[] l2 = new Letter[1];
     {
       l2[0] = new Letter('H');
+      p1.bag.addLetter(l2[0]);
     }
 
     Letter[] l3 = new Letter[2];
     {
-      l3[0] = new Letter('E');
-      l3[1] = new Letter('E');
+      String w = "EE";
+      for (int i = 0; i < w.length(); i++) {
+        l3[i] = new Letter(w.charAt(i));
+        p1.bag.addLetter(l3[i]);
+      }
     }
 
     Letter[] l4 = new Letter[4];
     {
-      l4[0] = new Letter('S');
-      l4[1] = new Letter('E');
-      l4[2] = new Letter('U');
-      l4[3] = new Letter('L');
+      String w = "SEUL";
+      for (int i = 0; i < w.length(); i++) {
+        l4[i] = new Letter(w.charAt(i));
+        p1.bag.addLetter(l4[i]);
+      }
     }
 
     Letter[] l5 = new Letter[8];
     {
-      l5[0] = new Letter('E');
-      l5[1] = new Letter('L');
-      l5[2] = new Letter('E');
-      l5[3] = new Letter('G');
-      l5[4] = new Letter('A');
-      l5[2] = new Letter('N');
-      l5[3] = new Letter('T');
-      l5[4] = new Letter('E');
+      String w = "ELEGANTE";
+      for (int i = 0; i < w.length(); i++) {
+        l5[i] = new Letter(w.charAt(i));
+        p1.bag.addLetter(l5[i]);
+      }
     }
 
     Letter[] l6 = new Letter[1];
     {
       l6[0] = new Letter('U');
+      p1.bag.addLetter(l6[0]);
     }
 
     Letter[] l7 = new Letter[2];
     {
-      l7[0] = new Letter('R');
-      l7[1] = new Letter('E');
+      String w = "RE";
+      for (int i = 0; i < w.length(); i++) {
+        l7[i] = new Letter(w.charAt(i));
+        p1.bag.addLetter(l7[i]);
+      }
     }
 
     Letter[] l8 = new Letter[3];
     {
-      l8[0] = new Letter('L');
-      l8[1] = new Letter('E');
-      l8[2] = new Letter('T');
+      String w = "LET";
+      for (int i = 0; i < w.length(); i++) {
+        l8[i] = new Letter(w.charAt(i));
+        p1.bag.addLetter(l8[i]);
+      }
     }
 
     Letter[] l9 = new Letter[2];
     {
-      l9[0] = new Letter('I');
-      l9[1] = new Letter('N');
+      String w = "IN";
+      for (int i = 0; i < w.length(); i++) {
+        l9[i] = new Letter(w.charAt(i));
+        p1.bag.addLetter(l9[i]);
+      }
     }
 
-/*
     assertThrows(CustomError.class, () -> {
       gm.grid.placeLetters(new PlaceWordAction(p1, 0, l1,
           new GridWordPos(0, 1, Direction.Right))).toString();
-    });*/
-
-    System.out.println(
-        gm.grid.placeLetters(new PlaceWordAction(p1, 1, l1,
-            new GridWordPos(6, 6, Direction.Right))));
-
-    System.out.println(
-        gm.grid.placeLetters(new PlaceWordAction(p1, 2, l4,
-            new GridWordPos(6, 11, Direction.Down))));
-
-    assertThrows(NullPointerException.class, () -> {
-      gm.grid.placeLetters(new PlaceWordAction(p1, 3, l5,
-          new GridWordPos(10, 12, Direction.Right))).toString();
     });
 
-    System.out.println(
-        gm.grid.placeLetters(new PlaceWordAction(p1, 4, l2,
-            new GridWordPos(7, 10, Direction.Right))));
+    System.out.println(p1.bag);
+    gm.applyGameActionDispatch(new PlaceWordAction(p1, 1, l1,
+        new GridWordPos(7, 6, Direction.Right)));
 
-    System.out.println(
-        gm.grid.placeLetters(new PlaceWordAction(p1, 5, l6,
-            new GridWordPos(9, 12, Direction.Right))));
+    gm.applyGameActionDispatch(new PlaceWordAction(p1, 2, l4,
+        new GridWordPos(7, 11, Direction.Down)));
 
     assertThrows(CustomError.class, () -> {
-      gm.grid.placeLetters(new PlaceWordAction(p1, 6, l7,
-          new GridWordPos(10, 12, Direction.Right))).toString();
+      gm.applyGameActionDispatch(new PlaceWordAction(p1, 3, l5,
+          new GridWordPos(11, 12, Direction.Right)));
     });
 
-    System.out.println(
-        gm.grid.placeLetters(new PlaceWordAction(p1, 7, l8,
-            new GridWordPos(8, 5, Direction.Right))));
+    gm.applyGameActionDispatch(new PlaceWordAction(p1, 4, l2,
+        new GridWordPos(8, 10, Direction.Right)));
 
-    System.out.println(
-        gm.grid.placeLetters(new PlaceWordAction(p1, 8, l9,
-            new GridWordPos(7, 6, Direction.Right))));
+    gm.applyGameActionDispatch(new PlaceWordAction(p1, 5, l6,
+        new GridWordPos(10, 12, Direction.Right)));
 
     assertThrows(CustomError.class, () -> {
-      gm.grid.placeLetters(new PlaceWordAction(p1, 9, l3,
-          new GridWordPos(9, 5, Direction.Right))).toString();
+      gm.applyGameActionDispatch(new PlaceWordAction(p1, 6, l7,
+          new GridWordPos(11, 12, Direction.Right)));
     });
-    // test 1: "LOUEE" right
-    // assertEquals(
-    // "[OwnedWord{position=GridWordPos[row=2, col=0, direction=Right], word=LOUEE,
-    // owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
-    // gm.grid
-    // .placeLetters(new PlaceWordAction(p1, 0, l1, new GridWordPos(2, 0,
-    // Direction.Right)))
-    // .toString());
-    // System.out.println(
-    // gm.grid.placeLetters(new PlaceWordAction(
-    // p1,
-    // 0,
-    // l1,
-    // new GridWordPos(2, 2, Direction.Right))
-    // ));
 
-    // test 2: "TISA" down
-    // assertEquals(
-    // "[OwnedWord{position=GridWordPos[row=0, col=5, direction=Down], word=TISA,
-    // owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
-    // gm.grid
-    // .placeLetters(new PlaceWordAction(p1, 0, l2, new GridWordPos(0, 5,
-    // Direction.Down)))
-    // .toString());
-    // System.out.println(
-    // gm.grid.placeLetters(new PlaceWordAction(
-    // p1,
-    // 0,
-    // l2,
-    // new GridWordPos(0, 5, Direction.Down))
-    // ));
+    gm.applyGameActionDispatch(new PlaceWordAction(p1, 7, l8,
+        new GridWordPos(9, 5, Direction.Right)));
 
-    // test 3: "LOUEE" dowm
-    // assertEquals(
-    // "[OwnedWord{position=GridWordPos[row=8, col=8, direction=Down], word=LOUEE,
-    // owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
-    // gm.grid
-    // .placeLetters(new PlaceWordAction(p1, 0, l1, new GridWordPos(8, 8,
-    // Direction.Down)))
-    // .toString());
-    // System.out.println(
-    // gm.grid.placeLetters(new PlaceWordAction(
-    // p1,
-    // 0,
-    // l1,
-    // new GridWordPos(8, 8, Direction.Down))
-    // ));
+    gm.applyGameActionDispatch(new PlaceWordAction(p1, 8, l9,
+        new GridWordPos(8, 6, Direction.Right)));
 
-    // test 4: "TISA" right
-    // assertEquals(
-    // "[OwnedWord{position=GridWordPos[row=13, col=6, direction=Right], word=TISA,
-    // owner=Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}}}]",
-    // gm.grid
-    // .placeLetters(new PlaceWordAction(p1, 0, l2, new GridWordPos(13, 6,
-    // Direction.Right)))
-    // .toString());
-    // System.out.println(
-    // gm.grid.placeLetters(new PlaceWordAction(
-    // p1,
-    // 0,
-    // l2,
-    // new GridWordPos(13, 6, Direction.Right))
-    // ));
-
-    // test 5: "ZIZA" right, not a valid word
-    // assertThrows(
-    // CustomError.class,
-    // () -> {
-    // gm.grid
-    // .placeLetters(new PlaceWordAction(p1, 0, l3, new GridWordPos(13,
-    // 0, Direction.Right)))
-    // .toString();
-    // });
-
+    assertThrows(CustomError.class, () -> {
+      gm.applyGameAction(new PlaceWordAction(p1, 9, l3,
+          new GridWordPos(10, 5, Direction.Right)));
+    });
     // view.displayGrid(gm.grid, false);
 
   }
@@ -601,12 +532,11 @@ public class MainTest {
             this.gameModel.players.get(0),
             this.gameModel.getTurn(),
             l1,
-            new GridWordPos(0, 0, Direction.Right)));
+            new GridWordPos(7, 4, Direction.Right)));
 
     // Test grid
     assertEquals(
         """
-            T E S T _ _ _ _ _ _ _ _ _ _ _\s
             _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
             _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
             _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
@@ -614,6 +544,7 @@ public class MainTest {
             _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
             _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
             _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ T E S T _ _ _ _ _ _ _\s
             _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
             _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
             _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s

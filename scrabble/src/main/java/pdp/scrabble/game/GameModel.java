@@ -98,24 +98,6 @@ public class GameModel {
   public void applyGameAction(PlaceWordAction pwa) {
     pwa.assertHasLettersToPlace();
     List<OwnedWord> scoredWords = this.grid.placeLetters(pwa);
-    // modified for test if the word need to be play next to a word
-    int score_tot = 0;
-    for (Player onGames : this.players) {
-      score_tot += onGames.getScore();
-    }
-    for (OwnedWord ownedWord : scoredWords) {
-      StringBuilder sb = new StringBuilder();
-      for (Letter letter : pwa.toPlace) {
-        sb.append(String.valueOf(letter));
-      }
-      if (scoredWords.size() == 1 && score_tot != 0 && sb.toString().equals(ownedWord.word.toString())) {
-        scoredWords.clear();
-        throw new CustomError(
-            ErrorType.NotPlaceNextToAWord,
-            "Not the right move, need to put next to the word",
-            "the move: '" + sb.toString() + " play alone whithout touching another word");
-      } // modified
-    }
     pwa.removeLettersPlaced();
     for (OwnedWord ownedWord : scoredWords) {
       int wordScore = this.grid.getScore(ownedWord);

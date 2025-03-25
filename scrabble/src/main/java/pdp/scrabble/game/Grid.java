@@ -332,6 +332,20 @@ public class Grid {
       }
     }
 
+    // modified for test if the word need to be play next to a word
+    for (OwnedWord ownedWord : result) {
+      StringBuilder sb = new StringBuilder();
+      for (Letter letter : pwa.toPlace) {
+        sb.append(String.valueOf(letter));
+      }
+      if (result.size() == 1 && score_tot != 0 && sb.toString().equals(ownedWord.word.toString())) {
+        throw new CustomError(
+            ErrorType.NotPlaceNextToAWord,
+            "Not the right move, need to put next to the word",
+            "the move: '" + sb.toString() + " play alone whithout touching another word");
+      }
+    } // modified
+
     // ** place the letters on the grid
     for (int index = 0; index < pwa.toPlace.length; index++) {
       final GridPos currPos = lettersPos.get(index);

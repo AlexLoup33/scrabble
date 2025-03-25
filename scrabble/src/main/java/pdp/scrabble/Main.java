@@ -12,16 +12,11 @@ import pdp.scrabble.configuration.ConfigurationInitializer;
 import pdp.scrabble.controller.GameController;
 
 public class Main {
-  public static void main(String[] args) throws Exception {
-    Configuration conf = ConfigurationInitializer.configurationInit(args);
+    public static void main(String[] args) throws Exception {
+        Configuration conf = ConfigurationInitializer.configurationInit(args);
 
-    GameController gc = new GameController(conf);
-    gc.gameLoop();
-
-
-    // Question:
-
-    // give-up des features ?
-    // F1 to F9, how ?? peut rendre early ?
-  }
+        GameController gc = new GameController(conf);
+        gc.gameLoop();
+    }
 }
+

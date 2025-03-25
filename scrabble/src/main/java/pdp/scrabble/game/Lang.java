@@ -238,7 +238,7 @@ public enum Lang {
    */
   public LettersCounter getLettersCount() {
     throw new UnsupportedOperationException(
-        "the lang " + this.name() + " havn't implemented getLettersCount");
+        "the lang " + this.name() + " haven't implemented getLettersCount");
   }
 
   /**

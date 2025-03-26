@@ -61,13 +61,11 @@ public class ScrabbleBoard extends Canvas {
           }
         } else {
           GridPos pos = new GridPos(row - 1, col - 1);
-          Letter letter = grid.getLetter(row, col);
-          String color = "";
-
+          Letter letter = grid.getLetter(row - 1, col - 1);
+          String color =
+              ScoreMultiplier.SIMPLE_LETTER.getLetterColor(isSuperScrabble, true).getGuiColor();
           if (letter != null) {
-            color =
-                ScoreMultiplier.SIMPLE_LETTER.getLetterColor(isSuperScrabble).getBackgroundColor();
-            gc.setFill(Color.valueOf(color));
+            gc.setFill(Color.BEIGE);
             gc.fillRect(row * CELL_SIZE, col * CELL_SIZE, CELL_SIZE, CELL_SIZE);
             gc.strokeRect(row * CELL_SIZE, col * CELL_SIZE, CELL_SIZE, CELL_SIZE);
             gc.strokeText(
@@ -75,9 +73,15 @@ public class ScrabbleBoard extends Canvas {
                 row * CELL_SIZE + CELL_SIZE / 2,
                 col * CELL_SIZE + CELL_SIZE / 2);
           } else {
+            Color c;
             ScoreMultiplier mult = grid.getMultiplier(pos);
-            color = mult.getLetterColor(isSuperScrabble).getBackgroundColor();
-            gc.setFill(Color.valueOf(color));
+            if (mult == ScoreMultiplier.SIMPLE_LETTER) {
+              c = Color.BEIGE;
+            } else {
+              color = mult.getLetterColor(isSuperScrabble, true).getGuiColor();
+              c = Color.valueOf(color);
+            }
+            gc.setFill(c);
             gc.fillRect(row * CELL_SIZE, col * CELL_SIZE, CELL_SIZE, CELL_SIZE);
             gc.strokeRect(row * CELL_SIZE, col * CELL_SIZE, CELL_SIZE, CELL_SIZE);
           }

@@ -188,8 +188,8 @@ public class ViewCLI implements IView {
 
         switch (mult) {
           case SIMPLE_LETTER, DOUBLE_LETTER, TRIPLE_LETTER, DOUBLE_WORD, TRIPLE_WORD -> {
-            color = mult.getLetterColor(isSuperScrabble).getTextColor();
-            backgroundColor = mult.getLetterColor(isSuperScrabble).getBackgroundColor();
+            color = mult.getLetterColor(isSuperScrabble, false).getTextColor();
+            backgroundColor = mult.getLetterColor(isSuperScrabble, false).getBackgroundColor();
           }
           case QUADRUPLE_LETTER, QUADRUPLE_WORD -> {
             if (!isSuperScrabble) {
@@ -198,8 +198,8 @@ public class ViewCLI implements IView {
                   "Illegal Multiplier",
                   "Illegal utilisation of QUADRUPLE multiplier in non super scrabble game mode");
             }
-            color = mult.getLetterColor(isSuperScrabble).getTextColor();
-            backgroundColor = mult.getLetterColor(isSuperScrabble).getBackgroundColor();
+            color = mult.getLetterColor(isSuperScrabble, false).getTextColor();
+            backgroundColor = mult.getLetterColor(isSuperScrabble, false).getBackgroundColor();
           }
           default -> {
             throw new CustomError(

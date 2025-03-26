@@ -1,7 +1,6 @@
 package pdp.scrabble.view;
 
 import java.util.List;
-
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -46,10 +45,9 @@ public class ViewGUI implements IView {
   public ViewGUI(Lang lang, Boolean isSuperScrabble, Stage stage) {
     this.lang = lang;
     this.isSuperScrabble = isSuperScrabble;
-    
+
     this.primaryStage = stage;
-    
-    
+
     // MENU BAR INITIALIZATION
     MenuBar menuBar = new MenuBar();
 
@@ -464,8 +462,6 @@ public class ViewGUI implements IView {
     alert.setContentText(e.getMessage());
     alert.showAndWait();
   }
-
-
 
   @Override
   public void initialize(Configuration conf) {

@@ -7,10 +7,9 @@ import pdp.scrabble.controller.GameController;
 
 public class ViewGuiApp extends Application {
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        GameController gc = new GameController(Main.getConfig(), stage);
-        gc.gameLoop();
-    }
-    
+  @Override
+  public void start(Stage stage) throws Exception {
+    GameController gc = new GameController(Main.getConfig(), stage);
+    gc.gameLoop();
+  }
 }

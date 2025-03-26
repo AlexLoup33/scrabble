@@ -24,8 +24,8 @@ public class GameController {
       this.view = new ViewCLI(this.model.lang, conf.getSuperScrabble());
     }
   }
-  
-  public GameController(Configuration conf, Stage stage){
+
+  public GameController(Configuration conf, Stage stage) {
     this.model = new GameModel(conf);
     this.view = new ViewGUI(this.model.lang, conf.getSuperScrabble(), stage);
   }

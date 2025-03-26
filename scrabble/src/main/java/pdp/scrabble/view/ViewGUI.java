@@ -1,6 +1,8 @@
 package pdp.scrabble.view;
 
 import java.util.List;
+import java.util.ResourceBundle;
+
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -37,6 +39,7 @@ public class ViewGUI implements IView {
   private HBox mainRow;
   private static Lang lang;
   private static Boolean isSuperScrabble;
+  private final ResourceBundle langPack;
 
   private ScrabbleBoard scrabbleBoard;
   private PlayerHand playerHand;
@@ -45,6 +48,7 @@ public class ViewGUI implements IView {
   public ViewGUI(Lang lang, Boolean isSuperScrabble, Stage stage) {
     this.lang = lang;
     this.isSuperScrabble = isSuperScrabble;
+    this.langPack = lang.getViewGUI_langPack();
 
     this.primaryStage = stage;
 
@@ -52,15 +56,15 @@ public class ViewGUI implements IView {
     MenuBar menuBar = new MenuBar();
 
     // First -> File : New Game | Load Game | Save Game | Help | Settings | Quit
-    Menu fileMenu = new Menu("File");
+    Menu fileMenu = new Menu(langPack.getString("file"));
 
     // Declaration of the Items
-    MenuItem newGameItem = new MenuItem("New Game");
-    MenuItem loadGameItem = new MenuItem("Load Game");
-    MenuItem saveGameItem = new MenuItem("Save Game");
-    MenuItem helpItem = new MenuItem(("help"));
-    MenuItem settingsItem = new MenuItem(("settings"));
-    MenuItem quitItem = new MenuItem(("quit"));
+    MenuItem newGameItem = new MenuItem(langPack.getString("ngame"));
+    MenuItem loadGameItem = new MenuItem(langPack.getString("lgame"));
+    MenuItem saveGameItem = new MenuItem(langPack.getString("sgame"));
+    MenuItem helpItem = new MenuItem(langPack.getString("help"));
+    MenuItem settingsItem = new MenuItem(langPack.getString("settings"));
+    MenuItem quitItem = new MenuItem(langPack.getString("quit"));
 
     // Actions for Items
 
@@ -95,13 +99,13 @@ public class ViewGUI implements IView {
         .addAll(newGameItem, loadGameItem, saveGameItem, helpItem, settingsItem, quitItem);
 
     // Second -> Game : Hint | Undo | Redo
-    Menu gameMenu = new Menu(("game"));
+    Menu gameMenu = new Menu(langPack.getString("game"));
 
-    MenuItem hintItem = new MenuItem(("hint"));
-    MenuItem undoAllItem = new MenuItem(("undoall"));
-    MenuItem undoItem = new MenuItem(("undo"));
-    MenuItem redoItem = new MenuItem(("redo"));
-    MenuItem redoAllItem = new MenuItem(("redoall"));
+    MenuItem hintItem = new MenuItem(langPack.getString("hint"));
+    MenuItem undoAllItem = new MenuItem(langPack.getString("undoall"));
+    MenuItem undoItem = new MenuItem(langPack.getString("undo"));
+    MenuItem redoItem = new MenuItem(langPack.getString("redo"));
+    MenuItem redoAllItem = new MenuItem(langPack.getString("redoall"));
 
     // Action for Items
 
@@ -123,11 +127,11 @@ public class ViewGUI implements IView {
     gameMenu.getItems().addAll(hintItem, undoAllItem, undoItem, redoItem, redoAllItem);
 
     // Third -> About : Version | Author | Licence
-    Menu aboutMenu = new Menu(("about"));
+    Menu aboutMenu = new Menu(langPack.getString("about"));
 
-    MenuItem versionItem = new MenuItem(("version"));
-    MenuItem authorItem = new MenuItem(("author"));
-    MenuItem licenceItem = new MenuItem(("license"));
+    MenuItem versionItem = new MenuItem(langPack.getString("version"));
+    MenuItem authorItem = new MenuItem(langPack.getString("author"));
+    MenuItem licenceItem = new MenuItem(langPack.getString("license"));
 
     // Actions for Items
 
@@ -135,7 +139,7 @@ public class ViewGUI implements IView {
     versionItem.setOnAction(
         (ActionEvent event) -> {
           Alert alert = new Alert(Alert.AlertType.INFORMATION);
-          alert.setTitle(("version"));
+          alert.setTitle(langPack.getString("version"));
           alert.setHeaderText(null);
           alert.setContentText("Version 1.0.0");
           alert.showAndWait();
@@ -145,7 +149,7 @@ public class ViewGUI implements IView {
     authorItem.setOnAction(
         (ActionEvent event) -> {
           Alert alert = new Alert(Alert.AlertType.INFORMATION);
-          alert.setTitle(("author"));
+          alert.setTitle(langPack.getString("author"));
           alert.setHeaderText(null);
           alert.setContentText(
               """
@@ -163,7 +167,7 @@ public class ViewGUI implements IView {
     licenceItem.setOnAction(
         (ActionEvent event) -> {
           Alert alert = new Alert(Alert.AlertType.INFORMATION);
-          alert.setTitle(("licence"));
+          alert.setTitle(langPack.getString("licence"));
           alert.setHeaderText(null);
           alert.setContentText(
               """
@@ -241,10 +245,10 @@ public class ViewGUI implements IView {
     // this.playerHand.updateLetters(letters);
 
     // ACTION BUTTONS --------------------------------------------
-    Button placeWordButton = new Button(("placew"));
+    Button placeWordButton = new Button(langPack.getString("placew"));
     placeWordButton.setOnAction(e -> System.out.println("Place Word action triggered"));
 
-    Button exchangeLetterButton = new Button(("exchange"));
+    Button exchangeLetterButton = new Button(langPack.getString("exchange"));
     exchangeLetterButton.setOnAction(
         e -> {
           // Retrieve the current player's LettersCounter
@@ -254,8 +258,8 @@ public class ViewGUI implements IView {
 
           // Create a dialog for selecting letters to exchange
           Dialog<java.util.List<Letter>> dialog = new Dialog<>();
-          dialog.setTitle(("exchange"));
-          dialog.setHeaderText(("exchangetxt"));
+          dialog.setTitle(langPack.getString("exchange"));
+          dialog.setHeaderText(langPack.getString("exchangetxt"));
 
           VBox content = new VBox();
           content.setSpacing(10);
@@ -322,15 +326,15 @@ public class ViewGUI implements IView {
                   });
         });
 
-    Button passTurnButton = new Button(("pass"));
+    Button passTurnButton = new Button(langPack.getString("pass"));
     passTurnButton.setOnAction(e -> System.out.println("Pass Turn action triggered"));
 
-    Button renamePlayerButton = new Button(("rename"));
+    Button renamePlayerButton = new Button(langPack.getString("rename"));
     renamePlayerButton.setOnAction(
         (ActionEvent event) -> {
           // Création de la boîte de dialogue
           Dialog<String> dialog = new Dialog<>();
-          dialog.setTitle(("rename"));
+          dialog.setTitle(langPack.getString("rename"));
 
           // Boutons OK et Annuler
           ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
@@ -338,11 +342,11 @@ public class ViewGUI implements IView {
 
           // Champ de texte pour entrer le nouveau nom
           TextField nameField = new TextField();
-          nameField.setPromptText(("renametxt1"));
+          nameField.setPromptText(langPack.getString("renametxt1"));
 
           VBox content = new VBox();
           content.setSpacing(10);
-          content.getChildren().addAll(new Label(("renametxt2")), nameField);
+          content.getChildren().addAll(new Label(langPack.getString("renametxt2")), nameField);
 
           dialog.getDialogPane().setContent(content);
 
@@ -368,10 +372,10 @@ public class ViewGUI implements IView {
                   });
         });
 
-    Button forfeitPlayerButton = new Button(("forfeit"));
+    Button forfeitPlayerButton = new Button(langPack.getString("forfeit"));
     forfeitPlayerButton.setOnAction(e -> System.out.println("Forfeit Player action triggered"));
 
-    Button restartGameButton = new Button(("restart"));
+    Button restartGameButton = new Button(langPack.getString("restart"));
     restartGameButton.setOnAction(e -> System.out.println("Restart Game action triggered"));
 
     // Adding buttons to the layout in a horizontal line
@@ -430,12 +434,14 @@ public class ViewGUI implements IView {
 
   @Override
   public void showScore(Player player) {
-    throw new UnsupportedOperationException("Unimplemented method 'showScore'");
+    // throw new UnsupportedOperationException("Unimplemented method 'showScore'");
+    return;
   }
 
   @Override
   public void showScore(java.util.List<Player> players) {
-    throw new UnsupportedOperationException("Unimplemented method 'showScore'");
+    // throw new UnsupportedOperationException("Unimplemented method 'showScore'");
+    return;
   }
 
   @Override
@@ -457,8 +463,8 @@ public class ViewGUI implements IView {
   public void showError(Throwable e) {
     // Dialog to display the error message
     Alert alert = new Alert(Alert.AlertType.ERROR);
-    alert.setTitle(("error"));
-    alert.setHeaderText(("error"));
+    alert.setTitle(langPack.getString("error"));
+    alert.setHeaderText(langPack.getString("error"));
     alert.setContentText(e.getMessage());
     alert.showAndWait();
   }

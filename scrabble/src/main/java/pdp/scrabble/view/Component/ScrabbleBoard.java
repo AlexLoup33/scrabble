@@ -47,8 +47,10 @@ public class ScrabbleBoard extends Canvas {
 
         // First we set up the border with row = 0 and col = 0 for display column index (number) and
         // row index (letter)
+        gc.setFill(Color.BLACK);
         if (row == 0 || col == 0) {
           if (row == 0 && col != 0) {
+            // Change the color of the text to black
             gc.fillText(
                 String.valueOf(col),
                 row * CELL_SIZE + CELL_SIZE / 2,

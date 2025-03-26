@@ -1,6 +1,6 @@
 package pdp.scrabble.controller;
 
-import java.util.concurrent.CountDownLatch;
+import javafx.stage.Stage;
 import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.errorsHandling.CustomError;
@@ -14,32 +14,20 @@ import pdp.scrabble.view.ViewGUI;
 public class GameController {
 
   private final GameModel model;
-  private IView view;
+  private final IView view;
 
   public GameController(Configuration conf) {
     this.model = new GameModel(conf);
     if (conf.getGui()) {
-      CountDownLatch latch = new CountDownLatch(1);
-
-      // Lancer JavaFX dans un thread séparé
-      new Thread(
-              () -> {
-                ViewGUI.setLang(this.model.lang);
-                ViewGUI.setSuperScrabble(conf.getSuperScrabble());
-                ViewGUI.launchJavaFX(latch); // Démarrer JavaFX
-              })
-          .start();
-
-      try {
-        latch.await(); // Attendre que JavaFX soit prêt
-        view = ViewGUI.getInstance(); // Récupérer l'instance de la vue
-        view.initialize(conf); // Initialiser la vue
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
+      throw new CustomError(null, null, null);
     } else {
       this.view = new ViewCLI(this.model.lang, conf.getSuperScrabble());
     }
+  }
+  
+  public GameController(Configuration conf, Stage stage){
+    this.model = new GameModel(conf);
+    this.view = new ViewGUI(this.model.lang, conf.getSuperScrabble(), stage);
   }
 
   public void gameLoop() {

@@ -7,9 +7,6 @@ import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Dictionary;
 import pdp.scrabble.dictionary.IDictionary;
-import pdp.scrabble.dictionary.Letter;
-import pdp.scrabble.errorsHandling.CustomError;
-import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.actions.*;
 
 public class GameModel {
@@ -44,7 +41,7 @@ public class GameModel {
         this.dictionary = new Dictionary();
         this.dictionary.loadFromFile(this.lang.getDictionaryPath());
 
-        this.draw = new LettersDrawer(this.lang, this.rngGenerator);
+        this.draw = new LettersDrawer(this.lang, this.rngGenerator, this.config.getSuperScrabble());
         this.grid = new Grid(this, (config.getSuperScrabble() ? 21 : 15));
         this.currentPlayer = this.players.get(0);
         this.gameTurn = 1;
@@ -54,7 +51,7 @@ public class GameModel {
     public void reset() {
         this.rngGenerator.reset(); // way safer to keep this line the first !!
         this.grid.reset();
-        this.draw.reset();
+        this.draw.reset(this.config.getSuperScrabble());
         for (Player player : this.players) {
             player.reset();
         }
@@ -118,11 +115,9 @@ public class GameModel {
     }
 
     /**
-     * This function returns a list of active players by filtering out players who
-     * have forfeited.
+     * This function returns a list of active players by filtering out players who have forfeited.
      *
-     * @return The method `getActivePlayers` returns a list of active players, which
-     * are players who
+     * @return The method `getActivePlayers` returns a list of active players, which are players who
      * have not forfeited the game.
      */
     public List<Player> getActivePlayers() {

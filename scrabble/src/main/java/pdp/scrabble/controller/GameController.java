@@ -73,7 +73,7 @@ public class GameController {
                 model.applyGameActionDispatch(played);
 
                 // Player 0 is a start of table round except when player 0 chose a
-                // non turn ending action (e.g. rename)
+                // non-turn ending action (e.g., rename)
 
                 Utilities.debug('l', "%s ends his turn\n", playing.getName());
                 recoverableException = null;
@@ -119,11 +119,11 @@ public class GameController {
     public boolean isGameFinished() {
         // TODO compute based of real Scrabble rules
 
-        // test if there are enougth letters to be drawed
+        // test if there are enough letters to be drawn
         if (model.draw.getCurrentSize() < 7) {
             return true;
         }
-        // test if enougth players remain
+        // test if enough players remain
         if (this.model.getActivePlayers().size() <= 1) {
             return true;
         }
@@ -132,6 +132,6 @@ public class GameController {
             return true;
         }
 
-        return false; // game not finished
+        return false; // the game isn't finished
     }
 }

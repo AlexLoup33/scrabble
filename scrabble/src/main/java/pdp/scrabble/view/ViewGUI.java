@@ -2,6 +2,7 @@ package pdp.scrabble.view;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -29,6 +30,7 @@ import pdp.scrabble.game.Lang;
 import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
+import pdp.scrabble.game.actions.PassTurnAction;
 import pdp.scrabble.view.Component.DisplayTurn;
 import pdp.scrabble.view.Component.PlayerHand;
 import pdp.scrabble.view.Component.ScrabbleBoard;
@@ -43,6 +45,8 @@ public class ViewGUI implements IView {
   private ScrabbleBoard scrabbleBoard;
   private PlayerHand playerHand;
   private DisplayTurn displayTurn;
+
+  private final CompletableFuture<String> action = new CompletableFuture<>();
 
   public ViewGUI(Lang lang, Boolean isSuperScrabble, Stage stage) {
     this.lang = lang;
@@ -71,11 +75,11 @@ public class ViewGUI implements IView {
     // TODO: Ask the controller to create a new game.
     // --> TODO: implement restartGameAction
     // newGameItem.setOnAction(e -> RestartGameAction.restart());
-    newGameItem.setOnAction(e -> System.out.println("restart Game..."));
+    newGameItem.setOnAction(e -> action.complete("newGame"));
 
     // Load Game
     // TODO: Open a file selector to load a game.
-    loadGameItem.setOnAction(e -> System.out.println("Load Game..."));
+    loadGameItem.setOnAction(e -> action.complete("loadGame"));
 
     // Save Game
     // TODO: Open a file selector to save the game.
@@ -409,7 +413,15 @@ public class ViewGUI implements IView {
   // --- IView methods ---
   @Override
   public GameAction askAction(Player player, Integer turn) {
-    throw new UnsupportedOperationException("Unimplemented method 'askAction'");
+    action.thenAccept(
+        action -> {
+          System.out.println("Action completed: " + action);
+        });
+    return passTurnAction(player, turn);
+  }
+
+  private PassTurnAction passTurnAction(Player player, Integer turn) {
+    return new PassTurnAction(player, turn);
   }
 
   @Override

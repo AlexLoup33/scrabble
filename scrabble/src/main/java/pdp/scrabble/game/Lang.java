@@ -123,6 +123,7 @@ public enum Lang {
 
   private static final String dictionaryDirectory = "dictionary/";
   private static final String viewCliLangPack = "pack_cli_";
+  private static final String viewGuiLangPack = "pack_gui_";
 
   public final Locale locale;
   private Path customDictPath;
@@ -206,6 +207,15 @@ public enum Lang {
    */
   public ResourceBundle getViewCLI_langPack() {
     return ResourceBundle.getBundle(Lang.viewCliLangPack + this.getCodeLang());
+  }
+
+  /**
+   * The function returns a ResourceBundle for a specific language pack based on the code language.
+   *
+   * @return A ResourceBundle object is being returned.
+   */
+  public ResourceBundle getViewGUI_langPack() {
+    return ResourceBundle.getBundle(Lang.viewGuiLangPack + this.getCodeLang());
   }
 
   /**

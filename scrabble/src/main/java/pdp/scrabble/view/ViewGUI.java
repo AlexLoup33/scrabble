@@ -31,6 +31,7 @@ import pdp.scrabble.game.Lang;
 import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
+import pdp.scrabble.view.Component.DisplayTurn;
 import pdp.scrabble.view.Component.PlayerHand;
 import pdp.scrabble.view.Component.ScrabbleBoard;
 
@@ -45,6 +46,7 @@ public class ViewGUI extends Application implements IView {
 
   private ScrabbleBoard scrabbleBoard;
   private PlayerHand playerHand;
+  private DisplayTurn displayTurn;
 
   public ViewGUI() {}
 
@@ -76,7 +78,7 @@ public class ViewGUI extends Application implements IView {
     latch.countDown();
     this.primaryStage = primaryStage;
     // Debug message at the top of the window
-    getLocalizedLang();
+    this.langPack = lang.getViewGUI_langPack();
 
     // MENU BAR INITIALIZATION
     MenuBar menuBar = new MenuBar();
@@ -262,6 +264,9 @@ public class ViewGUI extends Application implements IView {
     // letters.addLetter(new Letter('V'));
     // letters.addLetter(new Letter('M'));
 
+    // Display Turn
+    this.displayTurn = new DisplayTurn(lang);
+
     // Player Hand
 
     this.playerHand = new PlayerHand(lang, isSuperScrabble);
@@ -413,7 +418,7 @@ public class ViewGUI extends Application implements IView {
             restartGameButton);
     actionButtons.setStyle("-fx-padding: 10px; -fx-alignment: center;");
 
-    VBox root = new VBox(menuBar, mainRow, playerHand, actionButtons);
+    VBox root = new VBox(menuBar, displayTurn, mainRow, playerHand, actionButtons);
 
     Scene scene = new Scene(root, 1200, 800);
 
@@ -428,25 +433,6 @@ public class ViewGUI extends Application implements IView {
 
     primaryStage.setResizable(false);
     primaryStage.show();
-  }
-
-  private void getLocalizedLang() {
-    // the lang pack is in scrabble/src/main/resources/GUI_pack_en.properties and
-    // GUI_pack_fr.properties
-    if (lang == null) {
-      langPack = ResourceBundle.getBundle("GUI_pack_en");
-    } else
-      switch (lang) {
-        case EN -> {
-          langPack = ResourceBundle.getBundle("GUI_pack_en");
-        }
-        case FR -> {
-          langPack = ResourceBundle.getBundle("GUI_pack_fr");
-        }
-        default -> {
-          langPack = ResourceBundle.getBundle("GUI_pack_en");
-        }
-      }
   }
 
   public static void main(String[] args) {
@@ -496,7 +482,7 @@ public class ViewGUI extends Application implements IView {
 
   @Override
   public void announceTurn(Player currentPlayer, int turn) {
-    throw new UnsupportedOperationException("Unimplemented method 'announceTurn'");
+    this.displayTurn.updateTurn(turn, currentPlayer);
   }
 
   @Override

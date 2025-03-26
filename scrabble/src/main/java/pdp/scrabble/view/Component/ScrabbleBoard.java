@@ -69,6 +69,8 @@ public class ScrabbleBoard extends Canvas {
           if (letter != null) {
             gc.setFill(Color.BEIGE);
             gc.fillRect(row * CELL_SIZE, col * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+            
+            gc.setFill(Color.BLACK);
             gc.strokeRect(row * CELL_SIZE, col * CELL_SIZE, CELL_SIZE, CELL_SIZE);
             gc.strokeText(
                 letter.toString(),

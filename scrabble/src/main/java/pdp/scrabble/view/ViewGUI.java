@@ -3,7 +3,6 @@ package pdp.scrabble.view;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
@@ -36,151 +35,150 @@ import pdp.scrabble.view.Component.PlayerHand;
 import pdp.scrabble.view.Component.ScrabbleBoard;
 
 public class ViewGUI extends Application implements IView {
-    private static ViewGUI instance;
-    private Stage primaryStage;
-    private HBox mainRow;
-    private static CountDownLatch latch;
-    private static Lang lang;
-    private static Boolean isSuperScrabble;
-    private ResourceBundle langPack;
+  private static ViewGUI instance;
+  private Stage primaryStage;
+  private HBox mainRow;
+  private static CountDownLatch latch;
+  private static Lang lang;
+  private static Boolean isSuperScrabble;
+  private ResourceBundle langPack;
 
-    private ScrabbleBoard scrabbleBoard;
-    private PlayerHand playerHand;
+  private ScrabbleBoard scrabbleBoard;
+  private PlayerHand playerHand;
 
-    public ViewGUI() {
-    }
+  public ViewGUI() {}
 
-    public static void launchJavaFX(CountDownLatch latch) {
-        ViewGUI.latch = latch;
-        Application.launch(ViewGUI.class);
-    }
+  public static void launchJavaFX(CountDownLatch latch) {
+    ViewGUI.latch = latch;
+    Application.launch(ViewGUI.class);
+  }
 
-    public static ViewGUI getInstance() {
-        return instance;
-    }
+  public static ViewGUI getInstance() {
+    return instance;
+  }
 
-    @Override
-    public void initialize(Configuration conf) {
-        System.out.println("ViewGUI initialized");
-    }
+  @Override
+  public void initialize(Configuration conf) {
+    System.out.println("ViewGUI initialized");
+  }
 
-    public static void setLang(Lang lang) {
-        ViewGUI.lang = lang;
-    }
+  public static void setLang(Lang lang) {
+    ViewGUI.lang = lang;
+  }
 
-    public static void setSuperScrabble(Boolean superScrabble) {
-        isSuperScrabble = superScrabble;
-    }
+  public static void setSuperScrabble(Boolean superScrabble) {
+    isSuperScrabble = superScrabble;
+  }
 
-    @Override
-    public void start(Stage primaryStage) {
-        instance = this;
-        latch.countDown();
-        this.primaryStage = primaryStage;
-        // Debug message at the top of the window
-        getLocalizedLang();
+  @Override
+  public void start(Stage primaryStage) {
+    instance = this;
+    latch.countDown();
+    this.primaryStage = primaryStage;
+    // Debug message at the top of the window
+    getLocalizedLang();
 
-        // MENU BAR INITIALIZATION
-        MenuBar menuBar = new MenuBar();
+    // MENU BAR INITIALIZATION
+    MenuBar menuBar = new MenuBar();
 
-        // First -> File : New Game | Load Game | Save Game | Help | Settings | Quit
-        Menu fileMenu = new Menu(langPack.getString("file"));
+    // First -> File : New Game | Load Game | Save Game | Help | Settings | Quit
+    Menu fileMenu = new Menu(langPack.getString("file"));
 
-        // Declaration of the Items
-        MenuItem newGameItem = new MenuItem(langPack.getString("ngame"));
-        MenuItem loadGameItem = new MenuItem(langPack.getString("lgame"));
-        MenuItem saveGameItem = new MenuItem(langPack.getString("sgame"));
-        MenuItem helpItem = new MenuItem(langPack.getString("help"));
-        MenuItem settingsItem = new MenuItem(langPack.getString("settings"));
-        MenuItem quitItem = new MenuItem(langPack.getString("quit"));
+    // Declaration of the Items
+    MenuItem newGameItem = new MenuItem(langPack.getString("ngame"));
+    MenuItem loadGameItem = new MenuItem(langPack.getString("lgame"));
+    MenuItem saveGameItem = new MenuItem(langPack.getString("sgame"));
+    MenuItem helpItem = new MenuItem(langPack.getString("help"));
+    MenuItem settingsItem = new MenuItem(langPack.getString("settings"));
+    MenuItem quitItem = new MenuItem(langPack.getString("quit"));
 
-        // Actions for Items
+    // Actions for Items
 
-        // New Game
-        // TODO: Ask the controller to create a new game.
-        // --> TODO: implement restartGameAction
-        // newGameItem.setOnAction(e -> RestartGameAction.restart());
-        newGameItem.setOnAction(e -> System.out.println("restart Game..."));
+    // New Game
+    // TODO: Ask the controller to create a new game.
+    // --> TODO: implement restartGameAction
+    // newGameItem.setOnAction(e -> RestartGameAction.restart());
+    newGameItem.setOnAction(e -> System.out.println("restart Game..."));
 
-        // Load Game
-        // TODO: Open a file selector to load a game.
-        loadGameItem.setOnAction(e -> System.out.println("Load Game..."));
+    // Load Game
+    // TODO: Open a file selector to load a game.
+    loadGameItem.setOnAction(e -> System.out.println("Load Game..."));
 
-        // Save Game
-        // TODO: Open a file selector to save the game.
-        saveGameItem.setOnAction(e -> System.out.println("Save Game..."));
+    // Save Game
+    // TODO: Open a file selector to save the game.
+    saveGameItem.setOnAction(e -> System.out.println("Save Game..."));
 
-        // Help
-        // TODO: Display a window with the rules and the different actions possible.
-        helpItem.setOnAction(e -> System.out.println("Help..."));
+    // Help
+    // TODO: Display a window with the rules and the different actions possible.
+    helpItem.setOnAction(e -> System.out.println("Help..."));
 
-        // Settings
-        // TODO: Implement settings window who change style.
-        settingsItem.setOnAction(e -> System.out.println("Settings..."));
+    // Settings
+    // TODO: Implement settings window who change style.
+    settingsItem.setOnAction(e -> System.out.println("Settings..."));
 
-        // Quit
-        quitItem.setOnAction(e -> System.exit(0));
+    // Quit
+    quitItem.setOnAction(e -> System.exit(0));
 
-        // Adding all item to fileMenu
-        fileMenu
-                .getItems()
-                .addAll(newGameItem, loadGameItem, saveGameItem, helpItem, settingsItem, quitItem);
+    // Adding all item to fileMenu
+    fileMenu
+        .getItems()
+        .addAll(newGameItem, loadGameItem, saveGameItem, helpItem, settingsItem, quitItem);
 
-        // Second -> Game : Hint | Undo | Redo
-        Menu gameMenu = new Menu(langPack.getString("game"));
+    // Second -> Game : Hint | Undo | Redo
+    Menu gameMenu = new Menu(langPack.getString("game"));
 
-        MenuItem hintItem = new MenuItem(langPack.getString("hint"));
-        MenuItem undoAllItem = new MenuItem(langPack.getString("undoall"));
-        MenuItem undoItem = new MenuItem(langPack.getString("undo"));
-        MenuItem redoItem = new MenuItem(langPack.getString("redo"));
-        MenuItem redoAllItem = new MenuItem(langPack.getString("redoall"));
+    MenuItem hintItem = new MenuItem(langPack.getString("hint"));
+    MenuItem undoAllItem = new MenuItem(langPack.getString("undoall"));
+    MenuItem undoItem = new MenuItem(langPack.getString("undo"));
+    MenuItem redoItem = new MenuItem(langPack.getString("redo"));
+    MenuItem redoAllItem = new MenuItem(langPack.getString("redoall"));
 
-        // Action for Items
+    // Action for Items
 
-        // TODO: Display colored letters hint on the grid
-        hintItem.setOnAction(e -> System.out.println("Hint..."));
+    // TODO: Display colored letters hint on the grid
+    hintItem.setOnAction(e -> System.out.println("Hint..."));
 
-        // TODO: Undo all actions
-        undoAllItem.setOnAction(e -> System.out.println("Undo All..."));
+    // TODO: Undo all actions
+    undoAllItem.setOnAction(e -> System.out.println("Undo All..."));
 
-        // TODO: Undo the last action
-        undoItem.setOnAction(e -> System.out.println("Undo..."));
+    // TODO: Undo the last action
+    undoItem.setOnAction(e -> System.out.println("Undo..."));
 
-        // TODO: Redo the last action
-        redoItem.setOnAction(e -> System.out.println("Redo..."));
+    // TODO: Redo the last action
+    redoItem.setOnAction(e -> System.out.println("Redo..."));
 
-        // TODO: Redo all actions
-        redoAllItem.setOnAction(e -> System.out.println("Redo All..."));
+    // TODO: Redo all actions
+    redoAllItem.setOnAction(e -> System.out.println("Redo All..."));
 
-        gameMenu.getItems().addAll(hintItem, undoAllItem, undoItem, redoItem, redoAllItem);
+    gameMenu.getItems().addAll(hintItem, undoAllItem, undoItem, redoItem, redoAllItem);
 
-        // Third -> About : Version | Author | Licence
-        Menu aboutMenu = new Menu(langPack.getString("about"));
+    // Third -> About : Version | Author | Licence
+    Menu aboutMenu = new Menu(langPack.getString("about"));
 
-        MenuItem versionItem = new MenuItem(langPack.getString("version"));
-        MenuItem authorItem = new MenuItem(langPack.getString("author"));
-        MenuItem licenceItem = new MenuItem(langPack.getString("license"));
+    MenuItem versionItem = new MenuItem(langPack.getString("version"));
+    MenuItem authorItem = new MenuItem(langPack.getString("author"));
+    MenuItem licenceItem = new MenuItem(langPack.getString("license"));
 
-        // Actions for Items
+    // Actions for Items
 
-        // TODO: Display the version of the game
-        versionItem.setOnAction(
-                (ActionEvent event) -> {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle(langPack.getString("version"));
-                    alert.setHeaderText(null);
-                    alert.setContentText("Version 1.0.0");
-                    alert.showAndWait();
-                });
+    // TODO: Display the version of the game
+    versionItem.setOnAction(
+        (ActionEvent event) -> {
+          Alert alert = new Alert(Alert.AlertType.INFORMATION);
+          alert.setTitle(langPack.getString("version"));
+          alert.setHeaderText(null);
+          alert.setContentText("Version 1.0.0");
+          alert.showAndWait();
+        });
 
-        // TODO: Display the author of the game
-        authorItem.setOnAction(
-                (ActionEvent event) -> {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle(langPack.getString("author"));
-                    alert.setHeaderText(null);
-                    alert.setContentText(
-                            """
+    // TODO: Display the author of the game
+    authorItem.setOnAction(
+        (ActionEvent event) -> {
+          Alert alert = new Alert(Alert.AlertType.INFORMATION);
+          alert.setTitle(langPack.getString("author"));
+          alert.setHeaderText(null);
+          alert.setContentText(
+              """
                                     Andrieu Ludovic
                                     Cassard Aymeric
                                     Cazet Valentin
@@ -188,331 +186,331 @@ public class ViewGUI extends Application implements IView {
                                     Mayol Jean
                                     Petry Math\u00e9o
                                     """);
-                    alert.showAndWait();
-                });
+          alert.showAndWait();
+        });
 
-        // TODO: Display the licence of the game
-        licenceItem.setOnAction(
-                (ActionEvent event) -> {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle(langPack.getString("licence"));
-                    alert.setHeaderText(null);
-                    alert.setContentText(
-                            """
+    // TODO: Display the licence of the game
+    licenceItem.setOnAction(
+        (ActionEvent event) -> {
+          Alert alert = new Alert(Alert.AlertType.INFORMATION);
+          alert.setTitle(langPack.getString("licence"));
+          alert.setHeaderText(null);
+          alert.setContentText(
+              """
                                     This game is licensed under the MIT License.
                                     You can do whatever you want with it, as long as you include the original license.
                                     """);
-                    alert.setContentText(
-                            alert.getContentText() + "\n\n" + "https://opensource.org/licenses/MIT");
-                    alert.showAndWait();
-                });
+          alert.setContentText(
+              alert.getContentText() + "\n\n" + "https://opensource.org/licenses/MIT");
+          alert.showAndWait();
+        });
 
-        aboutMenu.getItems().addAll(versionItem, authorItem, licenceItem);
+    aboutMenu.getItems().addAll(versionItem, authorItem, licenceItem);
 
-        // Adding all the Menu in the MenuBar and adding a bit of style
-        menuBar.getMenus().addAll(fileMenu, gameMenu, aboutMenu);
-        menuBar.setStyle("-fx-start-margin: 200px;");
+    // Adding all the Menu in the MenuBar and adding a bit of style
+    menuBar.getMenus().addAll(fileMenu, gameMenu, aboutMenu);
+    menuBar.setStyle("-fx-start-margin: 200px;");
 
-        // Historique des actions
-        // Create a gray square aligned with the ScrabbleBoard
-        StackPane histo = new StackPane();
-        histo.setStyle("-fx-background-color: lightgray; -fx-border-color: black;");
-        histo.setPrefSize(200, 400);
+    // Historique des actions
+    // Create a gray square aligned with the ScrabbleBoard
+    StackPane histo = new StackPane();
+    histo.setStyle("-fx-background-color: lightgray; -fx-border-color: black;");
+    histo.setPrefSize(200, 400);
 
-        // GRID INITIALIZATION
-        this.scrabbleBoard = new ScrabbleBoard(600, 600, 15);
+    // GRID INITIALIZATION
+    this.scrabbleBoard = new ScrabbleBoard(600, 600, 15);
 
-        // Player score
-        VBox playerScores = new VBox();
-        playerScores.setSpacing(10);
-        playerScores.setStyle("-fx-alignment: center;"); // Center the VBox
+    // Player score
+    VBox playerScores = new VBox();
+    playerScores.setSpacing(10);
+    playerScores.setStyle("-fx-alignment: center;"); // Center the VBox
 
-        // Example players and scores (replace with actual player data)
-        List<String> players = List.of("Player 1: 10", "Player 2: 20", "Player 3: 30", "Player 4: 40");
+    // Example players and scores (replace with actual player data)
+    List<String> players = List.of("Player 1: 10", "Player 2: 20", "Player 3: 30", "Player 4: 40");
 
-        for (String player : players) {
-            // Create a gray square for each player
-            StackPane playerBox = new StackPane();
-            playerBox.setStyle("-fx-background-color: lightgray; -fx-border-color: black;");
-            playerBox.setPrefSize(200, 50); // Size of each square
+    for (String player : players) {
+      // Create a gray square for each player
+      StackPane playerBox = new StackPane();
+      playerBox.setStyle("-fx-background-color: lightgray; -fx-border-color: black;");
+      playerBox.setPrefSize(200, 50); // Size of each square
 
-            // Display the player's name and score
-            String[] playerData = player.split(": ");
-            Label playerLabel = new Label(playerData[0] + ": " + playerData[1]);
-            playerLabel.setStyle("-fx-font-size: 14; -fx-font-weight: bold;");
-            playerLabel.setAlignment(Pos.CENTER);
+      // Display the player's name and score
+      String[] playerData = player.split(": ");
+      Label playerLabel = new Label(playerData[0] + ": " + playerData[1]);
+      playerLabel.setStyle("-fx-font-size: 14; -fx-font-weight: bold;");
+      playerLabel.setAlignment(Pos.CENTER);
 
-            // Add the label to the square
-            playerBox.getChildren().add(playerLabel);
+      // Add the label to the square
+      playerBox.getChildren().add(playerLabel);
 
-            // Add the square to the VBox
-            playerScores.getChildren().add(playerBox);
-        }
-
-        // Combine histo, scrabbleBoard, and playerScores into a single row
-        mainRow = new HBox(10, histo, scrabbleBoard, playerScores);
-        mainRow.setStyle("-fx-alignment: center; -fx-padding: 10px;");
-
-        // Main du joueur provisoir :
-        // player's letters
-        // LettersCounter letters = new LettersCounter();
-        // letters.addLetter(new Letter('A'));
-        // letters.addLetter(new Letter('P'));
-        // letters.addLetter(new Letter('Q'));
-        // letters.addLetter(new Letter('O'));
-        // letters.addLetter(new Letter('W'));
-        // letters.addLetter(new Letter('V'));
-        // letters.addLetter(new Letter('M'));
-
-        // Player Hand
-
-        this.playerHand = new PlayerHand(lang, isSuperScrabble);
-        // this.playerHand.updateLetters(letters);
-
-        // ACTION BUTTONS --------------------------------------------
-        Button placeWordButton = new Button(langPack.getString("placew"));
-        placeWordButton.setOnAction(e -> System.out.println("Place Word action triggered"));
-
-        Button exchangeLetterButton = new Button(langPack.getString("exchange"));
-        exchangeLetterButton.setOnAction(
-                e -> {
-                    // Retrieve the current player's LettersCounter
-                    // LettersCounter letters = getCurrentPlayerLetters(); // Replace with the actual method
-                    // to retrieve the LettersCounter
-                    LettersCounter letters = new LettersCounter();
-
-                    // Create a dialog for selecting letters to exchange
-                    Dialog<java.util.List<Letter>> dialog = new Dialog<>();
-                    dialog.setTitle(langPack.getString("exchange"));
-                    dialog.setHeaderText(langPack.getString("exchangetxt"));
-
-                    VBox content = new VBox();
-                    content.setSpacing(10);
-
-                    // Create toggle buttons for each letter and arrange them in rows
-                    List<ToggleButton> toggleButtons = new java.util.ArrayList<>();
-                    HBox row = new HBox(10); // Horizontal row with spacing
-                    int buttonsPerRow = 5; // Number of buttons per row
-                    int count = 0;
-
-                    for (Letter letter : letters.getLettersSet()) {
-                        for (int i = 0; i < letters.getLetterCount(letter); i++) {
-                            ToggleButton toggleButton = new ToggleButton(letter.toString());
-                            toggleButtons.add(toggleButton);
-                            row.getChildren().add(toggleButton);
-                            count++;
-
-                            // If the row is full, add it to the content and start a new row
-                            if (count % buttonsPerRow == 0) {
-                                content.getChildren().add(row);
-                                row = new HBox(10);
-                            }
-                        }
-                    }
-
-                    // Add the last row if it has buttons
-                    if (!row.getChildren().isEmpty()) {
-                        content.getChildren().add(row);
-                    }
-
-                    dialog.getDialogPane().setContent(content);
-
-                    // Add OK and Cancel buttons
-                    ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-                    dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
-
-                    // Handle the result
-                    dialog.setResultConverter(
-                            dialogButton -> {
-                                if (dialogButton == okButtonType) {
-                                    List<Letter> selectedLetters = new java.util.ArrayList<>();
-                                    for (ToggleButton toggleButton : toggleButtons) {
-                                        if (toggleButton.isSelected()) {
-                                            selectedLetters.add(new Letter(toggleButton.getText().charAt(0)));
-                                        }
-                                    }
-                                    // Call askAction to handle the selected letters
-                                    askAction(null, null); // Replace null with appropriate parameters
-                                    return selectedLetters;
-                                }
-                                return null;
-                            });
-
-                    // Show the dialog and process the selected letters
-                    dialog
-                            .showAndWait()
-                            .ifPresent(
-                                    selectedLetters -> {
-                                        if (!selectedLetters.isEmpty()) {
-                                            System.out.println("Selected letters to exchange: " + selectedLetters);
-                                        } else {
-                                            System.out.println("No letters selected for exchange.");
-                                        }
-                                    });
-                });
-
-        Button passTurnButton = new Button(langPack.getString("pass"));
-        passTurnButton.setOnAction(e -> System.out.println("Pass Turn action triggered"));
-
-        Button renamePlayerButton = new Button(langPack.getString("rename"));
-        renamePlayerButton.setOnAction(
-                (ActionEvent event) -> {
-                    // Création de la boîte de dialogue
-                    Dialog<String> dialog = new Dialog<>();
-                    dialog.setTitle(langPack.getString("rename"));
-
-                    // Boutons OK et Annuler
-                    ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-                    dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
-
-                    // Champ de texte pour entrer le nouveau nom
-                    TextField nameField = new TextField();
-                    nameField.setPromptText(langPack.getString("renametxt1"));
-
-                    VBox content = new VBox();
-                    content.setSpacing(10);
-                    content.getChildren().addAll(new Label(langPack.getString("renametxt2")), nameField);
-
-                    dialog.getDialogPane().setContent(content);
-
-                    // Récupération du nom entré
-                    dialog.setResultConverter(
-                            dialogButton -> {
-                                if (dialogButton == okButtonType) {
-                                    return nameField.getText().trim();
-                                }
-                                return null;
-                            });
-
-                    // Affichage de la boîte de dialogue
-                    dialog
-                            .showAndWait()
-                            .ifPresent(
-                                    newName -> {
-                                        if (!newName.isEmpty()) {
-                                            System.out.println(
-                                                    "Rename Player action triggered with new name: "
-                                                            + newName); // TODO : Replace with a askAction call
-                                        }
-                                    });
-                });
-
-        Button forfeitPlayerButton = new Button(langPack.getString("forfeit"));
-        forfeitPlayerButton.setOnAction(e -> System.out.println("Forfeit Player action triggered"));
-
-        Button restartGameButton = new Button(langPack.getString("restart"));
-        restartGameButton.setOnAction(e -> System.out.println("Restart Game action triggered"));
-
-        // Adding buttons to the layout in a horizontal line
-        HBox actionButtons =
-                new HBox(
-                        10,
-                        placeWordButton,
-                        exchangeLetterButton,
-                        passTurnButton,
-                        renamePlayerButton,
-                        forfeitPlayerButton,
-                        restartGameButton);
-        actionButtons.setStyle("-fx-padding: 10px; -fx-alignment: center;");
-
-        VBox root = new VBox(menuBar, mainRow, playerHand, actionButtons);
-
-        Scene scene = new Scene(root, 1200, 800);
-
-        primaryStage.setTitle("Scrabble - GUI");
-        primaryStage.setScene(scene);
-
-        primaryStage.setOnCloseRequest(
-                event -> {
-                    primaryStage.close();
-                    System.exit(0);
-                });
-
-        primaryStage.setResizable(false);
-        primaryStage.show();
+      // Add the square to the VBox
+      playerScores.getChildren().add(playerBox);
     }
 
-    private void getLocalizedLang() {
-        // the lang pack is in scrabble/src/main/resources/GUI_pack_en.properties and
-        // GUI_pack_fr.properties
-        if (lang == null) {
-            langPack = ResourceBundle.getBundle("GUI_pack_en");
-        } else
-            switch (lang) {
-                case EN -> {
-                    langPack = ResourceBundle.getBundle("GUI_pack_en");
-                }
-                case FR -> {
-                    langPack = ResourceBundle.getBundle("GUI_pack_fr");
-                }
-                default -> {
-                    langPack = ResourceBundle.getBundle("GUI_pack_en");
-                }
+    // Combine histo, scrabbleBoard, and playerScores into a single row
+    mainRow = new HBox(10, histo, scrabbleBoard, playerScores);
+    mainRow.setStyle("-fx-alignment: center; -fx-padding: 10px;");
+
+    // Main du joueur provisoir :
+    // player's letters
+    // LettersCounter letters = new LettersCounter();
+    // letters.addLetter(new Letter('A'));
+    // letters.addLetter(new Letter('P'));
+    // letters.addLetter(new Letter('Q'));
+    // letters.addLetter(new Letter('O'));
+    // letters.addLetter(new Letter('W'));
+    // letters.addLetter(new Letter('V'));
+    // letters.addLetter(new Letter('M'));
+
+    // Player Hand
+
+    this.playerHand = new PlayerHand(lang, isSuperScrabble);
+    // this.playerHand.updateLetters(letters);
+
+    // ACTION BUTTONS --------------------------------------------
+    Button placeWordButton = new Button(langPack.getString("placew"));
+    placeWordButton.setOnAction(e -> System.out.println("Place Word action triggered"));
+
+    Button exchangeLetterButton = new Button(langPack.getString("exchange"));
+    exchangeLetterButton.setOnAction(
+        e -> {
+          // Retrieve the current player's LettersCounter
+          // LettersCounter letters = getCurrentPlayerLetters(); // Replace with the actual method
+          // to retrieve the LettersCounter
+          LettersCounter letters = new LettersCounter();
+
+          // Create a dialog for selecting letters to exchange
+          Dialog<java.util.List<Letter>> dialog = new Dialog<>();
+          dialog.setTitle(langPack.getString("exchange"));
+          dialog.setHeaderText(langPack.getString("exchangetxt"));
+
+          VBox content = new VBox();
+          content.setSpacing(10);
+
+          // Create toggle buttons for each letter and arrange them in rows
+          List<ToggleButton> toggleButtons = new java.util.ArrayList<>();
+          HBox row = new HBox(10); // Horizontal row with spacing
+          int buttonsPerRow = 5; // Number of buttons per row
+          int count = 0;
+
+          for (Letter letter : letters.getLettersSet()) {
+            for (int i = 0; i < letters.getLetterCount(letter); i++) {
+              ToggleButton toggleButton = new ToggleButton(letter.toString());
+              toggleButtons.add(toggleButton);
+              row.getChildren().add(toggleButton);
+              count++;
+
+              // If the row is full, add it to the content and start a new row
+              if (count % buttonsPerRow == 0) {
+                content.getChildren().add(row);
+                row = new HBox(10);
+              }
             }
-    }
+          }
 
-    public static void main(String[] args) {
-        setLang(Lang.FR);
-        launch(args);
-    }
+          // Add the last row if it has buttons
+          if (!row.getChildren().isEmpty()) {
+            content.getChildren().add(row);
+          }
 
-    // --- IView methods ---
-    @Override
-    public GameAction askAction(Player player, Integer turn) {
-        throw new UnsupportedOperationException("Unimplemented method 'askAction'");
-    }
+          dialog.getDialogPane().setContent(content);
 
-    @Override
-    public void displayGrid(Grid grid, Boolean isSuperScrabble) {
-        // Update the scrabble board with the new grid
-        System.out.println("Updating scrabble board with new grid");
-        this.mainRow.getChildren().remove(scrabbleBoard);
-        this.scrabbleBoard.update(grid, isSuperScrabble);
-        this.mainRow.getChildren().add(1, scrabbleBoard);
-    }
+          // Add OK and Cancel buttons
+          ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+          dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
 
-    @Override
-    public void displayPlayerLetters(LettersCounter letters) {
-        this.playerHand.updateLetters(letters);
-    }
+          // Handle the result
+          dialog.setResultConverter(
+              dialogButton -> {
+                if (dialogButton == okButtonType) {
+                  List<Letter> selectedLetters = new java.util.ArrayList<>();
+                  for (ToggleButton toggleButton : toggleButtons) {
+                    if (toggleButton.isSelected()) {
+                      selectedLetters.add(new Letter(toggleButton.getText().charAt(0)));
+                    }
+                  }
+                  // Call askAction to handle the selected letters
+                  askAction(null, null); // Replace null with appropriate parameters
+                  return selectedLetters;
+                }
+                return null;
+              });
 
-    @Override
-    public String getFromLangPack(String identifiant) {
-        throw new UnsupportedOperationException("Unimplemented method 'getFromLangPack'");
-    }
+          // Show the dialog and process the selected letters
+          dialog
+              .showAndWait()
+              .ifPresent(
+                  selectedLetters -> {
+                    if (!selectedLetters.isEmpty()) {
+                      System.out.println("Selected letters to exchange: " + selectedLetters);
+                    } else {
+                      System.out.println("No letters selected for exchange.");
+                    }
+                  });
+        });
 
-    @Override
-    public void showScore(Player player) {
-        throw new UnsupportedOperationException("Unimplemented method 'showScore'");
-    }
+    Button passTurnButton = new Button(langPack.getString("pass"));
+    passTurnButton.setOnAction(e -> System.out.println("Pass Turn action triggered"));
 
-    @Override
-    public void showScore(java.util.List<Player> players) {
-        throw new UnsupportedOperationException("Unimplemented method 'showScore'");
-    }
+    Button renamePlayerButton = new Button(langPack.getString("rename"));
+    renamePlayerButton.setOnAction(
+        (ActionEvent event) -> {
+          // Création de la boîte de dialogue
+          Dialog<String> dialog = new Dialog<>();
+          dialog.setTitle(langPack.getString("rename"));
 
-    @Override
-    public void displayDraw(LettersDrawer draw) {
-        throw new UnsupportedOperationException("Unimplemented method 'displayDraw'");
-    }
+          // Boutons OK et Annuler
+          ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+          dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
 
-    @Override
-    public void announceTurn(Player currentPlayer, int turn) {
-        throw new UnsupportedOperationException("Unimplemented method 'announceTurn'");
-    }
+          // Champ de texte pour entrer le nouveau nom
+          TextField nameField = new TextField();
+          nameField.setPromptText(langPack.getString("renametxt1"));
 
-    @Override
-    public void showError(CustomError e) {
-        throw new UnsupportedOperationException("Unimplemented method 'showError'");
-    }
+          VBox content = new VBox();
+          content.setSpacing(10);
+          content.getChildren().addAll(new Label(langPack.getString("renametxt2")), nameField);
 
-    @Override
-    public void showError(Throwable e) {
-        // Dialog to display the error message
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(langPack.getString("error"));
-        alert.setHeaderText(langPack.getString("error"));
-        alert.setContentText(e.getMessage());
-        alert.showAndWait();
-    }
+          dialog.getDialogPane().setContent(content);
+
+          // Récupération du nom entré
+          dialog.setResultConverter(
+              dialogButton -> {
+                if (dialogButton == okButtonType) {
+                  return nameField.getText().trim();
+                }
+                return null;
+              });
+
+          // Affichage de la boîte de dialogue
+          dialog
+              .showAndWait()
+              .ifPresent(
+                  newName -> {
+                    if (!newName.isEmpty()) {
+                      System.out.println(
+                          "Rename Player action triggered with new name: "
+                              + newName); // TODO : Replace with a askAction call
+                    }
+                  });
+        });
+
+    Button forfeitPlayerButton = new Button(langPack.getString("forfeit"));
+    forfeitPlayerButton.setOnAction(e -> System.out.println("Forfeit Player action triggered"));
+
+    Button restartGameButton = new Button(langPack.getString("restart"));
+    restartGameButton.setOnAction(e -> System.out.println("Restart Game action triggered"));
+
+    // Adding buttons to the layout in a horizontal line
+    HBox actionButtons =
+        new HBox(
+            10,
+            placeWordButton,
+            exchangeLetterButton,
+            passTurnButton,
+            renamePlayerButton,
+            forfeitPlayerButton,
+            restartGameButton);
+    actionButtons.setStyle("-fx-padding: 10px; -fx-alignment: center;");
+
+    VBox root = new VBox(menuBar, mainRow, playerHand, actionButtons);
+
+    Scene scene = new Scene(root, 1200, 800);
+
+    primaryStage.setTitle("Scrabble - GUI");
+    primaryStage.setScene(scene);
+
+    primaryStage.setOnCloseRequest(
+        event -> {
+          primaryStage.close();
+          System.exit(0);
+        });
+
+    primaryStage.setResizable(false);
+    primaryStage.show();
+  }
+
+  private void getLocalizedLang() {
+    // the lang pack is in scrabble/src/main/resources/GUI_pack_en.properties and
+    // GUI_pack_fr.properties
+    if (lang == null) {
+      langPack = ResourceBundle.getBundle("GUI_pack_en");
+    } else
+      switch (lang) {
+        case EN -> {
+          langPack = ResourceBundle.getBundle("GUI_pack_en");
+        }
+        case FR -> {
+          langPack = ResourceBundle.getBundle("GUI_pack_fr");
+        }
+        default -> {
+          langPack = ResourceBundle.getBundle("GUI_pack_en");
+        }
+      }
+  }
+
+  public static void main(String[] args) {
+    setLang(Lang.FR);
+    launch(args);
+  }
+
+  // --- IView methods ---
+  @Override
+  public GameAction askAction(Player player, Integer turn) {
+    throw new UnsupportedOperationException("Unimplemented method 'askAction'");
+  }
+
+  @Override
+  public void displayGrid(Grid grid, Boolean isSuperScrabble) {
+    // Update the scrabble board with the new grid
+    System.out.println("Updating scrabble board with new grid");
+    this.mainRow.getChildren().remove(scrabbleBoard);
+    this.scrabbleBoard.update(grid, isSuperScrabble);
+    this.mainRow.getChildren().add(1, scrabbleBoard);
+  }
+
+  @Override
+  public void displayPlayerLetters(LettersCounter letters) {
+    this.playerHand.updateLetters(letters);
+  }
+
+  @Override
+  public String getFromLangPack(String identifiant) {
+    throw new UnsupportedOperationException("Unimplemented method 'getFromLangPack'");
+  }
+
+  @Override
+  public void showScore(Player player) {
+    throw new UnsupportedOperationException("Unimplemented method 'showScore'");
+  }
+
+  @Override
+  public void showScore(java.util.List<Player> players) {
+    throw new UnsupportedOperationException("Unimplemented method 'showScore'");
+  }
+
+  @Override
+  public void displayDraw(LettersDrawer draw) {
+    throw new UnsupportedOperationException("Unimplemented method 'displayDraw'");
+  }
+
+  @Override
+  public void announceTurn(Player currentPlayer, int turn) {
+    throw new UnsupportedOperationException("Unimplemented method 'announceTurn'");
+  }
+
+  @Override
+  public void showError(CustomError e) {
+    throw new UnsupportedOperationException("Unimplemented method 'showError'");
+  }
+
+  @Override
+  public void showError(Throwable e) {
+    // Dialog to display the error message
+    Alert alert = new Alert(Alert.AlertType.ERROR);
+    alert.setTitle(langPack.getString("error"));
+    alert.setHeaderText(langPack.getString("error"));
+    alert.setContentText(e.getMessage());
+    alert.showAndWait();
+  }
 }

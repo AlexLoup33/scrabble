@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 import javafx.event.ActionEvent;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -18,22 +17,24 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.Grid;
 import pdp.scrabble.game.Lang;
 import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
 import pdp.scrabble.game.actions.PassTurnAction;
+import pdp.scrabble.view.Component.ActionHistory;
 import pdp.scrabble.view.Component.DisplayTurn;
 import pdp.scrabble.view.Component.PlayerHand;
 import pdp.scrabble.view.Component.ScrabbleBoard;
+import pdp.scrabble.view.Component.ShowScore;
 
 public class ViewGUI implements IView {
   private Stage primaryStage;
@@ -45,6 +46,8 @@ public class ViewGUI implements IView {
   private ScrabbleBoard scrabbleBoard;
   private PlayerHand playerHand;
   private DisplayTurn displayTurn;
+  private ShowScore playerScores;
+  private ActionHistory actionHistory;
 
   private final CompletableFuture<String> action = new CompletableFuture<>();
 
@@ -188,44 +191,17 @@ public class ViewGUI implements IView {
     menuBar.getMenus().addAll(fileMenu, gameMenu, aboutMenu);
     menuBar.setStyle("-fx-start-margin: 200px;");
 
-    // Historique des actions
-    // Create a gray square aligned with the ScrabbleBoard
-    StackPane histo = new StackPane();
-    histo.setStyle("-fx-background-color: lightgray; -fx-border-color: black;");
-    histo.setPrefSize(200, 400);
+    // HISTO INITIALIZATION
+    this.actionHistory = new ActionHistory();
 
     // GRID INITIALIZATION
     this.scrabbleBoard = new ScrabbleBoard(600, 600, 15);
 
     // Player score
-    VBox playerScores = new VBox();
-    playerScores.setSpacing(10);
-    playerScores.setStyle("-fx-alignment: center;"); // Center the VBox
-
-    // Example players and scores (replace with actual player data)
-    List<String> players = List.of("Player 1: 10", "Player 2: 20", "Player 3: 30", "Player 4: 40");
-
-    for (String player : players) {
-      // Create a gray square for each player
-      StackPane playerBox = new StackPane();
-      playerBox.setStyle("-fx-background-color: lightgray; -fx-border-color: black;");
-      playerBox.setPrefSize(200, 50); // Size of each square
-
-      // Display the player's name and score
-      String[] playerData = player.split(": ");
-      Label playerLabel = new Label(playerData[0] + ": " + playerData[1]);
-      playerLabel.setStyle("-fx-font-size: 14; -fx-font-weight: bold;");
-      playerLabel.setAlignment(Pos.CENTER);
-
-      // Add the label to the square
-      playerBox.getChildren().add(playerLabel);
-
-      // Add the square to the VBox
-      playerScores.getChildren().add(playerBox);
-    }
+    this.playerScores = new ShowScore();
 
     // Combine histo, scrabbleBoard, and playerScores into a single row
-    mainRow = new HBox(10, histo, scrabbleBoard, playerScores);
+    mainRow = new HBox(10, actionHistory, scrabbleBoard, playerScores);
     mainRow.setStyle("-fx-alignment: center; -fx-padding: 10px;");
 
     // Main du joueur provisoir :
@@ -413,14 +389,11 @@ public class ViewGUI implements IView {
   // --- IView methods ---
   @Override
   public GameAction askAction(Player player, Integer turn) {
-    action.thenAccept(
-        action -> {
-          System.out.println("Action completed: " + action);
-        });
-    return passTurnAction(player, turn);
+    throw new UnsupportedOperationException("Unimplemented method 'askAction'");
   }
 
   private PassTurnAction passTurnAction(Player player, Integer turn) {
+    this.actionHistory.addMessage(player.getName() + " " + langPack.getString("passaction"));
     return new PassTurnAction(player, turn);
   }
 
@@ -440,19 +413,33 @@ public class ViewGUI implements IView {
 
   @Override
   public String getFromLangPack(String identifiant) {
-    throw new UnsupportedOperationException("Unimplemented method 'getFromLangPack'");
+    if (!langPack.containsKey(identifiant)) {
+      Alert alert = new Alert(Alert.AlertType.ERROR);
+      alert.setTitle(langPack.getString("error"));
+      alert.setHeaderText(langPack.getString("error"));
+      alert.setContentText(
+          "Key : "
+              + identifiant
+              + " not in: "
+              + langPack
+              + "\nInvalid KeyArgument. Please check the file pack_ and verify your keys");
+      alert.showAndWait();
+      throw new CustomError(
+          ErrorType.InvalidLangPackIdentifier,
+          "Key : " + identifiant + " not in:" + langPack,
+          "Invalid KeyArgument. Please check the file pack_ and verify your keys");
+    }
+    return langPack.getString(identifiant);
   }
 
   @Override
   public void showScore(Player player) {
-    // throw new UnsupportedOperationException("Unimplemented method 'showScore'");
-    return;
+    this.playerScores.updateScore(player);
   }
 
   @Override
   public void showScore(java.util.List<Player> players) {
-    // throw new UnsupportedOperationException("Unimplemented method 'showScore'");
-    return;
+    this.playerScores.updateScores(players);
   }
 
   @Override
@@ -462,6 +449,14 @@ public class ViewGUI implements IView {
 
   @Override
   public void announceTurn(Player currentPlayer, int turn) {
+    this.actionHistory.addMessage(
+        langPack.getString("turn")
+            + " "
+            + turn
+            + " | "
+            + langPack.getString("player")
+            + " "
+            + currentPlayer.getName());
     this.displayTurn.updateTurn(turn, currentPlayer);
   }
 

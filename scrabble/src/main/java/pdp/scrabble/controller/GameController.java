@@ -55,8 +55,9 @@ public class GameController {
         if (recoverableException != null) {
           view.showError(recoverableException);
         }
-
+        Utilities.debug('l', "Attempt to askAction\n");
         GameAction played = view.askAction(playing, turn); // blocking
+        Utilities.debug('l', "Action received\n");
         model.applyGameActionDispatch(played);
 
         // Player 0 is a start of table round except when player 0 chose a

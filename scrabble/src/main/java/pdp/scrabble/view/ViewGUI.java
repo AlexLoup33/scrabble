@@ -444,7 +444,7 @@ public class ViewGUI implements IView {
 
   @Override
   public void displayDraw(LettersDrawer draw) {
-    throw new UnsupportedOperationException("Unimplemented method 'displayDraw'");
+    this.actionHistory.addMessage(langPack.getString("drawaction") + " : " + draw.getCurrentSize());
   }
 
   @Override

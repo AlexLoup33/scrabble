@@ -137,16 +137,11 @@ public class ConfigurationBuilder {
         case BLITZTIME:
         case AIDEPTH:
         case AITIME:
-        case SEED:
+          // case SEED:
           {
             int value = 0;
             try {
-              if (confEnum == ConfigurationPropertiesEnum.SEED) {
-                // only seed can be negative
-                value = Integer.valueOf(props.getProperty(key));
-              } else {
-                value = Integer.parseUnsignedInt(props.getProperty(key));
-              }
+              value = Integer.parseUnsignedInt(props.getProperty(key));
             } catch (NumberFormatException e) {
               throw new CustomError(
                   errType,
@@ -212,6 +207,23 @@ public class ConfigurationBuilder {
             }
             break;
           }
+        case SEED:
+          try {
+            target.setSeed(Long.parseLong(props.getProperty(key)));
+          } catch (NumberFormatException e) {
+            throw new CustomError(
+                ErrorType.ConfigParsingException,
+                errHeader
+                    + "value `"
+                    + props.getProperty(key)
+                    + "` for key `"
+                    + key
+                    + "`, expected an `"
+                    + Integer.TYPE
+                    + "`",
+                e.getMessage());
+          }
+          break;
         default:
           throw new CustomError(
               errType,

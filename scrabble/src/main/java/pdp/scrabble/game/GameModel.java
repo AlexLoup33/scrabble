@@ -1,15 +1,23 @@
 package pdp.scrabble.game;
 
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Dictionary;
 import pdp.scrabble.dictionary.IDictionary;
+import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.errorsHandling.ErrorType;
+import pdp.scrabble.game.History.History;
 import pdp.scrabble.game.actions.*;
+import pdp.scrabble.game.serializer.Serializer;
 
 public class GameModel {
-  private final RandomAPI rngGenerator;
+  public final RandomAPI rngGenerator;
   public final Grid grid;
   public final Lang lang;
   public final List<Player> players;
@@ -17,6 +25,7 @@ public class GameModel {
   public final IDictionary dictionary;
   public final Configuration config;
   private Player currentPlayer;
+  private History<GameAction> history;
   private int gameTurn;
   private int everyonePassedTurnStreak;
   public int nextPlayerID;
@@ -24,6 +33,7 @@ public class GameModel {
   public GameModel(Configuration config) {
     this.config = (Configuration) config;
     this.rngGenerator = new RandomAPI(this.config.getSeed());
+    this.history = new History<>();
 
     this.nextPlayerID = 0;
     this.players = new ArrayList<>(this.config.getPlayerCount());
@@ -69,6 +79,7 @@ public class GameModel {
   public void applyGameActionDispatch(GameAction played, long duration) {
     played.player.addTurnPlayedTime(duration);
     played.applyGameAction(this); // use double dispatch
+    history.addCheckpoint(played);
   }
 
   public void applyGameAction(RenamePlayerAction rpa) {
@@ -113,6 +124,20 @@ public class GameModel {
     this.reset();
     // this.endPlayerTurn();
     this.currentPlayer = this.players.get(0);
+  }
+
+  public void applyGameAction(QuitAction quitAction) {
+    if (quitAction.isSaveWanted) {
+      try {
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        String saveLocation = "./saves/" + now.toString() + ".txt";
+        Serializer.saveCurrentToFile(Paths.get(saveLocation), this);
+        Utilities.debug('m', "%s was saved");
+      } catch (IOException e) {
+        throw new CustomError(ErrorType.IO, "save directory is not accessible", e.getMessage());
+      }
+    }
+    System.exit(0);
   }
 
   /**
@@ -171,6 +196,15 @@ public class GameModel {
     this.gameTurn += 1;
   }
 
+  public void currentPlayerDrawLetters() {
+    if (this.draw.getCurrentSize() < 7) {
+      throw new Error("[BUG] draw letter count is strictly under 7");
+    }
+    for (int i = currentPlayer.bag.size(); i < 7; i++) {
+      this.currentPlayer.bag.addLetter(this.draw.popLetter());
+    }
+  }
+
   public int getTurn() {
     return this.gameTurn;
   }
@@ -181,5 +215,13 @@ public class GameModel {
 
   public int nbEveryonePassedTurn() {
     return this.everyonePassedTurnStreak;
+  }
+
+  public History<GameAction> getHistory() {
+    return this.history;
+  }
+
+  public void setHistory(History<GameAction> history) {
+    this.history = history;
   }
 }

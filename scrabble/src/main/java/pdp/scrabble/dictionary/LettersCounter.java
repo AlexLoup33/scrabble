@@ -136,6 +136,10 @@ public class LettersCounter {
     return this.table.values().stream().reduce(0, Integer::sum);
   }
 
+  public Hashtable<Letter, Integer> getTable() {
+    return this.table;
+  }
+
   @Override
   public String toString() {
     return "LettersCounter{" + "table=" + table + '}';

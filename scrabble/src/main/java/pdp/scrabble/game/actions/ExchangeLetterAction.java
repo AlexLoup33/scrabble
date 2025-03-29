@@ -1,6 +1,7 @@
 package pdp.scrabble.game.actions;
 
 import java.util.List;
+import java.util.Map;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
@@ -71,5 +72,17 @@ public class ExchangeLetterAction extends GameAction {
       int nbDrawed = drawedLetters.getLetterCount(letter);
       this.player.bag.addLetter(letter, nbDrawed);
     }
+  }
+
+  @Override
+  public String toSerializedString() {
+    StringBuilder toExchange = new StringBuilder();
+    for (Map.Entry<Letter, Integer> l : this.lettersToExchange.getTable().entrySet()) {
+      for (int i = 0; i < l.getValue(); i++) {
+        toExchange.append(l.getKey() + ",");
+      }
+    }
+    if (toExchange.length() > 0) toExchange.deleteCharAt(toExchange.length() - 1);
+    return super.toSerializedString() + " ExchangeLetter [" + toExchange.toString() + "]";
   }
 }

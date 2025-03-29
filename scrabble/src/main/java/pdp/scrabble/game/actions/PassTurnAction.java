@@ -17,4 +17,9 @@ public class PassTurnAction extends GameAction {
   public void applyGameAction(GameModel gameModel) {
     gameModel.applyGameAction(this);
   }
+
+  @Override
+  public String toSerializedString() {
+    return super.toSerializedString() + " PassTurn";
+  }
 }

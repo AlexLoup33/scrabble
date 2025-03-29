@@ -15,4 +15,9 @@ public class RenamePlayerAction extends GameAction {
   public void applyGameAction(GameModel gameModel) {
     gameModel.applyGameAction(this);
   }
+
+  @Override
+  public String toSerializedString() {
+    return super.toSerializedString() + " RenamePlayer " + "\"" + this.newName + "\"";
+  }
 }

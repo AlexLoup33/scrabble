@@ -1,9 +1,8 @@
 package pdp.scrabble.game.History;
 
-import java.nio.file.Path;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
-import pdp.scrabble.game.GameModel;
+import pdp.scrabble.game.actions.*;
 
 public class History<T> {
   private int nextNodeID;
@@ -82,15 +81,33 @@ public class History<T> {
     return value;
   }
 
-  public void saveCurrentToFile(Path filePath) {
-    // get current value and serialize it and save it to the file
-    throw new UnsupportedOperationException("Unimplemented method 'saveToFile'");
-  }
+  public String toSerializedString() {
+    HistNode<T> cur = this.currentNode;
+    // get to first node, we build the string in insertion order
+    // because it is annoying to get decent String building performance in reverse
+    while (cur.getPrevNode() != nullNode) {
+      cur = cur.getPrevNode();
+    }
 
-  public void loadModelFromFile(Path filePath, GameModel gm) {
-    // load value from the file and deserialize it
-    // loadGameModel from the loaded checkPoint
-    // clear the history (the hist of a game isn't saved)
-    throw new UnsupportedOperationException("Unimplemented method 'loadModelFromFile'");
+    int curTurn = 0;
+    StringBuilder serialized = new StringBuilder();
+    while (cur != null) {
+      GameAction curAction = (GameAction) cur.getValue();
+      boolean first = (curTurn - curAction.turn) != 0;
+      curTurn = first ? curAction.turn : curTurn;
+      String toAppend = curAction.toSerializedString();
+      String lineBefore = "";
+      if (first && curTurn != 1) {
+        serialized.deleteCharAt(serialized.length() - 1);
+        lineBefore = ";\n";
+      }
+      if (!first) toAppend = toAppend.substring(toAppend.indexOf('.') + 2); // removing ". "
+      serialized.append(lineBefore + toAppend + " ");
+      cur = cur.getNextNode();
+    }
+    if (curTurn != 0) {
+      serialized.deleteCharAt(serialized.length() - 1);
+    }
+    return serialized.toString() + ";";
   }
 }

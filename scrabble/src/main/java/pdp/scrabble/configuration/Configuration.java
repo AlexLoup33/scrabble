@@ -13,7 +13,7 @@ public record Configuration(
     boolean[] aiPlayers,
     int aiDepth,
     int aiTime,
-    int seed,
+    long seed,
     String language,
     String aiMode,
     Path dictFile,
@@ -60,7 +60,7 @@ public record Configuration(
     return this.aiTime;
   }
 
-  public int getSeed() {
+  public long getSeed() {
     return this.seed;
   }
 

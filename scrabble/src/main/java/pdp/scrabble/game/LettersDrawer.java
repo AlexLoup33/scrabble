@@ -18,16 +18,16 @@ public class LettersDrawer {
   public LettersDrawer(Lang lang, RandomUser rngGenerator, boolean isSuperScrabble) {
     this.rng = rngGenerator;
     this.lang = lang;
-    this.table = new ArrayList<>();
-    this.reset(isSuperScrabble);
-    this.maxSize = this.currentSize;
     this.isSuperScrabble = isSuperScrabble;
+    this.table = new ArrayList<>();
+    this.reset();
+    this.maxSize = this.currentSize;
   }
 
-  public void reset(boolean isSuperScrabble) {
+  public void reset() {
     this.table.clear();
     this.currentSize = 0;
-    LettersCounter initialLetters = this.lang.getLettersCount(isSuperScrabble);
+    LettersCounter initialLetters = this.lang.getLettersCount(this.isSuperScrabble);
     for (Letter l : initialLetters.getLettersSet()) {
       for (int i = 0; i < initialLetters.getLetterCount(l); i++) {
         this.table.add(l);

@@ -61,7 +61,7 @@ public class GameModel {
   public void reset() {
     this.rngGenerator.reset(); // way safer to keep this line the first !!
     this.grid.reset();
-    this.draw.reset(this.config.getSuperScrabble());
+    this.draw.reset();
     for (Player player : this.players) {
       player.reset();
     }
@@ -79,7 +79,7 @@ public class GameModel {
   public void applyGameActionDispatch(GameAction played, long duration) {
     played.player.addTurnPlayedTime(duration);
     played.applyGameAction(this); // use double dispatch
-    history.addCheckpoint(played);
+    history.addPlayerdAction(played);
   }
 
   public void applyGameAction(RenamePlayerAction rpa) {

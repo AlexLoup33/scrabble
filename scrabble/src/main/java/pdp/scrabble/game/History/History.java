@@ -39,17 +39,17 @@ public class History<T> {
   }
 
   /**
-   * add this checkpoint to the history, will clear all the current redo
+   * add the action played to the history, will clear all the current redo
    *
-   * @param value the checkpoint to save
+   * @param value the action to save
    */
-  public void addCheckpoint(T value) {
+  public void addPlayerdAction(T value) {
     this.currentNode = this.currentNode.newNext(value, this.giveNextID());
   }
 
   /**
-   * @return the checkpoint undone
-   * @throws CustomError if there is no history available
+   * @return the action to undo
+   * @throws CustomError (NoHistoryAvailable) if there is no history available
    */
   public T undoOne() {
     HistNode<T> prev = this.currentNode.getPrevNode();
@@ -65,8 +65,8 @@ public class History<T> {
   }
 
   /**
-   * @return the checkpoint redone
-   * @throws CustomError if there is no history available
+   * @return the action to redo
+   * @throws CustomError (NoHistoryAvailable) if there is no history available
    */
   public T redoOne() {
     HistNode<T> next = this.currentNode.getNextNode();

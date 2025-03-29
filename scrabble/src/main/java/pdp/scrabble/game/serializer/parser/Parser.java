@@ -300,7 +300,7 @@ public class Parser {
   // parseGame()
   private void parseHistory() {
     assert this.loadedModel != null;
-    History parsed = new History<>();
+    History<GameAction> parsed = new History<>();
     while (input.peek().type.equals("num")) {
       int curTurn = parseNumber();
       skipPunc('.');
@@ -325,14 +325,14 @@ public class Parser {
               new PlaceWordAction(
                   this.loadedModel.getCurrentPlayer(), curTurn, parseLetters(), gwp);
           placeAction.applyGameAction(loadedModel);
-          parsed.addCheckpoint(placeAction);
+          parsed.addPlayerdAction(placeAction);
           continue;
         }
         if (actionType.equals("RenamePlayer")) {
           RenamePlayerAction renameAction =
               new RenamePlayerAction(this.loadedModel.getCurrentPlayer(), curTurn, parseString());
           renameAction.applyGameAction(this.loadedModel);
-          parsed.addCheckpoint(renameAction);
+          parsed.addPlayerdAction(renameAction);
           continue;
         }
         if (actionType.equals("ExchangeLetter")) {
@@ -343,28 +343,28 @@ public class Parser {
           ExchangeLetterAction exchangeAction =
               new ExchangeLetterAction(this.loadedModel.getCurrentPlayer(), curTurn, toExchange);
           exchangeAction.applyGameAction(this.loadedModel);
-          parsed.addCheckpoint(exchangeAction);
+          parsed.addPlayerdAction(exchangeAction);
           continue;
         }
         if (actionType.equals("ForfeitGame")) {
           ForfeitGameAction forfeitAction =
               new ForfeitGameAction(this.loadedModel.getCurrentPlayer(), curTurn);
           forfeitAction.applyGameAction(this.loadedModel);
-          parsed.addCheckpoint(forfeitAction);
+          parsed.addPlayerdAction(forfeitAction);
           continue;
         }
         if (actionType.equals("PassTurn")) {
           PassTurnAction passTurnAction =
               new PassTurnAction(this.loadedModel.getCurrentPlayer(), curTurn);
           passTurnAction.applyGameAction(this.loadedModel);
-          parsed.addCheckpoint(passTurnAction);
+          parsed.addPlayerdAction(passTurnAction);
           continue;
         }
         if (actionType.equals("RestartGame")) {
           RestartGameAction restartGameAction =
               new RestartGameAction(this.loadedModel.getCurrentPlayer(), curTurn);
           restartGameAction.applyGameAction(this.loadedModel);
-          parsed.addCheckpoint(restartGameAction);
+          parsed.addPlayerdAction(restartGameAction);
           continue;
         }
         unexpected();

@@ -7,18 +7,28 @@ import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
+import pdp.scrabble.game.serializer.Serializer;
 import pdp.scrabble.view.IView;
 import pdp.scrabble.view.ViewCLI;
 import pdp.scrabble.view.ViewGUI;
 
 public class GameController {
 
-  private final GameModel model;
-  private IView view;
+  public GameModel model;
+  public IView view;
 
-  public GameController(Configuration conf) {
-    this.model = new GameModel(conf);
-    if (conf.getGui()) {
+  public GameController(Configuration curConf) {
+    if (curConf.getHistoryFile() != null) {
+      this.model = Serializer.loadModelFromFile(curConf.getHistoryFile());
+    } else {
+      this.model = new GameModel(curConf);
+    }
+    // curConf -> scrabblerc + cli args
+    // conf -> is this game restored from save ?
+    //  - Yes : conf from old game
+    //  - No  : conf == curConf
+    Configuration conf = this.model.config;
+    if (curConf.getGui()) {
       CountDownLatch latch = new CountDownLatch(1);
 
       // Lancer JavaFX dans un thread séparé
@@ -53,7 +63,7 @@ public class GameController {
       try {
         Player playing = model.getCurrentPlayer();
         Utilities.debug('l', "%s begins his turn\n", playing.getName());
-        drawLetters(playing);
+        model.currentPlayerDrawLetters();
         Utilities.debug('l', "numbers of letters in draw: %d\n", model.draw.getCurrentSize());
         view.announceTurn(playing, turn);
         for (Player onGames : model.players) {

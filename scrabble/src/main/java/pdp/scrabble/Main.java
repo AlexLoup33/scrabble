@@ -16,8 +16,8 @@ public class Main {
     Configuration conf = ConfigurationInitializer.configurationInit(args);
 
     GameController gc = new GameController(conf);
-    gc.gameLoop();
 
+    gc.gameLoop();
 
     // Question:
 

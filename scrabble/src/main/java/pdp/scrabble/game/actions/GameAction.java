@@ -12,5 +12,14 @@ public abstract class GameAction {
     this.turn = turn;
   }
 
+  public String toString() {
+    return this.getClass().getSimpleName() + "{" + "player=" + player + "," + "turn=" + turn;
+  }
+
   public abstract void applyGameAction(GameModel gameModel);
+
+  public String toSerializedString() {
+    return turn + ". " + player.id;
+  }
+  ;
 }

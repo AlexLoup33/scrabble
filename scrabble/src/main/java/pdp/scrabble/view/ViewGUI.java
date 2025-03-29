@@ -480,4 +480,10 @@ public class ViewGUI implements IView {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'initialize'");
   }
+
+  @Override
+  public void showRemainingTimes(List<Player> players) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'showRemainingTimes'");
+  }
 }

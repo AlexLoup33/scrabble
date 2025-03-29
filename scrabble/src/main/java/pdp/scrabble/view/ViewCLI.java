@@ -3,6 +3,7 @@ package pdp.scrabble.view;
 import static pdp.scrabble.errorsHandling.ErrorType.UnsupportedMultiplier;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 import pdp.scrabble.Utilities;
@@ -307,9 +308,19 @@ public class ViewCLI implements IView {
   }
 
   @Override
-  public void showScore(java.util.List<Player> players) {
+  public void showScore(List<Player> players) {
     for (Player player : players) {
       showScore(player);
+    }
+  }
+
+  @Override
+  public void showRemainingTimes(List<Player> players) {
+    for (Player player : players) {
+      System.out.printf(
+          getFromLangPack("blitz_remaining") + "\n",
+          player.getName(),
+          player.getRemainingTimeAsString());
     }
   }
 

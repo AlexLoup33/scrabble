@@ -95,6 +95,8 @@ public interface IView {
    */
   public void announceTurn(Player currentPlayer, int turn);
 
+  public void showRemainingTimes(List<Player> players);
+
   /**
    * This Java function showError takes a CustomError object as a parameter to handle and display
    * errors.

@@ -21,7 +21,7 @@ public class ConfigurationTemplate {
   private boolean gui;
 
   private int playerCount;
-  private int seed;
+  private long seed;
   // Only relevant with blitz on
   private int blitzTime;
 
@@ -103,7 +103,7 @@ public class ConfigurationTemplate {
     this.aiTime = aiTime;
   }
 
-  public void setSeed(int seed) {
+  public void setSeed(long seed) {
     this.seed = seed;
   }
 
@@ -230,7 +230,7 @@ public class ConfigurationTemplate {
         + Integer.toString(aiTime)
         + " | "
         + "seed="
-        + Integer.toString(seed)
+        + Long.toString(seed)
         + " | "
         + "language="
         // + language.toString()

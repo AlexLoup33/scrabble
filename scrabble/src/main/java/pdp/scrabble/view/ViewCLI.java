@@ -25,6 +25,7 @@ import pdp.scrabble.game.actions.ForfeitGameAction;
 import pdp.scrabble.game.actions.GameAction;
 import pdp.scrabble.game.actions.PassTurnAction;
 import pdp.scrabble.game.actions.PlaceWordAction;
+import pdp.scrabble.game.actions.QuitAction;
 import pdp.scrabble.game.actions.RenamePlayerAction;
 import pdp.scrabble.game.actions.RestartGameAction;
 
@@ -47,7 +48,7 @@ public class ViewCLI implements IView {
   public GameAction askAction(Player player, Integer turn) throws CustomError {
     Utilities.verbose(
         "possible actions are: placeWord | exchangeLetter | passTurn "
-            + "| renamePlayer | forfeitPlayer | restartGame\n");
+            + "| renamePlayer | forfeitPlayer | restartGame | quit\n");
     System.out.println(this.getFromLangPack("ask_actionType"));
     String response = this.scaner.nextLine().strip();
 
@@ -63,6 +64,9 @@ public class ViewCLI implements IView {
       }
       case "restartGame" -> {
         return new RestartGameAction(player, turn);
+      }
+      case "quit" -> {
+        return this.askQuitAction(player, turn);
       }
       case "exchangeLetter" -> {
         return this.ask_exchangeLetter(player, turn);
@@ -97,6 +101,13 @@ public class ViewCLI implements IView {
     String response = this.scaner.nextLine().strip();
 
     return new RenamePlayerAction(player, 0, response);
+  }
+
+  private QuitAction askQuitAction(Player player, Integer turn) {
+    System.out.print(this.getFromLangPack("ask_save") + "[y/N]");
+    String response = this.scaner.nextLine().strip().toLowerCase();
+    boolean isSaveWanted = (response.equals("y") || response.equals("yes"));
+    return new QuitAction(player, turn, isSaveWanted);
   }
 
   private PlaceWordAction ask_placeWordAction(Player player, Integer turn) {
@@ -186,27 +197,26 @@ public class ViewCLI implements IView {
         String color = "";
         String backgroundColor = "";
 
-        // TO-DO: Prendre en compte le mode SuperScrabble
         switch (mult) {
           case SIMPLE_LETTER, DOUBLE_LETTER, TRIPLE_LETTER, DOUBLE_WORD, TRIPLE_WORD -> {
-            color = mult.getLetterColor(isSuperScrabble).getTextColor();
-            backgroundColor = mult.getLetterColor(isSuperScrabble).getBackgroundColor();
+            color = mult.getLetterColor(isSuperScrabble, false).getTextColor();
+            backgroundColor = mult.getLetterColor(isSuperScrabble, false).getBackgroundColor();
           }
           case QUADRUPLE_LETTER, QUADRUPLE_WORD -> {
             if (!isSuperScrabble) {
               throw new CustomError(
                   UnsupportedMultiplier,
                   "Illegal Multiplier",
-                  "Illegal utilisation of QUADRUPLE multiplier in another game mode");
+                  "Illegal utilisation of QUADRUPLE multiplier in non super scrabble game mode");
             }
-            color = mult.getLetterColor(isSuperScrabble).getTextColor();
-            backgroundColor = mult.getLetterColor(isSuperScrabble).getBackgroundColor();
+            color = mult.getLetterColor(isSuperScrabble, false).getTextColor();
+            backgroundColor = mult.getLetterColor(isSuperScrabble, false).getBackgroundColor();
           }
           default -> {
             throw new CustomError(
                 UnsupportedMultiplier,
                 "Unsupported Multiplier",
-                "Unexistant Multiplier case detected while initializing the display of the grid");
+                "Non-existent Multiplier case detected while initializing the display of the grid");
           }
         }
 

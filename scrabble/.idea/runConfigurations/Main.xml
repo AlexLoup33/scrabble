@@ -2,7 +2,7 @@
   <configuration default="false" name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="pdp.scrabble.Main" />
     <module name="scrabble" />
-    <option name="PROGRAM_PARAMETERS" value="-v" />
+    <option name="PROGRAM_PARAMETERS" value="-v -b" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="pdp.scrabble.*" />

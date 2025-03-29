@@ -1,15 +1,23 @@
 package pdp.scrabble.game;
 
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Dictionary;
 import pdp.scrabble.dictionary.IDictionary;
+import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.errorsHandling.ErrorType;
+import pdp.scrabble.game.History.History;
 import pdp.scrabble.game.actions.*;
+import pdp.scrabble.game.serializer.Serializer;
 
 public class GameModel {
-  private final RandomAPI rngGenerator;
+  public final RandomAPI rngGenerator;
   public final Grid grid;
   public final Lang lang;
   public final List<Player> players;
@@ -17,6 +25,7 @@ public class GameModel {
   public final IDictionary dictionary;
   public final Configuration config;
   private Player currentPlayer;
+  private History<GameAction> history;
   private int gameTurn;
   private int everyonePassedTurnStreak;
   public int nextPlayerID;
@@ -24,11 +33,13 @@ public class GameModel {
   public GameModel(Configuration config) {
     this.config = (Configuration) config;
     this.rngGenerator = new RandomAPI(this.config.getSeed());
+    this.history = new History<>();
 
     this.nextPlayerID = 0;
     this.players = new ArrayList<>(this.config.getPlayerCount());
+
     for (int i = 0; i < this.config.getPlayerCount(); i++) {
-      this.players.add(new Player(nextPlayerID));
+      this.players.add(new Player(nextPlayerID, this.config.getBlitzTime()));
       this.nextPlayerID++;
     }
 
@@ -40,7 +51,7 @@ public class GameModel {
     this.dictionary = new Dictionary();
     this.dictionary.loadFromFile(this.lang.getDictionaryPath());
 
-    this.draw = new LettersDrawer(this.lang, this.rngGenerator);
+    this.draw = new LettersDrawer(this.lang, this.rngGenerator, this.config.getSuperScrabble());
     this.grid = new Grid(this, (config.getSuperScrabble() ? 21 : 15));
     this.currentPlayer = this.players.get(0);
     this.gameTurn = 1;
@@ -50,7 +61,7 @@ public class GameModel {
   public void reset() {
     this.rngGenerator.reset(); // way safer to keep this line the first !!
     this.grid.reset();
-    this.draw.reset();
+    this.draw.reset(this.config.getSuperScrabble());
     for (Player player : this.players) {
       player.reset();
     }
@@ -65,8 +76,10 @@ public class GameModel {
    * @param played
    * @return whether the turn is finished
    */
-  public void applyGameActionDispatch(GameAction played) {
+  public void applyGameActionDispatch(GameAction played, long duration) {
+    played.player.addTurnPlayedTime(duration);
     played.applyGameAction(this); // use double dispatch
+    history.addCheckpoint(played);
   }
 
   public void applyGameAction(RenamePlayerAction rpa) {
@@ -95,7 +108,7 @@ public class GameModel {
   public void applyGameAction(PlaceWordAction pwa) {
     pwa.assertHasLettersToPlace();
     List<OwnedWord> scoredWords = this.grid.placeLetters(pwa);
-    pwa.removeLettersPlaced(); //
+    pwa.removeLettersPlaced();
     for (OwnedWord ownedWord : scoredWords) {
       int wordScore = this.grid.getScore(ownedWord);
       Utilities.verbose(
@@ -109,8 +122,22 @@ public class GameModel {
   // F41
   public void applyGameAction(RestartGameAction restartGameAction) {
     this.reset();
-    //        this.endPlayerTurn();
+    // this.endPlayerTurn();
     this.currentPlayer = this.players.get(0);
+  }
+
+  public void applyGameAction(QuitAction quitAction) {
+    if (quitAction.isSaveWanted) {
+      try {
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        String saveLocation = "./saves/" + now.toString() + ".txt";
+        Serializer.saveCurrentToFile(Paths.get(saveLocation), this);
+        Utilities.debug('m', "%s was saved");
+      } catch (IOException e) {
+        throw new CustomError(ErrorType.IO, "save directory is not accessible", e.getMessage());
+      }
+    }
+    System.exit(0);
   }
 
   /**
@@ -130,10 +157,16 @@ public class GameModel {
   }
 
   private void endPlayerTurn() {
+    if (this.getCurrentPlayer().getRemainingTime() <= 0) {
+      Utilities.verbose("Player " + this.getCurrentPlayer().getName() + " has no time left !\n");
+      this.getCurrentPlayer().forfeit();
+    }
+
     if (this.getActivePlayers().isEmpty()) {
       this.gameTurn += 1;
       return; // avoid infinite loop
     }
+
     // => safe to loop (there is at least an active player to select)
     // select the next player to play and update the game turn
     do {
@@ -163,6 +196,15 @@ public class GameModel {
     this.gameTurn += 1;
   }
 
+  public void currentPlayerDrawLetters() {
+    if (this.draw.getCurrentSize() < 7) {
+      throw new Error("[BUG] draw letter count is strictly under 7");
+    }
+    for (int i = currentPlayer.bag.size(); i < 7; i++) {
+      this.currentPlayer.bag.addLetter(this.draw.popLetter());
+    }
+  }
+
   public int getTurn() {
     return this.gameTurn;
   }
@@ -173,5 +215,13 @@ public class GameModel {
 
   public int nbEveryonePassedTurn() {
     return this.everyonePassedTurnStreak;
+  }
+
+  public History<GameAction> getHistory() {
+    return this.history;
+  }
+
+  public void setHistory(History<GameAction> history) {
+    this.history = history;
   }
 }

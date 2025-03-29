@@ -2,11 +2,8 @@ package pdp.scrabble.view;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.CountDownLatch;
-
-import javafx.application.Application;
+import java.util.concurrent.CompletableFuture;
 import javafx.event.ActionEvent;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -20,64 +17,46 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.Grid;
 import pdp.scrabble.game.Lang;
 import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
+import pdp.scrabble.game.actions.PassTurnAction;
+import pdp.scrabble.view.Component.ActionHistory;
+import pdp.scrabble.view.Component.DisplayTurn;
 import pdp.scrabble.view.Component.PlayerHand;
 import pdp.scrabble.view.Component.ScrabbleBoard;
+import pdp.scrabble.view.Component.ShowScore;
 
-public class ViewGUI extends Application implements IView {
-  private static ViewGUI instance;
+public class ViewGUI implements IView {
   private Stage primaryStage;
   private HBox mainRow;
-  private static CountDownLatch latch;
   private static Lang lang;
   private static Boolean isSuperScrabble;
-  private ResourceBundle langPack;
+  private final ResourceBundle langPack;
 
   private ScrabbleBoard scrabbleBoard;
   private PlayerHand playerHand;
+  private DisplayTurn displayTurn;
+  private ShowScore playerScores;
+  private ActionHistory actionHistory;
 
-  public ViewGUI() {}
+  private final CompletableFuture<String> action = new CompletableFuture<>();
 
-  public static void launchJavaFX(CountDownLatch latch) {
-    ViewGUI.latch = latch;
-    Application.launch(ViewGUI.class);
-  }
+  public ViewGUI(Lang lang, Boolean isSuperScrabble, Stage stage) {
+    this.lang = lang;
+    this.isSuperScrabble = isSuperScrabble;
+    this.langPack = lang.getViewGUI_langPack();
 
-  public static ViewGUI getInstance() {
-    return instance;
-  }
-
-  @Override
-  public void initialize(Configuration conf) {
-    System.out.println("ViewGUI initialized");
-  }
-
-  public static void setLang(Lang lang) {
-    ViewGUI.lang = lang;
-  }
-
-  public static void setSuperScrabble(Boolean superScrabble) {
-    isSuperScrabble = superScrabble;
-  }
-
-  @Override
-  public void start(Stage primaryStage) {
-    instance = this;
-    latch.countDown();
-    this.primaryStage = primaryStage;
-    // Debug message at the top of the window
-    getLocalizedLang();
+    this.primaryStage = stage;
 
     // MENU BAR INITIALIZATION
     MenuBar menuBar = new MenuBar();
@@ -99,11 +78,11 @@ public class ViewGUI extends Application implements IView {
     // TODO: Ask the controller to create a new game.
     // --> TODO: implement restartGameAction
     // newGameItem.setOnAction(e -> RestartGameAction.restart());
-    newGameItem.setOnAction(e -> System.out.println("restart Game..."));
+    newGameItem.setOnAction(e -> action.complete("newGame"));
 
     // Load Game
     // TODO: Open a file selector to load a game.
-    loadGameItem.setOnAction(e -> System.out.println("Load Game..."));
+    loadGameItem.setOnAction(e -> action.complete("loadGame"));
 
     // Save Game
     // TODO: Open a file selector to save the game.
@@ -180,17 +159,17 @@ public class ViewGUI extends Application implements IView {
           alert.setHeaderText(null);
           alert.setContentText(
               """
-                             Andrieu Ludovic
-                             Cassard Aymeric
-                             Cazet Valentin
-                             Lou-Poueyou Alexandre
-                             Mayol Jean
-                             Petry Math\u00e9o
-                             """);
+                                    Andrieu Ludovic
+                                    Cassard Aymeric
+                                    Cazet Valentin
+                                    Lou-Poueyou Alexandre
+                                    Mayol Jean
+                                    Petry Math\u00e9o
+                                    """);
           alert.showAndWait();
         });
 
-    // TODO: Display the licence of the game
+    // TODO: Display the licence of the gam
     licenceItem.setOnAction(
         (ActionEvent event) -> {
           Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -198,9 +177,9 @@ public class ViewGUI extends Application implements IView {
           alert.setHeaderText(null);
           alert.setContentText(
               """
-                             This game is licensed under the MIT License.
-                             You can do whatever you want with it, as long as you include the original license.
-                             """);
+                                    This game is licensed under the MIT License.
+                                    You can do whatever you want with it, as long as you include the original license.
+                                    """);
           alert.setContentText(
               alert.getContentText() + "\n\n" + "https://opensource.org/licenses/MIT");
           alert.showAndWait();
@@ -212,44 +191,17 @@ public class ViewGUI extends Application implements IView {
     menuBar.getMenus().addAll(fileMenu, gameMenu, aboutMenu);
     menuBar.setStyle("-fx-start-margin: 200px;");
 
-    // Historique des actions
-    // Create a gray square aligned with the ScrabbleBoard
-    StackPane histo = new StackPane();
-    histo.setStyle("-fx-background-color: lightgray; -fx-border-color: black;");
-    histo.setPrefSize(200, 400);
+    // HISTO INITIALIZATION
+    this.actionHistory = new ActionHistory();
 
     // GRID INITIALIZATION
     this.scrabbleBoard = new ScrabbleBoard(600, 600, 15);
 
     // Player score
-    VBox playerScores = new VBox();
-    playerScores.setSpacing(10);
-    playerScores.setStyle("-fx-alignment: center;"); // Center the VBox
-
-    // Example players and scores (replace with actual player data)
-    List<String> players = List.of("Player 1: 10", "Player 2: 20", "Player 3: 30", "Player 4: 40");
-
-    for (String player : players) {
-      // Create a gray square for each player
-      StackPane playerBox = new StackPane();
-      playerBox.setStyle("-fx-background-color: lightgray; -fx-border-color: black;");
-      playerBox.setPrefSize(200, 50); // Size of each square
-
-      // Display the player's name and score
-      String[] playerData = player.split(": ");
-      Label playerLabel = new Label(playerData[0] + ": " + playerData[1]);
-      playerLabel.setStyle("-fx-font-size: 14; -fx-font-weight: bold;");
-      playerLabel.setAlignment(Pos.CENTER);
-
-      // Add the label to the square
-      playerBox.getChildren().add(playerLabel);
-
-      // Add the square to the VBox
-      playerScores.getChildren().add(playerBox);
-    }
+    this.playerScores = new ShowScore();
 
     // Combine histo, scrabbleBoard, and playerScores into a single row
-    mainRow = new HBox(10, histo, scrabbleBoard, playerScores);
+    mainRow = new HBox(10, actionHistory, scrabbleBoard, playerScores);
     mainRow.setStyle("-fx-alignment: center; -fx-padding: 10px;");
 
     // Main du joueur provisoir :
@@ -263,9 +215,12 @@ public class ViewGUI extends Application implements IView {
     // letters.addLetter(new Letter('V'));
     // letters.addLetter(new Letter('M'));
 
+    // Display Turn
+    this.displayTurn = new DisplayTurn(lang);
+
     // Player Hand
 
-    this.playerHand = new PlayerHand(lang);
+    this.playerHand = new PlayerHand(lang, isSuperScrabble);
     // this.playerHand.updateLetters(letters);
 
     // ACTION BUTTONS --------------------------------------------
@@ -414,7 +369,7 @@ public class ViewGUI extends Application implements IView {
             restartGameButton);
     actionButtons.setStyle("-fx-padding: 10px; -fx-alignment: center;");
 
-    VBox root = new VBox(menuBar, mainRow, playerHand, actionButtons);
+    VBox root = new VBox(menuBar, displayTurn, mainRow, playerHand, actionButtons);
 
     Scene scene = new Scene(root, 1200, 800);
 
@@ -431,34 +386,15 @@ public class ViewGUI extends Application implements IView {
     primaryStage.show();
   }
 
-  private void getLocalizedLang() {
-    // the lang pack is in scrabble/src/main/resources/GUI_pack_en.properties and
-    // GUI_pack_fr.properties
-    if (lang == null) {
-      langPack = ResourceBundle.getBundle("GUI_pack_en");
-    } else
-      switch (lang) {
-        case EN -> {
-          langPack = ResourceBundle.getBundle("GUI_pack_en");
-        }
-        case FR -> {
-          langPack = ResourceBundle.getBundle("GUI_pack_fr");
-        }
-        default -> {
-          langPack = ResourceBundle.getBundle("GUI_pack_en");
-        }
-      }
-  }
-
-  public static void main(String[] args) {
-    setLang(Lang.FR);
-    launch(args);
-  }
-
   // --- IView methods ---
   @Override
   public GameAction askAction(Player player, Integer turn) {
     throw new UnsupportedOperationException("Unimplemented method 'askAction'");
+  }
+
+  private PassTurnAction passTurnAction(Player player, Integer turn) {
+    this.actionHistory.addMessage(player.getName() + " " + langPack.getString("passaction"));
+    return new PassTurnAction(player, turn);
   }
 
   @Override
@@ -477,27 +413,51 @@ public class ViewGUI extends Application implements IView {
 
   @Override
   public String getFromLangPack(String identifiant) {
-    throw new UnsupportedOperationException("Unimplemented method 'getFromLangPack'");
+    if (!langPack.containsKey(identifiant)) {
+      Alert alert = new Alert(Alert.AlertType.ERROR);
+      alert.setTitle(langPack.getString("error"));
+      alert.setHeaderText(langPack.getString("error"));
+      alert.setContentText(
+          "Key : "
+              + identifiant
+              + " not in: "
+              + langPack
+              + "\nInvalid KeyArgument. Please check the file pack_ and verify your keys");
+      alert.showAndWait();
+      throw new CustomError(
+          ErrorType.InvalidLangPackIdentifier,
+          "Key : " + identifiant + " not in:" + langPack,
+          "Invalid KeyArgument. Please check the file pack_ and verify your keys");
+    }
+    return langPack.getString(identifiant);
   }
 
   @Override
   public void showScore(Player player) {
-    throw new UnsupportedOperationException("Unimplemented method 'showScore'");
+    this.playerScores.updateScore(player);
   }
 
   @Override
   public void showScore(java.util.List<Player> players) {
-    throw new UnsupportedOperationException("Unimplemented method 'showScore'");
+    this.playerScores.updateScores(players);
   }
 
   @Override
   public void displayDraw(LettersDrawer draw) {
-    throw new UnsupportedOperationException("Unimplemented method 'displayDraw'");
+    this.actionHistory.addMessage(langPack.getString("drawaction") + " : " + draw.getCurrentSize());
   }
 
   @Override
   public void announceTurn(Player currentPlayer, int turn) {
-    throw new UnsupportedOperationException("Unimplemented method 'announceTurn'");
+    this.actionHistory.addMessage(
+        langPack.getString("turn")
+            + " "
+            + turn
+            + " | "
+            + langPack.getString("player")
+            + " "
+            + currentPlayer.getName());
+    this.displayTurn.updateTurn(turn, currentPlayer);
   }
 
   @Override
@@ -507,11 +467,17 @@ public class ViewGUI extends Application implements IView {
 
   @Override
   public void showError(Throwable e) {
-    //Dialog to display the error message
+    // Dialog to display the error message
     Alert alert = new Alert(Alert.AlertType.ERROR);
     alert.setTitle(langPack.getString("error"));
     alert.setHeaderText(langPack.getString("error"));
     alert.setContentText(e.getMessage());
     alert.showAndWait();
+  }
+
+  @Override
+  public void initialize(Configuration conf) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'initialize'");
   }
 }

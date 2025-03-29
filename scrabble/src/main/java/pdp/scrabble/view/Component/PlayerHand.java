@@ -14,10 +14,10 @@ public class PlayerHand extends HBox {
   private final LettersPoints pointsPerLetter;
   private final int squareSize = 70;
 
-  public PlayerHand(Lang lang) {
+  public PlayerHand(Lang lang, boolean isSuperScrabble) {
     this.setSpacing(10);
     this.setStyle("-fx-alignment: center;"); // Center the HBox
-    this.pointsPerLetter = lang.getLettersPoints();
+    this.pointsPerLetter = lang.getLettersPoints(isSuperScrabble);
   }
 
   public void updateLetters(LettersCounter letters) {

@@ -115,4 +115,18 @@ public class PlaceWordAction extends GameAction {
         + this.player.id
         + '}';
   }
+
+  @Override
+  public String toSerializedString() {
+    // ascii 97 = a
+    char row = (char) (97 + this.startPosition.row());
+    String col = String.valueOf(this.startPosition.col() + 1);
+    char direction =
+        switch (this.startPosition.direction()) {
+          case Right -> 'h';
+          case Down -> 'v';
+        };
+    String word = Letter.concatenate(this.toPlace);
+    return super.toSerializedString() + " PlaceWord " + row + col + direction + " " + word;
+  }
 }

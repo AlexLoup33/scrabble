@@ -1,12 +1,13 @@
 package pdp.scrabble.controller;
 
-import java.util.concurrent.CountDownLatch;
+import javafx.stage.Stage;
 import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
+import pdp.scrabble.game.serializer.Serializer;
 import pdp.scrabble.view.IView;
 import pdp.scrabble.view.ViewCLI;
 import pdp.scrabble.view.ViewGUI;
@@ -14,38 +15,48 @@ import pdp.scrabble.view.ViewGUI;
 public class GameController {
 
   private final GameModel model;
-  private IView view;
+  private final IView view;
 
-  public GameController(Configuration conf) {
-    this.model = new GameModel(conf);
-    if (conf.getGui()) {
-      CountDownLatch latch = new CountDownLatch(1);
+  public GameController(Configuration curConf) {
+    if (curConf.getHistoryFile() != null) {
+      this.model = Serializer.loadModelFromFile(curConf.getHistoryFile());
+    } else {
+      this.model = new GameModel(curConf);
+    }
+    // curConf -> scrabblerc + cli args
+    // conf -> is this game restored from save ?
+    //  - Yes : conf from old game
+    //  - No  : conf == curConf
+    Configuration conf = this.model.config;
 
-      // Lancer JavaFX dans un thread séparé
-      new Thread(
-              () -> {
-                ViewGUI.setLang(this.model.lang);
-                ViewGUI.setSuperScrabble(conf.getSuperScrabble());
-                ViewGUI.launchJavaFX(latch); // Démarrer JavaFX
-              })
-          .start();
-
-      try {
-        latch.await(); // Attendre que JavaFX soit prêt
-        view = ViewGUI.getInstance(); // Récupérer l'instance de la vue
-        view.initialize(conf); // Initialiser la vue
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
+    if (curConf.getGui()) {
+      throw new CustomError(null, null, null);
     } else {
       this.view = new ViewCLI(this.model.lang, conf.getSuperScrabble());
     }
+  }
+
+  public GameController(Configuration curConf, Stage stage) {
+    if (curConf.getHistoryFile() != null) {
+      this.model = Serializer.loadModelFromFile(curConf.getHistoryFile());
+    } else {
+      this.model = new GameModel(curConf);
+    }
+    // curConf -> scrabblerc + cli args
+    // conf -> is this game restored from save ?
+    //  - Yes : conf from old game
+    //  - No  : conf == curConf
+    Configuration conf = this.model.config;
+
+    this.view = new ViewGUI(this.model.lang, conf.getSuperScrabble(), stage);
   }
 
   public void gameLoop() {
     CustomError recoverableException = null;
 
     Utilities.debug('l', "GameLoop start\n");
+    Utilities.verbose("Mode blitz: %s\n", this.model.config.getBlitz());
+    Utilities.verbose("Mode super scrabble: %s\n", this.model.config.getSuperScrabble());
 
     while (!this.isGameFinished()) {
       int turn = model.getTurn();
@@ -53,7 +64,7 @@ public class GameController {
       try {
         Player playing = model.getCurrentPlayer();
         Utilities.debug('l', "%s begins his turn\n", playing.getName());
-        drawLetters(playing);
+        model.currentPlayerDrawLetters();
         Utilities.debug('l', "numbers of letters in draw: %d\n", model.draw.getCurrentSize());
         view.announceTurn(playing, turn);
         for (Player onGames : model.players) {
@@ -62,17 +73,32 @@ public class GameController {
         // Implemented but maybe need to draw every letter before
         // actually showing number at turn 1
         // view.displayDraw(model.draw);
-        view.displayGrid(model.grid, false);
+        view.displayGrid(model.grid, this.model.config.getSuperScrabble());
         view.displayPlayerLetters(playing.bag);
         if (recoverableException != null) {
           view.showError(recoverableException);
         }
+        Utilities.debug('l', "Attempt to askAction\n");
 
+        // ------------------------------------------------------------------------------------------------
+
+        long start_time = System.currentTimeMillis();
         GameAction played = view.askAction(playing, turn); // blocking
-        model.applyGameActionDispatch(played);
+        long time_elapsed = (System.currentTimeMillis() - start_time) / 1000;
 
-        // Player 0 is start of table round except when player 0 chose a
-        // non turn ending action (e.g. rename)
+        Utilities.debug('l', "Action received\n");
+        if (this.model.config.getBlitz()) {
+          Utilities.verbose(
+              "Player remaining time %s\n",
+              this.model.getCurrentPlayer().getRemainingTimeAsString());
+        }
+        model.applyGameActionDispatch(played, time_elapsed);
+        Utilities.verbose("Player took %ss to play\n", time_elapsed);
+
+        // ------------------------------------------------------------------------------------------------
+
+        // Player 0 is a start of table round except when player 0 chose a
+        // non-turn ending action (e.g., rename)
 
         Utilities.debug('l', "%s ends his turn\n", playing.getName());
         recoverableException = null;
@@ -118,11 +144,11 @@ public class GameController {
   public boolean isGameFinished() {
     // TODO compute based of real Scrabble rules
 
-    // test if there are enougth letters to be drawed
+    // test if there are enough letters to be drawn
     if (model.draw.getCurrentSize() < 7) {
       return true;
     }
-    // test if enougth players remain
+    // test if enough players remain
     if (this.model.getActivePlayers().size() <= 1) {
       return true;
     }
@@ -131,6 +157,6 @@ public class GameController {
       return true;
     }
 
-    return false; // game not finished
+    return false; // the game isn't finished
   }
 }

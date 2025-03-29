@@ -13,13 +13,13 @@ public class RandomAPI implements RandomUser {
    *
    * @param configSeed the seed to use, -1 => random seed
    */
-  public RandomAPI(int configSeed) {
+  public RandomAPI(long configSeed) {
     this.rngGenerator = new Random();
     if (configSeed == -1) {
       this.baseSeed = this.rngGenerator.nextLong();
       Utilities.verbose("configured RandomAPI(random seed) with seed: " + this.baseSeed + "\n");
     } else {
-      this.baseSeed = (long) configSeed;
+      this.baseSeed = configSeed;
     }
     this.reset();
   }
@@ -76,5 +76,9 @@ public class RandomAPI implements RandomUser {
     int num = this.rngGenerator.nextInt(origin, bound);
     this.updateState();
     return num;
+  }
+
+  public Long getSeed() {
+    return this.baseSeed;
   }
 }

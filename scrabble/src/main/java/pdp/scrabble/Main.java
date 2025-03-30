@@ -18,9 +18,6 @@ public class Main {
 
   public static void main(String[] args) throws Exception {
     Configuration conf = ConfigurationInitializer.configurationInit(args);
-    // TODO
-    System.out.println("if this print is not equal to 10 with param '-b 10', problem !");
-    System.out.println("conf = " + conf.blitzTime());
 
     if (conf.gui()) {
       Main.cfg = conf;

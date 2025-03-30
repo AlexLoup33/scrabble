@@ -56,6 +56,7 @@ public class GameController {
 
     Utilities.debug('l', "GameLoop start\n");
     Utilities.verbose("Mode blitz: %s\n", this.model.config.getBlitz());
+    Utilities.verbose("Blitz time: %s\n", this.model.config.blitzTime());
     Utilities.verbose("Mode super scrabble: %s\n", this.model.config.getSuperScrabble());
 
     while (!this.isGameFinished()) {
@@ -81,22 +82,13 @@ public class GameController {
         }
         Utilities.debug('l', "Attempt to askAction\n");
 
-        // ------------------------------------------------------------------------------------------------
-
         long start_time = System.currentTimeMillis();
         GameAction played = view.askAction(playing, turn); // blocking
         long time_elapsed = (System.currentTimeMillis() - start_time) / 1000;
 
         Utilities.debug('l', "Action received\n");
-        if (this.model.config.getBlitz()) {
-          Utilities.verbose(
-              "Player remaining time %s\n",
-              this.model.getCurrentPlayer().getRemainingTimeAsString());
-        }
-        model.applyGameActionDispatch(played, time_elapsed);
+        this.model.applyGameActionDispatch(played, time_elapsed);
         Utilities.verbose("Player took %ss to play\n", time_elapsed);
-
-        // ------------------------------------------------------------------------------------------------
 
         // Player 0 is a start of table round except when player 0 chose a
         // non-turn ending action (e.g., rename)

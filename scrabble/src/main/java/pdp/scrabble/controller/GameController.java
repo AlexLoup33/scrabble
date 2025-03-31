@@ -65,7 +65,6 @@ public class GameController {
       try {
         Player playing = model.getCurrentPlayer();
         Utilities.debug('l', "%s begins his turn\n", playing.getName());
-        model.currentPlayerDrawLetters();
         Utilities.debug('l', "numbers of letters in draw: %d\n", model.draw.getCurrentSize());
         view.announceTurn(playing, turn);
         if (this.model.config.getBlitz()) view.showRemainingTimes(model.players);

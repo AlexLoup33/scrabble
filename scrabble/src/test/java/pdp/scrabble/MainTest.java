@@ -225,7 +225,7 @@ public class MainTest {
     // Before
     assertFalse(this.gameModel.getCurrentPlayer().getHasForfeited());
     assertEquals(
-        "[Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=1, name='Player1', score=0, bag=LettersCounter{table={}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=2, name='Player2', score=0, bag=LettersCounter{table={}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=3, name='Player3', score=0, bag=LettersCounter{table={}}, hasForfeited=false, hasPassed=false, remainingTime=1800}]",
+        "[Player{id=0, name='Player0', score=0, bag=LettersCounter{table={A=1, L=2, U=1, I=1, H=1, R=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=1, name='Player1', score=0, bag=LettersCounter{table={A=1, I=1, E=2, O=1, N=1, C=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=2, name='Player2', score=0, bag=LettersCounter{table={A=2, U=1, F=1, O=1, N=1, Y=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=3, name='Player3', score=0, bag=LettersCounter{table={I=1, G=2, R=1, Q=1, E=1, M=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}]",
         this.gameModel.getActivePlayers().toString());
 
     // Player forfeit
@@ -236,7 +236,7 @@ public class MainTest {
     // check forfeit
     assertTrue(this.gameModel.players.get(0).getHasForfeited());
     assertEquals(
-        "[Player{id=1, name='Player1', score=0, bag=LettersCounter{table={}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=2, name='Player2', score=0, bag=LettersCounter{table={}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=3, name='Player3', score=0, bag=LettersCounter{table={}}, hasForfeited=false, hasPassed=false, remainingTime=1800}]",
+        "[Player{id=1, name='Player1', score=0, bag=LettersCounter{table={A=1, I=1, E=2, O=1, N=1, C=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=2, name='Player2', score=0, bag=LettersCounter{table={A=2, U=1, F=1, O=1, N=1, Y=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=3, name='Player3', score=0, bag=LettersCounter{table={I=1, G=2, R=1, Q=1, E=1, M=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}]",
         this.gameModel.getActivePlayers().toString());
 
     // Now pass all other players to reach the next turn
@@ -625,13 +625,8 @@ public class MainTest {
   public void testF34() {
     assertEquals(69, this.gameModel.config.getSeed());
 
-    // Fill player's bag
-    LettersCounter newLetters = this.gameModel.draw.popLetter(7);
-    for (Letter l : newLetters.getLettersSet()) {
-      this.gameModel.getCurrentPlayer().bag.addLetter(l);
-    }
     assertEquals(
-        "LettersCounter{table={L=1, A=1, U=1, I=1, H=1, R=1}}",
+        "LettersCounter{table={A=1, L=2, U=1, I=1, H=1, R=1}}",
         this.gameModel.players.get(0).bag.toString());
     // System.out.println(this.gameModel.players.get(0).bag);
 
@@ -644,9 +639,8 @@ public class MainTest {
             this.gameModel.players.get(0), this.gameModel.getTurn(), toExchange);
     this.gameModel.applyGameActionDispatch(ga, 0);
 
-    // System.out.println(this.gameModel.players.get(0).bag);
     assertEquals(
-        "LettersCounter{table={U=1, I=2, H=1, R=1, E=1}}",
+        "LettersCounter{table={L=1, U=1, T=1, I=1, H=1, R=1, N=1}}",
         this.gameModel.players.get(0).bag.toString());
 
     // Try illegal action
@@ -659,10 +653,10 @@ public class MainTest {
     assertThrows(CustomError.class, () -> this.gameModel.applyGameActionDispatch(ga2, 0));
 
     // With empty draw
-    this.gameModel.draw.popLetter(95); // clear draw
+    this.gameModel.draw.popLetter(74); // clear draw
 
     assertEquals(
-        "LettersCounter{table={U=1, I=2, H=1, R=1, E=1}}",
+        "LettersCounter{table={L=1, U=1, T=1, I=1, H=1, R=1, N=1}}",
         this.gameModel.players.get(0).bag.toString());
 
     List<Letter> toExchange3 = new ArrayList<>();
@@ -674,7 +668,7 @@ public class MainTest {
     this.gameModel.applyGameActionDispatch(ga3, 0);
 
     assertEquals(
-        "LettersCounter{table={U=1, I=2, H=1, R=1, E=1}}",
+        "LettersCounter{table={L=1, U=1, T=1, I=1, H=1, R=1, N=1}}",
         this.gameModel.players.get(0).bag.toString());
   }
 
@@ -708,8 +702,7 @@ public class MainTest {
         gm.draw
             .toString()
             .contains(
-                "lang=en, table=[Z, Z, Y, Y, Y, Y, X, X, W, W, W, W, V, V, V, U, U, U, U, U, U, U, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, S, S, S, S, S, S, S, S, S, S, R, R, R, R, R, R, R, R, R, R, R, R, R, #, #, #, #, Q, Q, P, P, P, P, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, N, N, N, N, N, N, N, N, N, N, N, N, N, M, M, M, M, M, M, L, L, L, L, L, L, L, K, K, J, J, I, I, I, I, I, I, I, I, I, I, I, I, I, H, H, H, H, H, G, G, G, G, G, F, F, F, F, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, D, D, D, D, D, D, D, D, C, C, C, C, C, C, B, B, B, B, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A], maxSize=200, currentSize=200}"));
-
+                "lang=en, table=[Z, Z, Y, Y, Y, Y, X, X, B, W, W, W, V, A, V, U, U, U, U, U, U, U, T, T, T, T, T, T, T, A, T, T, T, T, A, T, T, S, S, A, A, S, S, S, S, S, S, R, R, R, R, R, R, R, R, R, R, R, B, R, #, #, #, #, Q, Q, P, P, P, B, O, O, O, O, O, O, A, O, O, A, A, O, O, O, O, N, N, D, N, N, N, N, N, N, N, N, C, N, M, M, M, M, M, M, A, A, L, L, L, L, L, K, K, J, J, I, I, I, I, I, I, I, I, I, I, C, I, I, H, H, H, A, H, G, C, G, G, A, A, F, F, F, C, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, A, C, C, D, D, A, D, D, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], maxSize=200, currentSize=172}"));
     final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
     PrintStream outStremCap = new PrintStream(outputStreamCaptor);
     try {

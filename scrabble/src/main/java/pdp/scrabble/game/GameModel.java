@@ -26,6 +26,7 @@ public class GameModel {
   public final Configuration config;
   private Player currentPlayer;
   private History<GameAction> history;
+  public List<GameAction> currentGameActions;
   private int gameTurn;
   private int everyonePassedTurnStreak;
   public int nextPlayerID;
@@ -36,14 +37,16 @@ public class GameModel {
     this.history = new History<>();
 
     this.nextPlayerID = 0;
+    this.lang = Lang.getLang(this.config.getLanguage());
+    this.draw = new LettersDrawer(this.lang, this.rngGenerator, this.config.getSuperScrabble());
     this.players = new ArrayList<>(this.config.getPlayerCount());
 
     for (int i = 0; i < this.config.getPlayerCount(); i++) {
       this.players.add(new Player(nextPlayerID, this.config.getBlitzTime()));
+      drawLetters(this.players.get(i));
       this.nextPlayerID++;
     }
 
-    this.lang = Lang.getLang(this.config.getLanguage());
     if (this.config.getDictFile() != null) {
       this.lang.set_customDictPath(this.config.getDictFile());
     }
@@ -51,11 +54,11 @@ public class GameModel {
     this.dictionary = new Dictionary();
     this.dictionary.loadFromFile(this.lang.getDictionaryPath());
 
-    this.draw = new LettersDrawer(this.lang, this.rngGenerator, this.config.getSuperScrabble());
     this.grid = new Grid(this, (config.getSuperScrabble() ? 21 : 15));
     this.currentPlayer = this.players.get(0);
     this.gameTurn = 1;
     this.everyonePassedTurnStreak = 0;
+    this.currentGameActions = new ArrayList<>();
   }
 
   public void reset() {
@@ -64,6 +67,7 @@ public class GameModel {
     this.draw.reset(this.config.getSuperScrabble());
     for (Player player : this.players) {
       player.reset();
+      drawLetters(player);
     }
     this.currentPlayer = this.players.get(0);
     this.gameTurn = 1;
@@ -80,6 +84,7 @@ public class GameModel {
     played.player.addTurnPlayedTime(duration);
     played.applyGameAction(this); // use double dispatch
     history.addCheckpoint(played);
+    currentGameActions.add(played);
   }
 
   public void applyGameAction(RenamePlayerAction rpa) {
@@ -95,6 +100,7 @@ public class GameModel {
   // F34
   public void applyGameAction(ExchangeLetterAction exchangeLetterAction) {
     exchangeLetterAction.assertHasLettersToPlace();
+    exchangeLetterAction.rngStateBefore = rngGenerator.getCurrentState();
     exchangeLetterAction.exchangeLetters(this.draw);
     this.endPlayerTurn();
   }
@@ -109,6 +115,8 @@ public class GameModel {
     pwa.assertHasLettersToPlace();
     List<OwnedWord> scoredWords = this.grid.placeLetters(pwa);
     pwa.removeLettersPlaced();
+    pwa.rngStateBefore = rngGenerator.getCurrentState();
+    pwa.drawLetters(this.draw);
     for (OwnedWord ownedWord : scoredWords) {
       int wordScore = this.grid.getScore(ownedWord);
       Utilities.verbose(
@@ -124,6 +132,8 @@ public class GameModel {
     this.reset();
     // this.endPlayerTurn();
     this.currentPlayer = this.players.get(0);
+    restartGameAction.precedingGame = this.currentGameActions;
+    this.currentGameActions = new ArrayList<>();
   }
 
   public void applyGameAction(QuitAction quitAction) {
@@ -196,12 +206,12 @@ public class GameModel {
     this.gameTurn += 1;
   }
 
-  public void currentPlayerDrawLetters() {
+  public void drawLetters(Player p) {
     if (this.draw.getCurrentSize() < 7) {
       throw new Error("[BUG] draw letter count is strictly under 7");
     }
-    for (int i = currentPlayer.bag.size(); i < 7; i++) {
-      this.currentPlayer.bag.addLetter(this.draw.popLetter());
+    for (int i = p.bag.size(); i < 7; i++) {
+      p.bag.addLetter(this.draw.popLetter());
     }
   }
 

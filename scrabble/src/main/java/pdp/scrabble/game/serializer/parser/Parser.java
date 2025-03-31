@@ -123,8 +123,6 @@ public class Parser {
     }
     if (name.equals("GAME")) {
       parseGame();
-      System.out.println("AFTER PARSING");
-      System.out.println(this.confStub.toString());
       this.loadedModel = new GameModel(this.confStub.getConfiguration());
     }
 
@@ -317,7 +315,6 @@ public class Parser {
       if (playerOrder != this.loadedModel.getCurrentPlayer().id)
         input.croak("Player id doesn't make sense");
       String actionType = parseIdent();
-      this.loadedModel.currentPlayerDrawLetters();
       try {
         if (actionType.equals("PlaceWord")) {
           GridWordPos gwp = parseMove();

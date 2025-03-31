@@ -27,8 +27,7 @@ public class Grid {
     this.multiplicators = new Hashtable<>();
     this.placedLetters = new Letter[size][size];
     this.multiplicatorsUsed = new boolean[size][size];
-    this.pointsPerLetter =
-        this.gameModel.lang.getLettersPoints(this.gameModel.config.getSuperScrabble());
+    this.pointsPerLetter = this.gameModel.lang.getLettersPoints(this.gameModel.config.getSuperScrabble());
     this.isSuperScrabble = size == 21;
 
     try {
@@ -102,10 +101,11 @@ public class Grid {
   }
 
   /**
-   * Gets the next position in the grid based on the current position and direction.
+   * Gets the next position in the grid based on the current position and
+   * direction.
    *
    * @param currentPos The current position in the grid, must not be null.
-   * @param direction The direction to move, must be a valid word direction.
+   * @param direction  The direction to move, must be a valid word direction.
    * @return A new GridPos representing the next position if the move is valid.
    * @throws CustomError If the next position is out of bounds.
    */
@@ -123,12 +123,15 @@ public class Grid {
   }
 
   /**
-   * Gets the previous position in the grid based on the current position and direction.
+   * Gets the previous position in the grid based on the current position and
+   * direction.
    *
    * @param currentPos The current position in the grid, must not be null.
-   * @param direction The of the word (will move the opposit of direction), must be a valid word
-   *     direction.
-   * @return A new GridPos representing the previous position if the move is valid.
+   * @param direction  The of the word (will move the opposit of direction), must
+   *                   be a valid word
+   *                   direction.
+   * @return A new GridPos representing the previous position if the move is
+   *         valid.
    * @throws CustomError If the next position is out of bounds.
    */
   private GridPos getPrevPos(GridPos currentPos, Direction direction) {
@@ -146,8 +149,9 @@ public class Grid {
 
   /**
    * @param currPos is the position of the letter to be placed
-   * @return the position of the first letter of the word before the letter to place currPos will be
-   *     returned if there is no word before
+   * @return the position of the first letter of the word before the letter to
+   *         place currPos will be
+   *         returned if there is no word before
    */
   private GridPos getWordFirstLetterPos(final GridPos currPos, Direction wordDir) {
     GridPos lastWordPos = currPos;
@@ -170,8 +174,9 @@ public class Grid {
 
   /**
    * @param currPos is the position of the letter to be placed
-   * @return the position of the last letter of the word after the letter to place currPos will be
-   *     returned if there is no word after
+   * @return the position of the last letter of the word after the letter to place
+   *         currPos will be
+   *         returned if there is no word after
    */
   private GridPos getWordLastLetterPos(final GridPos currPos, Direction wordDir) {
     GridPos lastWordPos = currPos;
@@ -291,13 +296,10 @@ public class Grid {
     {
       // the main word placed on the grid
       final GridPos wordStartPos = this.getWordFirstLetterPos(lettersPos.get(0), wordDirection);
-      final GridPos wordLastPos =
-          this.getWordLastLetterPos(lettersPos.get(lettersPos.size() - 1), wordDirection);
+      final GridPos wordLastPos = this.getWordLastLetterPos(lettersPos.get(lettersPos.size() - 1), wordDirection);
       result.add(this.constructMainNewWord(wordStartPos, wordLastPos, lettersPos, pwa));
     }
-    for (int indexNextNewLetter = 0;
-        indexNextNewLetter < pwa.toPlace.length;
-        indexNextNewLetter++) {
+    for (int indexNextNewLetter = 0; indexNextNewLetter < pwa.toPlace.length; indexNextNewLetter++) {
       // the auxiliary word placed on the grid
       final GridPos letterPos = lettersPos.get(indexNextNewLetter);
       final Letter letter = pwa.toPlace[indexNextNewLetter];
@@ -327,7 +329,7 @@ public class Grid {
     if (score_tot == 0) {
       for (int index = 0; index < pwa.toPlace.length; index++) {
         final GridPos currPos = lettersPos.get(index);
-        if (currPos.row() == 7 && currPos.col() == 7) {
+        if (currPos.row() == size / 2 && currPos.col() == size / 2) {
           playCenter = true;
         }
       }
@@ -367,16 +369,22 @@ public class Grid {
   }
 
   /**
-   * The function `getMultiplier` returns the ScoreMultiplier associated with a given GridPos or a
+   * The function `getMultiplier` returns the ScoreMultiplier associated with a
+   * given GridPos or a
    * default value if none is found.
    *
-   * @param pos The `pos` parameter in the `getMultiplier` method represents the position on the
-   *     grid for which you want to retrieve the score multiplier. It is of type `GridPos`, which
-   *     likely contains the coordinates or location information necessary to identify a specific
-   *     cell or tile on the game grid.
-   * @return The method `getMultiplier` is returning a `ScoreMultiplier` object associated with the
-   *     given `GridPos` `pos`. If there is no mapping found for the `pos`, it will return the
-   *     default `ScoreMultiplier` object `SIMPLE_LETTER`.
+   * @param pos The `pos` parameter in the `getMultiplier` method represents the
+   *            position on the
+   *            grid for which you want to retrieve the score multiplier. It is of
+   *            type `GridPos`, which
+   *            likely contains the coordinates or location information necessary
+   *            to identify a specific
+   *            cell or tile on the game grid.
+   * @return The method `getMultiplier` is returning a `ScoreMultiplier` object
+   *         associated with the
+   *         given `GridPos` `pos`. If there is no mapping found for the `pos`, it
+   *         will return the
+   *         default `ScoreMultiplier` object `SIMPLE_LETTER`.
    */
   public ScoreMultiplier getMultiplier(GridPos pos) {
     if (this.multiplicatorsUsed[pos.row()][pos.col()]) {
@@ -386,14 +394,19 @@ public class Grid {
   }
 
   /**
-   * This function calculates the score of a word on a grid, taking into account any score
+   * This function calculates the score of a word on a grid, taking into account
+   * any score
    * multipliers.
    *
-   * @param word OwnedWord - a class representing a word that is owned by a player in a game. It
-   *     contains information about the word itself and its position on the game board.
-   * @return The method is returning the product of the `score` and `multi_word` variables. However,
-   *     the `score` variable is never updated within the method, so it will always be 0. Therefore,
-   *     the method will always return 0.
+   * @param word OwnedWord - a class representing a word that is owned by a player
+   *             in a game. It
+   *             contains information about the word itself and its position on
+   *             the game board.
+   * @return The method is returning the product of the `score` and `multi_word`
+   *         variables. However,
+   *         the `score` variable is never updated within the method, so it will
+   *         always be 0. Therefore,
+   *         the method will always return 0.
    */
   public int getScore(OwnedWord word) {
     int score = 0;
@@ -427,7 +440,8 @@ public class Grid {
   /**
    * set the multiplicators that has been used with the following words
    *
-   * @param wordsPlaced all the words placed this turn (probably overkill but safe)
+   * @param wordsPlaced all the words placed this turn (probably overkill but
+   *                    safe)
    */
   public void useMultiplicators(List<OwnedWord> wordsPlaced) {
     for (OwnedWord word : wordsPlaced) {

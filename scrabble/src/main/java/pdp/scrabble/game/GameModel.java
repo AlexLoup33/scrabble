@@ -83,12 +83,8 @@ public class GameModel {
   public void applyGameActionDispatch(GameAction played, long duration) {
     played.player.addTurnPlayedTime(duration);
     played.applyGameAction(this); // use double dispatch
-<<<<<<< HEAD
     history.addPlayerdAction(played);
-=======
-    history.addCheckpoint(played);
     currentGameActions.add(played);
->>>>>>> 02277b84fa3658544a2fd13e261b352356e5e7f7
   }
 
   public void applyGameAction(RenamePlayerAction rpa) {

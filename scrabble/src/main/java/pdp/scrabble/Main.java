@@ -14,23 +14,23 @@ import pdp.scrabble.controller.GameController;
 import pdp.scrabble.view.ViewGuiApp;
 
 public class Main {
-  private static Configuration cfg = null;
+    private static Configuration cfg = null;
 
-  public static void main(String[] args) throws Exception {
-    Configuration conf = ConfigurationInitializer.configurationInit(args);
+    public static void main(String[] args) throws Exception {
+        Configuration conf = ConfigurationInitializer.configurationInit(args);
 
-    if (conf.gui()) {
-      Main.cfg = conf;
-      Application.launch(ViewGuiApp.class, args);
-    } else {
-      GameController gc = new GameController(conf);
-      gc.gameLoop();
+        if (conf.gui()) {
+            Main.cfg = conf;
+            Application.launch(ViewGuiApp.class, args);
+        } else {
+            GameController gc = new GameController(conf);
+            gc.gameLoop();
+        }
     }
-  }
 
-  public static Configuration getConfig() {
-    Configuration conf = Main.cfg;
-    Main.cfg = null;
-    return conf;
-  }
+    public static Configuration getConfig() {
+        Configuration conf = Main.cfg;
+        Main.cfg = null;
+        return conf;
+    }
 }

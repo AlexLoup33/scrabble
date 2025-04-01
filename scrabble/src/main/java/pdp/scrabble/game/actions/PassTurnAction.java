@@ -22,4 +22,14 @@ public class PassTurnAction extends GameAction {
   public String toSerializedString() {
     return super.toSerializedString() + " PassTurn";
   }
+
+  @Override
+  public void undo(GameModel gameModel) {
+    gameModel.undoGameAction(this);
+  }
+
+  @Override
+  public void redo(GameModel gameModel) {
+    gameModel.redoGameAction(this);
+  }
 }

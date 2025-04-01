@@ -1,5 +1,7 @@
 package pdp.scrabble.game.History;
 
+import java.util.LinkedList;
+
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.actions.*;
@@ -24,6 +26,11 @@ public class History<T> {
     return nodeID;
   }
 
+  public void clear() {
+    this.currentNode = this.nullNode;
+    this.nullNode.detach();
+  }
+
   /**
    * @return the ID of the current node when the Hist is empty
    */
@@ -43,7 +50,7 @@ public class History<T> {
    *
    * @param value the action to save
    */
-  public void addPlayerdAction(T value) {
+  public void addPlayedAction(T value) {
     this.currentNode = this.currentNode.newNext(value, this.giveNextID());
   }
 
@@ -110,4 +117,18 @@ public class History<T> {
     }
     return serialized.toString() + ";";
   }
+
+  /***
+   * @return the list of all action up to the current point in the history (included)
+   */
+  public LinkedList<T> getCurrentActionsList() {
+    HistNode<T> node = this.currentNode;
+    LinkedList<T> lst = new LinkedList<>();
+    while (node != null) {
+      lst.addFirst(node.getValue());
+      node = node.getPrevNode();
+    }
+    return lst;
+  }
+
 }

@@ -166,4 +166,14 @@ public class PlaceWordAction extends GameAction {
     String word = Letter.concatenate(this.toPlace);
     return super.toSerializedString() + " PlaceWord " + row + col + direction + " " + word;
   }
+
+  @Override
+  public void undo(GameModel gameModel) {
+    gameModel.undoGameAction(this);
+  }
+
+  @Override
+  public void redo(GameModel gameModel) {
+    gameModel.redoGameAction(this);
+  }
 }

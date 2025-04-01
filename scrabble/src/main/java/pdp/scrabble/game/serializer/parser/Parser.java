@@ -322,14 +322,14 @@ public class Parser {
               new PlaceWordAction(
                   this.loadedModel.getCurrentPlayer(), curTurn, parseLetters(), gwp);
           placeAction.applyGameAction(loadedModel);
-          parsed.addPlayerdAction(placeAction);
+          parsed.addPlayedAction(placeAction);
           continue;
         }
         if (actionType.equals("RenamePlayer")) {
           RenamePlayerAction renameAction =
               new RenamePlayerAction(this.loadedModel.getCurrentPlayer(), curTurn, parseString());
           renameAction.applyGameAction(this.loadedModel);
-          parsed.addPlayerdAction(renameAction);
+          parsed.addPlayedAction(renameAction);
           continue;
         }
         if (actionType.equals("ExchangeLetter")) {
@@ -340,28 +340,28 @@ public class Parser {
           ExchangeLetterAction exchangeAction =
               new ExchangeLetterAction(this.loadedModel.getCurrentPlayer(), curTurn, toExchange);
           exchangeAction.applyGameAction(this.loadedModel);
-          parsed.addPlayerdAction(exchangeAction);
+          parsed.addPlayedAction(exchangeAction);
           continue;
         }
         if (actionType.equals("ForfeitGame")) {
           ForfeitGameAction forfeitAction =
               new ForfeitGameAction(this.loadedModel.getCurrentPlayer(), curTurn);
           forfeitAction.applyGameAction(this.loadedModel);
-          parsed.addPlayerdAction(forfeitAction);
+          parsed.addPlayedAction(forfeitAction);
           continue;
         }
         if (actionType.equals("PassTurn")) {
           PassTurnAction passTurnAction =
               new PassTurnAction(this.loadedModel.getCurrentPlayer(), curTurn);
           passTurnAction.applyGameAction(this.loadedModel);
-          parsed.addPlayerdAction(passTurnAction);
+          parsed.addPlayedAction(passTurnAction);
           continue;
         }
         if (actionType.equals("RestartGame")) {
           RestartGameAction restartGameAction =
               new RestartGameAction(this.loadedModel.getCurrentPlayer(), curTurn);
           restartGameAction.applyGameAction(this.loadedModel);
-          parsed.addPlayerdAction(restartGameAction);
+          parsed.addPlayedAction(restartGameAction);
           continue;
         }
         unexpected();

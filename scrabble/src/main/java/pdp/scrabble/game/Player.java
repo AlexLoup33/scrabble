@@ -3,6 +3,7 @@ package pdp.scrabble.game;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
+import pdp.scrabble.game.actions.GameAction;
 
 public class Player {
 
@@ -136,5 +137,9 @@ public class Player {
 
   public void addTurnPlayedTime(float duration) {
     this.remainingTime -= (long) duration;
+  }
+
+  public void undoTurnPlayedTime(GameAction toUndo) {
+    this.remainingTime += (long) toUndo.duration;
   }
 }

@@ -21,4 +21,14 @@ public class QuitAction extends GameAction {
   public String toSerializedString() {
     return "";
   }
+
+  @Override
+  public void undo(GameModel gameModel) {
+    throw new UnsupportedOperationException("there is no undo possible for " + this.getClass().getSimpleName());
+  }
+
+  @Override
+  public void redo(GameModel gameModel) {
+    throw new UnsupportedOperationException("there is no redo possible for " + this.getClass().getSimpleName());
+  }
 }

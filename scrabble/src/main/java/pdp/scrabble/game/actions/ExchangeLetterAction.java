@@ -92,4 +92,14 @@ public class ExchangeLetterAction extends GameAction {
     if (toExchange.length() > 0) toExchange.deleteCharAt(toExchange.length() - 1);
     return super.toSerializedString() + " ExchangeLetter [" + toExchange.toString() + "]";
   }
+
+  @Override
+  public void undo(GameModel gameModel) {
+    gameModel.undoGameAction(this);
+  }
+
+  @Override
+  public void redo(GameModel gameModel) {
+    gameModel.redoGameAction(this);
+  }
 }

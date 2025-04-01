@@ -47,7 +47,7 @@ public class Serializer {
     writer.write(">>>>>>>>>>>>>>>>>>>>\n");
 
     writer.write("<<<<<<<<<<<<<<<<<<<< HISTORY\n");
-    writer.write(toSave.getHistory().toSerializedString());
+    writer.write(toSave.getSerializedHistory());
     writer.write("\n>>>>>>>>>>>>>>>>>>>>\n");
     writer.close();
   }

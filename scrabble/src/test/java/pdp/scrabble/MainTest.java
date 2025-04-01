@@ -1,9 +1,6 @@
 package pdp.scrabble;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static pdp.scrabble.game.Lang.FR;
 
 import java.io.ByteArrayOutputStream;
@@ -225,7 +222,7 @@ public class MainTest {
     // Before
     assertFalse(this.gameModel.getCurrentPlayer().getHasForfeited());
     assertEquals(
-        "[Player{id=0, name='Player0', score=0, bag=LettersCounter{table={}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=1, name='Player1', score=0, bag=LettersCounter{table={}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=2, name='Player2', score=0, bag=LettersCounter{table={}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=3, name='Player3', score=0, bag=LettersCounter{table={}}, hasForfeited=false, hasPassed=false, remainingTime=1800}]",
+        "[Player{id=0, name='Player0', score=0, bag=LettersCounter{table={A=1, L=2, U=1, I=1, H=1, R=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=1, name='Player1', score=0, bag=LettersCounter{table={A=1, I=1, E=2, O=1, N=1, C=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=2, name='Player2', score=0, bag=LettersCounter{table={A=2, U=1, F=1, O=1, N=1, Y=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=3, name='Player3', score=0, bag=LettersCounter{table={I=1, G=2, R=1, Q=1, E=1, M=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}]",
         this.gameModel.getActivePlayers().toString());
 
     // Player forfeit
@@ -236,7 +233,7 @@ public class MainTest {
     // check forfeit
     assertTrue(this.gameModel.players.get(0).getHasForfeited());
     assertEquals(
-        "[Player{id=1, name='Player1', score=0, bag=LettersCounter{table={}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=2, name='Player2', score=0, bag=LettersCounter{table={}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=3, name='Player3', score=0, bag=LettersCounter{table={}}, hasForfeited=false, hasPassed=false, remainingTime=1800}]",
+        "[Player{id=1, name='Player1', score=0, bag=LettersCounter{table={A=1, I=1, E=2, O=1, N=1, C=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=2, name='Player2', score=0, bag=LettersCounter{table={A=2, U=1, F=1, O=1, N=1, Y=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=3, name='Player3', score=0, bag=LettersCounter{table={I=1, G=2, R=1, Q=1, E=1, M=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}]",
         this.gameModel.getActivePlayers().toString());
 
     // Now pass all other players to reach the next turn
@@ -412,8 +409,8 @@ public class MainTest {
   public void testLang() {
     Lang lang = Lang.getLang("fr");
     assertEquals(lang, Lang.getLang("fR"));
-    assertEquals(lang, FR);
-    assertEquals(lang.getDisplayName(), "français");
+    assertEquals(FR, lang);
+    assertEquals("français", lang.getDisplayName());
     assertThrows(
         CustomError.class,
         () -> {
@@ -433,11 +430,7 @@ public class MainTest {
         drawedLetters.addLetter(drawer.popLetter());
       }
       // check if the drawer is empty
-      assertThrows(
-          CustomError.class,
-          () -> {
-            drawer.popLetter();
-          });
+      assertThrows(CustomError.class, drawer::popLetter);
       /// assert the letters drawn are correct
       // check the letters set
       final LettersCounter langLetters = lang.getLettersCount(false);
@@ -464,7 +457,7 @@ public class MainTest {
   @Test
   public void testLangPack() {
     ResourceBundle langPack = Lang.EN.getViewCLI_langPack();
-    assertTrue(langPack != null);
+    assertNotNull(langPack);
     String result = langPack.getString("test");
 
     assertTrue(result != null && !result.isEmpty());
@@ -499,9 +492,9 @@ public class MainTest {
     ViewCLI view = new ViewCLI(gm.lang, config.getSuperScrabble());
 
     final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
-    PrintStream outStremCap = new PrintStream(outputStreamCaptor);
+    PrintStream outStreamCap = new PrintStream(outputStreamCaptor);
     try {
-      System.setOut(outStremCap);
+      System.setOut(outStreamCap);
       view.displayGrid(gm.grid, false);
       String output = outputStreamCaptor.toString().trim();
 
@@ -527,7 +520,7 @@ public class MainTest {
       assertEquals(expectedOutput, output);
     } finally {
       System.setOut(originalOut);
-      outStremCap.close();
+      outStreamCap.close();
     }
   }
 
@@ -625,13 +618,8 @@ public class MainTest {
   public void testF34() {
     assertEquals(69, this.gameModel.config.getSeed());
 
-    // Fill player's bag
-    LettersCounter newLetters = this.gameModel.draw.popLetter(7);
-    for (Letter l : newLetters.getLettersSet()) {
-      this.gameModel.getCurrentPlayer().bag.addLetter(l);
-    }
     assertEquals(
-        "LettersCounter{table={L=1, A=1, U=1, I=1, H=1, R=1}}",
+        "LettersCounter{table={A=1, L=2, U=1, I=1, H=1, R=1}}",
         this.gameModel.players.get(0).bag.toString());
     // System.out.println(this.gameModel.players.get(0).bag);
 
@@ -644,9 +632,8 @@ public class MainTest {
             this.gameModel.players.get(0), this.gameModel.getTurn(), toExchange);
     this.gameModel.applyGameActionDispatch(ga, 0);
 
-    // System.out.println(this.gameModel.players.get(0).bag);
     assertEquals(
-        "LettersCounter{table={U=1, I=2, H=1, R=1, E=1}}",
+        "LettersCounter{table={L=1, U=1, T=1, I=1, H=1, R=1, N=1}}",
         this.gameModel.players.get(0).bag.toString());
 
     // Try illegal action
@@ -659,10 +646,10 @@ public class MainTest {
     assertThrows(CustomError.class, () -> this.gameModel.applyGameActionDispatch(ga2, 0));
 
     // With empty draw
-    this.gameModel.draw.popLetter(95); // clear draw
+    this.gameModel.draw.popLetter(74); // clear draw
 
     assertEquals(
-        "LettersCounter{table={U=1, I=2, H=1, R=1, E=1}}",
+        "LettersCounter{table={L=1, U=1, T=1, I=1, H=1, R=1, N=1}}",
         this.gameModel.players.get(0).bag.toString());
 
     List<Letter> toExchange3 = new ArrayList<>();
@@ -674,7 +661,7 @@ public class MainTest {
     this.gameModel.applyGameActionDispatch(ga3, 0);
 
     assertEquals(
-        "LettersCounter{table={U=1, I=2, H=1, R=1, E=1}}",
+        "LettersCounter{table={L=1, U=1, T=1, I=1, H=1, R=1, N=1}}",
         this.gameModel.players.get(0).bag.toString());
   }
 
@@ -704,16 +691,37 @@ public class MainTest {
     gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/en.txt"));
     ViewCLI view = new ViewCLI(gm.lang, true);
 
+    // test for the new draw with more letters
     assertTrue(
         gm.draw
             .toString()
             .contains(
-                "lang=en, table=[Z, Z, Y, Y, Y, Y, X, X, W, W, W, W, V, V, V, U, U, U, U, U, U, U, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, S, S, S, S, S, S, S, S, S, S, R, R, R, R, R, R, R, R, R, R, R, R, R, #, #, #, #, Q, Q, P, P, P, P, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, N, N, N, N, N, N, N, N, N, N, N, N, N, M, M, M, M, M, M, L, L, L, L, L, L, L, K, K, J, J, I, I, I, I, I, I, I, I, I, I, I, I, I, H, H, H, H, H, G, G, G, G, G, F, F, F, F, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, D, D, D, D, D, D, D, D, C, C, C, C, C, C, B, B, B, B, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A], maxSize=200, currentSize=200}"));
+                "lang=en, table=[Z, Z, Y, Y, Y, Y, X, X, B, W, W, W, V, A, V, U, U, U, U, U, U, U, T, T, T, T, T, T, T, A, T, T, T, T, A, T, T, S, S, A, A, S, S, S, S, S, S, R, R, R, R, R, R, R, R, R, R, R, B, R, #, #, #, #, Q, Q, P, P, P, B, O, O, O, O, O, O, A, O, O, A, A, O, O, O, O, N, N, D, N, N, N, N, N, N, N, N, C, N, M, M, M, M, M, M, A, A, L, L, L, L, L, K, K, J, J, I, I, I, I, I, I, I, I, I, I, C, I, I, H, H, H, A, H, G, C, G, G, A, A, F, F, F, C, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, A, C, C, D, D, A, D, D, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], maxSize=200, currentSize=172}"));
+
+    // Try to place the first word not at the center
+    Player p1 = gm.players.get(0);
+    Letter[] l1 = new Letter[2];
+    {
+      String w = "IN";
+      for (int i = 0; i < w.length(); i++) {
+        l1[i] = new Letter(w.charAt(i));
+        p1.bag.addLetter(l1[i]);
+      }
+    }
+
+    // Throw du to illegal first position
+    assertThrows(
+        CustomError.class,
+        () -> {
+          gm.grid
+              .placeLetters(new PlaceWordAction(p1, 0, l1, new GridWordPos(0, 1, Direction.Right)))
+              .toString();
+        });
 
     final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
-    PrintStream outStremCap = new PrintStream(outputStreamCaptor);
+    PrintStream outStreamCap = new PrintStream(outputStreamCaptor);
     try {
-      System.setOut(outStremCap);
+      System.setOut(outStreamCap);
       view.displayGrid(gm.grid, true);
       String output = outputStreamCaptor.toString().trim();
 
@@ -746,7 +754,83 @@ public class MainTest {
 
     } finally {
       System.setOut(originalOut);
-      outStremCap.close();
+      outStreamCap.close();
+    }
+  }
+
+  @Test
+  public void testF20() {
+    Configuration config =
+        new Configuration(
+            true,
+            "d",
+            true,
+            false,
+            false,
+            4,
+            30,
+            new boolean[4],
+            15,
+            2,
+            69,
+            "en",
+            "idk",
+            java.nio.file.Paths.get("dictionary/en.txt"),
+            java.nio.file.Paths.get("none"),
+            java.nio.file.Paths.get("none"));
+
+    GameModel gm = new GameModel(config);
+
+    // check the default time for each player with t=10'
+    for (Player p : gm.players) {
+      assertEquals(1800, p.getRemainingTime(), 0);
+    }
+
+    for (Player p : gm.players) {
+      PassTurnAction pta = new PassTurnAction(p, 0);
+      gm.applyGameActionDispatch(pta, 66);
+      assertEquals(1734.0, p.getRemainingTime(), 0);
+    }
+
+    // Set the remaining time to 0 for a player
+    Player p = gm.players.get(0);
+    assertFalse(p.getHasForfeited());
+    PassTurnAction pta = new PassTurnAction(p, 0);
+    gm.applyGameActionDispatch(pta, 9999);
+    assertTrue(p.getHasForfeited());
+  }
+
+  @Test
+  public void testF21() {
+    // check the default time for each player with default config, so t=30'
+    for (Player p : this.gameModel.players) {
+      assertEquals(1800, p.getRemainingTime(), 0);
+    }
+
+    Configuration config =
+        new Configuration(
+            true,
+            "d",
+            true,
+            false,
+            false,
+            4,
+            10,
+            new boolean[4],
+            15,
+            2,
+            69,
+            "en",
+            "idk",
+            java.nio.file.Paths.get("dictionary/en.txt"),
+            java.nio.file.Paths.get("none"),
+            java.nio.file.Paths.get("none"));
+
+    GameModel gm = new GameModel(config);
+
+    // check the default time for each player with t=10'
+    for (Player p : gm.players) {
+      assertEquals(600, p.getRemainingTime(), 0);
     }
   }
 }

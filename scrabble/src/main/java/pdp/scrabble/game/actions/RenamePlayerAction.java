@@ -6,9 +6,13 @@ import pdp.scrabble.game.Player;
 public class RenamePlayerAction extends GameAction {
   public final String newName;
 
+  // Used by undo
+  public final String oldName;
+
   public RenamePlayerAction(Player player, int turn, String newName) {
     super(player, turn);
     this.newName = newName;
+    this.oldName = player.getName();
   }
 
   @Override

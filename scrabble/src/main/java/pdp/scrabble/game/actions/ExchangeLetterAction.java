@@ -15,13 +15,17 @@ import pdp.scrabble.game.Player;
  * if 7 or more tiles remain in the bag.
  */
 public class ExchangeLetterAction extends GameAction {
+  // the letters to remove from the players hand
   public final LettersCounter lettersToExchange;
 
-  // the letters to remove from the players hand
+  // Used by undo
+  public long rngStateBefore = 0L;
+  public Letter[] drawedAfter; // Empty until model calls drawLetters()
 
   public ExchangeLetterAction(Player player, int turn, List<Letter> toExchange) {
     super(player, turn);
     this.lettersToExchange = new LettersCounter(toExchange);
+    this.drawedAfter = new Letter[toExchange.size()];
   }
 
   @Override
@@ -68,9 +72,12 @@ public class ExchangeLetterAction extends GameAction {
     }
     // draw the new letters and put them in the player's bag
     LettersCounter drawedLetters = draw.popLetter(this.lettersToExchange.size());
+    int i = 0;
     for (Letter letter : drawedLetters.getLettersSet()) {
       int nbDrawed = drawedLetters.getLetterCount(letter);
       this.player.bag.addLetter(letter, nbDrawed);
+      drawedAfter[i] = letter;
+      i++;
     }
   }
 

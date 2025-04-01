@@ -7,6 +7,7 @@ import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.GridWordPos;
+import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
 
 /**
@@ -18,10 +19,17 @@ public class PlaceWordAction extends GameAction {
   // the letters of the player to place from
   public final GridWordPos startPosition;
 
+  // Used by undo
+  public long rngStateBefore = 0L; // set by model
+  public Letter[] drawedAfter;
+  public final int scoreBefore;
+
   public PlaceWordAction(Player player, int turn, Letter[] toPlace, GridWordPos startPos) {
     super(player, turn);
     this.toPlace = toPlace.clone();
     this.startPosition = startPos;
+    this.scoreBefore = player.getScore();
+    this.drawedAfter = null; // Empty until model calls drawLetters()
   }
 
   @Override
@@ -99,12 +107,35 @@ public class PlaceWordAction extends GameAction {
     }
   }
 
+  public void drawLetters(LettersDrawer draw) {
+    if (draw.getCurrentSize() < 7) {
+      throw new Error("[BUG] draw letter count is strictly under 7");
+    }
+    if (this.player.bag.size() >= 7) {
+      drawedAfter = new Letter[0];
+    } else {
+      Letter[] letters = new Letter[7 - this.player.bag.size()];
+      for (int i = 0; i < letters.length; i++) {
+        Letter l = draw.popLetter();
+        letters[i] = l;
+        this.player.bag.addLetter(l);
+      }
+      drawedAfter = letters;
+    }
+  }
+
   @Override
   public String toString() {
     String lettersList =
         Arrays.stream(this.toPlace)
             .map(arg0 -> "" + arg0.chr)
             .reduce("", (arg0, arg1) -> arg0 + arg1 + ", ");
+    String drawedAfter =
+        (this.drawedAfter != null && this.drawedAfter.length > 0)
+            ? Arrays.stream(this.drawedAfter)
+                .map(arg0 -> "" + arg0.chr)
+                .reduce("", (arg0, arg1) -> arg0 + arg1 + ", ")
+            : "";
     return this.getClass().getSimpleName()
         + "{"
         + "toPlace=["
@@ -113,6 +144,12 @@ public class PlaceWordAction extends GameAction {
         + startPosition
         + ", playerID:"
         + this.player.id
+        + ", rngStateBefore="
+        + rngStateBefore
+        + ", drawedAfter=["
+        + drawedAfter
+        + "], scoreBefore="
+        + scoreBefore
         + '}';
   }
 

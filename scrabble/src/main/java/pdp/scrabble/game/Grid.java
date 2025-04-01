@@ -266,10 +266,10 @@ public class Grid {
     {
       GridPos currPos = pwa.startPosition.toGridPos();
       for (int index = 0; index < pwa.toPlace.length; index++) {
-        final boolean islastLetterOfWord = (index + 1 == pwa.toPlace.length);
+        final boolean isLastLetterOfWord = (index + 1 == pwa.toPlace.length);
         // => currPos is the pos of the letter at index
         lettersPos.add(currPos);
-        if (!islastLetterOfWord) {
+        if (!isLastLetterOfWord) {
           // => not the last letter to place, search the pos of next letter
           currPos = getWordLastLetterPos(currPos, wordDirection);
           // => currPos is one before next position
@@ -327,11 +327,17 @@ public class Grid {
     if (score_tot == 0) {
       for (int index = 0; index < pwa.toPlace.length; index++) {
         final GridPos currPos = lettersPos.get(index);
-        if (currPos.row() == 7 && currPos.col() == 7) {
+        if (currPos.row() == size / 2 && currPos.col() == size / 2) {
           playCenter = true;
         }
       }
-      if (playCenter == false) {
+      if (!playCenter) {
+        if (isSuperScrabble) {
+          throw new CustomError(
+              ErrorType.FirstMoveIllegal,
+              "Not the right move for the first move",
+              "the first move: '" + score_tot + " not play to the center (need to touch k11)");
+        }
         throw new CustomError(
             ErrorType.FirstMoveIllegal,
             "Not the right move for the first move",
@@ -339,7 +345,7 @@ public class Grid {
       }
     }
 
-    // modified for test if the word need to be play next to a word
+    // modified for test if the word needs to be play next to a word
     for (OwnedWord ownedWord : result) {
       StringBuilder sb = new StringBuilder();
       for (Letter letter : pwa.toPlace) {
@@ -349,7 +355,7 @@ public class Grid {
         throw new CustomError(
             ErrorType.NotPlaceNextToAWord,
             "Not the right move, need to put next to the word",
-            "the move: '" + sb.toString() + " play alone whithout touching another word");
+            "the move: '" + sb.toString() + " play alone without touching another word");
       }
     } // modified
 

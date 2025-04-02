@@ -89,42 +89,42 @@ public class History<T> {
   }
 
   public String toSerializedString() {
-    HistNode<T> cur = this.currentNode;
-    // get to first node, we build the string in insertion order
-    // because it is annoying to get decent String building performance in reverse
-    while (cur.getPrevNode() != nullNode) {
-      cur = cur.getPrevNode();
+    LinkedList<T> actions = this.getCurrentActionsList();
+    if (actions.size() == 0) {
+      return "";
     }
 
-    int curTurn = 0;
     StringBuilder serialized = new StringBuilder();
-    while (cur != null) {
-      GameAction curAction = (GameAction) cur.getValue();
-      boolean first = (curTurn - curAction.turn) != 0;
-      curTurn = first ? curAction.turn : curTurn;
-      String toAppend = curAction.toSerializedString();
-      String lineBefore = "";
-      if (first && curTurn != 1) {
-        serialized.deleteCharAt(serialized.length() - 1);
-        lineBefore = ";\n";
+    int prevTurn = -1;
+    for (T value : actions) {
+      GameAction gameAction = (GameAction) value;
+      boolean firstPlayerOfTurn = (prevTurn != gameAction.turn);
+      if (firstPlayerOfTurn) {
+        // add the begining of the line
+        if (prevTurn != -1) {
+          // => not the first turn
+          serialized.append(";\n");
+        }
+        serialized.append(gameAction.turn + ". ");
+      } else {
+        // spacing betwin actions of a gameTurn
+        serialized.append(" ");
       }
-      if (!first) toAppend = toAppend.substring(toAppend.indexOf('.') + 2); // removing ". "
-      serialized.append(lineBefore + toAppend + " ");
-      cur = cur.getNextNode();
-    }
-    if (curTurn != 0) {
-      serialized.deleteCharAt(serialized.length() - 1);
+      // add the action
+      serialized.append(gameAction.toSerializedString());
+      prevTurn = gameAction.turn;
     }
     return serialized.toString() + ";";
   }
 
   /***
-   * @return the list of all action up to the current point in the history (included)
+   * @return the list of all action up to the current point in the history
+   *         (included)
    */
   public LinkedList<T> getCurrentActionsList() {
     HistNode<T> node = this.currentNode;
     LinkedList<T> lst = new LinkedList<>();
-    while (node != null) {
+    while (node != this.nullNode) {
       lst.addFirst(node.getValue());
       node = node.getPrevNode();
     }

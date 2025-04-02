@@ -11,7 +11,8 @@ import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
 
 /**
- * Exchange one or more tiles for an equal number from the bag, scoring zero. This can only be done
+ * Exchange one or more tiles for an equal number from the bag, scoring zero.
+ * This can only be done
  * if 7 or more tiles remain in the bag.
  */
 public class ExchangeLetterAction extends GameAction {
@@ -20,12 +21,11 @@ public class ExchangeLetterAction extends GameAction {
 
   // Used by undo
   public long rngStateBefore = 0L;
-  public Letter[] drawedAfter; // Empty until model calls drawLetters()
+  public LettersCounter lettersDrawed = null; // Empty until model calls drawLetters()
 
   public ExchangeLetterAction(Player player, int turn, List<Letter> toExchange) {
     super(player, turn);
     this.lettersToExchange = new LettersCounter(toExchange);
-    this.drawedAfter = new Letter[toExchange.size()];
   }
 
   @Override
@@ -57,8 +57,10 @@ public class ExchangeLetterAction extends GameAction {
   }
 
   /**
-   * remove from the bag the letters exchnaged and draw the new letters, you must check if the
-   * player has the letters before ! (it will be asserted before removing the letters)
+   * remove from the bag the letters exchnaged and draw the new letters, you must
+   * check if the
+   * player has the letters before ! (it will be asserted before removing the
+   * letters)
    *
    * @param draw the drawer of the GameModel
    */
@@ -72,12 +74,11 @@ public class ExchangeLetterAction extends GameAction {
     }
     // draw the new letters and put them in the player's bag
     LettersCounter drawedLetters = draw.popLetter(this.lettersToExchange.size());
-    int i = 0;
+    this.lettersDrawed = drawedLetters.copy();
+
     for (Letter letter : drawedLetters.getLettersSet()) {
       int nbDrawed = drawedLetters.getLetterCount(letter);
       this.player.bag.addLetter(letter, nbDrawed);
-      drawedAfter[i] = letter;
-      i++;
     }
   }
 
@@ -89,8 +90,9 @@ public class ExchangeLetterAction extends GameAction {
         toExchange.append(l.getKey() + ",");
       }
     }
-    if (toExchange.length() > 0) toExchange.deleteCharAt(toExchange.length() - 1);
-    return super.toSerializedString() + " ExchangeLetter [" + toExchange.toString() + "]";
+    if (toExchange.length() > 0)
+      toExchange.deleteCharAt(toExchange.length() - 1);
+    return this.player.id + " ExchangeLetter [" + toExchange.toString() + "]";
   }
 
   @Override
@@ -98,8 +100,4 @@ public class ExchangeLetterAction extends GameAction {
     gameModel.undoGameAction(this);
   }
 
-  @Override
-  public void redo(GameModel gameModel) {
-    gameModel.redoGameAction(this);
-  }
 }

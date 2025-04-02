@@ -20,16 +20,11 @@ public class PassTurnAction extends GameAction {
 
   @Override
   public String toSerializedString() {
-    return super.toSerializedString() + " PassTurn";
+    return this.player.id + " PassTurn";
   }
 
   @Override
   public void undo(GameModel gameModel) {
     gameModel.undoGameAction(this);
-  }
-
-  @Override
-  public void redo(GameModel gameModel) {
-    gameModel.redoGameAction(this);
   }
 }

@@ -11,7 +11,8 @@ import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
 
 /**
- * Play at least one tile on the board, adding the value of all words formed to the player's
+ * Play at least one tile on the board, adding the value of all words formed to
+ * the player's
  * cumulative score
  */
 public class PlaceWordAction extends GameAction {
@@ -20,8 +21,8 @@ public class PlaceWordAction extends GameAction {
   public final GridWordPos startPosition;
 
   // Used by undo
-  public long rngStateBefore = 0L; // set by model
-  public Letter[] drawedAfter;
+  public long rngStateBefore = 0L; // to set by model
+  public final LettersCounter drawedAfter; // Empty until model calls drawLetters()
   public final int scoreBefore;
 
   public PlaceWordAction(Player player, int turn, Letter[] toPlace, GridWordPos startPos) {
@@ -29,7 +30,7 @@ public class PlaceWordAction extends GameAction {
     this.toPlace = toPlace.clone();
     this.startPosition = startPos;
     this.scoreBefore = player.getScore();
-    this.drawedAfter = null; // Empty until model calls drawLetters()
+    this.drawedAfter = new LettersCounter();
   }
 
   @Override
@@ -85,7 +86,8 @@ public class PlaceWordAction extends GameAction {
   }
 
   /**
-   * remove from the bag the letters placed you must check if the player has the letters before !
+   * remove from the bag the letters placed you must check if the player has the
+   * letters before !
    * (it will be asserted before removing the letters)
    */
   public void removeLettersPlaced() {
@@ -111,45 +113,32 @@ public class PlaceWordAction extends GameAction {
     if (draw.getCurrentSize() < 7) {
       throw new Error("[BUG] draw letter count is strictly under 7");
     }
-    if (this.player.bag.size() >= 7) {
-      drawedAfter = new Letter[0];
-    } else {
-      Letter[] letters = new Letter[7 - this.player.bag.size()];
-      for (int i = 0; i < letters.length; i++) {
-        Letter l = draw.popLetter();
-        letters[i] = l;
-        this.player.bag.addLetter(l);
-      }
-      drawedAfter = letters;
+    while (this.player.bag.size() < 7) {
+      Letter letterDrawed = draw.popLetter();
+      this.player.bag.addLetter(letterDrawed);
+      this.drawedAfter.addLetter(letterDrawed);
     }
   }
 
   @Override
   public String toString() {
-    String lettersList =
-        Arrays.stream(this.toPlace)
-            .map(arg0 -> "" + arg0.chr)
-            .reduce("", (arg0, arg1) -> arg0 + arg1 + ", ");
-    String drawedAfter =
-        (this.drawedAfter != null && this.drawedAfter.length > 0)
-            ? Arrays.stream(this.drawedAfter)
-                .map(arg0 -> "" + arg0.chr)
-                .reduce("", (arg0, arg1) -> arg0 + arg1 + ", ")
-            : "";
+    String lettersList = Arrays.stream(this.toPlace)
+        .map(arg0 -> "" + arg0.chr)
+        .reduce("", (arg0, arg1) -> arg0 + arg1 + ", ");
     return this.getClass().getSimpleName()
         + "{"
         + "toPlace=["
         + lettersList
         + "], startPosition="
-        + startPosition
+        + this.startPosition
         + ", playerID:"
         + this.player.id
         + ", rngStateBefore="
-        + rngStateBefore
+        + this.rngStateBefore
         + ", drawedAfter=["
-        + drawedAfter
+        + this.drawedAfter.toString()
         + "], scoreBefore="
-        + scoreBefore
+        + this.scoreBefore
         + '}';
   }
 
@@ -158,22 +147,16 @@ public class PlaceWordAction extends GameAction {
     // ascii 97 = a
     char row = (char) (97 + this.startPosition.row());
     String col = String.valueOf(this.startPosition.col() + 1);
-    char direction =
-        switch (this.startPosition.direction()) {
-          case Right -> 'h';
-          case Down -> 'v';
-        };
+    char direction = switch (this.startPosition.direction()) {
+      case Right -> 'h';
+      case Down -> 'v';
+    };
     String word = Letter.concatenate(this.toPlace);
-    return super.toSerializedString() + " PlaceWord " + row + col + direction + " " + word;
+    return this.player.id + " PlaceWord " + row + col + direction + " " + word;
   }
 
   @Override
   public void undo(GameModel gameModel) {
     gameModel.undoGameAction(this);
-  }
-
-  @Override
-  public void redo(GameModel gameModel) {
-    gameModel.redoGameAction(this);
   }
 }

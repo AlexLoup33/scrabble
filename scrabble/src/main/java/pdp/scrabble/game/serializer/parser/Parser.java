@@ -21,22 +21,34 @@ import pdp.scrabble.game.actions.RenamePlayerAction;
 import pdp.scrabble.game.actions.RestartGameAction;
 
 /**
- * Parses a save file into a GameModel object, which can then be used to restore the game decribed
+ * Parses a save file into a GameModel object, which can then be used to restore
+ * the game decribed
  * in the save file.
  *
- * <p>This parser uses tokens, which are: - str: string surrounded by " - var: symbol name, string
- * that begins by upper case char followed by any simple ascii char -> /[A-Z][0-z]+/ - punc: one of
- * ".{}<>[],;" - op: = - num: any unsigned digit - lng: any unsigned long - negNum: any negative
- * digit (digit preceded by "-") - negLng: any negative long (long preceded by "-") - move: any
+ * <p>
+ * This parser uses tokens, which are: - str: string surrounded by " - var:
+ * symbol name, string
+ * that begins by upper case char followed by any simple ascii char ->
+ * /[A-Z][0-z]+/ - punc: one of
+ * ".{}<>[],;" - op: = - num: any unsigned digit - lng: any unsigned long -
+ * negNum: any negative
+ * digit (digit preceded by "-") - negLng: any negative long (long preceded by
+ * "-") - move: any
  * value that matches /[a-z][0-9]+[a-z]/
  *
- * <p>Any other value inside of save file will get rejected.
+ * <p>
+ * Any other value inside of save file will get rejected.
  *
- * <p>TODO: block description
+ * <p>
+ * TODO: block description
  *
- * <p>The state is recreated from a blank model, move by move, using the rng seed of the save file.
- * Our parser will throw if the state of the game is not coherent with the moves described in the
- * move list of the history block. This means that for most saves, you cannot arbitrarily modify the
+ * <p>
+ * The state is recreated from a blank model, move by move, using the rng seed
+ * of the save file.
+ * Our parser will throw if the state of the game is not coherent with the moves
+ * described in the
+ * move list of the history block. This means that for most saves, you cannot
+ * arbitrarily modify the
  * game portion of the save file.
  */
 public class Parser {
@@ -69,21 +81,27 @@ public class Parser {
   }
 
   private void skipPunc(char ch) {
-    if (isPunc(ch)) input.next();
-    else input.croak("Expecting punctuation: \"" + ch + "\"");
+    if (isPunc(ch))
+      input.next();
+    else
+      input.croak("Expecting punctuation: \"" + ch + "\"");
   }
 
   private void skipPuncUntilDifferent(char ch) {
-    while (isPunc(ch)) input.next();
+    while (isPunc(ch))
+      input.next();
   }
 
   private void skipOp() {
-    if (isOp()) input.next();
-    else input.croak("Expecting operator: =");
+    if (isOp())
+      input.next();
+    else
+      input.croak("Expecting operator: =");
   }
 
   private void skipWhiteSpaceIfEof() {
-    if (input.peek() == null) input.next();
+    if (input.peek() == null)
+      input.next();
   }
 
   private void unexpected() {
@@ -102,10 +120,14 @@ public class Parser {
     boolean first = true;
     skipPunc(start);
     while (!input.eof()) {
-      if (isPunc(stop)) break;
-      if (first) first = false;
-      else skipPunc(separator);
-      if (isPunc(stop)) break;
+      if (isPunc(stop))
+        break;
+      if (first)
+        first = false;
+      else
+        skipPunc(separator);
+      if (isPunc(stop))
+        break;
       elements.add(parser.get());
     }
     skipPunc(stop);
@@ -160,6 +182,9 @@ public class Parser {
     if (tok.type.equals("lng") || tok.type.equals("negLng")) {
       return (long) tok.value;
     }
+    if (tok.type.equals("num") || tok.type.equals("negNum")) {
+      return ((Integer) tok.value).longValue();
+    }
     input.croak("Expecting a number");
     return 0;
   }
@@ -174,7 +199,8 @@ public class Parser {
 
   private GridWordPos parseMove() {
     Token expectedMove = input.next();
-    if (!expectedMove.type.equals("move")) input.croak("Expecting move");
+    if (!expectedMove.type.equals("move"))
+      input.croak("Expecting move");
     String move = (String) expectedMove.value;
     int maxRange = this.loadedModel.config.getSuperScrabble() ? 20 : 14;
     int row = (Character.toLowerCase(move.charAt(0)) - 97);
@@ -287,7 +313,8 @@ public class Parser {
           this.confStub.setContestFile(parseString());
           recognized = true;
         }
-        if (!recognized) unexpected();
+        if (!recognized)
+          unexpected();
       } catch (CustomError e) {
         input.croak(e.message);
       }
@@ -302,7 +329,8 @@ public class Parser {
     while (input.peek().type.equals("num")) {
       int curTurn = parseNumber();
       skipPunc('.');
-      if (curTurn != loadedModel.getTurn()) input.croak("Turn number doesn't make sense");
+      if (curTurn != loadedModel.getTurn())
+        input.croak("Turn number doesn't make sense");
       parseActions(parsed, curTurn);
       skipPunc(';');
     }
@@ -318,48 +346,43 @@ public class Parser {
       try {
         if (actionType.equals("PlaceWord")) {
           GridWordPos gwp = parseMove();
-          PlaceWordAction placeAction =
-              new PlaceWordAction(
-                  this.loadedModel.getCurrentPlayer(), curTurn, parseLetters(), gwp);
+          PlaceWordAction placeAction = new PlaceWordAction(
+              this.loadedModel.getCurrentPlayer(), curTurn, parseLetters(), gwp);
           placeAction.applyGameAction(loadedModel);
           parsed.addPlayedAction(placeAction);
           continue;
         }
         if (actionType.equals("RenamePlayer")) {
-          RenamePlayerAction renameAction =
-              new RenamePlayerAction(this.loadedModel.getCurrentPlayer(), curTurn, parseString());
+          RenamePlayerAction renameAction = new RenamePlayerAction(this.loadedModel.getCurrentPlayer(), curTurn,
+              parseString());
           renameAction.applyGameAction(this.loadedModel);
           parsed.addPlayedAction(renameAction);
           continue;
         }
         if (actionType.equals("ExchangeLetter")) {
-          List<Letter> toExchange =
-              delimited('[', ']', ',', this::parseIdent).stream()
-                  .map((obj) -> new Letter(((String) obj).charAt(0)))
-                  .collect(Collectors.toList());
-          ExchangeLetterAction exchangeAction =
-              new ExchangeLetterAction(this.loadedModel.getCurrentPlayer(), curTurn, toExchange);
+          List<Letter> toExchange = delimited('[', ']', ',', this::parseIdent).stream()
+              .map((obj) -> new Letter(((String) obj).charAt(0)))
+              .collect(Collectors.toList());
+          ExchangeLetterAction exchangeAction = new ExchangeLetterAction(this.loadedModel.getCurrentPlayer(), curTurn,
+              toExchange);
           exchangeAction.applyGameAction(this.loadedModel);
           parsed.addPlayedAction(exchangeAction);
           continue;
         }
         if (actionType.equals("ForfeitGame")) {
-          ForfeitGameAction forfeitAction =
-              new ForfeitGameAction(this.loadedModel.getCurrentPlayer(), curTurn);
+          ForfeitGameAction forfeitAction = new ForfeitGameAction(this.loadedModel.getCurrentPlayer(), curTurn);
           forfeitAction.applyGameAction(this.loadedModel);
           parsed.addPlayedAction(forfeitAction);
           continue;
         }
         if (actionType.equals("PassTurn")) {
-          PassTurnAction passTurnAction =
-              new PassTurnAction(this.loadedModel.getCurrentPlayer(), curTurn);
+          PassTurnAction passTurnAction = new PassTurnAction(this.loadedModel.getCurrentPlayer(), curTurn);
           passTurnAction.applyGameAction(this.loadedModel);
           parsed.addPlayedAction(passTurnAction);
           continue;
         }
         if (actionType.equals("RestartGame")) {
-          RestartGameAction restartGameAction =
-              new RestartGameAction(this.loadedModel.getCurrentPlayer(), curTurn);
+          RestartGameAction restartGameAction = new RestartGameAction(this.loadedModel.getCurrentPlayer(), curTurn);
           restartGameAction.applyGameAction(this.loadedModel);
           parsed.addPlayedAction(restartGameAction);
           continue;

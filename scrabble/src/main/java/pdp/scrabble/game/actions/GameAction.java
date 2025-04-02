@@ -21,10 +21,7 @@ public abstract class GameAction {
 
   public abstract void applyGameAction(GameModel gameModel);
 
-  public String toSerializedString() {
-    return turn + ". " + player.id;
-  }
+  public abstract String toSerializedString();
 
   public abstract void undo(GameModel gameModel);
-  public abstract void redo(GameModel gameModel);
 }

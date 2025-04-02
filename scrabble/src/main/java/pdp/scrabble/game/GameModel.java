@@ -84,7 +84,7 @@ public class GameModel {
   private void redoOne() {
     GameAction toRedo = this.history.undoOne();
     // no needs to redo the played time here
-    toRedo.redo(this); // double dispatch
+    this.applyGameActionDispatch(toRedo, toRedo.duration);
   }
 
   /**
@@ -148,7 +148,6 @@ public class GameModel {
   // F41
   public void applyGameAction(RestartGameAction restart) {
     this.reset();
-    history.addPlayedAction(restart);
   }
 
   public void applyGameAction(QuitAction quit) {
@@ -166,10 +165,12 @@ public class GameModel {
   }
 
   /**
-   * This function returns a list of active players by filtering out players who have forfeited.
+   * This function returns a list of active players by filtering out players who
+   * have forfeited.
    *
-   * @return The method `getActivePlayers` returns a list of active players, which are players who
-   *     have not forfeited the game.
+   * @return The method `getActivePlayers` returns a list of active players, which
+   *         are players who
+   *         have not forfeited the game.
    */
   public List<Player> getActivePlayers() {
     List<Player> activePlayers = new ArrayList<>();
@@ -255,13 +256,7 @@ public class GameModel {
   }
 
   public void undoGameAction(ExchangeLetterAction exchangeLetterAction) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'undoGameAction'");
-  }
-
-  public void redoGameAction(ExchangeLetterAction exchangeLetterAction) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'redoGameAction'");
+    // exchangeLetterAction.lettersDrawed
   }
 
   public void undoGameAction(ForfeitGameAction forfeitGameAction) {
@@ -269,19 +264,9 @@ public class GameModel {
     throw new UnsupportedOperationException("Unimplemented method 'undoGameAction'");
   }
 
-  public void redoGameAction(ForfeitGameAction forfeitGameAction) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'redoGameAction'");
-  }
-
   public void undoGameAction(PassTurnAction passTurnAction) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'undoGameAction'");
-  }
-
-  public void redoGameAction(PassTurnAction passTurnAction) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'redoGameAction'");
   }
 
   public void undoGameAction(PlaceWordAction placeWordAction) {
@@ -289,18 +274,8 @@ public class GameModel {
     throw new UnsupportedOperationException("Unimplemented method 'undoGameAction'");
   }
 
-  public void redoGameAction(PlaceWordAction placeWordAction) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'redoGameAction'");
-  }
-
   public void undoGameAction(RenamePlayerAction renamePlayerAction) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'undoGameAction'");
-  }
-
-  public void redoGameAction(RenamePlayerAction renamePlayerAction) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'redoGameAction'");
   }
 }

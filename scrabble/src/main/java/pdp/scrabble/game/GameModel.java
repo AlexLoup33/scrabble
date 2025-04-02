@@ -94,6 +94,12 @@ public class GameModel {
    * @return whether the turn is finished
    */
   public void applyGameActionDispatch(GameAction played, long duration) {
+    if (played.player != this.getCurrentPlayer()) {
+      throw new CustomError(ErrorType.WrongPlayerAction,
+          "wrong player is playing",
+          "the action of player: " + played.player 
+          + " is during the turn of player: " + this.getCurrentPlayer());
+    }
     played.player.addTurnPlayedTime(duration);
     played.duration = duration;
     played.applyGameAction(this); // use double dispatch
@@ -222,6 +228,11 @@ public class GameModel {
     this.gameTurn += 1;
   }
 
+  /**
+   * draw the letters for the player to start the game
+   * 
+   * @param p the player drawing
+   */
   public void drawLetters(Player p) {
     if (this.draw.getCurrentSize() < 7) {
       throw new Error("[BUG] draw letter count is strictly under 7");

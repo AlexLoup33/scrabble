@@ -1,9 +1,13 @@
 package pdp.scrabble.dictionary;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
+
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 
@@ -16,13 +20,16 @@ public class LettersCounter {
    * sert a dire le nombre de chaque lettre presente
    */
   private final Hashtable<Letter, Integer> table;
+  private int currSize;
 
   public LettersCounter() {
     this.table = new Hashtable<>();
+    this.currSize = 0;
   }
 
-  public void reset() {
+  public void clear() {
     this.table.clear();
+    this.currSize = 0;
   }
 
   public LettersCounter(List<Letter> letters) {
@@ -56,6 +63,7 @@ public class LettersCounter {
     }
     int newCount = this.table.getOrDefault(letter, 0) + count;
     this.table.put(letter, newCount);
+    this.currSize += count;
     return newCount;
   }
 
@@ -99,6 +107,7 @@ public class LettersCounter {
     } else { // => newCount >= 1
       this.table.put(letter, newCount);
     }
+    this.currSize -= count;
     return newCount;
   }
 
@@ -110,19 +119,7 @@ public class LettersCounter {
    *         counter (don't store the given letter)
    */
   public int removeLetter(Letter letter) {
-    int newCount = this.table.getOrDefault(letter, 0) - 1;
-    // -1 => letter not present in this LettersCounter
-    if (newCount == -1) {
-      throw new CustomError(
-          ErrorType.InvalidLetterCountError,
-          "the letter " + letter + " can't be removed",
-          "Can't remove the letter " + letter + " because it isn't stored in");
-    } else if (newCount == 0) {
-      this.table.remove(letter); // not required -> optimize
-    } else { // => newCount >= 1
-      this.table.put(letter, newCount);
-    }
-    return newCount;
+    return this.removeLetter(letter, 1);
   }
 
   /** get the current count of this letter */
@@ -135,8 +132,15 @@ public class LettersCounter {
     return this.table.keySet();
   }
 
+  public List<Letter> getSortedLetterkeys() {
+    ArrayList<Letter> res = new ArrayList<>();
+    res.addAll(this.table.keySet());
+    res.sort(Comparator.comparingInt(l -> (int) l.chr));
+    return res;
+  }
+
   public int size() {
-    return this.table.values().stream().reduce(0, Integer::sum);
+    return this.currSize;
   }
 
   public Hashtable<Letter, Integer> getTable() {
@@ -145,7 +149,13 @@ public class LettersCounter {
 
   @Override
   public String toString() {
-    return "LettersCounter{" + "table=" + table + '}';
+    StringBuilder builder = new StringBuilder();
+    builder.append("LettersCounter{table=");
+    builder.append(String.join(",",
+        this.getSortedLetterkeys().stream().map(
+            l -> (l.chr + ":" + this.getLetterCount(l))).toList()));
+    builder.append('}');
+    return builder.toString();
   }
 
   /**

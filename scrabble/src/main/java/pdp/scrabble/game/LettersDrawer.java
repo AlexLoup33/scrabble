@@ -1,6 +1,5 @@
 package pdp.scrabble.game;
 
-import java.util.ArrayList;
 import java.util.List;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;

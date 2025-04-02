@@ -95,10 +95,13 @@ public class GameModel {
    */
   public void applyGameActionDispatch(GameAction played, long duration) {
     if (played.player != this.getCurrentPlayer()) {
-      throw new CustomError(ErrorType.WrongPlayerAction,
+      throw new CustomError(
+          ErrorType.WrongPlayerAction,
           "wrong player is playing",
-          "the action of player: " + played.player 
-          + " is during the turn of player: " + this.getCurrentPlayer());
+          "the action of player: "
+              + played.player
+              + " is during the turn of player: "
+              + this.getCurrentPlayer());
     }
     played.player.addTurnPlayedTime(duration);
     played.duration = duration;
@@ -171,12 +174,10 @@ public class GameModel {
   }
 
   /**
-   * This function returns a list of active players by filtering out players who
-   * have forfeited.
+   * This function returns a list of active players by filtering out players who have forfeited.
    *
-   * @return The method `getActivePlayers` returns a list of active players, which
-   *         are players who
-   *         have not forfeited the game.
+   * @return The method `getActivePlayers` returns a list of active players, which are players who
+   *     have not forfeited the game.
    */
   public List<Player> getActivePlayers() {
     List<Player> activePlayers = new ArrayList<>();
@@ -230,7 +231,7 @@ public class GameModel {
 
   /**
    * draw the letters for the player to start the game
-   * 
+   *
    * @param p the player drawing
    */
   public void drawLetters(Player p) {

@@ -219,7 +219,6 @@ public class MainTest {
     // F36. Abandon
     // Le programme devra permettre à un joueur d’abandonner la partie en cours.
 
-
     // Before
     assertFalse(this.gameModel.getCurrentPlayer().getHasForfeited());
     assertEquals(
@@ -234,8 +233,7 @@ public class MainTest {
     // check forfeit
     assertTrue(ga.player.getHasForfeited());
     assertEquals(
-        "[1, 2, 3]",
-        this.gameModel.getActivePlayers().stream().map(p -> p.id).toList().toString());
+        "[1, 2, 3]", this.gameModel.getActivePlayers().stream().map(p -> p.id).toList().toString());
 
     // Now pass all other players to reach the next turn
     for (int i = 0; i < this.config.getPlayerCount() - 1; i++) {
@@ -357,11 +355,9 @@ public class MainTest {
         });
 
     //    System.out.println(p1.bag);
-    gm.applyGameAction(
-        new PlaceWordAction(p1, 1, l1, new GridWordPos(7, 6, Direction.Right)));
+    gm.applyGameAction(new PlaceWordAction(p1, 1, l1, new GridWordPos(7, 6, Direction.Right)));
 
-    gm.applyGameAction(
-        new PlaceWordAction(p1, 2, l4, new GridWordPos(7, 11, Direction.Down)));
+    gm.applyGameAction(new PlaceWordAction(p1, 2, l4, new GridWordPos(7, 11, Direction.Down)));
 
     assertThrows(
         CustomError.class,
@@ -370,11 +366,9 @@ public class MainTest {
               new PlaceWordAction(p1, 3, l5, new GridWordPos(11, 12, Direction.Right)));
         });
 
-    gm.applyGameAction(
-        new PlaceWordAction(p1, 4, l2, new GridWordPos(8, 10, Direction.Right)));
+    gm.applyGameAction(new PlaceWordAction(p1, 4, l2, new GridWordPos(8, 10, Direction.Right)));
 
-    gm.applyGameAction(
-        new PlaceWordAction(p1, 5, l6, new GridWordPos(10, 12, Direction.Right)));
+    gm.applyGameAction(new PlaceWordAction(p1, 5, l6, new GridWordPos(10, 12, Direction.Right)));
 
     assertThrows(
         CustomError.class,
@@ -383,11 +377,9 @@ public class MainTest {
               new PlaceWordAction(p1, 6, l7, new GridWordPos(11, 12, Direction.Right)));
         });
 
-    gm.applyGameAction(
-        new PlaceWordAction(p1, 8, l9, new GridWordPos(8, 6, Direction.Right)));
+    gm.applyGameAction(new PlaceWordAction(p1, 8, l9, new GridWordPos(8, 6, Direction.Right)));
 
-    gm.applyGameAction(
-        new PlaceWordAction(p1, 7, l8, new GridWordPos(9, 5, Direction.Right)));
+    gm.applyGameAction(new PlaceWordAction(p1, 7, l8, new GridWordPos(9, 5, Direction.Right)));
 
     assertThrows(
         CustomError.class,
@@ -618,7 +610,7 @@ public class MainTest {
   @Test
   public void testF34() {
     assertEquals(69, this.gameModel.config.getSeed());
-    
+
     assertEquals(
         "LettersCounter{table=A:1,E:1,G:1,I:1,L:2,R:1}",
         this.gameModel.getCurrentPlayer().bag.toString());
@@ -633,16 +625,15 @@ public class MainTest {
             this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange);
     this.gameModel.applyGameActionDispatch(ga, 0);
     assertEquals("LettersCounter{table=A:1,M:1}", ga.lettersDrawed.toString());
-    assertEquals(
-        "LettersCounter{table=A:1,E:1,G:1,I:1,L:1,M:1,R:1}",
-        ga.player.bag.toString());
+    assertEquals("LettersCounter{table=A:1,E:1,G:1,I:1,L:1,M:1,R:1}", ga.player.bag.toString());
 
     // Try illegal action
     String bagBefore = this.gameModel.getCurrentPlayer().bag.toString();
     List<Letter> toExchange2 = new ArrayList<>();
     toExchange2.add(new Letter('Z'));
     ExchangeLetterAction ga2 =
-        new ExchangeLetterAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange2);
+        new ExchangeLetterAction(
+            this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange2);
     assertThrows(CustomError.class, () -> this.gameModel.applyGameActionDispatch(ga2, 0));
     // check same player and same bag
     assertEquals(ga2.player, this.gameModel.getCurrentPlayer());
@@ -656,9 +647,7 @@ public class MainTest {
             this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange3);
     this.gameModel.applyGameActionDispatch(ga3, 0);
 
-    assertEquals(
-      "LettersCounter{table=#:1,A:2,E:1,N:1,O:1,S:1}", 
-      ga3.player.bag.toString());
+    assertEquals("LettersCounter{table=#:1,A:2,E:1,N:1,O:1,S:1}", ga3.player.bag.toString());
   }
 
   @Test
@@ -688,7 +677,9 @@ public class MainTest {
     ViewCLI view = new ViewCLI(gm.lang, true);
 
     // test for the new draw with more letters
-    assertEquals(gm.draw.toString(), "LettersDrawer{lang=en, content=LettersCounter{table=#:4,A:14,B:4,C:4,D:7,E:19,F:3,G:4,H:4,I:11,J:1,K:2,L:6,M:6,N:13,O:13,P:4,Q:2,R:9,S:9,T:15,U:6,V:1,W:4,X:2,Y:3,Z:2}, maxSize=200, currentSize=172}");
+    assertEquals(
+        gm.draw.toString(),
+        "LettersDrawer{lang=en, content=LettersCounter{table=#:4,A:14,B:4,C:4,D:7,E:19,F:3,G:4,H:4,I:11,J:1,K:2,L:6,M:6,N:13,O:13,P:4,Q:2,R:9,S:9,T:15,U:6,V:1,W:4,X:2,Y:3,Z:2}, maxSize=200, currentSize=172}");
 
     // Try to place the first word not at the center
     Player p1 = gm.players.get(0);

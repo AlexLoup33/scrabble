@@ -6,8 +6,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Stream;
-
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 
@@ -20,6 +18,7 @@ public class LettersCounter {
    * sert a dire le nombre de chaque lettre presente
    */
   private final Hashtable<Letter, Integer> table;
+
   private int currSize;
 
   public LettersCounter() {
@@ -51,8 +50,7 @@ public class LettersCounter {
    *
    * @param count must be >= 0
    * @return the new count for this letter (don't store the given letter)
-   *         <p>
-   *         Modif: addLetter en public car utiliser dans la classe Lang
+   *     <p>Modif: addLetter en public car utiliser dans la classe Lang
    */
   public int addLetter(Letter letter, int count) {
     if (count < 0) {
@@ -80,9 +78,8 @@ public class LettersCounter {
    * remove count of the given Letter
    *
    * @param count the number of times to remove the letter (must be >= 0)
-   * @return the new count for this letter throw an error if there isn't enougth
-   *         letters in the
-   *         counter (don't store the given letter)
+   * @return the new count for this letter throw an error if there isn't enougth letters in the
+   *     counter (don't store the given letter)
    */
   public int removeLetter(Letter letter, int count) {
     if (count < 0) {
@@ -114,9 +111,8 @@ public class LettersCounter {
   /**
    * remove 1 of the given Letter
    *
-   * @return the new count for this letter throw an error if there isn't enougth
-   *         letters in the
-   *         counter (don't store the given letter)
+   * @return the new count for this letter throw an error if there isn't enougth letters in the
+   *     counter (don't store the given letter)
    */
   public int removeLetter(Letter letter) {
     return this.removeLetter(letter, 1);
@@ -151,9 +147,12 @@ public class LettersCounter {
   public String toString() {
     StringBuilder builder = new StringBuilder();
     builder.append("LettersCounter{table=");
-    builder.append(String.join(",",
-        this.getSortedLetterkeys().stream().map(
-            l -> (l.chr + ":" + this.getLetterCount(l))).toList()));
+    builder.append(
+        String.join(
+            ",",
+            this.getSortedLetterkeys().stream()
+                .map(l -> (l.chr + ":" + this.getLetterCount(l)))
+                .toList()));
     builder.append('}');
     return builder.toString();
   }

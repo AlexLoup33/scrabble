@@ -6,6 +6,7 @@ import pdp.scrabble.game.Player;
 public abstract class GameAction {
   public final Player player;
   public final int turn;
+
   /** to be setted durring the dispatch of the game action */
   public long duration;
 

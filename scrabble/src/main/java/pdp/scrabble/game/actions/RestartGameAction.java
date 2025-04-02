@@ -27,6 +27,7 @@ public class RestartGameAction extends GameAction {
 
   @Override
   public void undo(GameModel gameModel) {
-    throw new UnsupportedOperationException("there is no undo possible for " + this.getClass().getSimpleName());
+    throw new UnsupportedOperationException(
+        "there is no undo possible for " + this.getClass().getSimpleName());
   }
 }

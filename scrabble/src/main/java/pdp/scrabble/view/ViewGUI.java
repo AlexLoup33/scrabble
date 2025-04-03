@@ -3,6 +3,7 @@ package pdp.scrabble.view;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.Semaphore;
+
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -29,8 +30,10 @@ import pdp.scrabble.game.Grid;
 import pdp.scrabble.game.Lang;
 import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
+import pdp.scrabble.game.actions.ExchangeLetterAction;
 import pdp.scrabble.game.actions.GameAction;
 import pdp.scrabble.game.actions.PassTurnAction;
+import pdp.scrabble.game.actions.RenamePlayerAction;
 import pdp.scrabble.view.Component.ActionHistory;
 import pdp.scrabble.view.Component.DisplayTurn;
 import pdp.scrabble.view.Component.PlayerHand;
@@ -206,22 +209,10 @@ public class ViewGUI implements IView {
     mainRow = new HBox(10, actionHistory, scrabbleBoard, playerScores);
     mainRow.setStyle("-fx-alignment: center; -fx-padding: 10px;");
 
-    // Main du joueur provisoir :
-    // player's letters
-    // LettersCounter letters = new LettersCounter();
-    // letters.addLetter(new Letter('A'));
-    // letters.addLetter(new Letter('P'));
-    // letters.addLetter(new Letter('Q'));
-    // letters.addLetter(new Letter('O'));
-    // letters.addLetter(new Letter('W'));
-    // letters.addLetter(new Letter('V'));
-    // letters.addLetter(new Letter('M'));
-
     // Display Turn
     this.displayTurn = new DisplayTurn(lang);
 
     // Player Hand
-
     this.playerHand = new PlayerHand(lang, isSuperScrabble);
     // this.playerHand.updateLetters(letters);
 
@@ -230,128 +221,14 @@ public class ViewGUI implements IView {
     placeWordButton.setOnAction(e -> System.out.println("Place Word action triggered"));
 
     Button exchangeLetterButton = new Button(langPack.getString("exchange"));
-    exchangeLetterButton.setOnAction(
-        e -> {
-          // Retrieve the current player's LettersCounter
-          // LettersCounter letters = getCurrentPlayerLetters(); // Replace with the actual method
-          // to retrieve the LettersCounter
-          LettersCounter letters = new LettersCounter();
+    exchangeLetterButton.setOnAction(e -> action = "exchangeLetter");
 
-          // Create a dialog for selecting letters to exchange
-          Dialog<java.util.List<Letter>> dialog = new Dialog<>();
-          dialog.setTitle(langPack.getString("exchange"));
-          dialog.setHeaderText(langPack.getString("exchangetxt"));
-
-          VBox content = new VBox();
-          content.setSpacing(10);
-
-          // Create toggle buttons for each letter and arrange them in rows
-          List<ToggleButton> toggleButtons = new java.util.ArrayList<>();
-          HBox row = new HBox(10); // Horizontal row with spacing
-          int buttonsPerRow = 5; // Number of buttons per row
-          int count = 0;
-
-          for (Letter letter : letters.getLettersSet()) {
-            for (int i = 0; i < letters.getLetterCount(letter); i++) {
-              ToggleButton toggleButton = new ToggleButton(letter.toString());
-              toggleButtons.add(toggleButton);
-              row.getChildren().add(toggleButton);
-              count++;
-
-              // If the row is full, add it to the content and start a new row
-              if (count % buttonsPerRow == 0) {
-                content.getChildren().add(row);
-                row = new HBox(10);
-              }
-            }
-          }
-
-          // Add the last row if it has buttons
-          if (!row.getChildren().isEmpty()) {
-            content.getChildren().add(row);
-          }
-
-          dialog.getDialogPane().setContent(content);
-
-          // Add OK and Cancel buttons
-          ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-          dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
-
-          // Handle the result
-          dialog.setResultConverter(
-              dialogButton -> {
-                if (dialogButton == okButtonType) {
-                  List<Letter> selectedLetters = new java.util.ArrayList<>();
-                  for (ToggleButton toggleButton : toggleButtons) {
-                    if (toggleButton.isSelected()) {
-                      selectedLetters.add(new Letter(toggleButton.getText().charAt(0)));
-                    }
-                  }
-                  // Call askAction to handle the selected letters
-                  askAction(null, null); // Replace null with appropriate parameters
-                  return selectedLetters;
-                }
-                return null;
-              });
-
-          // Show the dialog and process the selected letters
-          dialog
-              .showAndWait()
-              .ifPresent(
-                  selectedLetters -> {
-                    if (!selectedLetters.isEmpty()) {
-                      System.out.println("Selected letters to exchange: " + selectedLetters);
-                    } else {
-                      System.out.println("No letters selected for exchange.");
-                    }
-                  });
-        });
 
     Button passTurnButton = new Button(langPack.getString("pass"));
     passTurnButton.setOnAction(e -> action = "passTurn");
 
     Button renamePlayerButton = new Button(langPack.getString("rename"));
-    renamePlayerButton.setOnAction(
-        (ActionEvent event) -> {
-          // Création de la boîte de dialogue
-          Dialog<String> dialog = new Dialog<>();
-          dialog.setTitle(langPack.getString("rename"));
-
-          // Boutons OK et Annuler
-          ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-          dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
-
-          // Champ de texte pour entrer le nouveau nom
-          TextField nameField = new TextField();
-          nameField.setPromptText(langPack.getString("renametxt1"));
-
-          VBox content = new VBox();
-          content.setSpacing(10);
-          content.getChildren().addAll(new Label(langPack.getString("renametxt2")), nameField);
-
-          dialog.getDialogPane().setContent(content);
-
-          // Récupération du nom entré
-          dialog.setResultConverter(
-              dialogButton -> {
-                if (dialogButton == okButtonType) {
-                  return nameField.getText().trim();
-                }
-                return null;
-              });
-
-          // Affichage de la boîte de dialogue
-          dialog
-              .showAndWait()
-              .ifPresent(
-                  newName -> {
-                    if (!newName.isEmpty()) {
-                      System.out.println(
-                          "Rename Player action triggered with new name: "
-                              + newName); // TODO : Replace with a askAction call
-                    }
-                  });
-        });
+    renamePlayerButton.setOnAction(e -> action = "renamePlayer");
 
     Button forfeitPlayerButton = new Button(langPack.getString("forfeit"));
     forfeitPlayerButton.setOnAction(e -> System.out.println("Forfeit Player action triggered"));
@@ -388,6 +265,99 @@ public class ViewGUI implements IView {
     primaryStage.show();
   }
 
+  // --- Intern methods ---
+  private List<Letter> handleExchangeLetter(Player currentPlayer) {
+    System.out.println("Exchange Letter action triggered");
+    LettersCounter letters = currentPlayer.bag;
+
+    // Create a dialog for selecting letters to exchange
+    Dialog<java.util.List<Letter>> dialog = new Dialog<>();
+    dialog.setTitle(langPack.getString("exchange"));
+    dialog.setHeaderText(langPack.getString("exchangetxt"));
+
+    VBox content = new VBox();
+    content.setSpacing(10);
+
+    // Create toggle buttons for each letter and arrange them in rows
+    List<ToggleButton> toggleButtons = new java.util.ArrayList<>();
+    HBox row = new HBox(10); // Horizontal row with spacing
+    int buttonsPerRow = 5; // Number of buttons per row
+    int count = 0;
+
+    for (Letter letter : letters.getLettersSet()) {
+      for (int i = 0; i < letters.getLetterCount(letter); i++) {
+        ToggleButton toggleButton = new ToggleButton(letter.toString());
+        toggleButtons.add(toggleButton);
+        row.getChildren().add(toggleButton);
+        count++;
+
+        // If the row is full, add it to the content and start a new row
+        if (count % buttonsPerRow == 0) {
+          content.getChildren().add(row);
+          row = new HBox(10);
+        }
+      }
+    }
+
+    // Add the last row if it has buttons
+    if (!row.getChildren().isEmpty()) {
+      content.getChildren().add(row);
+    }
+
+    dialog.getDialogPane().setContent(content);
+
+    // Add OK and Cancel buttons
+    ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+    dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+
+    // Handle the result
+    dialog.setResultConverter(dialogButton -> {
+      if (dialogButton == okButtonType) {
+        List<Letter> selectedLetters = new java.util.ArrayList<>();
+        for (ToggleButton toggleButton : toggleButtons) {
+          if (toggleButton.isSelected()) {
+            selectedLetters.add(new Letter(toggleButton.getText().charAt(0)));
+          }
+        }
+        return selectedLetters;
+      }
+      return null;
+    });
+
+    // Show the dialog and process the selected letters
+    return dialog.showAndWait().orElse(null);
+  }
+
+  private String hadleNewPlayerName(Player player) {
+    Dialog<String> dialog = new Dialog<>();
+    dialog.setTitle(langPack.getString("rename"));
+
+    // OK and Cancel buttons
+    ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+    dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+
+    // Text field for entering the new name
+    TextField nameField = new TextField();
+    nameField.setPromptText(langPack.getString("renametxt1"));
+
+    VBox content = new VBox();
+    content.setSpacing(10);
+    content.getChildren().addAll(new Label(langPack.getString("renametxt2")), nameField);
+
+    dialog.getDialogPane().setContent(content);
+
+    // Retrieve the entered name
+    dialog.setResultConverter(dialogButton -> {
+      if (dialogButton == okButtonType) {
+        return nameField.getText().trim();
+      }
+      return null;
+    });
+
+    // Display the dialog and return the result
+    return dialog.showAndWait().orElse(null);
+  }
+
   // --- IView methods ---
   @Override
   public GameAction askAction(Player player, Integer turn) {
@@ -398,6 +368,18 @@ public class ViewGUI implements IView {
           System.out.println("Pass Turn");
           action = null;
           return passTurnAction(player, turn);
+        }
+        case "exchangeLetter" -> {
+          System.out.println("Exchange Letter");
+          action = null;
+          List<Letter> selectedLetters = handleExchangeLetter(player);
+          return new ExchangeLetterAction(player, turn, selectedLetters);
+        }
+        case "renamePlayer" -> {
+          System.out.println("Rename Player");
+          action = null;
+          String newName = hadleNewPlayerName(player);
+          return new RenamePlayerAction(player, turn, newName);
         }
         default -> {
           break;
@@ -460,7 +442,7 @@ public class ViewGUI implements IView {
 
   @Override
   public void displayDraw(LettersDrawer draw) {
-    this.actionHistory.addMessage(langPack.getString("drawaction") + " : " + draw.getCurrentSize());
+    this.actionHistory.addMessage(langPack.getString("drawaction") + " " + draw.getCurrentSize());
   }
 
   @Override
@@ -506,6 +488,9 @@ public class ViewGUI implements IView {
   @Override
   public void updateGUI(GameModel model) {
     this.displayGrid(model.grid, model.config.getGui());
+    this.showScore(model.getCurrentPlayer());
+    this.showScore(model.players);
+    this.displayTurn.updateTurn(model.getTurn(), model.getCurrentPlayer());
     this.announceTurn(model.getCurrentPlayer(), model.getTurn());
     this.displayDraw(model.draw);
     this.displayPlayerLetters(model.getCurrentPlayer().bag);

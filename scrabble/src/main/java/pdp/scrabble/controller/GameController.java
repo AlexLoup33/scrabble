@@ -75,7 +75,7 @@ public class GameController {
         Player playing = model.getCurrentPlayer();
         Utilities.debug('l', "%s begins his turn\n", playing.getName());
         Utilities.debug('l', "numbers of letters in draw: %d\n", model.draw.getCurrentSize());
-        // view.announceTurn(playing, turn);
+        view.announceTurn(playing, turn);
         if (this.model.config.getBlitz()) view.showRemainingTimes(model.players);
         for (Player onGames : model.players) {
           view.showScore(onGames);
@@ -83,11 +83,11 @@ public class GameController {
         // Implemented but maybe need to draw every letter before
         // actually showing number at turn 1
         // view.displayDraw(model.draw);
-        // view.displayGrid(model.grid, this.model.config.getSuperScrabble());
-        // view.displayPlayerLetters(playing.bag);
-        /*if (recoverableException != null) {
+        view.displayGrid(model.grid, this.model.config.getSuperScrabble());
+        view.displayPlayerLetters(playing.bag);
+        if (recoverableException != null) {
           view.showError(recoverableException);
-        }*/
+        }
         Utilities.debug('l', "Attempt to askAction\n");
 
         long start_time = System.currentTimeMillis();
@@ -130,7 +130,7 @@ public class GameController {
         recoverableException = null;
       } catch (Exception | Error e) {
         System.out.println(e);
-        // recoverableException = handleBadPath(e);
+        recoverableException = handleBadPath(e);
       }
     }
   }

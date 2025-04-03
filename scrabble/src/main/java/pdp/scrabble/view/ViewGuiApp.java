@@ -10,6 +10,9 @@ public class ViewGuiApp extends Application {
   @Override
   public void start(Stage stage) throws Exception {
     GameController gc = new GameController(Main.getConfig(), stage);
-    gc.gameLoop();
+    
+    Thread gameThread = new Thread(gc::gameLoop);
+    gameThread.setDaemon(true);
+    gameThread.start();
   }
 }

@@ -1,9 +1,11 @@
 package pdp.scrabble.view;
 
 import java.util.List;
+
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Grid;
 import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
@@ -120,4 +122,6 @@ public interface IView {
   // public void showAbout(); //FIXME: J'ai pas compris alors help me
 
   public void initialize(Configuration conf);
+
+  public void updateGUI(GameModel model);
 }

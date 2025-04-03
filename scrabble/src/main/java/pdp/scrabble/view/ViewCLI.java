@@ -1,11 +1,10 @@
 package pdp.scrabble.view;
 
-import static pdp.scrabble.errorsHandling.ErrorType.UnsupportedMultiplier;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+
 import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Letter;
@@ -13,7 +12,9 @@ import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.dictionary.Word;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
+import static pdp.scrabble.errorsHandling.ErrorType.UnsupportedMultiplier;
 import pdp.scrabble.game.Direction;
+import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Grid;
 import pdp.scrabble.game.GridPos;
 import pdp.scrabble.game.GridWordPos;
@@ -331,5 +332,10 @@ public class ViewCLI implements IView {
   @Override
   public void initialize(Configuration conf) {
     System.out.println("Vue initialisée avec la configuration : " + conf);
+  }
+
+  @Override
+  public void updateGUI(GameModel model){
+    System.out.println("Methode inutilisable par le ViewCLI");
   }
 }

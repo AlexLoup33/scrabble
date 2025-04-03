@@ -2,7 +2,8 @@ package pdp.scrabble.view;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Semaphore;
+
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -24,6 +25,7 @@ import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
+import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Grid;
 import pdp.scrabble.game.Lang;
 import pdp.scrabble.game.LettersDrawer;
@@ -49,7 +51,9 @@ public class ViewGUI implements IView {
   private ShowScore playerScores;
   private ActionHistory actionHistory;
 
-  private final CompletableFuture<String> action = new CompletableFuture<>();
+  private Semaphore semaphore = new Semaphore(1);
+  private String action = null;
+
 
   public ViewGUI(Lang lang, Boolean isSuperScrabble, Stage stage) {
     this.lang = lang;
@@ -78,11 +82,11 @@ public class ViewGUI implements IView {
     // TODO: Ask the controller to create a new game.
     // --> TODO: implement restartGameAction
     // newGameItem.setOnAction(e -> RestartGameAction.restart());
-    newGameItem.setOnAction(e -> action.complete("newGame"));
+    newGameItem.setOnAction(e -> action = "NewGame");
 
     // Load Game
     // TODO: Open a file selector to load a game.
-    loadGameItem.setOnAction(e -> action.complete("loadGame"));
+    loadGameItem.setOnAction(e -> action = "LoadGame");
 
     // Save Game
     // TODO: Open a file selector to save the game.
@@ -306,7 +310,7 @@ public class ViewGUI implements IView {
         });
 
     Button passTurnButton = new Button(langPack.getString("pass"));
-    passTurnButton.setOnAction(e -> System.out.println("Pass Turn action triggered"));
+    passTurnButton.setOnAction(e -> action = "passTurn");
 
     Button renamePlayerButton = new Button(langPack.getString("rename"));
     renamePlayerButton.setOnAction(
@@ -389,7 +393,22 @@ public class ViewGUI implements IView {
   // --- IView methods ---
   @Override
   public GameAction askAction(Player player, Integer turn) {
-    throw new UnsupportedOperationException("Unimplemented method 'askAction'");
+    if (action == null)
+      return null;
+    else{
+      switch(action){
+        case "passTurn" -> {
+          System.out.println("Pass Turn");
+          action = null;
+          return passTurnAction(player, turn);
+        }
+        default -> {
+          break;
+        }
+      }
+    }
+    
+    return null;
   }
 
   private PassTurnAction passTurnAction(Player player, Integer turn) {
@@ -485,5 +504,13 @@ public class ViewGUI implements IView {
   public void showRemainingTimes(List<Player> players) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'showRemainingTimes'");
+  }
+
+  @Override
+  public void updateGUI(GameModel model) {
+    this.displayGrid(model.grid, model.config.getGui());
+    this.announceTurn(model.getCurrentPlayer(), model.getTurn());
+    this.displayDraw(model.draw);
+    this.displayPlayerLetters(model.getCurrentPlayer().bag);
   }
 }

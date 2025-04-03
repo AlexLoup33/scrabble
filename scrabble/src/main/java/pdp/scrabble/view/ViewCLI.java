@@ -91,8 +91,18 @@ public class ViewCLI implements IView {
 
     LinkedList<Letter> letters = new LinkedList<>();
     for (int index = 0; index < response.length(); index++) {
-      char c = response.charAt(index);
-      letters.push(new Letter(Character.toUpperCase(c)));
+      char c = Character.toUpperCase(response.charAt(index));
+      if (c == '#') {
+        // => joker
+        letters.push(Letter.joker());
+      } else if (('A' <= c) && (c <= 'Z')) {
+        // => letter
+        letters.push(new Letter(c));
+      } else {
+        // => invalid !
+        throw new CustomError(
+            ErrorType.InvalideLetter, "invalide letter", "the letter: " + c + " isn't valid");
+      }
     }
     return new ExchangeLetterAction(player, turn, letters);
   }

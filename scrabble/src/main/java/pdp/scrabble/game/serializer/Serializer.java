@@ -4,7 +4,10 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.game.GameModel;
+import pdp.scrabble.game.Grid;
+import pdp.scrabble.game.GridPos;
 import pdp.scrabble.game.serializer.parser.CharInputStream;
 import pdp.scrabble.game.serializer.parser.Parser;
 import pdp.scrabble.game.serializer.parser.TokenInputStream;
@@ -46,8 +49,10 @@ public class Serializer {
     writer.write("ContestFile=\"" + toSave.config.getContestFile() + "\"\n");
     writer.write(">>>>>>>>>>>>>>>>>>>>\n");
 
+    writer.write(displayGrid(toSave.grid, toSave.config.getSuperScrabble()));
+
     writer.write("<<<<<<<<<<<<<<<<<<<< HISTORY\n");
-    writer.write(toSave.getHistory().toSerializedString());
+    writer.write(toSave.getSerializedHistory());
     writer.write("\n>>>>>>>>>>>>>>>>>>>>\n");
     writer.close();
   }
@@ -55,5 +60,35 @@ public class Serializer {
   public static GameModel loadModelFromFile(Path filePath) {
     Parser parser = new Parser(new TokenInputStream(new CharInputStream(filePath)));
     return parser.getLoadedModel();
+  }
+
+  private static String displayGrid(Grid grid, Boolean isSuperScrabble) {
+    // Display the first row of the grid with the column numbers
+    StringBuilder sb = new StringBuilder();
+    sb.append("#   ");
+    for (int i = 0; i < grid.size - 1; i++) {
+      if (i < 8) sb.append(i + 1 + "  ");
+      else sb.append(i + 1 + " ");
+    }
+    sb.append(grid.size + "\n");
+
+    // Display each row
+    for (int i = 0; i < grid.size; i++) {
+      sb.append("# " + (char) (i + 97) + " ");
+      for (int j = 0; j < grid.size; j++) {
+        GridPos pos = new GridPos(i, j);
+
+        Letter letter = grid.getLetter(i, j);
+        if (letter == null) {
+          if (j == grid.size - 1) sb.append("_");
+          else sb.append("_" + "  ");
+        } else {
+          if (j == grid.size - 1) sb.append(letter);
+          else sb.append(letter + "  ");
+        }
+      }
+      sb.append("\n");
+    }
+    return sb.toString();
   }
 }

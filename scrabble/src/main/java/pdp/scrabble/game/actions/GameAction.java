@@ -7,9 +7,13 @@ public abstract class GameAction {
   public final Player player;
   public final int turn;
 
+  /** to be setted durring the dispatch of the game action */
+  public long duration;
+
   protected GameAction(Player player, int turn) {
     this.player = player;
     this.turn = turn;
+    this.duration = 0;
   }
 
   public String toString() {
@@ -18,8 +22,7 @@ public abstract class GameAction {
 
   public abstract void applyGameAction(GameModel gameModel);
 
-  public String toSerializedString() {
-    return turn + ". " + player.id;
-  }
-  ;
+  public abstract String toSerializedString();
+
+  public abstract void undo(GameModel gameModel);
 }

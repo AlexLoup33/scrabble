@@ -16,6 +16,11 @@ public class ForfeitGameAction extends GameAction {
 
   @Override
   public String toSerializedString() {
-    return super.toSerializedString() + " ForfeitGame";
+    return this.player.id + " ForfeitGame";
+  }
+
+  @Override
+  public void undo(GameModel gameModel) {
+    gameModel.undoGameAction(this);
   }
 }

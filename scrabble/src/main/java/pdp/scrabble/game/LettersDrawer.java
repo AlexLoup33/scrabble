@@ -1,6 +1,5 @@
 package pdp.scrabble.game;
 
-import java.util.ArrayList;
 import java.util.List;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
@@ -10,34 +9,30 @@ import pdp.scrabble.errorsHandling.ErrorType;
 public class LettersDrawer {
   private final RandomUser rng;
   private final Lang lang;
-  private final ArrayList<Letter> table;
+  private final LettersCounter content;
   private final int maxSize;
-  private int currentSize;
   private final boolean isSuperScrabble;
 
   public LettersDrawer(Lang lang, RandomUser rngGenerator, boolean isSuperScrabble) {
     this.rng = rngGenerator;
     this.lang = lang;
-    this.table = new ArrayList<>();
-    this.reset(isSuperScrabble);
-    this.maxSize = this.currentSize;
     this.isSuperScrabble = isSuperScrabble;
+    this.content = new LettersCounter();
+    this.reset();
+    this.maxSize = this.content.size();
   }
 
-  public void reset(boolean isSuperScrabble) {
-    this.table.clear();
-    this.currentSize = 0;
-    LettersCounter initialLetters = this.lang.getLettersCount(isSuperScrabble);
+  public void reset() {
+    this.content.clear();
+    LettersCounter initialLetters = this.lang.getLettersCount(this.isSuperScrabble);
     for (Letter l : initialLetters.getLettersSet()) {
-      for (int i = 0; i < initialLetters.getLetterCount(l); i++) {
-        this.table.add(l);
-        this.currentSize += 1;
-      }
+      int count = initialLetters.getLetterCount(l);
+      this.content.addLetter(l, count);
     }
   }
 
   public int getCurrentSize() {
-    return this.currentSize;
+    return this.content.size();
   }
 
   /**
@@ -47,25 +42,25 @@ public class LettersDrawer {
    * @return the poped letter from the drawer
    */
   public Letter popLetter() {
-    if (this.currentSize <= 0) {
+    if (this.getCurrentSize() <= 0) {
       throw new CustomError(
           ErrorType.DrawerError,
           "can't pop, the drawer is empty",
-          "can't pop a letter from the drawer of current size: " + this.currentSize);
+          "can't pop a letter from the drawer of current size: " + this.getCurrentSize());
     }
-    int popIndex;
-    final int lastIndex = this.currentSize - 1;
-    if (lastIndex == 0) {
-      popIndex = 0;
-    } else {
-      popIndex = this.rng.getInt(0, lastIndex);
+    int letterIndex = this.rng.getInt(0, this.getCurrentSize());
+    int currIndex = 0;
+    for (Letter l : this.content.getSortedLetterkeys()) {
+      int count = this.content.getLetterCount(l);
+      // => always (currIndex <= letterIndex)
+      if (letterIndex < currIndex + count) {
+        // => has selected this letter
+        this.content.removeLetter(l);
+        return l;
+      }
+      currIndex += count;
     }
-    Letter popedLetter = this.table.get(popIndex);
-    // move the current end at the poped letter
-    this.table.set(popIndex, this.table.get(lastIndex));
-    this.table.set(lastIndex, null);
-    this.currentSize -= 1;
-    return popedLetter;
+    throw new Error("[BUG] couldn't draw a letter ...");
   }
 
   /**
@@ -74,17 +69,16 @@ public class LettersDrawer {
    * @param letter the letter to add
    */
   public void pushLetter(Letter letter) {
-    if (this.currentSize >= this.maxSize) {
+    if (this.getCurrentSize() >= this.maxSize) {
       throw new CustomError(
           ErrorType.DrawerError,
           "can't push, the drawer is full",
           "can't push a letter in the drawer of current size: "
-              + this.currentSize
+              + this.getCurrentSize()
               + " of maxSize: "
               + this.maxSize);
     }
-    this.table.set(this.currentSize, letter);
-    this.currentSize += 1;
+    this.content.addLetter(letter);
   }
 
   /**
@@ -107,14 +101,14 @@ public class LettersDrawer {
    * @param nbToPush the number of times to add it
    */
   public void pushLetter(Letter letter, int nbToPush) {
-    if (this.maxSize < this.currentSize + nbToPush) {
+    if (this.maxSize < this.getCurrentSize() + nbToPush) {
       throw new CustomError(
           ErrorType.DrawerError,
           "not enough space to push the letters",
           "can't push "
               + nbToPush
               + " letters in the drawer of current size: "
-              + this.currentSize
+              + this.getCurrentSize()
               + " and of maxSize: "
               + this.maxSize);
     }
@@ -131,14 +125,14 @@ public class LettersDrawer {
    * @return the letters poped
    */
   public LettersCounter popLetter(int nbToDraw) {
-    if (this.currentSize < nbToDraw) {
+    if (this.getCurrentSize() < nbToDraw) {
       throw new CustomError(
           ErrorType.DrawerError,
           "not enougth letters to draw",
           "can't pop "
               + nbToDraw
               + " letters from the drawer of current size: "
-              + this.currentSize);
+              + this.getCurrentSize());
     }
 
     LettersCounter drawedletters = new LettersCounter();
@@ -152,16 +146,14 @@ public class LettersDrawer {
   @Override
   public String toString() {
     return "LettersDrawer{"
-        + "rng="
-        + rng
-        + ", lang="
+        + "lang="
         + lang
-        + ", table="
-        + table
+        + ", content="
+        + content
         + ", maxSize="
         + maxSize
         + ", currentSize="
-        + currentSize
+        + this.getCurrentSize()
         + '}';
   }
 }

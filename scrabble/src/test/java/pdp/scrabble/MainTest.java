@@ -222,8 +222,8 @@ public class MainTest {
     // Before
     assertFalse(this.gameModel.getCurrentPlayer().getHasForfeited());
     assertEquals(
-        "[Player{id=0, name='Player0', score=0, bag=LettersCounter{table={A=1, L=2, U=1, I=1, H=1, R=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=1, name='Player1', score=0, bag=LettersCounter{table={A=1, I=1, E=2, O=1, N=1, C=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=2, name='Player2', score=0, bag=LettersCounter{table={A=2, U=1, F=1, O=1, N=1, Y=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=3, name='Player3', score=0, bag=LettersCounter{table={I=1, G=2, R=1, Q=1, E=1, M=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}]",
-        this.gameModel.getActivePlayers().toString());
+        "[0, 1, 2, 3]",
+        this.gameModel.getActivePlayers().stream().map(p -> p.id).toList().toString());
 
     // Player forfeit
     GameAction ga =
@@ -231,10 +231,9 @@ public class MainTest {
     this.gameModel.applyGameActionDispatch(ga, 0);
 
     // check forfeit
-    assertTrue(this.gameModel.players.get(0).getHasForfeited());
+    assertTrue(ga.player.getHasForfeited());
     assertEquals(
-        "[Player{id=1, name='Player1', score=0, bag=LettersCounter{table={A=1, I=1, E=2, O=1, N=1, C=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=2, name='Player2', score=0, bag=LettersCounter{table={A=2, U=1, F=1, O=1, N=1, Y=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}, Player{id=3, name='Player3', score=0, bag=LettersCounter{table={I=1, G=2, R=1, Q=1, E=1, M=1}}, hasForfeited=false, hasPassed=false, remainingTime=1800}]",
-        this.gameModel.getActivePlayers().toString());
+        "[1, 2, 3]", this.gameModel.getActivePlayers().stream().map(p -> p.id).toList().toString());
 
     // Now pass all other players to reach the next turn
     for (int i = 0; i < this.config.getPlayerCount() - 1; i++) {
@@ -356,37 +355,31 @@ public class MainTest {
         });
 
     //    System.out.println(p1.bag);
-    gm.applyGameActionDispatch(
-        new PlaceWordAction(p1, 1, l1, new GridWordPos(7, 6, Direction.Right)), 0);
+    gm.applyGameAction(new PlaceWordAction(p1, 1, l1, new GridWordPos(7, 6, Direction.Right)));
 
-    gm.applyGameActionDispatch(
-        new PlaceWordAction(p1, 2, l4, new GridWordPos(7, 11, Direction.Down)), 0);
+    gm.applyGameAction(new PlaceWordAction(p1, 2, l4, new GridWordPos(7, 11, Direction.Down)));
 
     assertThrows(
         CustomError.class,
         () -> {
-          gm.applyGameActionDispatch(
-              new PlaceWordAction(p1, 3, l5, new GridWordPos(11, 12, Direction.Right)), 0);
+          gm.applyGameAction(
+              new PlaceWordAction(p1, 3, l5, new GridWordPos(11, 12, Direction.Right)));
         });
 
-    gm.applyGameActionDispatch(
-        new PlaceWordAction(p1, 4, l2, new GridWordPos(8, 10, Direction.Right)), 0);
+    gm.applyGameAction(new PlaceWordAction(p1, 4, l2, new GridWordPos(8, 10, Direction.Right)));
 
-    gm.applyGameActionDispatch(
-        new PlaceWordAction(p1, 5, l6, new GridWordPos(10, 12, Direction.Right)), 0);
+    gm.applyGameAction(new PlaceWordAction(p1, 5, l6, new GridWordPos(10, 12, Direction.Right)));
 
     assertThrows(
         CustomError.class,
         () -> {
-          gm.applyGameActionDispatch(
-              new PlaceWordAction(p1, 6, l7, new GridWordPos(11, 12, Direction.Right)), 0);
+          gm.applyGameAction(
+              new PlaceWordAction(p1, 6, l7, new GridWordPos(11, 12, Direction.Right)));
         });
 
-    gm.applyGameActionDispatch(
-        new PlaceWordAction(p1, 8, l9, new GridWordPos(8, 6, Direction.Right)), 0);
+    gm.applyGameAction(new PlaceWordAction(p1, 8, l9, new GridWordPos(8, 6, Direction.Right)));
 
-    gm.applyGameActionDispatch(
-        new PlaceWordAction(p1, 7, l8, new GridWordPos(9, 5, Direction.Right)), 0);
+    gm.applyGameAction(new PlaceWordAction(p1, 7, l8, new GridWordPos(9, 5, Direction.Right)));
 
     assertThrows(
         CustomError.class,
@@ -619,50 +612,42 @@ public class MainTest {
     assertEquals(69, this.gameModel.config.getSeed());
 
     assertEquals(
-        "LettersCounter{table={A=1, L=2, U=1, I=1, H=1, R=1}}",
-        this.gameModel.players.get(0).bag.toString());
+        "LettersCounter{table=A:1,E:1,G:1,I:1,L:2,R:1}",
+        this.gameModel.getCurrentPlayer().bag.toString());
     // System.out.println(this.gameModel.players.get(0).bag);
 
     List<Letter> toExchange = new ArrayList<>();
     toExchange.add(new Letter('L'));
     toExchange.add(new Letter('A'));
 
-    GameAction ga =
+    ExchangeLetterAction ga =
         new ExchangeLetterAction(
-            this.gameModel.players.get(0), this.gameModel.getTurn(), toExchange);
+            this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange);
     this.gameModel.applyGameActionDispatch(ga, 0);
-
-    assertEquals(
-        "LettersCounter{table={L=1, U=1, T=1, I=1, H=1, R=1, N=1}}",
-        this.gameModel.players.get(0).bag.toString());
+    assertEquals("LettersCounter{table=A:1,M:1}", ga.lettersDrawed.toString());
+    assertEquals("LettersCounter{table=A:1,E:1,G:1,I:1,L:1,M:1,R:1}", ga.player.bag.toString());
 
     // Try illegal action
+    String bagBefore = this.gameModel.getCurrentPlayer().bag.toString();
     List<Letter> toExchange2 = new ArrayList<>();
     toExchange2.add(new Letter('Z'));
-    GameAction ga2 =
+    ExchangeLetterAction ga2 =
         new ExchangeLetterAction(
-            this.gameModel.players.get(0), this.gameModel.getTurn(), toExchange2);
-
+            this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange2);
     assertThrows(CustomError.class, () -> this.gameModel.applyGameActionDispatch(ga2, 0));
-
-    // With empty draw
-    this.gameModel.draw.popLetter(74); // clear draw
-
-    assertEquals(
-        "LettersCounter{table={L=1, U=1, T=1, I=1, H=1, R=1, N=1}}",
-        this.gameModel.players.get(0).bag.toString());
+    // check same player and same bag
+    assertEquals(ga2.player, this.gameModel.getCurrentPlayer());
+    assertEquals(bagBefore, ga2.player.bag.toString());
 
     List<Letter> toExchange3 = new ArrayList<>();
     toExchange3.add(new Letter('U'));
 
     GameAction ga3 =
         new ExchangeLetterAction(
-            this.gameModel.players.get(0), this.gameModel.getTurn(), toExchange3);
+            this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange3);
     this.gameModel.applyGameActionDispatch(ga3, 0);
 
-    assertEquals(
-        "LettersCounter{table={L=1, U=1, T=1, I=1, H=1, R=1, N=1}}",
-        this.gameModel.players.get(0).bag.toString());
+    assertEquals("LettersCounter{table=#:1,A:2,E:1,N:1,O:1,S:1}", ga3.player.bag.toString());
   }
 
   @Test
@@ -692,11 +677,9 @@ public class MainTest {
     ViewCLI view = new ViewCLI(gm.lang, true);
 
     // test for the new draw with more letters
-    assertTrue(
-        gm.draw
-            .toString()
-            .contains(
-                "lang=en, table=[Z, Z, Y, Y, Y, Y, X, X, B, W, W, W, V, A, V, U, U, U, U, U, U, U, T, T, T, T, T, T, T, A, T, T, T, T, A, T, T, S, S, A, A, S, S, S, S, S, S, R, R, R, R, R, R, R, R, R, R, R, B, R, #, #, #, #, Q, Q, P, P, P, B, O, O, O, O, O, O, A, O, O, A, A, O, O, O, O, N, N, D, N, N, N, N, N, N, N, N, C, N, M, M, M, M, M, M, A, A, L, L, L, L, L, K, K, J, J, I, I, I, I, I, I, I, I, I, I, C, I, I, H, H, H, A, H, G, C, G, G, A, A, F, F, F, C, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, A, C, C, D, D, A, D, D, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], maxSize=200, currentSize=172}"));
+    assertEquals(
+        gm.draw.toString(),
+        "LettersDrawer{lang=en, content=LettersCounter{table=#:4,A:14,B:4,C:4,D:7,E:19,F:3,G:4,H:4,I:11,J:1,K:2,L:6,M:6,N:13,O:13,P:4,Q:2,R:9,S:9,T:15,U:6,V:1,W:4,X:2,Y:3,Z:2}, maxSize=200, currentSize=172}");
 
     // Try to place the first word not at the center
     Player p1 = gm.players.get(0);

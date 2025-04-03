@@ -10,7 +10,6 @@ import pdp.scrabble.errorsHandling.ErrorType;
 public class CharInputStream {
 
   private BufferedReader input;
-  private int pos;
   private int line;
   private int col;
 
@@ -20,7 +19,6 @@ public class CharInputStream {
     } catch (IOException e) {
       throw new CustomError(ErrorType.IO, "cannot read provided history file", e.getMessage());
     }
-    this.pos = 0;
     this.line = 1;
     this.col = 0;
   }

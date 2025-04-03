@@ -38,4 +38,10 @@ class HistNode<T> {
     this.next = newNode;
     return newNode;
   }
+
+  /** detach this node from its prevs and nexts */
+  public void detach() {
+    this.prev = null;
+    this.next = null;
+  }
 }

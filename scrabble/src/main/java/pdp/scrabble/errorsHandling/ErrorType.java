@@ -33,7 +33,9 @@ public enum ErrorType {
   InvalidIndexOutOfGird(false),
   NoHistoryAvailable(false),
   FirstMoveIllegal(false),
-  NotPlaceNextToAWord(false);
+  NotPlaceNextToAWord(false),
+  InvalideLetter(false),
+  WrongPlayerAction(true);
 
   public final boolean isFatal;
 

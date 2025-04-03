@@ -20,12 +20,11 @@ public class ExchangeLetterAction extends GameAction {
 
   // Used by undo
   public long rngStateBefore = 0L;
-  public Letter[] drawedAfter; // Empty until model calls drawLetters()
+  public LettersCounter lettersDrawed = null; // Empty until model calls drawLetters()
 
   public ExchangeLetterAction(Player player, int turn, List<Letter> toExchange) {
     super(player, turn);
     this.lettersToExchange = new LettersCounter(toExchange);
-    this.drawedAfter = new Letter[toExchange.size()];
   }
 
   @Override
@@ -72,12 +71,11 @@ public class ExchangeLetterAction extends GameAction {
     }
     // draw the new letters and put them in the player's bag
     LettersCounter drawedLetters = draw.popLetter(this.lettersToExchange.size());
-    int i = 0;
+    this.lettersDrawed = drawedLetters.copy();
+
     for (Letter letter : drawedLetters.getLettersSet()) {
       int nbDrawed = drawedLetters.getLetterCount(letter);
       this.player.bag.addLetter(letter, nbDrawed);
-      drawedAfter[i] = letter;
-      i++;
     }
   }
 
@@ -90,6 +88,11 @@ public class ExchangeLetterAction extends GameAction {
       }
     }
     if (toExchange.length() > 0) toExchange.deleteCharAt(toExchange.length() - 1);
-    return super.toSerializedString() + " ExchangeLetter [" + toExchange.toString() + "]";
+    return this.player.id + " ExchangeLetter [" + toExchange.toString() + "]";
+  }
+
+  @Override
+  public void undo(GameModel gameModel) {
+    gameModel.undoGameAction(this);
   }
 }

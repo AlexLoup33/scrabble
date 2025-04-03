@@ -21,6 +21,13 @@ public class RestartGameAction extends GameAction {
 
   @Override
   public String toSerializedString() {
-    return super.toSerializedString() + " RestartGame";
+    throw new UnsupportedOperationException(
+        "there is no serialization possible for " + this.getClass().getSimpleName());
+  }
+
+  @Override
+  public void undo(GameModel gameModel) {
+    throw new UnsupportedOperationException(
+        "there is no undo possible for " + this.getClass().getSimpleName());
   }
 }

@@ -134,15 +134,6 @@ public class GameController {
     }
   }
 
-  private void drawLetters(Player playing) {
-    if (model.draw.getCurrentSize() < 7) {
-      throw new Error("[BUG] draw letter count is strictly under 7");
-    }
-    for (int i = playing.bag.size(); i < 7; i++) {
-      playing.bag.addLetter(model.draw.popLetter());
-    }
-  }
-
   private CustomError handleBadPath(Throwable e) {
     if (e.getClass() == CustomError.class) {
       CustomError custom = (CustomError) e;

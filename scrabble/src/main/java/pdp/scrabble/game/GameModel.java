@@ -26,7 +26,6 @@ public class GameModel {
   public final Configuration config;
   private Player currentPlayer;
   private History<GameAction> history;
-  public List<GameAction> currentGameActions;
   private int gameTurn;
   private int everyonePassedTurnStreak;
   public int nextPlayerID;
@@ -58,13 +57,12 @@ public class GameModel {
     this.currentPlayer = this.players.get(0);
     this.gameTurn = 1;
     this.everyonePassedTurnStreak = 0;
-    this.currentGameActions = new ArrayList<>();
   }
 
   public void reset() {
     this.rngGenerator.reset(); // way safer to keep this line the first !!
     this.grid.reset();
-    this.draw.reset(this.config.getSuperScrabble());
+    this.draw.reset();
     for (Player player : this.players) {
       player.reset();
       drawLetters(player);
@@ -72,6 +70,21 @@ public class GameModel {
     this.currentPlayer = this.players.get(0);
     this.gameTurn = 1;
     this.everyonePassedTurnStreak = 0;
+    // TODO: replace manual reset by undo all
+    this.history.clear();
+  }
+
+  private void undoOne() {
+    GameAction toUndo = this.history.undoOne();
+    // undo the played time
+    toUndo.player.undoTurnPlayedTime(toUndo);
+    toUndo.undo(this); // double dispatch
+  }
+
+  private void redoOne() {
+    GameAction toRedo = this.history.undoOne();
+    // no needs to redo the played time here
+    this.applyGameActionDispatch(toRedo, toRedo.duration);
   }
 
   /**
@@ -81,63 +94,73 @@ public class GameModel {
    * @return whether the turn is finished
    */
   public void applyGameActionDispatch(GameAction played, long duration) {
+    if (played.player != this.getCurrentPlayer()) {
+      throw new CustomError(
+          ErrorType.WrongPlayerAction,
+          "wrong player is playing",
+          "the action of player: "
+              + played.player
+              + " is during the turn of player: "
+              + this.getCurrentPlayer());
+    }
     played.player.addTurnPlayedTime(duration);
+    played.duration = duration;
     played.applyGameAction(this); // use double dispatch
-    history.addCheckpoint(played);
-    currentGameActions.add(played);
+    // add nothing here !
   }
 
-  public void applyGameAction(RenamePlayerAction rpa) {
-    rpa.player.rename(rpa.newName);
+  public void applyGameAction(RenamePlayerAction renamePlayer) {
+    renamePlayer.player.rename(renamePlayer.newName);
+    history.addPlayedAction(renamePlayer);
   }
 
   // F33
-  public void applyGameAction(PassTurnAction pta) {
-    pta.player.playerPassedTurn();
+  public void applyGameAction(PassTurnAction passTurn) {
+    passTurn.player.playerPassedTurn();
+    history.addPlayedAction(passTurn);
     this.endPlayerTurn();
   }
 
   // F34
-  public void applyGameAction(ExchangeLetterAction exchangeLetterAction) {
-    exchangeLetterAction.assertHasLettersToPlace();
-    exchangeLetterAction.rngStateBefore = rngGenerator.getCurrentState();
-    exchangeLetterAction.exchangeLetters(this.draw);
+  public void applyGameAction(ExchangeLetterAction exchLtrs) {
+    exchLtrs.assertHasLettersToPlace();
+    exchLtrs.rngStateBefore = rngGenerator.getCurrentState();
+    exchLtrs.exchangeLetters(this.draw);
+    history.addPlayedAction(exchLtrs);
     this.endPlayerTurn();
   }
 
   // F36
-  public void applyGameAction(ForfeitGameAction forfeitGameAction) {
-    forfeitGameAction.player.forfeit();
+  public void applyGameAction(ForfeitGameAction ffGame) {
+    ffGame.player.forfeit();
+    history.addPlayedAction(ffGame);
     this.endPlayerTurn();
   }
 
-  public void applyGameAction(PlaceWordAction pwa) {
-    pwa.assertHasLettersToPlace();
-    List<OwnedWord> scoredWords = this.grid.placeLetters(pwa);
-    pwa.removeLettersPlaced();
-    pwa.rngStateBefore = rngGenerator.getCurrentState();
-    pwa.drawLetters(this.draw);
+  public void applyGameAction(PlaceWordAction placeWord) {
+    placeWord.assertHasLettersToPlace();
+    List<OwnedWord> scoredWords = this.grid.placeLetters(placeWord);
+    placeWord.removeLettersPlaced();
+    placeWord.rngStateBefore = rngGenerator.getCurrentState();
+    placeWord.drawLetters(this.draw);
     for (OwnedWord ownedWord : scoredWords) {
       int wordScore = this.grid.getScore(ownedWord);
       Utilities.verbose(
           " -> placed the word: " + ownedWord.word.toString() + " (" + wordScore + " pts)\n");
-      pwa.player.addScore(wordScore);
+      placeWord.player.addScore(wordScore);
     }
     this.grid.useMultiplicators(scoredWords);
+    history.addPlayedAction(placeWord);
     this.endPlayerTurn();
   }
 
   // F41
-  public void applyGameAction(RestartGameAction restartGameAction) {
+  public void applyGameAction(RestartGameAction restart) {
     this.reset();
-    // this.endPlayerTurn();
-    this.currentPlayer = this.players.get(0);
-    restartGameAction.precedingGame = this.currentGameActions;
-    this.currentGameActions = new ArrayList<>();
   }
 
-  public void applyGameAction(QuitAction quitAction) {
-    if (quitAction.isSaveWanted) {
+  public void applyGameAction(QuitAction quit) {
+    if (quit.isSaveWanted) {
       try {
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         String saveLocation = "./saves/" + now.toString() + ".txt";
@@ -206,6 +229,11 @@ public class GameModel {
     this.gameTurn += 1;
   }
 
+  /**
+   * draw the letters for the player to start the game
+   *
+   * @param p the player drawing
+   */
   public void drawLetters(Player p) {
     if (this.draw.getCurrentSize() < 7) {
       throw new Error("[BUG] draw letter count is strictly under 7");
@@ -227,11 +255,39 @@ public class GameModel {
     return this.everyonePassedTurnStreak;
   }
 
-  public History<GameAction> getHistory() {
-    return this.history;
+  public String getSerializedHistory() {
+    return this.history.toSerializedString();
+  }
+
+  public List<GameAction> getHistory() {
+    return this.history.getCurrentActionsList();
   }
 
   public void setHistory(History<GameAction> history) {
     this.history = history;
+  }
+
+  public void undoGameAction(ExchangeLetterAction exchangeLetterAction) {
+    // exchangeLetterAction.lettersDrawed
+  }
+
+  public void undoGameAction(ForfeitGameAction forfeitGameAction) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'undoGameAction'");
+  }
+
+  public void undoGameAction(PassTurnAction passTurnAction) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'undoGameAction'");
+  }
+
+  public void undoGameAction(PlaceWordAction placeWordAction) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'undoGameAction'");
+  }
+
+  public void undoGameAction(RenamePlayerAction renamePlayerAction) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'undoGameAction'");
   }
 }

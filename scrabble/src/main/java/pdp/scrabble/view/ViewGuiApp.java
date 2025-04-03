@@ -11,8 +11,8 @@ public class ViewGuiApp extends Application {
   public void start(Stage stage) throws Exception {
     GameController gc = new GameController(Main.getConfig(), stage);
 
-    Thread gameThread = new Thread(gc::gameLoop);
-    gameThread.setDaemon(true);
-    gameThread.start();
+    // Thread gameThread = new Thread(gc::gameLoop);
+    // gameThread.setDaemon(true);
+    // gameThread.start();
   }
 }

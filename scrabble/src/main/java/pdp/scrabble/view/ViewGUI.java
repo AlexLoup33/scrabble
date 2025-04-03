@@ -3,6 +3,7 @@ package pdp.scrabble.view;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.Semaphore;
+
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -38,6 +39,7 @@ import pdp.scrabble.game.actions.ForfeitGameAction;
 import pdp.scrabble.game.actions.GameAction;
 import pdp.scrabble.game.actions.PassTurnAction;
 import pdp.scrabble.game.actions.PlaceWordAction;
+import pdp.scrabble.game.actions.QuitAction;
 import pdp.scrabble.game.actions.RedoAction;
 import pdp.scrabble.game.actions.RenamePlayerAction;
 import pdp.scrabble.game.actions.RestartGameAction;
@@ -123,7 +125,26 @@ public class ViewGUI implements IView {
     settingsItem.setOnAction(e -> System.out.println("Settings..."));
 
     // Quit
-    quitItem.setOnAction(e -> System.exit(0));
+    quitItem.setOnAction(e -> {
+      Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+      alert.setTitle(langPack.getString("quit"));
+      alert.setHeaderText(langPack.getString("savebeforequit"));
+      alert.setContentText(langPack.getString("saveprompt"));
+
+      ButtonType saveAndQuit = new ButtonType(langPack.getString("saveandquit"));
+      ButtonType quitWithoutSaving = new ButtonType(langPack.getString("quitnosave"));
+      ButtonType cancel = new ButtonType(langPack.getString("cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);
+
+      alert.getButtonTypes().setAll(saveAndQuit, quitWithoutSaving, cancel);
+
+      alert.showAndWait().ifPresent(response -> {
+        if (response == saveAndQuit) {
+          new QuitAction(currentPlayerTEMP, currentTurnTEMP, true);
+        } else if (response == quitWithoutSaving) {
+          new QuitAction(currentPlayerTEMP, currentTurnTEMP, false);
+        }
+      });
+    });
 
     // Adding all item to fileMenu
     fileMenu

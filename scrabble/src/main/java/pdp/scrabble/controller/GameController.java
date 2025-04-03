@@ -1,5 +1,7 @@
 package pdp.scrabble.controller;
 
+import java.util.concurrent.atomic.AtomicReference;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
@@ -28,7 +30,6 @@ public class GameController {
     //  - Yes : conf from old game
     //  - No  : conf == curConf
     Configuration conf = this.model.config;
-
     if (curConf.getGui()) {
       throw new CustomError(null, null, null);
     } else {
@@ -60,13 +61,21 @@ public class GameController {
     Utilities.verbose("Mode super scrabble: %s\n", this.model.config.getSuperScrabble());
 
     while (!this.isGameFinished()) {
+
+      if (this.model.config.getGui()) {
+        Platform.runLater(
+            () -> {
+              view.updateGUI(this.model);
+            });
+      }
+
       int turn = model.getTurn();
       Utilities.debug('l', "round number %d\n", turn);
       try {
         Player playing = model.getCurrentPlayer();
         Utilities.debug('l', "%s begins his turn\n", playing.getName());
         Utilities.debug('l', "numbers of letters in draw: %d\n", model.draw.getCurrentSize());
-        view.announceTurn(playing, turn);
+        // view.announceTurn(playing, turn);
         if (this.model.config.getBlitz()) view.showRemainingTimes(model.players);
         for (Player onGames : model.players) {
           view.showScore(onGames);
@@ -74,19 +83,44 @@ public class GameController {
         // Implemented but maybe need to draw every letter before
         // actually showing number at turn 1
         // view.displayDraw(model.draw);
-        view.displayGrid(model.grid, this.model.config.getSuperScrabble());
-        view.displayPlayerLetters(playing.bag);
-        if (recoverableException != null) {
+        // view.displayGrid(model.grid, this.model.config.getSuperScrabble());
+        // view.displayPlayerLetters(playing.bag);
+        /*if (recoverableException != null) {
           view.showError(recoverableException);
-        }
+        }*/
         Utilities.debug('l', "Attempt to askAction\n");
 
         long start_time = System.currentTimeMillis();
-        GameAction played = view.askAction(playing, turn); // blocking
+
+        final AtomicReference<GameAction> played = new AtomicReference<>(null);
+
+        if (this.model.config.getGui()) {
+          synchronized (this) {
+            Platform.runLater(
+                () -> {
+                  GameAction action = view.askAction(playing, turn);
+                  synchronized (this) {
+                    played.set(action);
+                    this.notify();
+                  }
+                });
+
+            try {
+              while (played.get() == null) {
+                this.wait();
+              }
+            } catch (InterruptedException e) {
+              Thread.currentThread().interrupt();
+              System.out.println(e.getMessage());
+            }
+          }
+        } else {
+          played.set(view.askAction(playing, turn)); // blocking
+        }
         long time_elapsed = (System.currentTimeMillis() - start_time) / 1000;
 
         Utilities.debug('l', "Action received\n");
-        this.model.applyGameActionDispatch(played, time_elapsed);
+        this.model.applyGameActionDispatch(played.get(), time_elapsed);
         Utilities.verbose("Player took %ss to play\n", time_elapsed);
 
         // Player 0 is a start of table round except when player 0 chose a
@@ -95,7 +129,8 @@ public class GameController {
         Utilities.debug('l', "%s ends his turn\n", playing.getName());
         recoverableException = null;
       } catch (Exception | Error e) {
-        recoverableException = handleBadPath(e);
+        System.out.println(e);
+        // recoverableException = handleBadPath(e);
       }
     }
   }

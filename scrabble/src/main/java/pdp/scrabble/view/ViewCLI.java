@@ -14,6 +14,7 @@ import pdp.scrabble.dictionary.Word;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.Direction;
+import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Grid;
 import pdp.scrabble.game.GridPos;
 import pdp.scrabble.game.GridWordPos;
@@ -119,7 +120,7 @@ public class ViewCLI implements IView {
     System.out.print(this.getFromLangPack("ask_rename"));
     String response = this.scaner.nextLine().strip();
 
-    return new RenamePlayerAction(player, 0, response);
+    return new RenamePlayerAction(player, turn, response);
   }
 
   private QuitAction askQuitAction(Player player, Integer turn) {
@@ -356,5 +357,10 @@ public class ViewCLI implements IView {
   @Override
   public void initialize(Configuration conf) {
     System.out.println("Vue initialisée avec la configuration : " + conf);
+  }
+
+  @Override
+  public void updateGUI(GameModel model) {
+    System.out.println("Methode inutilisable par le ViewCLI");
   }
 }

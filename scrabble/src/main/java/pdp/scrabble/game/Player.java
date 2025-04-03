@@ -33,7 +33,7 @@ public class Player {
 
   public void reset() {
     this.score = 0;
-    this.bag.reset();
+    this.bag.clear();
     this.hasForfeited = false;
     this.hasPassed = false;
     this.remainingTime = this.timePerPlayer * 60L;

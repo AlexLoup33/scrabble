@@ -49,7 +49,7 @@ public class GameController {
     //  - No  : conf == curConf
     Configuration conf = this.model.config;
 
-    this.view = new ViewGUI(this.model.lang, conf.getSuperScrabble(), stage);
+    this.view = new ViewGUI(this.model.lang, conf.getSuperScrabble(), stage, this.model.grid.getGridSize());
   }
 
   public void gameLoop() {

@@ -72,7 +72,7 @@ public class ViewGUI implements IView {
 
   // end FIXME
 
-  public ViewGUI(Lang lang, Boolean isSuperScrabble, Stage stage) {
+  public ViewGUI(Lang lang, Boolean isSuperScrabble, Stage stage, int gridSize) {
     this.lang = lang;
     this.isSuperScrabble = isSuperScrabble;
     this.langPack = lang.getViewGUI_langPack();
@@ -240,7 +240,7 @@ public class ViewGUI implements IView {
     this.actionHistory = new ActionHistory();
 
     // GRID INITIALIZATION
-    this.scrabbleBoard = new ScrabbleBoard(600, 600, 15);
+    this.scrabbleBoard = new ScrabbleBoard(600, 600, gridSize);
 
     // Player score
     this.playerScores = new ShowScore();

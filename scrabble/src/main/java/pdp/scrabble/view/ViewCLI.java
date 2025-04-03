@@ -112,7 +112,7 @@ public class ViewCLI implements IView {
     System.out.print(this.getFromLangPack("ask_rename"));
     String response = this.scaner.nextLine().strip();
 
-    return new RenamePlayerAction(player, 0, response);
+    return new RenamePlayerAction(player, turn, response);
   }
 
   private QuitAction askQuitAction(Player player, Integer turn) {

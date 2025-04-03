@@ -3,7 +3,6 @@ package pdp.scrabble.view;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.Semaphore;
-
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -223,7 +222,6 @@ public class ViewGUI implements IView {
     Button exchangeLetterButton = new Button(langPack.getString("exchange"));
     exchangeLetterButton.setOnAction(e -> action = "exchangeLetter");
 
-
     Button passTurnButton = new Button(langPack.getString("pass"));
     passTurnButton.setOnAction(e -> action = "passTurn");
 
@@ -311,18 +309,19 @@ public class ViewGUI implements IView {
     dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
 
     // Handle the result
-    dialog.setResultConverter(dialogButton -> {
-      if (dialogButton == okButtonType) {
-        List<Letter> selectedLetters = new java.util.ArrayList<>();
-        for (ToggleButton toggleButton : toggleButtons) {
-          if (toggleButton.isSelected()) {
-            selectedLetters.add(new Letter(toggleButton.getText().charAt(0)));
+    dialog.setResultConverter(
+        dialogButton -> {
+          if (dialogButton == okButtonType) {
+            List<Letter> selectedLetters = new java.util.ArrayList<>();
+            for (ToggleButton toggleButton : toggleButtons) {
+              if (toggleButton.isSelected()) {
+                selectedLetters.add(new Letter(toggleButton.getText().charAt(0)));
+              }
+            }
+            return selectedLetters;
           }
-        }
-        return selectedLetters;
-      }
-      return null;
-    });
+          return null;
+        });
 
     // Show the dialog and process the selected letters
     return dialog.showAndWait().orElse(null);
@@ -347,12 +346,13 @@ public class ViewGUI implements IView {
     dialog.getDialogPane().setContent(content);
 
     // Retrieve the entered name
-    dialog.setResultConverter(dialogButton -> {
-      if (dialogButton == okButtonType) {
-        return nameField.getText().trim();
-      }
-      return null;
-    });
+    dialog.setResultConverter(
+        dialogButton -> {
+          if (dialogButton == okButtonType) {
+            return nameField.getText().trim();
+          }
+          return null;
+        });
 
     // Display the dialog and return the result
     return dialog.showAndWait().orElse(null);

@@ -339,15 +339,24 @@ public class ViewGUI implements IView {
       String position = result[1];
       String orientation = result[2];
 
-      // Parse the position (e.g., "A1" -> row=0, col=0)
-      int row = Character.toLowerCase(position.charAt(0)) - 'a';
+      // Parse the position (e.g., "a1" -> row=0, col=0)
+      int row;
+      try {
+        row = position.charAt(0) - 'a';
+      } catch (IndexOutOfBoundsException e) {
+        throw new CustomError( // FIXME : Ludo 🙏 (même si c'est oob ça renvoi la gameAction donc
+            // jsp ou ça devrai renvoyer une erreure)
+            ErrorType.InvalidMoveFormat,
+            "Invalid position format. Expected format: 'a1', 'b2', etc.",
+            "The position: " + position + " isn't valid");
+      }
       int col;
       try {
         col = Integer.parseInt(position.substring(1)) - 1;
       } catch (NumberFormatException e) {
-        throw new CustomError(
+        throw new CustomError( // FIXME : Ludo 🙏
             ErrorType.InvalidMoveFormat,
-            "Invalid position format. Expected format: 'A1', 'B2', etc.",
+            "Invalid position format. Expected format: 'a1', 'b2', etc.",
             "The position: " + position + " isn't valid");
       }
 

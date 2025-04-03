@@ -330,6 +330,7 @@ public class ViewGUI implements IView {
   private String hadleNewPlayerName(Player player) {
     Dialog<String> dialog = new Dialog<>();
     dialog.setTitle(langPack.getString("rename"));
+    dialog.setHeaderText(langPack.getString("renametxt") + player.getName());
 
     // OK and Cancel buttons
     ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);

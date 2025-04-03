@@ -1,11 +1,14 @@
 package pdp.scrabble.game.actions;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.GameModel;
+import pdp.scrabble.game.GridPos;
 import pdp.scrabble.game.GridWordPos;
 import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
@@ -23,6 +26,7 @@ public class PlaceWordAction extends GameAction {
   public long rngStateBefore = 0L; // to set by model
   public final LettersCounter drawedAfter; // Empty until model calls drawLetters()
   public final int scoreBefore;
+  public final GridPos[] placedLettersPos;
 
   public PlaceWordAction(Player player, int turn, Letter[] toPlace, GridWordPos startPos) {
     super(player, turn);
@@ -30,11 +34,20 @@ public class PlaceWordAction extends GameAction {
     this.startPosition = startPos;
     this.scoreBefore = player.getScore();
     this.drawedAfter = new LettersCounter();
+    this.placedLettersPos = new GridPos[toPlace.length];
   }
 
   @Override
   public void applyGameAction(GameModel gameModel) {
     gameModel.applyGameAction(this);
+  }
+
+  public void clearUndoInfos() {
+    this.rngStateBefore = 0L;
+    this.drawedAfter.clear();
+    for (int i = 0; i < placedLettersPos.length; i++) {
+      this.placedLettersPos[i] = null;
+    }
   }
 
   /**

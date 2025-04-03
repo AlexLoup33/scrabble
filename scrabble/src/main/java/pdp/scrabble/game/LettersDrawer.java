@@ -156,4 +156,18 @@ public class LettersDrawer {
         + this.getCurrentSize()
         + '}';
   }
+
+  public void pushMany(LettersCounter other) {
+    for (Letter letter : other.getLettersSet()) {
+      this.pushLetter(letter, other.getLetterCount(letter));
+    }
+  }
+
+  /**
+   * undo the letters pushed to the drawer (will remove the lettersPushed)
+   * @param lettersPushed the letters pushed in (ie what to remove)
+   */
+  public void undoPushLetter(LettersCounter lettersPushed) {
+    this.content.removeOther(lettersPushed);
+  }
 }

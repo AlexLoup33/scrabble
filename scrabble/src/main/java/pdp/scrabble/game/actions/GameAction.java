@@ -20,6 +20,10 @@ public abstract class GameAction {
     return this.getClass().getSimpleName() + "{" + "player=" + player + "," + "turn=" + turn;
   }
 
+  public void undoTurnPlayedTime() {
+    this.player.undoTurnPlayedTime(this);
+  }
+
   public abstract void applyGameAction(GameModel gameModel);
 
   public abstract String toSerializedString();

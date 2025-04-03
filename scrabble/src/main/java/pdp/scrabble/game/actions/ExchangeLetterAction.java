@@ -32,6 +32,11 @@ public class ExchangeLetterAction extends GameAction {
     gameModel.applyGameAction(this);
   }
 
+  public void clearUndoInfos() {
+    this.rngStateBefore = 0L;
+    this.lettersDrawed = null;
+  }
+
   /** assert the player has the required letters in his bag */
   public void assertHasLettersToPlace() {
     LettersCounter missing = new LettersCounter();

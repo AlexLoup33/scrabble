@@ -362,6 +362,7 @@ public class Grid {
     // ** place the letters on the grid
     for (int index = 0; index < pwa.toPlace.length; index++) {
       final GridPos currPos = lettersPos.get(index);
+      pwa.placedLettersPos[index] = currPos;
       this.placedLetters[currPos.row()][currPos.col()] = pwa.toPlace[index];
     }
 
@@ -444,12 +445,10 @@ public class Grid {
    *
    * @param wordsPlaced all the words placed this turn (probably overkill but safe)
    */
-  public void useMultiplicators(List<OwnedWord> wordsPlaced) {
-    for (OwnedWord word : wordsPlaced) {
-      for (int i = 0; i < word.word.getLength(); i++) {
-        GridPos pos = word.position.getPosAtIndex(i);
-        this.multiplicatorsUsed[pos.row()][pos.col()] = true;
-      }
+  public void useMultiplicators(PlaceWordAction pwa) {
+    for (int index = 0; index < pwa.toPlace.length; index++) {
+      final GridPos pos = pwa.placedLettersPos[index];
+      this.multiplicatorsUsed[pos.row()][pos.col()] = true;
     }
   }
 
@@ -482,5 +481,13 @@ public class Grid {
     }
 
     return sb.toString();
+  }
+
+  public void undoPlaceLetters(PlaceWordAction placeWord) {
+    for (int index = 0; index < placeWord.toPlace.length; index++) {
+      final GridPos pos = placeWord.placedLettersPos[index];
+      this.placedLetters[pos.row()][pos.col()] = null;
+      this.multiplicatorsUsed[pos.row()][pos.col()] = false;
+    }
   }
 }

@@ -6,6 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+
+import javax.swing.plaf.synth.SynthStyle;
+
 import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Letter;
@@ -322,8 +325,13 @@ public class ViewCLI implements IView {
 
   @Override
   public void showError(CustomError e) {
-    String color = e.isFatal() ? ANSI_RED : ANSI_YELLOW;
-    System.out.printf("%sError: %s%s\n", color, e.toString(), ANSI_RESET);
+    if (e.isFatal()) {
+      System.out.printf("%sError: %s", ANSI_RED, e.toString());
+      e.printStackTrace(System.out);
+      System.out.print(ANSI_RESET + "\n");
+    } else {
+      System.out.printf("%sError: %s%s\n", ANSI_YELLOW, e.toString(), ANSI_RESET);
+    }
   }
 
   @Override

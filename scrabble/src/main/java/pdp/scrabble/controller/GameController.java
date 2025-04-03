@@ -75,19 +75,16 @@ public class GameController {
         Player playing = model.getCurrentPlayer();
         Utilities.debug('l', "%s begins his turn\n", playing.getName());
         Utilities.debug('l', "numbers of letters in draw: %d\n", model.draw.getCurrentSize());
-        // view.announceTurn(playing, turn);
+        view.announceTurn(playing, turn);
         if (this.model.config.getBlitz()) view.showRemainingTimes(model.players);
         for (Player onGames : model.players) {
           view.showScore(onGames);
         }
-        // Implemented but maybe need to draw every letter before
-        // actually showing number at turn 1
-        // view.displayDraw(model.draw);
-        // view.displayGrid(model.grid, this.model.config.getSuperScrabble());
-        // view.displayPlayerLetters(playing.bag);
-        /*if (recoverableException != null) {
+        view.displayGrid(model.grid, this.model.config.getSuperScrabble());
+        view.displayPlayerLetters(playing.bag);
+        if (recoverableException != null) {
           view.showError(recoverableException);
-        }*/
+        }
         Utilities.debug('l', "Attempt to askAction\n");
 
         long start_time = System.currentTimeMillis();
@@ -128,40 +125,27 @@ public class GameController {
 
         Utilities.debug('l', "%s ends his turn\n", playing.getName());
         recoverableException = null;
-      } catch (Exception | Error e) {
-        System.out.println(e);
-        // recoverableException = handleBadPath(e);
+      } catch (CustomError e) {
+        this.handleErrors(e);
+      } catch (Throwable e) {
+        this.handleErrors(e);
       }
     }
   }
 
-  private CustomError handleBadPath(Throwable e) {
-    if (e.getClass() == CustomError.class) {
-      CustomError custom = (CustomError) e;
-      if (custom.isFatal()) {
-        terminateProgram(custom);
-      } else {
-        return custom;
-      }
-    } else {
-      terminateProgram(e);
+  private void handleErrors(Throwable e) {
+    this.view.showError(e);
+    System.exit(1);
+  }
+
+  private void handleErrors(CustomError e) {
+    this.view.showError(e);
+    if (e.isFatal()) {
+      System.exit(1);
     }
-    return null;
-  }
-
-  private void terminateProgram(Throwable e) {
-    view.showError(e);
-    System.exit(1);
-  }
-
-  private void terminateProgram(CustomError e) {
-    view.showError(e);
-    System.exit(1);
   }
 
   public boolean isGameFinished() {
-    // TODO compute based of real Scrabble rules
-
     // test if there are enough letters to be drawn
     if (model.draw.getCurrentSize() < 7) {
       return true;

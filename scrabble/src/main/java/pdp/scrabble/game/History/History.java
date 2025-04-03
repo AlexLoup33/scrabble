@@ -82,9 +82,8 @@ public class History<T> {
           "can't redo",
           "no history to redo from currentNode: " + currentNode.getID());
     }
-    T value = this.currentNode.getValue();
     this.currentNode = next;
-    return value;
+    return this.currentNode.getValue();
   }
 
   public String toSerializedString() {

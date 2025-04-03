@@ -10,6 +10,7 @@ import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Dictionary;
 import pdp.scrabble.dictionary.IDictionary;
+import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.History.History;
@@ -28,7 +29,7 @@ public class GameModel {
   private History<GameAction> history;
   private int gameTurn;
   private int everyonePassedTurnStreak;
-  public int nextPlayerID;
+  private int nextPlayerID;
 
   public GameModel(Configuration config) {
     this.config = (Configuration) config;
@@ -77,11 +78,11 @@ public class GameModel {
   private void undoOne() {
     GameAction toUndo = this.history.undoOne();
     // undo the played time
-    toUndo.player.undoTurnPlayedTime(toUndo);
     toUndo.undo(this); // double dispatch
   }
 
   private void redoOne() {
+    System.out.println(this.history.getCurrentNodeID());
     GameAction toRedo = this.history.redoOne();
     // no needs to redo the played time here
     this.applyGameActionDispatch(toRedo, toRedo.duration);
@@ -157,7 +158,7 @@ public class GameModel {
         Utilities.verbose(" -> scored a scrable: +" + bonus + " pts)\n");
       }
     }
-    this.grid.useMultiplicators(scoredWords);
+    this.grid.useMultiplicators(placeWord);
     history.addPlayedAction(placeWord);
     this.endPlayerTurn();
   }
@@ -285,28 +286,60 @@ public class GameModel {
 
   // *** all the dispatched undo ***
 
-  public void undoGameAction(ExchangeLetterAction exchangeLetterAction) {
-    throw new UnsupportedOperationException("Unimplemented method 'undoGameAction'");
-    // exchangeLetterAction.lettersDrawed
+  private void genericUndoing(GameAction ga) {
+    ga.undoTurnPlayedTime();
+    this.currentPlayer = ga.player;
+    this.gameTurn = ga.turn;
   }
 
-  public void undoGameAction(ForfeitGameAction forfeitGameAction) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'undoGameAction'");
+  public void undoGameAction(ExchangeLetterAction exchange) {
+    // remove the letters to exchange from player 
+    // push the letters to exchange to the drawer
+    // draw new letters 
+    // add them to the player
+
+    // remove the letters drawed from the player bag
+    exchange.player.bag.removeOther(exchange.lettersDrawed);
+    // add the letters drawed to drawer
+    this.draw.pushMany(exchange.lettersDrawed);
+    // remove from the drawer the letters
+    this.draw.undoPushLetter(exchange.lettersToExchange);
+    // add the letters placed to the player bag
+    exchange.player.bag.addOther(exchange.lettersToExchange);
+    // reload the model state (rng and turn ...)
+    this.genericUndoing(exchange);
+    this.rngGenerator.loadState(exchange.rngStateBefore);
+    exchange.clearUndoInfos();
   }
 
-  public void undoGameAction(PassTurnAction passTurnAction) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'undoGameAction'");
+  public void undoGameAction(ForfeitGameAction forfeit) {
+    forfeit.player.undoForfeit();
+    this.genericUndoing(forfeit);
   }
 
-  public void undoGameAction(PlaceWordAction placeWordAction) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'undoGameAction'");
+  public void undoGameAction(PassTurnAction passTurn) {
+    this.genericUndoing(passTurn);
   }
 
-  public void undoGameAction(RenamePlayerAction renamePlayerAction) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'undoGameAction'");
+  public void undoGameAction(PlaceWordAction placeWord) {
+    // remove the letters drawed from the player bag
+    placeWord.player.bag.removeOther(placeWord.drawedAfter);
+    // add the letters drawed to drawer
+    this.draw.pushMany(placeWord.drawedAfter);
+    // remove the score from the player
+    placeWord.player.undoScoreTo(placeWord.scoreBefore);
+    // remove the letters placed from the grid
+    this.grid.undoPlaceLetters(placeWord);
+    // add the letters placed to the player bag
+    placeWord.player.bag.addOther(placeWord.toPlace);
+    // reload the model state (rng and turn ...)
+    this.genericUndoing(placeWord);
+    this.rngGenerator.loadState(placeWord.rngStateBefore);
+    placeWord.clearUndoInfos();
+  }
+
+  public void undoGameAction(RenamePlayerAction renamePlayer) {
+    renamePlayer.player.rename(renamePlayer.oldName);
+    this.genericUndoing(renamePlayer);
   }
 }

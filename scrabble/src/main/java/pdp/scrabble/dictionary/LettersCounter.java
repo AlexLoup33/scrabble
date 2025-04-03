@@ -75,6 +75,26 @@ public class LettersCounter {
   }
 
   /**
+   * add all the letters of other to this
+   * @param other the letters to add (read only)
+   */
+  public void addOther(LettersCounter other) {
+    for (Letter letter : other.getLettersSet()) {
+      this.addLetter(letter, other.getLetterCount(letter));
+    }
+  }
+
+  /**
+   * add all the letters of other to this
+   * @param other the letters to add (read only)
+   */
+  public void addOther(Letter[] other) {
+    for (int i = 0; i < other.length; i++) {      
+      this.addLetter(other[i]);
+    }
+  }
+
+  /**
    * remove count of the given Letter
    *
    * @param count the number of times to remove the letter (must be >= 0)
@@ -116,6 +136,16 @@ public class LettersCounter {
    */
   public int removeLetter(Letter letter) {
     return this.removeLetter(letter, 1);
+  }
+
+  /**
+   * remove all the letters of other to this
+   * @param other the letters to remove (read only)
+   */
+  public void removeOther(LettersCounter other) {
+    for (Letter letter : other.getLettersSet()) {
+      this.removeLetter(letter, other.getLetterCount(letter));
+    }
   }
 
   /** get the current count of this letter */

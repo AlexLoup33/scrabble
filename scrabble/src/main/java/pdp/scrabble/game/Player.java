@@ -142,4 +142,19 @@ public class Player {
   public void undoTurnPlayedTime(GameAction toUndo) {
     this.remainingTime += (long) toUndo.duration;
   }
+
+  public void undoForfeit() {
+    if (!this.hasForfeited) {
+      throw new Error("[BUG] can't undo forfeit, the player (id=" + this.id + ") hasn't forfeited");
+    }
+    this.hasForfeited = false;
+  }
+
+  /**
+   * undo the score of the player to the given score
+   * @param scoreBefore score of the player before the action
+   */
+  public void undoScoreTo(int scoreBefore) {
+    this.score = scoreBefore;
+  }
 }

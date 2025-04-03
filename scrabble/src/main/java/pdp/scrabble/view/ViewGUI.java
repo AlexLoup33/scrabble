@@ -293,10 +293,6 @@ public class ViewGUI implements IView {
     ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
     dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
 
-    // Display player's current letters
-    Label lettersLabel =
-        new Label(langPack.getString("yourletters") + " " + currentPlayer.bag.toString());
-
     // Text field for the word to place
     TextField wordField = new TextField();
     wordField.setPromptText(langPack.getString("enterword"));
@@ -317,7 +313,7 @@ public class ViewGUI implements IView {
     orientationBox.setStyle("-fx-alignment: center;");
 
     // Combine all inputs into a VBox
-    VBox content = new VBox(10, lettersLabel, wordField, positionField, orientationBox);
+    VBox content = new VBox(10, wordField, positionField, orientationBox);
     content.setStyle("-fx-padding: 10px;");
     dialog.getDialogPane().setContent(content);
 
@@ -436,7 +432,7 @@ public class ViewGUI implements IView {
                 selectedLetters.add(new Letter(toggleButton.getText().charAt(0)));
               }
             }
-            return selectedLetters;
+            return selectedLetters.isEmpty() ? null : selectedLetters;
           }
           return null;
         });

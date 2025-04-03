@@ -10,7 +10,6 @@ import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Dictionary;
 import pdp.scrabble.dictionary.IDictionary;
-import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.History.History;
@@ -84,8 +83,11 @@ public class GameModel {
   private void redoOne() {
     System.out.println(this.history.getCurrentNodeID());
     GameAction toRedo = this.history.redoOne();
+    System.out.println(this.history.getCurrentNodeID());
     // no needs to redo the played time here
+    toRedo.fromRedo = true;
     this.applyGameActionDispatch(toRedo, toRedo.duration);
+    toRedo.fromRedo = false;
   }
 
   /**
@@ -113,13 +115,13 @@ public class GameModel {
 
   public void applyGameAction(RenamePlayerAction renamePlayer) {
     renamePlayer.player.rename(renamePlayer.newName);
-    history.addPlayedAction(renamePlayer);
+    if (!renamePlayer.fromRedo) history.addPlayedAction(renamePlayer);
   }
 
   // F33
   public void applyGameAction(PassTurnAction passTurn) {
     passTurn.player.playerPassedTurn();
-    history.addPlayedAction(passTurn);
+    if (!passTurn.fromRedo) history.addPlayedAction(passTurn);
     this.endPlayerTurn();
   }
 
@@ -128,14 +130,14 @@ public class GameModel {
     exchLtrs.assertHasLettersToPlace();
     exchLtrs.rngStateBefore = rngGenerator.getCurrentState();
     exchLtrs.exchangeLetters(this.draw);
-    history.addPlayedAction(exchLtrs);
+    if (!exchLtrs.fromRedo) history.addPlayedAction(exchLtrs);
     this.endPlayerTurn();
   }
 
   // F36
   public void applyGameAction(ForfeitGameAction ffGame) {
     ffGame.player.forfeit();
-    history.addPlayedAction(ffGame);
+    if (!ffGame.fromRedo) history.addPlayedAction(ffGame);
     this.endPlayerTurn();
   }
 
@@ -159,7 +161,7 @@ public class GameModel {
       }
     }
     this.grid.useMultiplicators(placeWord);
-    history.addPlayedAction(placeWord);
+    if (!placeWord.fromRedo) history.addPlayedAction(placeWord);
     this.endPlayerTurn();
   }
 
@@ -293,9 +295,9 @@ public class GameModel {
   }
 
   public void undoGameAction(ExchangeLetterAction exchange) {
-    // remove the letters to exchange from player 
+    // remove the letters to exchange from player
     // push the letters to exchange to the drawer
-    // draw new letters 
+    // draw new letters
     // add them to the player
 
     // remove the letters drawed from the player bag

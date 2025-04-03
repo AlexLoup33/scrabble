@@ -165,6 +165,7 @@ public class LettersDrawer {
 
   /**
    * undo the letters pushed to the drawer (will remove the lettersPushed)
+   *
    * @param lettersPushed the letters pushed in (ie what to remove)
    */
   public void undoPushLetter(LettersCounter lettersPushed) {

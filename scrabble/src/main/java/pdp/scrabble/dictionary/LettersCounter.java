@@ -76,6 +76,7 @@ public class LettersCounter {
 
   /**
    * add all the letters of other to this
+   *
    * @param other the letters to add (read only)
    */
   public void addOther(LettersCounter other) {
@@ -86,10 +87,11 @@ public class LettersCounter {
 
   /**
    * add all the letters of other to this
+   *
    * @param other the letters to add (read only)
    */
   public void addOther(Letter[] other) {
-    for (int i = 0; i < other.length; i++) {      
+    for (int i = 0; i < other.length; i++) {
       this.addLetter(other[i]);
     }
   }
@@ -140,6 +142,7 @@ public class LettersCounter {
 
   /**
    * remove all the letters of other to this
+   *
    * @param other the letters to remove (read only)
    */
   public void removeOther(LettersCounter other) {

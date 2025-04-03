@@ -152,6 +152,7 @@ public class Player {
 
   /**
    * undo the score of the player to the given score
+   *
    * @param scoreBefore score of the player before the action
    */
   public void undoScoreTo(int scoreBefore) {

@@ -7,6 +7,9 @@ public abstract class GameAction {
   public final Player player;
   public final int turn;
 
+  /** whether the action is from a redo */
+  public boolean fromRedo;
+
   /** to be setted durring the dispatch of the game action */
   public long duration;
 
@@ -14,6 +17,7 @@ public abstract class GameAction {
     this.player = player;
     this.turn = turn;
     this.duration = 0;
+    this.fromRedo = false;
   }
 
   public String toString() {

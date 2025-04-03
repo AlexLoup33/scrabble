@@ -6,9 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
-
-import javax.swing.plaf.synth.SynthStyle;
-
 import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Letter;

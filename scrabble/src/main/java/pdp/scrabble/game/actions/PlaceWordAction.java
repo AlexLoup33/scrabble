@@ -11,8 +11,7 @@ import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
 
 /**
- * Play at least one tile on the board, adding the value of all words formed to
- * the player's
+ * Play at least one tile on the board, adding the value of all words formed to the player's
  * cumulative score
  */
 public class PlaceWordAction extends GameAction {
@@ -86,8 +85,7 @@ public class PlaceWordAction extends GameAction {
   }
 
   /**
-   * remove from the bag the letters placed you must check if the player has the
-   * letters before !
+   * remove from the bag the letters placed you must check if the player has the letters before !
    * (it will be asserted before removing the letters)
    */
   public void removeLettersPlaced() {
@@ -122,9 +120,10 @@ public class PlaceWordAction extends GameAction {
 
   @Override
   public String toString() {
-    String lettersList = Arrays.stream(this.toPlace)
-        .map(arg0 -> "" + arg0.chr)
-        .reduce("", (arg0, arg1) -> arg0 + arg1 + ", ");
+    String lettersList =
+        Arrays.stream(this.toPlace)
+            .map(arg0 -> "" + arg0.chr)
+            .reduce("", (arg0, arg1) -> arg0 + arg1 + ", ");
     return this.getClass().getSimpleName()
         + "{"
         + "toPlace=["
@@ -147,10 +146,11 @@ public class PlaceWordAction extends GameAction {
     // ascii 97 = a
     char row = (char) (97 + this.startPosition.row());
     String col = String.valueOf(this.startPosition.col() + 1);
-    char direction = switch (this.startPosition.direction()) {
-      case Right -> 'h';
-      case Down -> 'v';
-    };
+    char direction =
+        switch (this.startPosition.direction()) {
+          case Right -> 'h';
+          case Down -> 'v';
+        };
     String word = Letter.concatenate(this.toPlace);
     return this.player.id + " PlaceWord " + row + col + direction + " " + word;
   }

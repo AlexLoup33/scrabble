@@ -34,7 +34,8 @@ public enum ErrorType {
   NoHistoryAvailable(false),
   FirstMoveIllegal(false),
   NotPlaceNextToAWord(false),
-  InvalideLetter(false);
+  InvalideLetter(false),
+  CanceledAskAction(false);
 
   public final boolean isFatal;
 

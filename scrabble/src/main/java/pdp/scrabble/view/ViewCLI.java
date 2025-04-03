@@ -27,8 +27,10 @@ import pdp.scrabble.game.actions.GameAction;
 import pdp.scrabble.game.actions.PassTurnAction;
 import pdp.scrabble.game.actions.PlaceWordAction;
 import pdp.scrabble.game.actions.QuitAction;
+import pdp.scrabble.game.actions.RedoAction;
 import pdp.scrabble.game.actions.RenamePlayerAction;
 import pdp.scrabble.game.actions.RestartGameAction;
+import pdp.scrabble.game.actions.UndoAction;
 
 public class ViewCLI implements IView {
   public static final String ANSI_RESET = "\u001B[0m";
@@ -49,7 +51,7 @@ public class ViewCLI implements IView {
   public GameAction askAction(Player player, Integer turn) throws CustomError {
     Utilities.verbose(
         "possible actions are: placeWord | exchangeLetter | passTurn "
-            + "| renamePlayer | forfeitPlayer | restartGame | quit\n");
+            + "| renamePlayer | forfeitPlayer | restartGame | quit | undo | redo\n");
     System.out.println(this.getFromLangPack("ask_actionType"));
     String response = this.scaner.nextLine().strip();
 
@@ -69,6 +71,12 @@ public class ViewCLI implements IView {
       case "quit" -> {
         return this.askQuitAction(player, turn);
       }
+      case "undo" -> {
+        return this.askUndoAction(player, turn);
+      }
+      case "redo" -> {
+        return this.askRedoAction(player, turn);
+      }
       case "exchangeLetter" -> {
         return this.ask_exchangeLetter(player, turn);
       }
@@ -76,10 +84,10 @@ public class ViewCLI implements IView {
         return this.ask_renamePlayer(player, turn);
       }
       default ->
-        throw new CustomError(
-            ErrorType.InvalidActionType,
-            "invalide action kind",
-            "the action: " + response + " isn't a valid action use -v to see the full list");
+          throw new CustomError(
+              ErrorType.InvalidActionType,
+              "invalide action kind",
+              "the action: " + response + " isn't a valid action use -v to see the full list");
     }
   }
 
@@ -99,8 +107,8 @@ public class ViewCLI implements IView {
         letters.push(new Letter(c));
       } else {
         // => invalid !
-        throw new CustomError(ErrorType.InvalideLetter,
-            "invalide letter", "the letter: " + c + " isn't valid");
+        throw new CustomError(
+            ErrorType.InvalideLetter, "invalide letter", "the letter: " + c + " isn't valid");
       }
     }
     return new ExchangeLetterAction(player, turn, letters);
@@ -119,6 +127,26 @@ public class ViewCLI implements IView {
     String response = this.scaner.nextLine().strip().toLowerCase();
     boolean isSaveWanted = (response.equals("y") || response.equals("yes"));
     return new QuitAction(player, turn, isSaveWanted);
+  }
+
+  private RedoAction askRedoAction(Player player, Integer turn) {
+    System.out.print(this.getFromLangPack("ask_redo") + "[y/N]");
+    String response = this.scaner.nextLine().strip().toLowerCase();
+    if (response.equals("y") || response.equals("yes")) {
+      return new RedoAction(player, turn);
+    }
+    throw new CustomError(
+        ErrorType.CanceledAskAction, "canceled", "not all players agreed on redoing");
+  }
+
+  private UndoAction askUndoAction(Player player, Integer turn) {
+    System.out.print(this.getFromLangPack("ask_undo") + "[y/N]");
+    String response = this.scaner.nextLine().strip().toLowerCase();
+    if (response.equals("y") || response.equals("yes")) {
+      return new UndoAction(player, turn);
+    }
+    throw new CustomError(
+        ErrorType.CanceledAskAction, "canceled", "not all players agreed on undoing");
   }
 
   private PlaceWordAction ask_placeWordAction(Player player, Integer turn) {
@@ -165,15 +193,16 @@ public class ViewCLI implements IView {
     GridWordPos gwp;
 
     final char direction = move[0].charAt(move[0].length() - 1);
-    gwp = switch (direction) {
-      case 'h' -> new GridWordPos(row, col, Direction.Right);
-      case 'v' -> new GridWordPos(row, col, Direction.Down);
-      default ->
-        throw new CustomError(
-            ErrorType.InvalidMoveFormat,
-            "invalid direction",
-            "the direction: " + direction + " isn't valid");
-    };
+    gwp =
+        switch (direction) {
+          case 'h' -> new GridWordPos(row, col, Direction.Right);
+          case 'v' -> new GridWordPos(row, col, Direction.Down);
+          default ->
+              throw new CustomError(
+                  ErrorType.InvalidMoveFormat,
+                  "invalid direction",
+                  "the direction: " + direction + " isn't valid");
+        };
 
     Word word = new Word(move[1]);
     Letter[] toPlace = new Letter[word.getLength()];
@@ -191,10 +220,8 @@ public class ViewCLI implements IView {
     // Display the first row of the grid with the column numbers
     System.out.print("  ");
     for (int i = 0; i < grid.size - 1; i++) {
-      if (i < 8)
-        System.out.print(i + 1 + "  ");
-      else
-        System.out.print(i + 1 + " ");
+      if (i < 8) System.out.print(i + 1 + "  ");
+      else System.out.print(i + 1 + " ");
     }
     System.out.println(grid.size);
 
@@ -234,15 +261,11 @@ public class ViewCLI implements IView {
 
         Letter letter = grid.getLetter(i, j);
         if (letter == null) {
-          if (j == grid.size - 1)
-            System.out.print(backgroundColor + "_" + colorReset);
-          else
-            System.out.print(backgroundColor + "_" + colorReset + "  ");
+          if (j == grid.size - 1) System.out.print(backgroundColor + "_" + colorReset);
+          else System.out.print(backgroundColor + "_" + colorReset + "  ");
         } else {
-          if (j == grid.size - 1)
-            System.out.print(color + letter + colorReset);
-          else
-            System.out.print(color + letter + "  " + colorReset);
+          if (j == grid.size - 1) System.out.print(color + letter + colorReset);
+          else System.out.print(color + letter + "  " + colorReset);
         }
       }
       System.out.print("\n");
@@ -292,21 +315,8 @@ public class ViewCLI implements IView {
 
   @Override
   public void announceTurn(Player currentPlayer, int turn) {
+    System.out.println("--------------------");
     System.out.printf(langPack.getString("turn_begin") + "\n", currentPlayer.getName(), turn);
-    /*
-     * for (int i = 3; i > 0; i--) {
-     * System.out.println(i);
-     * try {
-     * Thread.sleep(1000);
-     * } catch (InterruptedException e) {
-     * // Can never happen as long as the app is single-threaded
-     * System.out.println(e);
-     * }
-     * }
-     * System.out.print("\033c");
-     * System.out.printf(langPack.getString("turn_begin") + "\n",
-     * currentPlayer.getName());
-     */
   }
 
   @Override

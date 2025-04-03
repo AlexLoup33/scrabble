@@ -11,8 +11,7 @@ import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
 
 /**
- * Exchange one or more tiles for an equal number from the bag, scoring zero.
- * This can only be done
+ * Exchange one or more tiles for an equal number from the bag, scoring zero. This can only be done
  * if 7 or more tiles remain in the bag.
  */
 public class ExchangeLetterAction extends GameAction {
@@ -57,10 +56,8 @@ public class ExchangeLetterAction extends GameAction {
   }
 
   /**
-   * remove from the bag the letters exchnaged and draw the new letters, you must
-   * check if the
-   * player has the letters before ! (it will be asserted before removing the
-   * letters)
+   * remove from the bag the letters exchnaged and draw the new letters, you must check if the
+   * player has the letters before ! (it will be asserted before removing the letters)
    *
    * @param draw the drawer of the GameModel
    */
@@ -90,8 +87,7 @@ public class ExchangeLetterAction extends GameAction {
         toExchange.append(l.getKey() + ",");
       }
     }
-    if (toExchange.length() > 0)
-      toExchange.deleteCharAt(toExchange.length() - 1);
+    if (toExchange.length() > 0) toExchange.deleteCharAt(toExchange.length() - 1);
     return this.player.id + " ExchangeLetter [" + toExchange.toString() + "]";
   }
 
@@ -99,5 +95,4 @@ public class ExchangeLetterAction extends GameAction {
   public void undo(GameModel gameModel) {
     gameModel.undoGameAction(this);
   }
-
 }

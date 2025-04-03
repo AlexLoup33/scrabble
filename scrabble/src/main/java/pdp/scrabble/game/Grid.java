@@ -404,7 +404,6 @@ public class Grid {
   public int getScore(OwnedWord word) {
     int score = 0;
     int multi_word = 1;
-    // TODO: ajouter le suport des mots scrables (7+ letters)
     for (int i = 0; i < word.word.getLength(); i++) {
       GridPos pos = word.position.getPosAtIndex(i);
       ScoreMultiplier multi = this.getMultiplier(pos);
@@ -428,6 +427,16 @@ public class Grid {
     }
     // Utilities.verbose("-> score=" + score + ", multi_word=" + multi_word + ")");
     return score * multi_word;
+  }
+
+  /**
+   * compute the bonus points for placing every letters of your bag
+   *
+   * @param placedLetters the letters placed from the player's bag
+   * @return the score to add
+   */
+  public int getBonusScore(Letter[] placedLetters) {
+    return (placedLetters.length == 7) ? 50 : 0;
   }
 
   /**

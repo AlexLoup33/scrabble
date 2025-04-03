@@ -1,7 +1,6 @@
 package pdp.scrabble.game.History;
 
 import java.util.LinkedList;
-
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.actions.*;
@@ -130,5 +129,4 @@ public class History<T> {
     }
     return lst;
   }
-
 }

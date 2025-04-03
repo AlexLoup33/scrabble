@@ -82,7 +82,7 @@ public class GameModel {
   }
 
   private void redoOne() {
-    GameAction toRedo = this.history.undoOne();
+    GameAction toRedo = this.history.redoOne();
     // no needs to redo the played time here
     this.applyGameActionDispatch(toRedo, toRedo.duration);
   }
@@ -90,7 +90,8 @@ public class GameModel {
   /**
    * dispatch the game action to the correct methode of applyGameAction
    *
-   * @param played
+   * @param played the game action to apply
+   * @param duration the time taken by the player to decide its action
    * @return whether the turn is finished
    */
   public void applyGameActionDispatch(GameAction played, long duration) {
@@ -140,6 +141,13 @@ public class GameModel {
           " -> placed the word: " + ownedWord.word.toString() + " (" + wordScore + " pts)\n");
       placeWord.player.addScore(wordScore);
     }
+    {
+      int bonus = this.grid.getBonusScore(placeWord.toPlace);
+      if (bonus != 0) {
+        placeWord.player.addScore(bonus);
+        Utilities.verbose(" -> scored a scrable: +" + bonus + " pts)\n");
+      }
+    }
     this.grid.useMultiplicators(scoredWords);
     history.addPlayedAction(placeWord);
     this.endPlayerTurn();
@@ -164,13 +172,19 @@ public class GameModel {
     System.exit(0);
   }
 
+  public void applyGameAction(UndoAction undoAction) {
+    this.undoOne();
+  }
+
+  public void applyGameAction(RedoAction redoAction) {
+    this.redoOne();
+  }
+
   /**
-   * This function returns a list of active players by filtering out players who
-   * have forfeited.
+   * This function returns a list of active players by filtering out players who have forfeited.
    *
-   * @return The method `getActivePlayers` returns a list of active players, which
-   *         are players who
-   *         have not forfeited the game.
+   * @return The method `getActivePlayers` returns a list of active players, which are players who
+   *     have not forfeited the game.
    */
   public List<Player> getActivePlayers() {
     List<Player> activePlayers = new ArrayList<>();
@@ -255,7 +269,10 @@ public class GameModel {
     this.history = history;
   }
 
+  // *** all the dispatched undo ***
+
   public void undoGameAction(ExchangeLetterAction exchangeLetterAction) {
+    throw new UnsupportedOperationException("Unimplemented method 'undoGameAction'");
     // exchangeLetterAction.lettersDrawed
   }
 

@@ -31,7 +31,7 @@ class HistNode<T> {
 
   public HistNode<T> newNext(T val, int nextNodeID) {
     HistNode<T> newNode = new HistNode<T>(nextNodeID, val, this);
-    // detech this.next.prev (for safety only)
+    // detect this.next.prev (for safety only)
     if (this.next != null) {
       this.next.prev = null;
     }

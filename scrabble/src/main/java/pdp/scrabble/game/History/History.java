@@ -88,7 +88,7 @@ public class History<T> {
 
   public String toSerializedString() {
     LinkedList<T> actions = this.getCurrentActionsList();
-    if (actions.size() == 0) {
+    if (actions.isEmpty()) {
       return "";
     }
 
@@ -98,14 +98,14 @@ public class History<T> {
       GameAction gameAction = (GameAction) value;
       boolean firstPlayerOfTurn = (prevTurn != gameAction.turn);
       if (firstPlayerOfTurn) {
-        // add the begining of the line
+        // add the beginning of the line
         if (prevTurn != -1) {
           // => not the first turn
           serialized.append(";\n");
         }
-        serialized.append(gameAction.turn + ". ");
+        serialized.append(gameAction.turn).append(". ");
       } else {
-        // spacing betwin actions of a gameTurn
+        // spacing between actions of a gameTurn
         serialized.append(" ");
       }
       // add the action

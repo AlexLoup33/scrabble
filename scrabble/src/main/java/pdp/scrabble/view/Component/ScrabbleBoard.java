@@ -45,7 +45,7 @@ public class ScrabbleBoard extends Canvas {
       for (int col = 0; col < BOARD_SIZE; col++) {
         gc.strokeRect(row * CELL_SIZE, col * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 
-        // First we set up the border with row = 0 and col = 0 for display column index (number) and
+        // First, we set up the border with row = 0 and col = 0 for display column index (number) and
         // row index (letter)
         gc.setFill(Color.BLACK);
         if (row == 0 || col == 0) {

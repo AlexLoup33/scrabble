@@ -5,7 +5,7 @@ public final class CustomError extends Error {
   public final String message; /* Short explaination of what happend, for the user */
   public final String details; /*
      * a message as long as needed, to explain all is needed to understand what
-     * happend,if the error is expected or if it is a bug, this message is intended
+     * happened, if the error is expected or if it is a bug, this message is intended
      * for the devs and will be logged later
      */
 
@@ -20,7 +20,7 @@ public final class CustomError extends Error {
   }
 
   public String toString() {
-    /* To read the data of the attributs of an object. for a development optical */
+    /* To read the data of the attributs of an object. For a development optical */
     return "ErrorType: "
         + this.type.name()
         + "\nMessage: "

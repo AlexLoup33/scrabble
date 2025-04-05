@@ -66,6 +66,7 @@ For more information about the options, you can run the script with the `-h` opt
 ```console
 #> mvn site
 #> firefox target/site/dependencies.html
+#> open -a Safari target/site/dependencies.html
 ```
 
 ## Build and tests
@@ -83,6 +84,7 @@ The coverage is obtained with:
 ```console
 #> mvn jacoco:report
 #> firefox target/site/jacoco/index.html
+#> open -a Safari target/site/jacoco/index.html
 ```
 
 ## Documentation
@@ -90,6 +92,7 @@ The coverage is obtained with:
 ```console
 #> mvn javadoc:javadoc
 #> firefox target/site/apidocs/index.html
+#> open -a Safari target/site/apidocs/index.html
 ```
 
 If you want to try to fix some javadoc errors, you can try (but it is not always
@@ -126,6 +129,7 @@ Then, you can run the checkstyle with:
 ```console
 #> mvn checkstyle:checkstyle
 #> firefox target/reports/checkstyle.html
+#> open -a Safari target/reports/checkstyle.html
 ```
 
 ## PMD Static Analysis
@@ -170,4 +174,5 @@ Then, you can run the PMD static analysis with:
 #> mvn pmd:pmd
 #> mvn pmd:check
 #> firefox target/reports/pmd.html
+#> open -a Safari target/reports/pmd.html
 ```

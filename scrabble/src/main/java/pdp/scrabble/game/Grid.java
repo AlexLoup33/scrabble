@@ -203,8 +203,9 @@ public class Grid {
     for (GridPos letterPos : firstPos.getPath(lastPos)) {
       Letter letter = this.placedLetters[letterPos.row()][letterPos.col()];
       if (letter == null) {
-        assert indexNextNewLetter < pwa.toPlace.length : "has alredy put all the new letters";
-        letter = pwa.toPlace[indexNextNewLetter];
+        assert indexNextNewLetter < pwa.toPlaceFiltered.length
+            : "has alredy put all the new letters";
+        letter = pwa.toPlaceFiltered[indexNextNewLetter];
         indexNextNewLetter++;
       }
       newWord.add(letter);
@@ -235,8 +236,14 @@ public class Grid {
     return new OwnedWord(gwp, w, pwa.player);
   }
 
+  // Should only be called by model really
   public List<OwnedWord> placeLetters(PlaceWordAction pwa) {
-    if (pwa.toPlace.length == 0) {
+    if (pwa.toPlaceFiltered == null)
+      throw new CustomError(
+          ErrorType.InvalidePlaceLetterAction,
+          "?",
+          "pwa was not filtered before using placeLetters");
+    if (pwa.toPlaceFiltered.length == 0) {
       throw new CustomError(
           ErrorType.UnknownWord, "can't place no letter", "trying to place 0 letter");
     }
@@ -265,8 +272,8 @@ public class Grid {
     // index -> pos of the letter of the same index in pwa
     {
       GridPos currPos = pwa.startPosition.toGridPos();
-      for (int index = 0; index < pwa.toPlace.length; index++) {
-        final boolean isLastLetterOfWord = (index + 1 == pwa.toPlace.length);
+      for (int index = 0; index < pwa.toPlaceFiltered.length; index++) {
+        final boolean isLastLetterOfWord = (index + 1 == pwa.toPlaceFiltered.length);
         // => currPos is the pos of the letter at index
         lettersPos.add(currPos);
         if (!isLastLetterOfWord) {
@@ -296,11 +303,11 @@ public class Grid {
       result.add(this.constructMainNewWord(wordStartPos, wordLastPos, lettersPos, pwa));
     }
     for (int indexNextNewLetter = 0;
-        indexNextNewLetter < pwa.toPlace.length;
+        indexNextNewLetter < pwa.toPlaceFiltered.length;
         indexNextNewLetter++) {
       // the auxiliary word placed on the grid
       final GridPos letterPos = lettersPos.get(indexNextNewLetter);
-      final Letter letter = pwa.toPlace[indexNextNewLetter];
+      final Letter letter = pwa.toPlaceFiltered[indexNextNewLetter];
       final GridPos wordStartPos = this.getWordFirstLetterPos(letterPos, wordOppositDirection);
       final GridPos wordLastPos = this.getWordLastLetterPos(letterPos, wordOppositDirection);
       if (wordStartPos == wordLastPos) {
@@ -325,7 +332,7 @@ public class Grid {
       score_tot += onGames.getScore();
     }
     if (score_tot == 0) {
-      for (int index = 0; index < pwa.toPlace.length; index++) {
+      for (int index = 0; index < pwa.toPlaceFiltered.length; index++) {
         final GridPos currPos = lettersPos.get(index);
         if (currPos.row() == size / 2 && currPos.col() == size / 2) {
           playCenter = true;
@@ -348,7 +355,7 @@ public class Grid {
     // modified for test if the word needs to be play next to a word
     for (OwnedWord ownedWord : result) {
       StringBuilder sb = new StringBuilder();
-      for (Letter letter : pwa.toPlace) {
+      for (Letter letter : pwa.toPlaceFiltered) {
         sb.append(String.valueOf(letter));
       }
       if (result.size() == 1 && score_tot != 0 && sb.toString().equals(ownedWord.word.toString())) {
@@ -360,10 +367,10 @@ public class Grid {
     } // modified
 
     // ** place the letters on the grid
-    for (int index = 0; index < pwa.toPlace.length; index++) {
+    for (int index = 0; index < pwa.toPlaceFiltered.length; index++) {
       final GridPos currPos = lettersPos.get(index);
       pwa.placedLettersPos[index] = currPos;
-      this.placedLetters[currPos.row()][currPos.col()] = pwa.toPlace[index];
+      this.placedLetters[currPos.row()][currPos.col()] = pwa.toPlaceFiltered[index];
     }
 
     return result;
@@ -446,7 +453,7 @@ public class Grid {
    * @param wordsPlaced all the words placed this turn (probably overkill but safe)
    */
   public void useMultiplicators(PlaceWordAction pwa) {
-    for (int index = 0; index < pwa.toPlace.length; index++) {
+    for (int index = 0; index < pwa.toPlaceFiltered.length; index++) {
       final GridPos pos = pwa.placedLettersPos[index];
       this.multiplicatorsUsed[pos.row()][pos.col()] = true;
     }
@@ -484,10 +491,61 @@ public class Grid {
   }
 
   public void undoPlaceLetters(PlaceWordAction placeWord) {
-    for (int index = 0; index < placeWord.toPlace.length; index++) {
+    for (int index = 0; index < placeWord.toPlaceFiltered.length; index++) {
       final GridPos pos = placeWord.placedLettersPos[index];
       this.placedLetters[pos.row()][pos.col()] = null;
       this.multiplicatorsUsed[pos.row()][pos.col()] = false;
     }
+  }
+
+  public PlaceWordAction filterPwa(PlaceWordAction pwa) {
+    GridWordPos filteredStartPos = pwa.startPosition;
+    // If the first letter is already occupied on board
+    // Then move the filtered word one to the right or one down, according to direction
+    int toPlaceIndex = 0;
+    if (this.placedLetters[filteredStartPos.row()][filteredStartPos.col()] != null) {
+      toPlaceIndex++; // Ignore the first char of toPlace
+      if (filteredStartPos.direction() == Direction.Right) {
+        filteredStartPos =
+            new GridWordPos(
+                filteredStartPos.row(), filteredStartPos.col() + 1, filteredStartPos.direction());
+      } else {
+        filteredStartPos =
+            new GridWordPos(
+                filteredStartPos.row() + 1, filteredStartPos.col(), filteredStartPos.direction());
+      }
+    }
+
+    // If a letter is already on board for required direction
+    // remove it from to place
+    ArrayList<Letter> tempFiltered = new ArrayList<>(pwa.toPlace.length);
+    GridPos currPos = filteredStartPos.toGridPos();
+    Direction wordDirection = filteredStartPos.direction();
+    while (toPlaceIndex < pwa.toPlace.length) {
+      if (this.placedLetters[currPos.row()][currPos.col()] == null) {
+        tempFiltered.add(pwa.toPlace[toPlaceIndex]);
+      }
+      try {
+        currPos = this.getNextPos(currPos, wordDirection);
+      } catch (CustomError e) {
+        e.handleIfErrorType(ErrorType.PositionOutOfGird);
+        throw new CustomError(
+            ErrorType.InvalidePlaceLetterAction,
+            "can't place the letters on the grid",
+            "reached the end of the grid while trying to execute: " + pwa);
+      }
+      toPlaceIndex++;
+    }
+    // tempFiltered is smaller than to place if there were letters on board
+    // on the word path
+    tempFiltered.trimToSize();
+    Letter[] toPlaceFiltered = tempFiltered.toArray(new Letter[0]);
+    Utilities.debug(
+        'g',
+        "Grid::filterPwa - toPlace: %s / toPlaceFiltered: %s\n",
+        Letter.concatenate(pwa.toPlace),
+        Letter.concatenate(toPlaceFiltered));
+    return new PlaceWordAction(
+        pwa.player, pwa.turn, pwa.toPlace, toPlaceFiltered, filteredStartPos);
   }
 }

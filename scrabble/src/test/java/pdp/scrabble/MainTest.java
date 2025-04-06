@@ -542,45 +542,47 @@ public class MainTest {
     // ------- Before ------------------------------------
 
     // ------- Player place a word
-    Letter[] l1 = new Letter[4];
+    Letter[] l1 = new Letter[5];
     {
-      l1[0] = new Letter('T');
-      l1[1] = new Letter('E');
-      l1[2] = new Letter('S');
-      l1[3] = new Letter('T');
+      l1[0] = new Letter('A');
+      l1[1] = new Letter('G');
+      l1[2] = new Letter('I');
+      l1[3] = new Letter('L');
+      l1[4] = new Letter('E');
     }
 
-    this.gameModel.grid.placeLetters(
+    this.gameModel.applyGameActionDispatch(
         new PlaceWordAction(
             this.gameModel.players.get(0),
             this.gameModel.getTurn(),
             l1,
-            new GridWordPos(7, 4, Direction.Right)));
+            new GridWordPos(7, 5, Direction.Right)),
+        0L);
 
     // Test grid
     assertEquals(
         """
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ T E S T _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
-                        """,
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ A G I L E _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\s
+            """,
         this.gameModel.grid.toString());
 
     // ------- Player score ++
     this.gameModel.players.get(0).addScore(420);
-    assertEquals(420, this.gameModel.players.get(0).getScore());
+    assertEquals(432, this.gameModel.players.get(0).getScore());
 
     // ------- Pass some turns
     GameAction ga = new PassTurnAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());

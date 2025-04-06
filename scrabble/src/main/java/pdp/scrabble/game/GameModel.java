@@ -142,26 +142,27 @@ public class GameModel {
   }
 
   public void applyGameAction(PlaceWordAction placeWord) {
-    placeWord.assertHasLettersToPlace();
-    List<OwnedWord> scoredWords = this.grid.placeLetters(placeWord);
-    placeWord.removeLettersPlaced();
-    placeWord.rngStateBefore = rngGenerator.getCurrentState();
-    placeWord.drawLetters(this.draw);
+    PlaceWordAction pwaFiltered = this.grid.filterPwa(placeWord);
+    pwaFiltered.assertHasLettersToPlace();
+    List<OwnedWord> scoredWords = this.grid.placeLetters(pwaFiltered);
+    pwaFiltered.removeLettersPlaced();
+    pwaFiltered.rngStateBefore = rngGenerator.getCurrentState();
+    pwaFiltered.drawLetters(this.draw);
     for (OwnedWord ownedWord : scoredWords) {
       int wordScore = this.grid.getScore(ownedWord);
       Utilities.verbose(
           " -> placed the word: " + ownedWord.word.toString() + " (" + wordScore + " pts)\n");
-      placeWord.player.addScore(wordScore);
+      pwaFiltered.player.addScore(wordScore);
     }
     {
-      int bonus = this.grid.getBonusScore(placeWord.toPlace);
+      int bonus = this.grid.getBonusScore(pwaFiltered.toPlace);
       if (bonus != 0) {
-        placeWord.player.addScore(bonus);
+        pwaFiltered.player.addScore(bonus);
         Utilities.verbose(" -> scored a scrable: +" + bonus + " pts)\n");
       }
     }
-    this.grid.useMultiplicators(placeWord);
-    if (!placeWord.fromRedo) history.addPlayedAction(placeWord);
+    this.grid.useMultiplicators(pwaFiltered);
+    if (!pwaFiltered.fromRedo) history.addPlayedAction(pwaFiltered);
     this.endPlayerTurn();
   }
 
@@ -333,7 +334,7 @@ public class GameModel {
     // remove the letters placed from the grid
     this.grid.undoPlaceLetters(placeWord);
     // add the letters placed to the player bag
-    placeWord.player.bag.addOther(placeWord.toPlace);
+    placeWord.player.bag.addOther(placeWord.toPlaceFiltered);
     // reload the model state (rng and turn ...)
     this.genericUndoing(placeWord);
     this.rngGenerator.loadState(placeWord.rngStateBefore);

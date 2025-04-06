@@ -11,10 +11,8 @@ import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.Direction;
 import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.GridWordPos;
-import pdp.scrabble.game.History.History;
 import pdp.scrabble.game.actions.ExchangeLetterAction;
 import pdp.scrabble.game.actions.ForfeitGameAction;
-import pdp.scrabble.game.actions.GameAction;
 import pdp.scrabble.game.actions.PassTurnAction;
 import pdp.scrabble.game.actions.PlaceWordAction;
 import pdp.scrabble.game.actions.RenamePlayerAction;
@@ -301,18 +299,16 @@ public class Parser {
   // parseGame()
   private void parseHistory() {
     assert this.loadedModel != null;
-    History<GameAction> parsed = new History<>();
     while (input.peek().type.equals("num")) {
       int curTurn = parseNumber();
       skipPunc('.');
       if (curTurn != loadedModel.getTurn()) input.croak("Turn number doesn't make sense");
-      parseActions(parsed, curTurn);
+      parseActions(curTurn);
       skipPunc(';');
     }
-    this.loadedModel.setHistory(parsed);
   }
 
-  private void parseActions(History<GameAction> parsed, int curTurn) {
+  private void parseActions(int curTurn) {
     while (!isPunc(';')) {
       int playerOrder = parseNumber();
       if (playerOrder != this.loadedModel.getCurrentPlayer().id)
@@ -325,14 +321,12 @@ public class Parser {
               new PlaceWordAction(
                   this.loadedModel.getCurrentPlayer(), curTurn, parseLetters(), gwp);
           placeAction.applyGameAction(loadedModel);
-          parsed.addPlayedAction(placeAction);
           continue;
         }
         if (actionType.equals("RenamePlayer")) {
           RenamePlayerAction renameAction =
               new RenamePlayerAction(this.loadedModel.getCurrentPlayer(), curTurn, parseString());
           renameAction.applyGameAction(this.loadedModel);
-          parsed.addPlayedAction(renameAction);
           continue;
         }
         if (actionType.equals("ExchangeLetter")) {
@@ -343,28 +337,24 @@ public class Parser {
           ExchangeLetterAction exchangeAction =
               new ExchangeLetterAction(this.loadedModel.getCurrentPlayer(), curTurn, toExchange);
           exchangeAction.applyGameAction(this.loadedModel);
-          parsed.addPlayedAction(exchangeAction);
           continue;
         }
         if (actionType.equals("ForfeitGame")) {
           ForfeitGameAction forfeitAction =
               new ForfeitGameAction(this.loadedModel.getCurrentPlayer(), curTurn);
           forfeitAction.applyGameAction(this.loadedModel);
-          parsed.addPlayedAction(forfeitAction);
           continue;
         }
         if (actionType.equals("PassTurn")) {
           PassTurnAction passTurnAction =
               new PassTurnAction(this.loadedModel.getCurrentPlayer(), curTurn);
           passTurnAction.applyGameAction(this.loadedModel);
-          parsed.addPlayedAction(passTurnAction);
           continue;
         }
         if (actionType.equals("RestartGame")) {
           RestartGameAction restartGameAction =
               new RestartGameAction(this.loadedModel.getCurrentPlayer(), curTurn);
           restartGameAction.applyGameAction(this.loadedModel);
-          parsed.addPlayedAction(restartGameAction);
           continue;
         }
         unexpected();

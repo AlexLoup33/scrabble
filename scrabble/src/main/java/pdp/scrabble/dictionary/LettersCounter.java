@@ -12,10 +12,10 @@ import pdp.scrabble.errorsHandling.ErrorType;
 public class LettersCounter {
 
   /**
-   * dico: <br>
+   * dictionary type like: <br>
    * A: 0 <br>
    * B: 45<br>
-   * sert a dire le nombre de chaque lettre presente
+   * how many A in
    */
   private final Hashtable<Letter, Integer> table;
 

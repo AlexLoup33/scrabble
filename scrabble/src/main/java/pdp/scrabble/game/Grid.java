@@ -238,20 +238,20 @@ public class Grid {
   public List<OwnedWord> placeLetters(PlaceWordAction pwa) {
     if (pwa.toPlace.length == 0) {
       throw new CustomError(
-          ErrorType.UnknownWord, "can't place no letters", "trying to place 0 letters");
+          ErrorType.UnknownWord, "can't place no letter", "trying to place 0 letter");
     }
     if (!this.isInBounds(pwa.startPosition.toGridPos())) {
       throw new CustomError(
           ErrorType.InvalidePlaceLetterAction,
           "can't place the letters out of the grid",
-          "cant execute a placeWordAction that starts out of the grid: " + pwa);
+          "can't execute a placeWordAction that starts out of the grid: " + pwa);
     }
     {
       GridPos startPos = pwa.startPosition.toGridPos();
       if (this.placedLetters[startPos.row()][startPos.col()] != null) {
         throw new CustomError(
             ErrorType.InvalidePlaceLetterAction,
-            "there is alredy a letter here",
+            "there is already a letter here",
             "a placeWordAction must start on an empty spot: " + pwa);
       }
     }

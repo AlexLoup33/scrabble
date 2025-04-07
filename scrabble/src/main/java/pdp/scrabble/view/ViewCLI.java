@@ -2,12 +2,13 @@ package pdp.scrabble.view;
 
 import static pdp.scrabble.errorsHandling.ErrorType.UnsupportedMultiplier;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 import pdp.scrabble.Utilities;
-import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.dictionary.Word;
@@ -53,7 +54,7 @@ public class ViewCLI implements IView {
     Utilities.verbose(
         "possible actions are: placeWord | exchangeLetter | passTurn "
             + "| renamePlayer | forfeitPlayer | restartGame | quit | undo | redo\n");
-    System.out.println(this.getFromLangPack("ask_actionType"));
+    Utilities.logger.println(this.getFromLangPack("ask_actionType"));
     String response = this.scaner.nextLine().strip();
 
     switch (response) {
@@ -94,7 +95,7 @@ public class ViewCLI implements IView {
 
   private ExchangeLetterAction ask_exchangeLetter(Player player, Integer turn) {
     Utilities.verbose("type the letters to exchange: like: 'AJTT' to exchange an A, J and 2 T\n");
-    System.out.print(this.getFromLangPack("ask_exchange"));
+    Utilities.logger.print(this.getFromLangPack("ask_exchange"));
     String response = this.scaner.nextLine().strip();
 
     LinkedList<Letter> letters = new LinkedList<>();
@@ -117,21 +118,21 @@ public class ViewCLI implements IView {
 
   private RenamePlayerAction ask_renamePlayer(Player player, Integer turn) {
     Utilities.verbose("type the new name for the current player\n");
-    System.out.print(this.getFromLangPack("ask_rename"));
+    Utilities.logger.print(this.getFromLangPack("ask_rename"));
     String response = this.scaner.nextLine().strip();
 
     return new RenamePlayerAction(player, turn, response);
   }
 
   private QuitAction askQuitAction(Player player, Integer turn) {
-    System.out.print(this.getFromLangPack("ask_save") + "[y/N]");
+    Utilities.logger.print(this.getFromLangPack("ask_save") + "[y/N]");
     String response = this.scaner.nextLine().strip().toLowerCase();
     boolean isSaveWanted = (response.equals("y") || response.equals("yes"));
     return new QuitAction(player, turn, isSaveWanted);
   }
 
   private RedoAction askRedoAction(Player player, Integer turn) {
-    System.out.print(this.getFromLangPack("ask_redo") + "[y/N]");
+    Utilities.logger.print(this.getFromLangPack("ask_redo") + "[y/N]");
     String response = this.scaner.nextLine().strip().toLowerCase();
     if (response.equals("y") || response.equals("yes")) {
       return new RedoAction(player, turn);
@@ -141,7 +142,7 @@ public class ViewCLI implements IView {
   }
 
   private UndoAction askUndoAction(Player player, Integer turn) {
-    System.out.print(this.getFromLangPack("ask_undo") + "[y/N]");
+    Utilities.logger.print(this.getFromLangPack("ask_undo") + "[y/N]");
     String response = this.scaner.nextLine().strip().toLowerCase();
     if (response.equals("y") || response.equals("yes")) {
       return new UndoAction(player, turn);
@@ -152,7 +153,7 @@ public class ViewCLI implements IView {
 
   private PlaceWordAction ask_placeWordAction(Player player, Integer turn) {
     Utilities.verbose("pattern for move is `yxdirection WORD`(eg. `a6h photo` or `b7v STICK` )\n");
-    System.out.print(this.getFromLangPack("ask_move"));
+    Utilities.logger.print(this.getFromLangPack("ask_move"));
     String response = this.scaner.nextLine();
     String[] move = response.split(" ");
 
@@ -219,17 +220,18 @@ public class ViewCLI implements IView {
   @Override
   public void displayGrid(Grid grid, Boolean isSuperScrabble) {
     // Display the first row of the grid with the column numbers
-    System.out.print("  ");
+    StringBuilder builder = new StringBuilder();
+    builder.append("  ");
     for (int i = 0; i < grid.size - 1; i++) {
-      if (i < 8) System.out.print(i + 1 + "  ");
-      else System.out.print(i + 1 + " ");
+      if (i < 8) builder.append(i + 1 + "  ");
+      else builder.append(i + 1 + " ");
     }
-    System.out.println(grid.size);
+    builder.append(grid.size + "\n");
 
     String colorReset = "\u001B[0m";
     // Display each row
     for (int i = 0; i < grid.size; i++) {
-      System.out.print((char) (i + 97) + " ");
+      builder.append((char) ('a' + i) + " ");
       for (int j = 0; j < grid.size; j++) {
         GridPos pos = new GridPos(i, j);
         ScoreMultiplier mult = grid.getMultiplier(pos);
@@ -262,34 +264,37 @@ public class ViewCLI implements IView {
 
         Letter letter = grid.getLetter(i, j);
         if (letter == null) {
-          if (j == grid.size - 1) System.out.print(backgroundColor + "_" + colorReset);
-          else System.out.print(backgroundColor + "_" + colorReset + "  ");
+          if (j == grid.size - 1) builder.append(backgroundColor + "_" + colorReset);
+          else builder.append(backgroundColor + "_" + colorReset + "  ");
         } else {
-          if (j == grid.size - 1) System.out.print(color + letter + colorReset);
-          else System.out.print(color + letter + "  " + colorReset);
+          if (j == grid.size - 1) builder.append(color + letter + colorReset);
+          else builder.append(color + letter + "  " + colorReset);
         }
       }
-      System.out.print("\n");
+      builder.append("\n");
     }
+    Utilities.logger.print(builder.toString());
   }
 
   @Override
   public void displayPlayerLetters(LettersCounter letters) {
-    System.out.print(this.getFromLangPack("show_letters"));
-    System.out.print("[ ");
+    StringBuilder builder = new StringBuilder();
+    builder.append(this.getFromLangPack("show_letters"));
+    builder.append("[ ");
     // Foreach with letters.getLetterSet()
     boolean isFirst = true;
     for (Letter letter : letters.getLettersSet()) {
       for (int i = 0; i < letters.getLetterCount(letter); i++) {
         if (!isFirst) {
-          System.out.print(" | ");
+          builder.append(" | ");
         } else {
           isFirst = false;
         }
-        System.out.print(letter);
+        builder.append(letter);
       }
     }
-    System.out.println(" ]");
+    builder.append(" ]\n");
+    Utilities.logger.print(builder.toString());
   }
 
   @Override
@@ -305,37 +310,43 @@ public class ViewCLI implements IView {
 
   @Override
   public void showScore(Player player) {
-    System.out.printf(
+    Utilities.logger.printf(
         langPack.getString("viewcli_score") + "\n", player.getName(), player.getScore());
   }
 
   @Override
   public void displayDraw(LettersDrawer draw) {
-    System.out.println(langPack.getString("display_draw") + " " + draw.getCurrentSize());
+    Utilities.logger.println(langPack.getString("display_draw") + " " + draw.getCurrentSize());
   }
 
   @Override
   public void announceTurn(Player currentPlayer, int turn) {
-    System.out.println("--------------------");
-    System.out.printf(langPack.getString("turn_begin") + "\n", currentPlayer.getName(), turn);
+    Utilities.logger.println("--------------------");
+    Utilities.logger.printf(langPack.getString("turn_begin") + "\n", currentPlayer.getName(), turn);
   }
 
   @Override
   public void showError(CustomError e) {
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
     if (e.isFatal()) {
-      System.out.printf("%sError: %s", ANSI_RED, e.toString());
-      e.printStackTrace(System.out);
-      System.out.print(ANSI_RESET + "\n");
+      Utilities.logger.printf("%sError: %s", ANSI_RED, e.toString());
+      e.printStackTrace(pw);
+      pw.print(ANSI_RESET + "\n");
+      Utilities.logger.print(sw.toString());
     } else {
-      System.out.printf("%sError: %s%s\n", ANSI_YELLOW, e.toString(), ANSI_RESET);
+      Utilities.logger.printf("%sError: %s%s\n", ANSI_YELLOW, e.toString(), ANSI_RESET);
     }
   }
 
   @Override
   public void showError(Throwable e) {
-    System.out.print(ANSI_RED + e.toString());
-    e.printStackTrace(System.out);
-    System.out.println(ViewCLI.ANSI_RESET);
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    Utilities.logger.print(ANSI_RED + e.toString());
+    e.printStackTrace(pw);
+    pw.print(ANSI_RESET + "\n");
+    Utilities.logger.print(sw.toString());
   }
 
   @Override
@@ -348,7 +359,7 @@ public class ViewCLI implements IView {
   @Override
   public void showRemainingTimes(List<Player> players) {
     for (Player player : players) {
-      System.out.printf(
+      Utilities.logger.printf(
           getFromLangPack("blitz_remaining") + "\n",
           player.getName(),
           player.getRemainingTimeAsString());
@@ -360,12 +371,7 @@ public class ViewCLI implements IView {
   }
 
   @Override
-  public void initialize(Configuration conf) {
-    System.out.println("Vue initialisée avec la configuration : " + conf);
-  }
-
-  @Override
   public void updateGUI(GameModel model) {
-    System.out.println("Methode inutilisable par le ViewCLI");
+    throw new UnsupportedOperationException("not supported by ViewCLI");
   }
 }

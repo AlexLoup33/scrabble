@@ -109,7 +109,7 @@ public class GameController {
               }
             } catch (InterruptedException e) {
               Thread.currentThread().interrupt();
-              System.out.println(e.getMessage());
+              Utilities.logger.println(e.getMessage());
             }
           }
         } else {

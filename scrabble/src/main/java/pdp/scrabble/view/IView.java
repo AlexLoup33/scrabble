@@ -1,7 +1,6 @@
 package pdp.scrabble.view;
 
 import java.util.List;
-import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.GameModel;
@@ -117,10 +116,6 @@ public interface IView {
    *     execution.
    */
   public void showError(Throwable e);
-
-  // public void showAbout(); //FIXME: J'ai pas compris alors help me
-
-  public void initialize(Configuration conf);
 
   public void updateGUI(GameModel model);
 }

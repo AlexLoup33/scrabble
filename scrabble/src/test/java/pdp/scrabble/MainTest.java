@@ -3,15 +3,12 @@ package pdp.scrabble;
 import static org.junit.Assert.*;
 import static pdp.scrabble.game.Lang.FR;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,17 +27,13 @@ import pdp.scrabble.view.ViewCLI;
 public class MainTest {
 
   private LettersCounter lc;
-  private Dictionary dict;
   private final Path path = java.nio.file.Paths.get("dictionary/fr.txt");
-  private static final ReentrantLock lock = new ReentrantLock();
   private GameModel gameModel;
   private Configuration config;
 
   @Before
   public void setUp() {
-    lock.lock();
     lc = new LettersCounter();
-    dict = new Dictionary();
 
     // DO NOT CHANGE WITHOUT ANY REASONS
     this.config =
@@ -68,10 +61,8 @@ public class MainTest {
   @After
   public void tearDown() {
     this.lc = null;
-    this.dict = null;
     this.gameModel = null;
     this.config = null;
-    lock.unlock();
   }
 
   @Test
@@ -121,11 +112,11 @@ public class MainTest {
     assertTrue(words.contains(new Word("AALENIEN")));
 
     Path invalidPath = Paths.get("../FAKE_FILE.txt");
-    try {
-      WordsLoader.loadWordsFromFile(invalidPath);
-    } catch (Exception e) {
-      assertTrue(e instanceof IllegalArgumentException);
-    }
+    assertThrows(
+        CustomError.class,
+        () -> {
+          WordsLoader.loadWordsFromFile(invalidPath);
+        });
   }
 
   @Test
@@ -176,7 +167,6 @@ public class MainTest {
 
   @Test
   public void testF31() {
-    // System.out.println(this.gameModel.getCurrentPlayer().getName());
     assertEquals("Player0", this.gameModel.getCurrentPlayer().getName());
 
     GameAction ga =
@@ -184,22 +174,17 @@ public class MainTest {
             this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), "franck");
     this.gameModel.applyGameActionDispatch(ga, 0);
 
-    // System.out.println(this.gameModel.getCurrentPlayer().getName());
     assertEquals("franck", this.gameModel.getCurrentPlayer().getName());
   }
 
   @Test
   public void testF33() {
-    // System.out.println(this.gameModel.getCurrentPlayer().getName());
-    // System.out.println(this.gameModel.getTurn());
     assertEquals("Player0", this.gameModel.getCurrentPlayer().getName());
     assertEquals(1, this.gameModel.getTurn());
 
     GameAction ga = new PassTurnAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
     this.gameModel.applyGameActionDispatch(ga, 0);
 
-    // System.out.println(this.gameModel.getCurrentPlayer().getName());
-    // System.out.println(this.gameModel.getTurn());
     assertEquals("Player1", this.gameModel.getCurrentPlayer().getName());
     assertEquals(1, this.gameModel.getTurn());
 
@@ -210,7 +195,6 @@ public class MainTest {
     }
 
     // Next turn reached
-    // System.out.println(this.gameModel.getTurn());
     assertEquals(2, this.gameModel.getTurn());
   }
 
@@ -264,7 +248,6 @@ public class MainTest {
             java.nio.file.Paths.get("dictionary/fr.txt"),
             java.nio.file.Paths.get("none"),
             java.nio.file.Paths.get("none"));
-    ViewCLI view = new ViewCLI(FR, false);
 
     GameModel gm = new GameModel(config);
     gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
@@ -476,7 +459,6 @@ public class MainTest {
 
   @Test
   public void testPrintGrid() {
-    PrintStream originalOut = System.out;
     Configuration config =
         new Configuration(
             true,
@@ -500,37 +482,34 @@ public class MainTest {
     gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
     ViewCLI view = new ViewCLI(gm.lang, config.getSuperScrabble());
 
-    final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
-    PrintStream outStreamCap = new PrintStream(outputStreamCaptor);
+    Utilities.logger.setRedirectState(false);
     try {
-      System.setOut(outStreamCap);
       view.displayGrid(gm.grid, false);
-      String output = outputStreamCaptor.toString().trim();
-
-      String expectedOutput =
-          """
-                            1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
-                            a [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
-                            b _[0m  [41m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m
-                            c _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
-                            d [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m
-                            e _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m
-                            f _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m
-                            g _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m
-                            h [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
-                            i _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m
-                            j _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m
-                            k _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m
-                            l [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m
-                            m _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
-                            n _[0m  [41m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m
-                            o [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m""";
-
-      assertEquals(expectedOutput, output);
     } finally {
-      System.setOut(originalOut);
-      outStreamCap.close();
+      Utilities.logger.setRedirectState(true);
     }
+
+    String expectedOutput =
+        "  "
+            + """
+1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+a [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
+b _[0m  [41m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m
+c _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
+d [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m
+e _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m
+f _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m
+g _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m
+h [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
+i _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m
+j _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m
+k _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m
+l [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m
+m _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
+n _[0m  [41m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m
+o [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m\n""";
+
+    assertEquals(expectedOutput, Utilities.logger.loggedOuts.getLast());
   }
 
   @Test
@@ -632,7 +611,6 @@ public class MainTest {
     assertEquals(
         "LettersCounter{table=A:1,E:1,G:1,I:1,L:2,R:1}",
         this.gameModel.getCurrentPlayer().bag.toString());
-    // System.out.println(this.gameModel.players.get(0).bag);
 
     List<Letter> toExchange = new ArrayList<>();
     toExchange.add(new Letter('L'));
@@ -670,7 +648,6 @@ public class MainTest {
 
   @Test
   public void testF24() {
-    PrintStream originalOut = System.out;
     Configuration config =
         new Configuration(
             true,
@@ -719,44 +696,39 @@ public class MainTest {
               .toString();
         });
 
-    final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
-    PrintStream outStreamCap = new PrintStream(outputStreamCaptor);
+    Utilities.logger.setRedirectState(false);
     try {
-      System.setOut(outStreamCap);
       view.displayGrid(gm.grid, true);
-      String output = outputStreamCaptor.toString().trim();
-
-      String expectedOutput =
-          """
-                            1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21
-                            a [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
-                            b _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m
-                            c _[0m  _[0m  [41m_[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
-                            d [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m
-                            e _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m
-                            f _[0m  _[0m  [45m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  [45m_[0m
-                            g _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m
-                            h [41;1m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41;1m_[0m
-                            i _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m
-                            j _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
-                            k [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m
-                            l _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
-                            m _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m
-                            n [41;1m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41;1m_[0m
-                            o _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m
-                            p _[0m  _[0m  [45m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  [45m_[0m
-                            q _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m
-                            r [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m
-                            s _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
-                            t _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m
-                            u [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  [45m_[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  [45m_[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m""";
-
-      assertEquals(expectedOutput, output);
-
     } finally {
-      System.setOut(originalOut);
-      outStreamCap.close();
+      Utilities.logger.setRedirectState(true);
     }
+    String expectedOutput =
+        "  "
+            + """
+1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21
+a [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
+b _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m
+c _[0m  _[0m  [41m_[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
+d [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m
+e _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m
+f _[0m  _[0m  [45m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  [45m_[0m
+g _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m
+h [41;1m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41;1m_[0m
+i _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m
+j _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
+k [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m
+l _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
+m _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m
+n [41;1m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41;1m_[0m
+o _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m
+p _[0m  _[0m  [45m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  [45m_[0m
+q _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m
+r [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m
+s _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
+t _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m
+u [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  [45m_[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  [45m_[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m\n""";
+
+    assertEquals(expectedOutput, Utilities.logger.loggedOuts.getLast());
   }
 
   @Test

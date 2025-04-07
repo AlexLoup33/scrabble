@@ -40,7 +40,7 @@ public class Grid {
       }
 
     } catch (IOException e) {
-      System.out.println(e);
+      Utilities.logger.println(e.toString());
     }
   }
 
@@ -238,7 +238,6 @@ public class Grid {
 
   // Should only be called by model really
   public List<OwnedWord> placeLetters(PlaceWordAction pwa) {
-    System.out.println(pwa);
     if (!pwa.isFiltered())
       throw new CustomError(
           ErrorType.InvalidePlaceLetterAction,

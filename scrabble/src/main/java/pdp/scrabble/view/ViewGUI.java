@@ -20,7 +20,6 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
@@ -616,12 +615,6 @@ public class ViewGUI implements IView {
     alert.setHeaderText(langPack.getString("error"));
     alert.setContentText(e.getMessage());
     alert.showAndWait();
-  }
-
-  @Override
-  public void initialize(Configuration conf) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'initialize'");
   }
 
   @Override

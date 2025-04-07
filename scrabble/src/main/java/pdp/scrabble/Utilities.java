@@ -9,6 +9,7 @@ public class Utilities {
 
   private static String enableFlags = null;
   private static boolean verboseEnabled = false;
+  public static final Logger logger = new Logger(System.out);
 
   /**
    * Initialize so that only debug messages with a flag in flagList will be printed.
@@ -37,7 +38,7 @@ public class Utilities {
    */
   public static void debug(char flag, String format, Object... args) {
     if (debugIsEnabled(flag)) {
-      System.err.printf(format, args);
+      Utilities.logger.printf(format, args);
     }
   }
 
@@ -51,7 +52,7 @@ public class Utilities {
    */
   public static void verbose(String format, Object... args) {
     if (verboseEnabled) {
-      System.out.printf(format, args);
+      Utilities.logger.printf(format, args);
     }
   }
 

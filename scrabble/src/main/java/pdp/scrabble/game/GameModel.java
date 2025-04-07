@@ -151,6 +151,7 @@ public class GameModel {
 
   // F41
   public void applyGameAction(RestartGameAction restart) {
+    restart.player.undoTurnPlayedTime(restart); // don't count the time to select redo
     while (this.history.canUndo()) {
       this.undoOne();
     }

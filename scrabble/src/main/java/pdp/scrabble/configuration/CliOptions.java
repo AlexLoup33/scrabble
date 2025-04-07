@@ -166,9 +166,9 @@ public class CliOptions {
 
     if (line.hasOption("version")) {
       try {
-        System.out.println(Utilities.getProjetVersion());
+        Utilities.logger.println(Utilities.getProjetVersion());
       } catch (CustomError e) {
-        System.out.println(e.toUserFormatedText());
+        Utilities.logger.println(e.toUserFormatedText());
         System.exit(1);
       }
       System.exit(0);

@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import pdp.scrabble.Utilities;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 
@@ -128,7 +129,7 @@ public class ConfigurationBuilder {
                       new Class[] {Boolean.class});
               setter.invoke(target, value);
             } catch (Exception e) {
-              System.out.println(e);
+              Utilities.logger.println(e.toString());
             }
             break;
           }

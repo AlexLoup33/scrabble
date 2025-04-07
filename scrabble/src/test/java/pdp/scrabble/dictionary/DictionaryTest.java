@@ -43,31 +43,30 @@ public class DictionaryTest {
 
   @Test
   public void testCustomDictionary() {
+    Dictionary customDict = new Dictionary();
+    Dictionary defaultEnDict = new Dictionary();
+    String customDictContent = "ABCDEF";
+    String legalContent = "STICK";
+
+    defaultEnDict.loadFromFile(Paths.get("dictionary/en.txt"));
+
     try {
-      Dictionary customDict = new Dictionary();
-      Dictionary defaultEnDict = new Dictionary();
-      String customDictContent = "ABCDEF";
-      String legalContent = "STICK";
-
-      defaultEnDict.loadFromFile(Paths.get("dictionary/en.txt"));
-
       FileWriter dictWriter = new FileWriter("src/test/resources/dictionary/created.txt");
       dictWriter.write(customDictContent);
       dictWriter.close();
-      customDict.loadFromFile(Paths.get("src/test/resources/dictionary/created.txt"));
-
-      // Our newly created custom dict contains our test word
-      assertTrue(customDict.toString().contains(customDictContent));
-      // but not the default dict
-      assertFalse(defaultEnDict.toString().contains(customDictContent));
-
-      // Our newly created custom dict does not contain standard word
-      assertFalse(customDict.toString().contains(legalContent));
-      // but the default does
-      assertTrue(defaultEnDict.toString().contains(legalContent));
-
     } catch (IOException e) {
-      System.out.println(e);
+      throw new Error("the test crashed while opening the file: " + e.toString());
     }
+    customDict.loadFromFile(Paths.get("src/test/resources/dictionary/created.txt"));
+
+    // Our newly created custom dict contains our test word
+    assertTrue(customDict.toString().contains(customDictContent));
+    // but not the default dict
+    assertFalse(defaultEnDict.toString().contains(customDictContent));
+
+    // Our newly created custom dict does not contain standard word
+    assertFalse(customDict.toString().contains(legalContent));
+    // but the default does
+    assertTrue(defaultEnDict.toString().contains(legalContent));
   }
 }

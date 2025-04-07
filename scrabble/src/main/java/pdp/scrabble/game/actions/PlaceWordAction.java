@@ -3,7 +3,6 @@ package pdp.scrabble.game.actions;
 import java.util.Arrays;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
-import pdp.scrabble.dictionary.Word;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.GameModel;
@@ -39,7 +38,11 @@ public class PlaceWordAction extends GameAction {
   }
 
   public PlaceWordAction(
-      Player player, int turn, Letter[] wordToPlace, Letter[] lettersToPlace, GridWordPos lettersStartPos) {
+      Player player,
+      int turn,
+      Letter[] wordToPlace,
+      Letter[] lettersToPlace,
+      GridWordPos lettersStartPos) {
     super(player, turn);
     this.wordToPlace = wordToPlace.clone();
     this.lettersToPlace = lettersToPlace.clone();

@@ -7,10 +7,8 @@ import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 
 /**
- * Provides a template for ConfigurationBuilder to create a Configuration object
- * incrementally. This
- * is needed because Configuration record is immutable. All the setters throws
- * errors if the values
+ * Provides a template for ConfigurationBuilder to create a Configuration object incrementally. This
+ * is needed because Configuration record is immutable. All the setters throws errors if the values
  * does not match the requirements.
  */
 public class ConfigurationTemplate {
@@ -43,7 +41,7 @@ public class ConfigurationTemplate {
   private Path historyFile;
 
   public ConfigurationTemplate() {
-    this.aiPlayers = new boolean[] { false, false, false, false };
+    this.aiPlayers = new boolean[] {false, false, false, false};
   }
 
   public void setVerbose(Boolean verbose) {
@@ -80,7 +78,7 @@ public class ConfigurationTemplate {
 
   public void setAiPlayers(String aiPlayers) {
     if (aiPlayers.contains("A")) {
-      this.aiPlayers = new boolean[] { true, true, true, true };
+      this.aiPlayers = new boolean[] {true, true, true, true};
       return;
     }
     if (aiPlayers.contains("1")) {

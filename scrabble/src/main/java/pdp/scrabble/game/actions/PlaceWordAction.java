@@ -3,6 +3,7 @@ package pdp.scrabble.game.actions;
 import java.util.Arrays;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
+import pdp.scrabble.dictionary.Word;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.GameModel;
@@ -17,8 +18,8 @@ import pdp.scrabble.game.Player;
  */
 public class PlaceWordAction extends GameAction {
   // toPlaceFiltered.length <= toPlace.length
-  public final Letter[] toPlace; // Letters sent by the user
-  public final Letter[] toPlaceFiltered; // Letters actually used by model
+  public final Letter[] wordToPlace; // Letters sent by the user
+  public final Letter[] lettersToPlace; // Letters actually used by model
   public final GridWordPos startPosition;
 
   // Used by undo
@@ -27,25 +28,25 @@ public class PlaceWordAction extends GameAction {
   public final int scoreBefore;
   public final GridPos[] placedLettersPos;
 
-  public PlaceWordAction(Player player, int turn, Letter[] toPlace, GridWordPos startPos) {
+  public PlaceWordAction(Player player, int turn, Letter[] wordToPlace, GridWordPos wordStartPos) {
     super(player, turn);
-    this.toPlace = toPlace.clone();
-    this.toPlaceFiltered = null;
-    this.startPosition = startPos;
+    this.wordToPlace = wordToPlace;
+    this.lettersToPlace = null;
+    this.startPosition = wordStartPos;
     this.scoreBefore = player.getScore();
     this.drawedAfter = new LettersCounter();
-    this.placedLettersPos = new GridPos[toPlace.length];
+    this.placedLettersPos = new GridPos[wordToPlace.length];
   }
 
   public PlaceWordAction(
-      Player player, int turn, Letter[] toPlace, Letter[] toPlaceFiltered, GridWordPos startPos) {
+      Player player, int turn, Letter[] wordToPlace, Letter[] lettersToPlace, GridWordPos lettersStartPos) {
     super(player, turn);
-    this.toPlace = toPlace.clone();
-    this.toPlaceFiltered = toPlaceFiltered.clone();
-    this.startPosition = startPos;
+    this.wordToPlace = wordToPlace.clone();
+    this.lettersToPlace = lettersToPlace.clone();
+    this.startPosition = lettersStartPos;
     this.scoreBefore = player.getScore();
     this.drawedAfter = new LettersCounter();
-    this.placedLettersPos = new GridPos[toPlaceFiltered.length];
+    this.placedLettersPos = new GridPos[lettersToPlace.length];
   }
 
   @Override
@@ -61,22 +62,9 @@ public class PlaceWordAction extends GameAction {
     }
   }
 
-  /**
-   * convert the letters to a LetterCounter
-   *
-   * @return
-   */
-  private LettersCounter getLetterArrayAsCounter(Letter[] target) {
-    LettersCounter result = new LettersCounter();
-    for (Letter l : target) {
-      result.addLetter(l);
-    }
-    return result;
-  }
-
   private LettersCounter getMissingLetters() {
     LettersCounter missing = new LettersCounter();
-    LettersCounter toPlace = this.getLetterArrayAsCounter(this.toPlaceFiltered);
+    LettersCounter toPlace = new LettersCounter(this.lettersToPlace);
 
     for (Letter letter : toPlace.getLettersSet()) {
       int nbToPlace = toPlace.getLetterCount(letter);
@@ -113,14 +101,14 @@ public class PlaceWordAction extends GameAction {
    * (it will be asserted before removing the letters)
    */
   public void removeLettersPlaced() {
-    if (this.toPlaceFiltered == null)
+    if (!this.isFiltered())
       throw new CustomError(
           ErrorType.PlayerDoesntHaveLettersInIsBag,
           "PlaceWordAction was not filtered before removing letters",
-          "Following word was not filtered :" + Letter.concatenate(this.toPlace));
+          "Following word was not filtered :" + Letter.concatenate(this.wordToPlace));
     this.assertHasLettersToPlace(); // avoid breaking anything
 
-    LettersCounter toPlace = this.getLetterArrayAsCounter(this.toPlaceFiltered);
+    LettersCounter toPlace = new LettersCounter(this.lettersToPlace);
     for (Letter letter : toPlace.getLettersSet()) {
       int nbToPlace = toPlace.getLetterCount(letter);
       int nbInBag = this.player.bag.getLetterCount(letter);
@@ -150,12 +138,12 @@ public class PlaceWordAction extends GameAction {
   @Override
   public String toString() {
     String lettersList =
-        Arrays.stream(this.toPlace)
+        Arrays.stream(this.wordToPlace)
             .map(arg0 -> "" + arg0.chr)
             .reduce("", (arg0, arg1) -> arg0 + arg1 + ", ");
     String lettersListFiltered =
-        (this.toPlaceFiltered != null)
-            ? Arrays.stream(this.toPlaceFiltered)
+        (this.isFiltered())
+            ? Arrays.stream(this.lettersToPlace)
                 .map(arg0 -> "" + arg0.chr)
                 .reduce("", (arg0, arg1) -> arg0 + arg1 + ", ")
             : "";
@@ -180,20 +168,23 @@ public class PlaceWordAction extends GameAction {
 
   @Override
   public String toSerializedString() {
-    // ascii 97 = a
-    char row = (char) (97 + this.startPosition.row());
+    char row = (char) ('a' + this.startPosition.row());
     String col = String.valueOf(this.startPosition.col() + 1);
     char direction =
         switch (this.startPosition.direction()) {
           case Right -> 'h';
           case Down -> 'v';
         };
-    String word = Letter.concatenate(this.toPlace);
+    String word = Letter.concatenate(this.wordToPlace);
     return this.player.id + " PlaceWord " + row + col + direction + " " + word;
   }
 
   @Override
   public void undo(GameModel gameModel) {
     gameModel.undoGameAction(this);
+  }
+
+  public boolean isFiltered() {
+    return this.lettersToPlace != null;
   }
 }

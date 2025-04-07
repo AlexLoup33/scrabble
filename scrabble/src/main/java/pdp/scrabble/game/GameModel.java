@@ -60,17 +60,9 @@ public class GameModel {
   }
 
   public void reset() {
-    this.rngGenerator.reset(); // way safer to keep this line the first !!
-    this.grid.reset();
-    this.draw.reset();
-    for (Player player : this.players) {
-      player.reset();
-      drawLetters(player);
+    while (this.history.canUndo()) {
+      this.undoOne();
     }
-    this.currentPlayer = this.players.get(0);
-    this.gameTurn = 1;
-    this.everyonePassedTurnStreak = 0;
-    // TODO: replace manual reset by undo all
     this.history.clear();
   }
 
@@ -81,9 +73,7 @@ public class GameModel {
   }
 
   private void redoOne() {
-    System.out.println(this.history.getCurrentNodeID());
     GameAction toRedo = this.history.redoOne();
-    System.out.println(this.history.getCurrentNodeID());
     // no needs to redo the played time here
     toRedo.fromRedo = true;
     this.applyGameActionDispatch(toRedo, toRedo.duration);
@@ -155,7 +145,7 @@ public class GameModel {
       pwaFiltered.player.addScore(wordScore);
     }
     {
-      int bonus = this.grid.getBonusScore(pwaFiltered.toPlace);
+      int bonus = this.grid.getBonusScore(pwaFiltered.lettersToPlace);
       if (bonus != 0) {
         pwaFiltered.player.addScore(bonus);
         Utilities.verbose(" -> scored a scrable: +" + bonus + " pts)\n");
@@ -334,7 +324,7 @@ public class GameModel {
     // remove the letters placed from the grid
     this.grid.undoPlaceLetters(placeWord);
     // add the letters placed to the player bag
-    placeWord.player.bag.addOther(placeWord.toPlaceFiltered);
+    placeWord.player.bag.addOther(placeWord.lettersToPlace);
     // reload the model state (rng and turn ...)
     this.genericUndoing(placeWord);
     this.rngGenerator.loadState(placeWord.rngStateBefore);

@@ -33,14 +33,14 @@ public class History<T> {
   /**
    * @return the ID of the current node when the Hist is empty
    */
-  public int getEmptyHistNodeID() {
+  private int getEmptyHistNodeID() {
     return this.nullNode.getID();
   }
 
   /**
    * @return the ID of the current node
    */
-  public int getCurrentNodeID() {
+  private int getCurrentNodeID() {
     return this.currentNode.getID();
   }
 
@@ -127,5 +127,9 @@ public class History<T> {
       node = node.getPrevNode();
     }
     return lst;
+  }
+
+  public boolean canUndo() {
+    return (this.getCurrentNodeID() != this.getEmptyHistNodeID());
   }
 }

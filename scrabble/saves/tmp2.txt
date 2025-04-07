@@ -35,5 +35,5 @@ ContestFile="null"
 # o _  _  _  _  _  _  _  _  _  _  _  _  _  _  _
 <<<<<<<<<<<<<<<<<<<< HISTORY
 1. 0 PlaceWord h8v AIR 1 RenamePlayer "bob" 1 ExchangeLetter [L,S,D];
-2. 0 PassTurn 1 PlaceWord h7h RCE;
+2. 0 PassTurn 1 PlaceWord h7h RACE;
 >>>>>>>>>>>>>>>>>>>>

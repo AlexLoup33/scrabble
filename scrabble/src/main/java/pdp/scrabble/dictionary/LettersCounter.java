@@ -45,6 +45,11 @@ public class LettersCounter {
     }
   }
 
+  public LettersCounter(Letter[] lettersToPlace) {
+    this();
+    this.addOther(lettersToPlace);
+  }
+
   /**
    * add count of the given Letter
    *

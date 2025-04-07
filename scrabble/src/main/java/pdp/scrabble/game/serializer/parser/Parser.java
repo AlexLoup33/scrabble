@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.ConfigurationTemplate;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.Word;
@@ -11,6 +12,7 @@ import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.Direction;
 import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.GridWordPos;
+import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.ExchangeLetterAction;
 import pdp.scrabble.game.actions.ForfeitGameAction;
 import pdp.scrabble.game.actions.PassTurnAction;
@@ -313,19 +315,21 @@ public class Parser {
       int playerOrder = parseNumber();
       if (playerOrder != this.loadedModel.getCurrentPlayer().id)
         input.croak("Player id doesn't make sense");
+      Player playing = this.loadedModel.getCurrentPlayer();
+      Utilities.debug('s', "%s begins his turn\n", playing.getName());
+      Utilities.debug('s', "%s's letters: %s \n", playing.getName(), playing.bag.toString());
+      Utilities.debug(
+          's', "numbers of letters in draw: %d\n", this.loadedModel.draw.getCurrentSize());
       String actionType = parseIdent();
       try {
         if (actionType.equals("PlaceWord")) {
           GridWordPos gwp = parseMove();
-          PlaceWordAction placeAction =
-              new PlaceWordAction(
-                  this.loadedModel.getCurrentPlayer(), curTurn, parseLetters(), gwp);
+          PlaceWordAction placeAction = new PlaceWordAction(playing, curTurn, parseLetters(), gwp);
           placeAction.applyGameAction(loadedModel);
           continue;
         }
         if (actionType.equals("RenamePlayer")) {
-          RenamePlayerAction renameAction =
-              new RenamePlayerAction(this.loadedModel.getCurrentPlayer(), curTurn, parseString());
+          RenamePlayerAction renameAction = new RenamePlayerAction(playing, curTurn, parseString());
           renameAction.applyGameAction(this.loadedModel);
           continue;
         }
@@ -335,25 +339,22 @@ public class Parser {
                   .map((obj) -> new Letter(((String) obj).charAt(0)))
                   .collect(Collectors.toList());
           ExchangeLetterAction exchangeAction =
-              new ExchangeLetterAction(this.loadedModel.getCurrentPlayer(), curTurn, toExchange);
+              new ExchangeLetterAction(playing, curTurn, toExchange);
           exchangeAction.applyGameAction(this.loadedModel);
           continue;
         }
         if (actionType.equals("ForfeitGame")) {
-          ForfeitGameAction forfeitAction =
-              new ForfeitGameAction(this.loadedModel.getCurrentPlayer(), curTurn);
+          ForfeitGameAction forfeitAction = new ForfeitGameAction(playing, curTurn);
           forfeitAction.applyGameAction(this.loadedModel);
           continue;
         }
         if (actionType.equals("PassTurn")) {
-          PassTurnAction passTurnAction =
-              new PassTurnAction(this.loadedModel.getCurrentPlayer(), curTurn);
+          PassTurnAction passTurnAction = new PassTurnAction(playing, curTurn);
           passTurnAction.applyGameAction(this.loadedModel);
           continue;
         }
         if (actionType.equals("RestartGame")) {
-          RestartGameAction restartGameAction =
-              new RestartGameAction(this.loadedModel.getCurrentPlayer(), curTurn);
+          RestartGameAction restartGameAction = new RestartGameAction(playing, curTurn);
           restartGameAction.applyGameAction(this.loadedModel);
           continue;
         }

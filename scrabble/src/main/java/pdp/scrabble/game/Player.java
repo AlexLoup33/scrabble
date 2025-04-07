@@ -31,15 +31,6 @@ public class Player {
     this.remainingTime = this.timePerPlayer * 60L;
   }
 
-  public void reset() {
-    this.score = 0;
-    this.bag.clear();
-    this.hasForfeited = false;
-    this.hasPassed = false;
-    this.remainingTime = this.timePerPlayer * 60L;
-    // don't reset the player name
-  }
-
   /** tell the player he passed his turn */
   public void playerPassedTurn() {
     this.hasPassed = true;

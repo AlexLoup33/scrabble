@@ -460,15 +460,6 @@ public class Grid {
     }
   }
 
-  public void reset() {
-    for (int i = 0; i < this.size; i++) {
-      for (int j = 0; j < this.size; j++) {
-        this.placedLetters[i][j] = null;
-        this.multiplicatorsUsed[i][j] = false;
-      }
-    }
-  }
-
   public int getGridSize() {
     return this.size;
   }

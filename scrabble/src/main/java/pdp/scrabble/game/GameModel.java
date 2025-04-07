@@ -59,13 +59,6 @@ public class GameModel {
     this.everyonePassedTurnStreak = 0;
   }
 
-  public void reset() {
-    while (this.history.canUndo()) {
-      this.undoOne();
-    }
-    this.history.clear();
-  }
-
   private void undoOne() {
     GameAction toUndo = this.history.undoOne();
     // undo the played time
@@ -158,7 +151,10 @@ public class GameModel {
 
   // F41
   public void applyGameAction(RestartGameAction restart) {
-    this.reset();
+    while (this.history.canUndo()) {
+      this.undoOne();
+    }
+    this.history.clear();
   }
 
   public void applyGameAction(QuitAction quit) {

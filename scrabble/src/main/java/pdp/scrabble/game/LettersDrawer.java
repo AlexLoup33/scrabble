@@ -18,17 +18,12 @@ public class LettersDrawer {
     this.lang = lang;
     this.isSuperScrabble = isSuperScrabble;
     this.content = new LettersCounter();
-    this.reset();
-    this.maxSize = this.content.size();
-  }
-
-  public void reset() {
-    this.content.clear();
     LettersCounter initialLetters = this.lang.getLettersCount(this.isSuperScrabble);
     for (Letter l : initialLetters.getLettersSet()) {
       int count = initialLetters.getLetterCount(l);
       this.content.addLetter(l, count);
     }
+    this.maxSize = this.content.size();
   }
 
   public int getCurrentSize() {

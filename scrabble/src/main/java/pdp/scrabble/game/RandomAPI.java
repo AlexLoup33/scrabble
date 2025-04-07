@@ -21,11 +21,6 @@ public class RandomAPI implements RandomUser {
     } else {
       this.baseSeed = configSeed;
     }
-    this.reset();
-  }
-
-  /** reset the state to the baseSeed determined when configured */
-  public void reset() {
     this.loadState(this.baseSeed);
   }
 

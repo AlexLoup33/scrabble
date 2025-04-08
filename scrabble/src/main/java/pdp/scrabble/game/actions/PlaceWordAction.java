@@ -19,7 +19,8 @@ public class PlaceWordAction extends GameAction {
   // toPlaceFiltered.length <= toPlace.length
   public final Letter[] wordToPlace; // Letters sent by the user
   public final Letter[] lettersToPlace; // Letters actually used by model
-  public final GridWordPos startPosition;
+  public final GridWordPos wordStartPos;
+  public final GridWordPos lettersStartPos;
 
   // Used by undo
   public long rngStateBefore = 0L; // to set by model
@@ -31,7 +32,8 @@ public class PlaceWordAction extends GameAction {
     super(player, turn);
     this.wordToPlace = wordToPlace;
     this.lettersToPlace = null;
-    this.startPosition = wordStartPos;
+    this.wordStartPos = wordStartPos;
+    this.lettersStartPos = null;
     this.scoreBefore = player.getScore();
     this.drawedAfter = new LettersCounter();
     this.placedLettersPos = new GridPos[wordToPlace.length];
@@ -42,11 +44,13 @@ public class PlaceWordAction extends GameAction {
       int turn,
       Letter[] wordToPlace,
       Letter[] lettersToPlace,
+      GridWordPos wordStartPos,
       GridWordPos lettersStartPos) {
     super(player, turn);
     this.wordToPlace = wordToPlace.clone();
     this.lettersToPlace = lettersToPlace.clone();
-    this.startPosition = lettersStartPos;
+    this.wordStartPos = wordStartPos;
+    this.lettersStartPos = lettersStartPos;
     this.scoreBefore = player.getScore();
     this.drawedAfter = new LettersCounter();
     this.placedLettersPos = new GridPos[lettersToPlace.length];
@@ -150,14 +154,17 @@ public class PlaceWordAction extends GameAction {
                 .map(arg0 -> "" + arg0.chr)
                 .reduce("", (arg0, arg1) -> arg0 + arg1 + ", ")
             : "";
+    String wordStartPos = (this.wordStartPos != null) ? this.wordStartPos.toString() : "null";
     return this.getClass().getSimpleName()
         + "{"
         + "toPlace=["
         + lettersList
         + "], toPlaceFiltered=["
         + lettersListFiltered
-        + "], startPosition="
-        + this.startPosition
+        + "], lettersStartPos="
+        + this.lettersStartPos
+        + "wordStartPos="
+        + wordStartPos
         + ", playerID:"
         + this.player.id
         + ", rngStateBefore="
@@ -169,12 +176,13 @@ public class PlaceWordAction extends GameAction {
         + '}';
   }
 
+  // We serialize the values pre-filter
   @Override
   public String toSerializedString() {
-    char row = (char) ('a' + this.startPosition.row());
-    String col = String.valueOf(this.startPosition.col() + 1);
+    char row = (char) ('a' + this.wordStartPos.row());
+    String col = String.valueOf(this.wordStartPos.col() + 1);
     char direction =
-        switch (this.startPosition.direction()) {
+        switch (this.wordStartPos.direction()) {
           case Right -> 'h';
           case Down -> 'v';
         };
@@ -188,6 +196,6 @@ public class PlaceWordAction extends GameAction {
   }
 
   public boolean isFiltered() {
-    return this.lettersToPlace != null;
+    return (this.lettersToPlace != null && this.lettersStartPos != null);
   }
 }

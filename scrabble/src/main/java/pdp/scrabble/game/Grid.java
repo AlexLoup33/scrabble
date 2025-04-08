@@ -198,7 +198,7 @@ public class Grid {
       final List<GridPos> lettersPlaced,
       PlaceWordAction pwa) {
     final LinkedList<Letter> newWord = new LinkedList<>();
-    final Direction wordDir = pwa.startPosition.direction();
+    final Direction wordDir = pwa.lettersStartPos.direction();
     int indexNextNewLetter = 0;
     for (GridPos letterPos : firstPos.getPath(lastPos)) {
       Letter letter = this.placedLetters[letterPos.row()][letterPos.col()];
@@ -219,7 +219,7 @@ public class Grid {
   private OwnedWord constructAuxNewWord(
       final GridPos firstPos, final GridPos lastPos, Letter newLetter, PlaceWordAction pwa) {
     final LinkedList<Letter> newWord = new LinkedList<>();
-    final Direction wordDir = pwa.startPosition.direction().getOppositDirection();
+    final Direction wordDir = pwa.lettersStartPos.direction().getOppositDirection();
     boolean hasPlacedNewLetter = false;
     for (GridPos letterPos : firstPos.getPath(lastPos)) {
       Letter letter = this.placedLetters[letterPos.row()][letterPos.col()];
@@ -247,14 +247,14 @@ public class Grid {
       throw new CustomError(
           ErrorType.UnknownWord, "can't place no letter", "trying to place 0 letter");
     }
-    if (!this.isInBounds(pwa.startPosition.toGridPos())) {
+    if (!this.isInBounds(pwa.lettersStartPos.toGridPos())) {
       throw new CustomError(
           ErrorType.InvalidePlaceLetterAction,
           "can't place the letters out of the grid",
           "can't execute a placeWordAction that starts out of the grid: " + pwa);
     }
     {
-      GridPos startPos = pwa.startPosition.toGridPos();
+      GridPos startPos = pwa.lettersStartPos.toGridPos();
       if (this.placedLetters[startPos.row()][startPos.col()] != null) {
         throw new CustomError(
             ErrorType.InvalidePlaceLetterAction,
@@ -264,14 +264,14 @@ public class Grid {
     }
 
     final LinkedList<OwnedWord> result = new LinkedList<>();
-    final Direction wordDirection = pwa.startPosition.direction();
+    final Direction wordDirection = pwa.lettersStartPos.direction();
     final Direction wordOppositDirection = wordDirection.getOppositDirection();
 
     // ** determine the position where the letters will be placed
     final ArrayList<GridPos> lettersPos = new ArrayList<>();
     // index -> pos of the letter of the same index in pwa
     {
-      GridPos currPos = pwa.startPosition.toGridPos();
+      GridPos currPos = pwa.lettersStartPos.toGridPos();
       for (int index = 0; index < pwa.lettersToPlace.length; index++) {
         final boolean isLastLetterOfWord = (index + 1 == pwa.lettersToPlace.length);
         // => currPos is the pos of the letter at index
@@ -490,12 +490,13 @@ public class Grid {
   }
 
   public PlaceWordAction filterPwa(PlaceWordAction pwa) {
-    GridWordPos filteredStartPos = pwa.startPosition;
-    // If the first letter is already occupied on board
-    // Then move the filtered word one to the right or one down, according to direction
+    GridWordPos filteredStartPos = pwa.wordStartPos;
+    // If the first letters are already occupied on board
+    // Then move the filtered word to the right or down, according to direction
     int toPlaceIndex = 0;
-    if (this.placedLetters[filteredStartPos.row()][filteredStartPos.col()] != null) {
-      toPlaceIndex++; // Ignore the first char of toPlace
+    while (this.placedLetters[filteredStartPos.row()][filteredStartPos.col()] != null
+        && toPlaceIndex < pwa.wordToPlace.length) {
+      toPlaceIndex++;
       if (filteredStartPos.direction() == Direction.Right) {
         filteredStartPos =
             new GridWordPos(
@@ -537,6 +538,6 @@ public class Grid {
         Letter.concatenate(pwa.wordToPlace),
         Letter.concatenate(toPlaceFiltered));
     return new PlaceWordAction(
-        pwa.player, pwa.turn, pwa.wordToPlace, toPlaceFiltered, filteredStartPos);
+        pwa.player, pwa.turn, pwa.wordToPlace, toPlaceFiltered, pwa.wordStartPos, filteredStartPos);
   }
 }

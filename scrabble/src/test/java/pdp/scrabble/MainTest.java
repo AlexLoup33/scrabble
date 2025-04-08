@@ -21,7 +21,9 @@ import pdp.scrabble.dictionary.Word;
 import pdp.scrabble.dictionary.WordsLoader;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.game.*;
+import pdp.scrabble.game.History.History;
 import pdp.scrabble.game.actions.*;
+import pdp.scrabble.game.serializer.parser.CharInputStream;
 import pdp.scrabble.view.ViewCLI;
 
 public class MainTest {
@@ -845,5 +847,17 @@ u [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41;1m_[0m  _[0m
             toPlace,
             new GridWordPos(0, 1, Direction.Right));
     assertEquals("0 PlaceWord a2h LOUEE", place.toSerializedString());
+
+    History history = new History<>();
+    assertEquals("", history.toSerializedString());
+  }
+
+  @Test
+  public void TestCharInputStream() {
+    CharInputStream cis = new CharInputStream(path);
+    assertEquals('A', cis.next());
+    assertEquals('A', cis.peek());
+    assertEquals(false, cis.eof());
+    assertThrows(CustomError.class, () -> cis.croak(null));
   }
 }

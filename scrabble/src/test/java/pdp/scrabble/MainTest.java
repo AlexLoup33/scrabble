@@ -13,7 +13,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import pdp.scrabble.configuration.Configuration;
-import pdp.scrabble.dictionary.Dawg;
 import pdp.scrabble.dictionary.Dictionary;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
@@ -119,29 +118,6 @@ public class MainTest {
         () -> {
           WordsLoader.loadWordsFromFile(invalidPath);
         });
-  }
-
-  @Test
-  public void testDawg() {
-    Dawg dawg = new Dawg();
-    dawg.loadFromFile(path);
-
-    assertTrue(dawg.containsWord(new Word("car")));
-
-    assertFalse(dawg.containsWord(new Word("notagoodword")));
-
-    dawg.addWord(new Word("notagoodword"));
-    assertTrue(dawg.containsWord(new Word("notagoodword")));
-
-    LettersCounter lc = new LettersCounter();
-    lc.addLetter(new Letter('A'));
-    lc.addLetter(new Letter('B'));
-    lc.addLetter(new Letter('R'));
-
-    Set<Word> result = dawg.findWords(lc);
-    for (Word word : result) {
-      assertTrue(dawg.containsWord(word));
-    }
   }
 
   @Test

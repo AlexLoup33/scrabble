@@ -1,9 +1,7 @@
 package pdp.scrabble.dictionary;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Dictionary implements IDictionary {
@@ -43,68 +41,6 @@ public class Dictionary implements IDictionary {
   @Override
   public boolean containsWord(Word word) {
     return this.words.contains(word);
-  }
-
-  /**
-   * find every words that can be created be the inputted letters
-   *
-   * @param lc
-   * @return empty set if no word found, set with word else
-   */
-  @Override
-  public Set<Word> findWords(LettersCounter lc) {
-    Set<Word> result = new HashSet<>();
-
-    // transform LettersCounter to a list
-    List<Letter> lc_list = new ArrayList<>();
-    for (Letter key : lc.getLettersSet()) {
-      int freq = lc.getLetterCount(key);
-      for (int i = 0; i < freq; ++i) {
-        lc_list.add(key);
-      }
-    }
-
-    // add (if exists) every word which can be created by these letters
-    for (int word_size = 1; word_size <= lc_list.size(); word_size++) {
-      // generate all letter permutation for a final word size of word_size
-      List<List<Letter>> permutations = new ArrayList<>();
-      generatePermutations(lc_list, new ArrayList<>(), permutations, word_size);
-
-      // System.err.println("Size " + word_size + " letter: " + permutations);
-      // System.err.println("Nb for " + word_size + " is: " + permutations.size());
-
-      // convert List<Character> to Word
-      for (List<Letter> word : permutations) {
-
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Letter ch : word) {
-          stringBuilder.append(ch);
-        }
-        String word_as_str = stringBuilder.toString();
-        Word w = new Word(word_as_str);
-
-        if (this.words.contains(w)) {
-          result.add(w);
-        }
-      }
-    }
-    return result;
-  }
-
-  /** do not use, internal function */
-  public static void generatePermutations(
-      List<Letter> original, List<Letter> current, List<List<Letter>> permutations, int length) {
-    if (current.size() == length) {
-      permutations.add(new ArrayList<>(current));
-      return;
-    }
-    for (int i = 0; i < original.size(); i++) {
-      current.add(original.get(i));
-      List<Letter> remaining = new ArrayList<>(original);
-      remaining.remove(i);
-      generatePermutations(remaining, current, permutations, length);
-      current.remove(current.size() - 1);
-    }
   }
 
   /**

@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -136,11 +135,6 @@ public class MainTest {
     lc.addLetter(new Letter('A'));
     lc.addLetter(new Letter('B'));
     lc.addLetter(new Letter('R'));
-
-    Set<Word> result = Dictionary.findWords(lc);
-    for (Word word : result) {
-      assertTrue(Dictionary.containsWord(word));
-    }
   }
 
   @Test

@@ -144,10 +144,10 @@ public class GameController {
   }
 
   private void handleErrors(CustomError e) {
-    this.view.showError(e);
     if (e.type == ErrorType.ExitNoError || e.type == ErrorType.ExitWithError) {
       throw e; // re-throw exits
     }
+    this.view.showError(e);
     if (e.isFatal()) {
       throw new CustomError(
           ErrorType.ExitWithError,

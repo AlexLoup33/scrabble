@@ -169,7 +169,8 @@ public class GameModel {
         throw new CustomError(ErrorType.IO, "save directory is not accessible", e.getMessage());
       }
     }
-    System.exit(0);
+    throw new CustomError(
+        ErrorType.ExitNoError, "quiting the app", "the user asked to quit the app");
   }
 
   public void applyGameAction(UndoAction undoAction) {

@@ -29,31 +29,6 @@ public final class CustomError extends Error {
         + this.details;
   }
 
-  public String toDevFormatedText() {
-    /*
-     * For the developer to read what he need: stack trace, type of error, message
-     * and details
-     */
-    Exception exception = new Exception();
-    StringBuilder stackTrace = new StringBuilder();
-    for (StackTraceElement element : exception.getStackTrace()) {
-      stackTrace.append(
-          element.getClassName()
-              + " - "
-              + element.getLineNumber()
-              + " : "
-              + element.getMethodName());
-      stackTrace.append("\n");
-    }
-
-    return "Stack Trace:\n" + stackTrace.toString() + toString();
-  }
-
-  public String toUserFormatedText() {
-    /* For the user to read what he need: type of error and message only */
-    return "ErrorType: " + this.type.name() + "\nMessage: " + this.message;
-  }
-
   /**
    * re-throw all the CustomError that dont have expectedType
    *

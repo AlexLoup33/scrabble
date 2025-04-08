@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import org.junit.Test;
 import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.errorsHandling.ErrorType;
 
 public class ConfigurationBuilderTest {
 
@@ -194,5 +195,27 @@ public class ConfigurationBuilderTest {
     ConfigurationTemplate template = new ConfigurationTemplate();
     String invalidPath = "contest";
     assertThrows(CustomError.class, () -> template.setContestFile(invalidPath));
+  }
+
+  @Test
+  public void testHelpText() {
+    try {
+      String[] args = {"-h"};
+      ConfigurationInitializer.configurationInit(args);
+    } catch (CustomError e) {
+      e.handleIfErrorType(ErrorType.ExitNoError);
+      // => shown the help message and asked to exit normaly
+    }
+  }
+
+  @Test
+  public void testVersionText() {
+    try {
+      String[] args = {"--version"};
+      ConfigurationInitializer.configurationInit(args);
+    } catch (CustomError e) {
+      e.handleIfErrorType(ErrorType.ExitNoError);
+      // => shown the help message and asked to exit normaly
+    }
   }
 }

@@ -161,17 +161,12 @@ public class CliOptions {
     if (line.hasOption("help")) {
       HelpFormatter formatter = new HelpFormatter();
       formatter.printHelp("scrabble", options);
-      System.exit(0);
+      throw new CustomError(ErrorType.ExitNoError, "shown help", "used -h or --help");
     }
 
     if (line.hasOption("version")) {
-      try {
-        Utilities.logger.println(Utilities.getProjetVersion());
-      } catch (CustomError e) {
-        Utilities.logger.println(e.toUserFormatedText());
-        System.exit(1);
-      }
-      System.exit(0);
+      Utilities.logger.println(Utilities.getProjetVersion());
+      throw new CustomError(ErrorType.ExitNoError, "shown version", "used -v or --version");
     }
 
     Map<String, String> mappings = getArgMapping();

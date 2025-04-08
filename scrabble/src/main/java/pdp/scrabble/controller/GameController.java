@@ -6,6 +6,7 @@ import javafx.stage.Stage;
 import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
@@ -136,13 +137,22 @@ public class GameController {
 
   private void handleErrors(Throwable e) {
     this.view.showError(e);
-    System.exit(1);
+    throw new CustomError(
+        ErrorType.ExitWithError,
+        "couldn't handle the error",
+        "the error: " + e + " caused an exit");
   }
 
   private void handleErrors(CustomError e) {
     this.view.showError(e);
+    if (e.type == ErrorType.ExitNoError || e.type == ErrorType.ExitWithError) {
+      throw e; // re-throw exits
+    }
     if (e.isFatal()) {
-      System.exit(1);
+      throw new CustomError(
+          ErrorType.ExitWithError,
+          "couldn't handle the error",
+          "the error: " + e + " caused an exit");
     }
   }
 

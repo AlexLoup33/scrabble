@@ -57,7 +57,7 @@ public class Utilities {
   }
 
   /** Return the pom.xml project version */
-  public static String getProjetVersion() throws CustomError {
+  public static String getProjetVersion() {
     try {
       Properties props = new Properties();
       props.load(Utilities.class.getResourceAsStream("/properties"));

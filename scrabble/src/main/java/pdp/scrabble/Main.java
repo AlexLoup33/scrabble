@@ -11,6 +11,8 @@ import javafx.application.Application;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.configuration.ConfigurationInitializer;
 import pdp.scrabble.controller.GameController;
+import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.view.ViewGuiApp;
 
 public class Main {
@@ -24,7 +26,17 @@ public class Main {
       Application.launch(ViewGuiApp.class, args);
     } else {
       GameController gc = new GameController(conf);
-      gc.gameLoop();
+      try {
+        gc.gameLoop();
+      } catch (CustomError e) {
+        if (e.type == ErrorType.ExitNoError) {
+          System.exit(0);
+        } else if (e.type == ErrorType.ExitWithError) {
+          System.exit(1);
+        } else {
+          throw e;
+        }
+      }
     }
   }
 

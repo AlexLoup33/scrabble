@@ -36,7 +36,9 @@ public enum ErrorType {
   NotPlaceNextToAWord(false),
   InvalideLetter(false),
   CanceledAskAction(false),
-  WrongPlayerAction(true);
+  WrongPlayerAction(true),
+  ExitNoError(true),
+  ExitWithError(true);
 
   public final boolean isFatal;
 

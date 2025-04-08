@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import org.junit.Test;
+import pdp.scrabble.Utilities;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 
@@ -201,7 +202,12 @@ public class ConfigurationBuilderTest {
   public void testHelpText() {
     try {
       String[] args = {"-h"};
-      ConfigurationInitializer.configurationInit(args);
+      Utilities.logger.setRedirectState(false);
+      try {
+        ConfigurationInitializer.configurationInit(args);
+      } finally {
+        Utilities.logger.setRedirectState(true);
+      }
     } catch (CustomError e) {
       e.handleIfErrorType(ErrorType.ExitNoError);
       // => shown the help message and asked to exit normaly
@@ -212,7 +218,11 @@ public class ConfigurationBuilderTest {
   public void testVersionText() {
     try {
       String[] args = {"--version"};
-      ConfigurationInitializer.configurationInit(args);
+      try {
+        ConfigurationInitializer.configurationInit(args);
+      } finally {
+        Utilities.logger.setRedirectState(true);
+      }
     } catch (CustomError e) {
       e.handleIfErrorType(ErrorType.ExitNoError);
       // => shown the help message and asked to exit normaly

@@ -24,7 +24,7 @@ import pdp.scrabble.game.*;
 import pdp.scrabble.game.History.History;
 import pdp.scrabble.game.actions.*;
 import pdp.scrabble.game.serializer.parser.CharInputStream;
-import pdp.scrabble.view.ViewCLI;
+import pdp.scrabble.view.CLI.ViewCLI;
 
 public class MainTest {
 

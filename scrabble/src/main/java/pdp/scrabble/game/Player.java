@@ -126,12 +126,17 @@ public class Player {
     return String.format("%d'%02d\"", minutes, seconds);
   }
 
-  public void addTurnPlayedTime(float duration) {
-    this.remainingTime -= (long) duration;
+  /**
+   * add the time it took to the player to play
+   *
+   * @param duration in seconds
+   */
+  public void addTurnPlayedTime(long duration) {
+    this.remainingTime -= duration;
   }
 
   public void undoTurnPlayedTime(GameAction toUndo) {
-    this.remainingTime += (long) toUndo.duration;
+    this.remainingTime += toUndo.duration;
   }
 
   public void undoForfeit() {

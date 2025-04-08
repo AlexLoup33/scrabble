@@ -1,4 +1,4 @@
-package pdp.scrabble.view;
+package pdp.scrabble.view.CLI;
 
 import static pdp.scrabble.errorsHandling.ErrorType.UnsupportedMultiplier;
 
@@ -33,6 +33,7 @@ import pdp.scrabble.game.actions.RedoAction;
 import pdp.scrabble.game.actions.RenamePlayerAction;
 import pdp.scrabble.game.actions.RestartGameAction;
 import pdp.scrabble.game.actions.UndoAction;
+import pdp.scrabble.view.IView;
 
 public class ViewCLI implements IView {
   public static final String ANSI_RESET = "\u001B[0m";

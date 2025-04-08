@@ -1,5 +1,8 @@
 package pdp.scrabble.configuration;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -159,8 +162,26 @@ public class CliOptions {
     this.props = new Properties();
 
     if (line.hasOption("help")) {
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      PrintWriter pw = new PrintWriter(outputStream);
       HelpFormatter formatter = new HelpFormatter();
-      formatter.printHelp("scrabble", options);
+      formatter.printHelp(
+          pw,
+          80,
+          "scrable",
+          "",
+          options,
+          formatter.getLeftPadding(),
+          formatter.getDescPadding(),
+          "",
+          true);
+      pw.flush();
+      try {
+        Utilities.logger.print(outputStream.toString("UTF-8"));
+      } catch (UnsupportedEncodingException e) {
+        throw new CustomError(ErrorType.IO, "invalid encoding", e.toString());
+      }
+
       throw new CustomError(ErrorType.ExitNoError, "shown help", "used -h or --help");
     }
 

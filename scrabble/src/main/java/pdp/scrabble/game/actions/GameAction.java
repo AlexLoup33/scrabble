@@ -10,7 +10,7 @@ public abstract class GameAction {
   /** whether the action is from a redo */
   public boolean fromRedo;
 
-  /** to be setted durring the dispatch of the game action */
+  /** to be setted durring the dispatch of the game action (in seconds) */
   public long duration;
 
   protected GameAction(Player player, int turn) {

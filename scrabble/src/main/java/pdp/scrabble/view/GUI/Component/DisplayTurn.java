@@ -1,4 +1,4 @@
-package pdp.scrabble.view.Component;
+package pdp.scrabble.view.GUI.Component;
 
 import java.util.ResourceBundle;
 import javafx.scene.control.Label;

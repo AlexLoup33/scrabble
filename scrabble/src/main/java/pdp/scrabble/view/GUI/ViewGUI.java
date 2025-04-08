@@ -1,8 +1,7 @@
-package pdp.scrabble.view;
+package pdp.scrabble.view.GUI;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.Semaphore;
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -20,6 +19,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
@@ -28,32 +28,29 @@ import pdp.scrabble.game.Direction;
 import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Grid;
 import pdp.scrabble.game.GridWordPos;
-import pdp.scrabble.game.Lang;
 import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
-import pdp.scrabble.game.RandomAPI;
 import pdp.scrabble.game.actions.ExchangeLetterAction;
 import pdp.scrabble.game.actions.ForfeitGameAction;
 import pdp.scrabble.game.actions.GameAction;
 import pdp.scrabble.game.actions.PassTurnAction;
 import pdp.scrabble.game.actions.PlaceWordAction;
 import pdp.scrabble.game.actions.QuitAction;
-import pdp.scrabble.game.actions.RedoAction;
 import pdp.scrabble.game.actions.RenamePlayerAction;
 import pdp.scrabble.game.actions.RestartGameAction;
-import pdp.scrabble.game.actions.UndoAction;
-import pdp.scrabble.view.Component.ActionHistory;
-import pdp.scrabble.view.Component.DisplayTurn;
-import pdp.scrabble.view.Component.PlayerHand;
-import pdp.scrabble.view.Component.ScrabbleBoard;
-import pdp.scrabble.view.Component.ShowScore;
+import pdp.scrabble.view.GUI.Component.ActionHistory;
+import pdp.scrabble.view.GUI.Component.DisplayTurn;
+import pdp.scrabble.view.GUI.Component.PlayerHand;
+import pdp.scrabble.view.GUI.Component.ScrabbleBoard;
+import pdp.scrabble.view.GUI.Component.ShowScore;
+import pdp.scrabble.view.IView;
 
 public class ViewGUI implements IView {
+  private final GameModel gameModel;
+  private final Configuration config;
 
-  private Stage primaryStage;
+  private final Stage primaryStage;
   private final HBox mainRow;
-  private static Lang lang;
-  private static Boolean isSuperScrabble;
   private final ResourceBundle langPack;
 
   private final ScrabbleBoard scrabbleBoard;
@@ -61,29 +58,14 @@ public class ViewGUI implements IView {
   private final DisplayTurn displayTurn;
   private final ShowScore playerScores;
   private final ActionHistory actionHistory;
+  private long lastActionTimeMs;
 
-  private Semaphore semaphore = new Semaphore(1);
-  private String action = null;
-  // FIXME : Create a new player temporarily for the action
-  private Player currentPlayerTEMP = new Player(0, 100);
-  private Integer currentTurnTEMP = 0;
-
-  // end FIXME
-
-  public ViewGUI(Lang lang, Boolean isSuperScrabble, Stage stage, int gridSize) {
-    this.lang = lang;
-    this.isSuperScrabble = isSuperScrabble;
-    this.langPack = lang.getViewGUI_langPack();
-
-    // FIXME : Create a new player temporarily for the action
-    RandomAPI rngGenerator = new RandomAPI(1L);
-    LettersDrawer draw = new LettersDrawer(this.lang, rngGenerator, false);
-    for (int i = currentPlayerTEMP.bag.size(); i < 7; i++) {
-      currentPlayerTEMP.bag.addLetter(draw.popLetter());
-    }
-    // end FIXME
-
+  public ViewGUI(Stage stage, Configuration configuration) {
     this.primaryStage = stage;
+
+    this.gameModel = new GameModel(configuration);
+    this.config = configuration;
+    this.langPack = this.gameModel.lang.getViewGUI_langPack();
 
     // MENU BAR INITIALIZATION
     MenuBar menuBar = new MenuBar();
@@ -100,55 +82,12 @@ public class ViewGUI implements IView {
     MenuItem quitItem = new MenuItem(langPack.getString("quit"));
 
     // Actions for Items
-    // New Game
-    // TODO: Ask the Presenter to create a new game.
-    // --> TODO: implement restartGameAction
-    // newGameItem.setOnAction(e -> RestartGameAction.restart());
-    newGameItem.setOnAction(e -> action = "NewGame");
-
-    // Load Game
-    // TODO: Open a file selector to load a game.
-    loadGameItem.setOnAction(e -> action = "LoadGame");
-
-    // Save Game
-    // TODO: Open a file selector to save the game.
-    saveGameItem.setOnAction(e -> System.out.println("Save Game..."));
-
-    // Help
-    // TODO: Display a window with the rules and the different actions possible.
-    helpItem.setOnAction(e -> System.out.println("Help..."));
-
-    // Settings
-    // TODO: Implement settings window who change style.
-    settingsItem.setOnAction(e -> System.out.println("Settings..."));
-
-    // Quit
-    quitItem.setOnAction(
-        e -> {
-          Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-          alert.setTitle(langPack.getString("quit"));
-          alert.setHeaderText(langPack.getString("savebeforequit"));
-          alert.setContentText(langPack.getString("saveprompt"));
-
-          ButtonType saveAndQuit = new ButtonType(langPack.getString("saveandquit"));
-          ButtonType quitWithoutSaving = new ButtonType(langPack.getString("quitnosave"));
-          ButtonType cancel =
-              new ButtonType(langPack.getString("cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);
-
-          alert.getButtonTypes().setAll(saveAndQuit, quitWithoutSaving, cancel);
-
-          alert
-              .showAndWait()
-              .ifPresent(
-                  response -> {
-                    if (response == saveAndQuit) {
-                      new QuitAction(currentPlayerTEMP, currentTurnTEMP, true);
-                    } else if (response == quitWithoutSaving) {
-                      new QuitAction(currentPlayerTEMP, currentTurnTEMP, false);
-                    }
-                  });
-        });
-
+    newGameItem.setOnAction(e -> this.handleNewGame());
+    loadGameItem.setOnAction(e -> this.handleLoadGame());
+    saveGameItem.setOnAction(e -> this.handleSaveGame());
+    helpItem.setOnAction(e -> this.handleShowHelp());
+    settingsItem.setOnAction(e -> this.handleSettings());
+    quitItem.setOnAction(e -> this.handleQuit());
     // Adding all item to fileMenu
     fileMenu
         .getItems()
@@ -164,19 +103,10 @@ public class ViewGUI implements IView {
     MenuItem redoAllItem = new MenuItem(langPack.getString("redoall"));
 
     // Action for Items
-    // TODO: Display colored letters hint on the grid
     hintItem.setOnAction(e -> System.out.println("Hint..."));
-
-    // TODO: Undo all actions
     undoAllItem.setOnAction(e -> System.out.println("Undo All..."));
-
-    // TODO: Undo the last action
-    undoItem.setOnAction(e -> new UndoAction(currentPlayerTEMP, currentTurnTEMP));
-
-    // TODO: Redo the last action
-    redoItem.setOnAction(e -> new RedoAction(currentPlayerTEMP, currentTurnTEMP));
-
-    // TODO: Redo all actions
+    undoItem.setOnAction(e -> System.out.println("Undo one..."));
+    redoItem.setOnAction(e -> System.out.println("Redo one..."));
     redoAllItem.setOnAction(e -> System.out.println("Redo All..."));
 
     gameMenu.getItems().addAll(hintItem, undoAllItem, undoItem, redoItem, redoAllItem);
@@ -243,7 +173,7 @@ public class ViewGUI implements IView {
     this.actionHistory = new ActionHistory();
 
     // GRID INITIALIZATION
-    this.scrabbleBoard = new ScrabbleBoard(600, 600, gridSize);
+    this.scrabbleBoard = new ScrabbleBoard(600, 600, this.gameModel.grid.size);
 
     // Player score
     this.playerScores = new ShowScore();
@@ -253,30 +183,36 @@ public class ViewGUI implements IView {
     mainRow.setStyle("-fx-alignment: center; -fx-padding: 10px;");
 
     // Display Turn
-    this.displayTurn = new DisplayTurn(lang);
+    this.displayTurn = new DisplayTurn(this.gameModel.lang);
 
     // Player Hand
-    this.playerHand = new PlayerHand(lang, isSuperScrabble);
+    this.playerHand = new PlayerHand(this.gameModel.lang, this.config.superScrabble());
     // this.playerHand.updateLetters(letters);
 
     // ACTION BUTTONS --------------------------------------------
     Button placeWordButton = new Button(langPack.getString("placew"));
-    placeWordButton.setOnAction(e -> handlePlaceWord(currentPlayerTEMP, currentTurnTEMP));
+    placeWordButton.setOnAction(
+        e -> handlePlaceWord(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
 
     Button exchangeLetterButton = new Button(langPack.getString("exchange"));
-    exchangeLetterButton.setOnAction(e -> handleExchangeLetter(currentPlayerTEMP, currentTurnTEMP));
+    exchangeLetterButton.setOnAction(
+        e -> handleExchangeLetter(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
 
     Button renamePlayerButton = new Button(langPack.getString("rename"));
-    renamePlayerButton.setOnAction(e -> hadleNewPlayerName(currentPlayerTEMP, currentTurnTEMP));
+    renamePlayerButton.setOnAction(
+        e -> hadleNewPlayerName(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
 
     Button passTurnButton = new Button(langPack.getString("pass"));
-    passTurnButton.setOnAction(e -> new PassTurnAction(currentPlayerTEMP, currentTurnTEMP));
+    passTurnButton.setOnAction(
+        e -> new PassTurnAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
 
     Button forfeitPlayerButton = new Button(langPack.getString("forfeit"));
-    forfeitPlayerButton.setOnAction(e -> new ForfeitGameAction(currentPlayerTEMP, currentTurnTEMP));
+    forfeitPlayerButton.setOnAction(
+        e -> new ForfeitGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
 
     Button restartGameButton = new Button(langPack.getString("restart"));
-    restartGameButton.setOnAction(e -> new RestartGameAction(currentPlayerTEMP, currentTurnTEMP));
+    restartGameButton.setOnAction(
+        e -> new RestartGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
 
     // Adding buttons to the layout in a horizontal line
     HBox actionButtons =
@@ -305,6 +241,96 @@ public class ViewGUI implements IView {
 
     primaryStage.setResizable(false);
     primaryStage.show();
+  }
+
+  private void handleQuit() {
+    Player player = this.gameModel.getCurrentPlayer();
+    int turn = this.gameModel.getTurn();
+
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle(langPack.getString("quit"));
+    alert.setHeaderText(langPack.getString("savebeforequit"));
+    alert.setContentText(langPack.getString("saveprompt"));
+
+    ButtonType saveAndQuit = new ButtonType(langPack.getString("saveandquit"));
+    ButtonType quitWithoutSaving = new ButtonType(langPack.getString("quitnosave"));
+    ButtonType cancel =
+        new ButtonType(langPack.getString("cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);
+
+    alert.getButtonTypes().setAll(saveAndQuit, quitWithoutSaving, cancel);
+
+    alert
+        .showAndWait()
+        .ifPresent(
+            response -> {
+              if (response == saveAndQuit) {
+                new QuitAction(player, turn, true);
+              } else if (response == quitWithoutSaving) {
+                new QuitAction(player, turn, false);
+              }
+            });
+  }
+
+  private void handleSettings() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'handleSettings'");
+  }
+
+  private void handleShowHelp() {
+    // TODO
+  }
+
+  private void handleSaveGame() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'handleSaveGame'");
+  }
+
+  private void handleLoadGame() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'handleLoadGame'");
+  }
+
+  private void handleNewGame() {
+    this.executeGameAction(
+        new RestartGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
+  }
+
+  private void executeGameAction(GameAction ga) {
+    // computye the duration of the decision and update last action time
+    long currTimeMs = System.currentTimeMillis();
+    long durationSec = (currTimeMs - this.lastActionTimeMs) / 1000;
+    this.lastActionTimeMs = currTimeMs;
+    // exec the action
+    try {
+      this.gameModel.applyGameActionDispatch(ga, durationSec);
+    } catch (CustomError e) {
+      this.handleErrors(e);
+    } catch (Throwable e) {
+      this.handleErrors(e);
+    }
+    // update the view
+    this.updateGUI(gameModel);
+  }
+
+  private void handleErrors(Throwable e) {
+    this.showError(e);
+    throw new CustomError(
+        ErrorType.ExitWithError,
+        "couldn't handle the error",
+        "the error: " + e + " caused an exit");
+  }
+
+  private void handleErrors(CustomError e) {
+    if (e.type == ErrorType.ExitNoError || e.type == ErrorType.ExitWithError) {
+      throw e; // re-throw exits
+    }
+    this.showError(e);
+    if (e.isFatal()) {
+      throw new CustomError(
+          ErrorType.ExitWithError,
+          "couldn't handle the error",
+          "the error: " + e + " caused an exit");
+    }
   }
 
   // --- Intern methods ---
@@ -516,22 +542,7 @@ public class ViewGUI implements IView {
   // --- IView methods ---
   @Override
   public GameAction askAction(Player player, Integer turn) {
-    if (action == null) {
-      return null;
-    } else {
-      switch (action) {
-        case "passTurn" -> {
-          System.out.println("Pass Turn");
-          action = null;
-          return passTurnAction(player, turn);
-        }
-        default -> {
-          break;
-        }
-      }
-    }
-
-    return null;
+    throw new UnsupportedOperationException("not supported method 'askAction' for the GUI");
   }
 
   private PassTurnAction passTurnAction(Player player, Integer turn) {

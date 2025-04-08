@@ -1,4 +1,4 @@
-package pdp.scrabble.view.Component;
+package pdp.scrabble.view.GUI.Component;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

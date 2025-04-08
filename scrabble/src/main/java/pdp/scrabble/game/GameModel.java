@@ -77,7 +77,7 @@ public class GameModel {
    * dispatch the game action to the correct methode of applyGameAction
    *
    * @param played the game action to apply
-   * @param duration the time taken by the player to decide its action
+   * @param duration the time taken by the player to decide its action, in seconds
    * @return whether the turn is finished
    */
   public void applyGameActionDispatch(GameAction played, long duration) {

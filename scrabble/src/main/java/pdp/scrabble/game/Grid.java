@@ -459,10 +459,6 @@ public class Grid {
     }
   }
 
-  public int getGridSize() {
-    return this.size;
-  }
-
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();

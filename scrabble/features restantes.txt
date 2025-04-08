@@ -9,7 +9,7 @@
   + utiliser cette information pour créer des PlayerAI
     lors de la création des player determiner si c'est un humain ou IA
   + avoir un PlayerAI.askGameAction(...):
-    dans le Controller, si le player est une IA (Player.isAI()),
+    dans le Presenter, si le player est une IA (Player.isAI()),
     on appel pas IView.askGameAction(), mais PlayerAI.askGameAction(...)
 
  - interface graphique (F29)

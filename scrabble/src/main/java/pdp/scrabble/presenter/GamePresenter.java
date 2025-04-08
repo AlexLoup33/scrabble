@@ -1,4 +1,4 @@
-package pdp.scrabble.controller;
+package pdp.scrabble.presenter;
 
 import java.util.concurrent.atomic.AtomicReference;
 import javafx.application.Platform;
@@ -15,12 +15,12 @@ import pdp.scrabble.view.IView;
 import pdp.scrabble.view.ViewCLI;
 import pdp.scrabble.view.ViewGUI;
 
-public class GameController {
+public class GamePresenter {
 
   private final GameModel model;
   private final IView view;
 
-  public GameController(Configuration curConf) {
+  public GamePresenter(Configuration curConf) {
     if (curConf.getHistoryFile() != null) {
       this.model = Serializer.loadModelFromFile(curConf.getHistoryFile());
     } else {
@@ -38,7 +38,7 @@ public class GameController {
     }
   }
 
-  public GameController(Configuration curConf, Stage stage) {
+  public GamePresenter(Configuration curConf, Stage stage) {
     if (curConf.getHistoryFile() != null) {
       this.model = Serializer.loadModelFromFile(curConf.getHistoryFile());
     } else {

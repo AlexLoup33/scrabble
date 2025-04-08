@@ -101,7 +101,7 @@ public class ViewGUI implements IView {
 
     // Actions for Items
     // New Game
-    // TODO: Ask the controller to create a new game.
+    // TODO: Ask the Presenter to create a new game.
     // --> TODO: implement restartGameAction
     // newGameItem.setOnAction(e -> RestartGameAction.restart());
     newGameItem.setOnAction(e -> action = "NewGame");

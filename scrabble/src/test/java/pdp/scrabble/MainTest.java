@@ -812,9 +812,38 @@ public class MainTest {
     List<Letter> toExchange = new ArrayList<>();
     toExchange.add(new Letter('L'));
     toExchange.add(new Letter('A'));
-    ExchangeLetterAction ga =
+
+    ExchangeLetterAction excLet =
         new ExchangeLetterAction(
             this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange);
-    assertEquals("0 ExchangeLetter [A,L]", ga.toSerializedString());
+    assertEquals("0 ExchangeLetter [A,L]", excLet.toSerializedString());
+
+    ForfeitGameAction forfait =
+        new ForfeitGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
+    assertEquals("0 ForfeitGame", forfait.toSerializedString());
+    assertEquals(
+        "ForfeitGameAction{player=Player{id=0, name='Player0', score=0, bag=LettersCounter{table=A:1,E:1,G:1,I:1,L:2,R:1}, hasForfeited=false, hasPassed=false, remainingTime=1800},turn=1",
+        forfait.toString());
+
+    PassTurnAction pass =
+        new PassTurnAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
+    assertEquals("0 PassTurn", pass.toSerializedString());
+
+    Letter[] toPlace = new Letter[5];
+    {
+      String w = "LOUEE";
+      for (int i = 0; i < w.length(); i++) {
+        toPlace[i] = new Letter(w.charAt(i));
+        this.gameModel.getCurrentPlayer().bag.addLetter(toPlace[i]);
+      }
+    }
+
+    PlaceWordAction place =
+        new PlaceWordAction(
+            this.gameModel.getCurrentPlayer(),
+            this.gameModel.getTurn(),
+            toPlace,
+            new GridWordPos(0, 1, Direction.Right));
+    assertEquals("0 PlaceWord a2h LOUEE", place.toSerializedString());
   }
 }

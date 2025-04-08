@@ -10,9 +10,9 @@ package pdp.scrabble;
 import javafx.application.Application;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.configuration.ConfigurationInitializer;
-import pdp.scrabble.controller.GameController;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
+import pdp.scrabble.presenter.GamePresenter;
 import pdp.scrabble.view.ViewGuiApp;
 
 public class Main {
@@ -25,7 +25,7 @@ public class Main {
       Main.cfg = conf;
       Application.launch(ViewGuiApp.class, args);
     } else {
-      GameController gc = new GameController(conf);
+      GamePresenter gc = new GamePresenter(conf);
       try {
         gc.gameLoop();
       } catch (CustomError e) {

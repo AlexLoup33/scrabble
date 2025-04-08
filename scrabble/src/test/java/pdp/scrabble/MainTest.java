@@ -806,4 +806,15 @@ public class MainTest {
       assertEquals(600, p.getRemainingTime(), 0);
     }
   }
+
+  @Test
+  public void TestToSerializedString() {
+    List<Letter> toExchange = new ArrayList<>();
+    toExchange.add(new Letter('L'));
+    toExchange.add(new Letter('A'));
+    ExchangeLetterAction ga =
+        new ExchangeLetterAction(
+            this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange);
+    assertEquals("0 ExchangeLetter [A,L]", ga.toSerializedString());
+  }
 }

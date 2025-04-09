@@ -335,13 +335,8 @@ public class ViewCLI implements IView {
 
   @Override
   public void showError(CustomError e) {
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
     if (e.isFatal()) {
-      Utilities.logger.printf("%sError: %s", ANSI_RED, e.toString());
-      e.printStackTrace(pw);
-      pw.print(ANSI_RESET + "\n");
-      Utilities.logger.print(sw.toString());
+      this.showError((Throwable) e);
     } else {
       Utilities.logger.printf("%sError: %s%s\n", ANSI_YELLOW, e.toString(), ANSI_RESET);
     }
@@ -351,7 +346,7 @@ public class ViewCLI implements IView {
   public void showError(Throwable e) {
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
-    Utilities.logger.print(ANSI_RED + e.toString());
+    pw.print(ANSI_RED);
     e.printStackTrace(pw);
     pw.print(ANSI_RESET + "\n");
     Utilities.logger.print(sw.toString());

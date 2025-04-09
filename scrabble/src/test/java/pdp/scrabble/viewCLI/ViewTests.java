@@ -101,29 +101,33 @@ public class ViewTests {
             o [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m\n""";
 
     assertEquals(expectedOutput, Utilities.logger.loggedOuts.getFirst());
-
     // test displayPlayerLetters
     view.displayPlayerLetters(gameModel.getCurrentPlayer().bag);
     assertEquals(
         "lettres du joueur: [ A | L | V | T | D | D | M ]\n",
         Utilities.logger.loggedOuts.getFirst());
-
     // test show errors
+    Utilities.logger.setRedirectState(true);
     view.showError(new Throwable("wololo"));
-    assertTrue(Utilities.logger.loggedOuts.getFirst().startsWith("java.lang.Throwable: wololo\n"));
+    assertTrue(
+        Utilities.logger
+            .loggedOuts
+            .getFirst()
+            .startsWith("\u001b[31mjava.lang.Throwable: wololo\n\tat pdp.scrabble."));
     view.showError(new CustomError(ErrorType.ExitNoError, "pomme", "de terre ^^"));
     assertTrue(
         Utilities.logger
             .loggedOuts
             .getFirst()
             .startsWith(
-                "ErrorType: ExitNoError\nMessage: pomme\n"
-                    + "Details: de terre ^^\n\tat pdp.scrabble.viewCLI."));
+                "\u001b[31mErrorType: ExitNoError\nMessage: pomme\n"
+                    + "Details: de terre ^^\n\tat pdp.scrabble."));
     view.showError(new CustomError(ErrorType.InvalidePlaceLetterAction, "poire", "banana :)"));
     assertEquals(
-        "[33mError: ErrorType: InvalidePlaceLetterAction\n"
-            + "Message: poire\nDetails: banana :)[0m\n",
+        "\u001B[33mError: ErrorType: InvalidePlaceLetterAction\n"
+            + "Message: poire\nDetails: banana :)\u001B[0m\n",
         Utilities.logger.loggedOuts.getFirst());
+    Utilities.logger.setRedirectState(false);
 
     // test show errors
     view.displayDraw(gameModel.draw);

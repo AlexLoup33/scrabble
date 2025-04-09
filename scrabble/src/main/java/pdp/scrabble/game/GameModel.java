@@ -1,7 +1,7 @@
 package pdp.scrabble.game;
 
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -174,14 +174,8 @@ public class GameModel {
 
   public void applyGameAction(QuitAction quit) {
     if (quit.isSaveWanted) {
-      try {
-        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-        String saveLocation = "./saves/" + now.toString() + ".txt";
-        Serializer.saveCurrentToFile(Paths.get(saveLocation), this);
-        Utilities.debug('m', "%s was saved");
-      } catch (IOException e) {
-        throw new CustomError(ErrorType.IO, "save directory is not accessible", e.getMessage());
-      }
+      LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+      this.saveToFile(Path.of("./saves/" + now.toString() + ".txt"));
     }
     throw new CustomError(
         ErrorType.ExitNoError, "quiting the app", "the user asked to quit the app");
@@ -346,5 +340,14 @@ public class GameModel {
   public void undoGameAction(RenamePlayerAction renamePlayer) {
     renamePlayer.player.rename(renamePlayer.oldName);
     this.genericUndoing(renamePlayer);
+  }
+
+  public void saveToFile(Path to) {
+    try {
+      Serializer.saveCurrentToFile(to, this);
+      Utilities.debug('m', "%s was saved", to.toString());
+    } catch (IOException e) {
+      throw new CustomError(ErrorType.IO, "save directory is not accessible", e.getMessage());
+    }
   }
 }

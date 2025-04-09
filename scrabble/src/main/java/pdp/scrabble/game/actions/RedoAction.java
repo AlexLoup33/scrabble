@@ -3,6 +3,7 @@ package pdp.scrabble.game.actions;
 import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Player;
 
+/*With undo to manipulate the history of a game. go to the next action */
 public class RedoAction extends GameAction {
 
   public RedoAction(Player player, int turn) {

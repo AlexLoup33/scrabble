@@ -10,54 +10,51 @@ public class ActionHistory extends StackPane {
   private final VBox messageContainer;
 
   public ActionHistory() {
-    // Conteneur pour les messages
+    // Containers for messages
     messageContainer = new VBox();
-    messageContainer.setSpacing(5); // Espacement entre les messages
-    messageContainer.setStyle("-fx-padding: 10;"); // Ajout de marges internes
+    messageContainer.setSpacing(5); // Space between messages
+    messageContainer.setStyle("-fx-padding: 10;"); //
 
-    // ScrollPane pour permettre le défilement
+    // ScrollPane to scroll bar
     ScrollPane scrollPane = new ScrollPane(messageContainer);
     scrollPane.setHbarPolicy(
-        ScrollPane.ScrollBarPolicy
-            .AS_NEEDED); // Activer la barre de défilement horizontale si nécessaire
-    scrollPane.setVbarPolicy(
-        ScrollPane.ScrollBarPolicy
-            .AS_NEEDED); // Activer la barre de défilement verticale si nécessaire
+        ScrollPane.ScrollBarPolicy.AS_NEEDED); // Activate vertical scroll bar if needed
+    scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Same horizontal scroll bar
     scrollPane.setStyle("-fx-background: lightgray; -fx-border-color: black;");
 
-    // Configuration de la taille du StackPane
+    // Configuration size of StackPane
     this.setStyle("-fx-background-color: lightgray; -fx-border-color: black;");
-    this.setPrefSize(200, 400); // Taille du rectangle
+    this.setPrefSize(200, 400);
     this.getChildren().add(scrollPane);
   }
 
   /**
-   * Ajoute un message à l'historique.
+   * add a message to the history
    *
-   * @param message Le message à afficher dans l'historique.
+   * @param message the message readed
    */
   public void addMessage(String message) {
-    // Ajouter un séparateur uniquement si ce n'est pas le premier message
+    // Add unique separator if not first message
     if (!messageContainer.getChildren().isEmpty()) {
-      Line separator = new Line(0, 0, 180, 0); // Ligne horizontale
+      Line separator = new Line(0, 0, 180, 0); // horizontale ligne
       separator.setStyle("-fx-stroke: gray; -fx-stroke-width: 1;");
       messageContainer.getChildren().add(separator);
     }
 
-    // Créer un label pour le message
+    // Create a label for a message
     Label messageLabel = new Label(message);
-    messageLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: normal;"); // Style des messages
+    messageLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: normal;"); // Style of messages
 
-    // Ajouter le message au conteneur
+    // Add a message to container
     messageContainer.getChildren().add(messageLabel);
 
-    // Scroll automatiquement vers le bas pour afficher le dernier message
+    // Scroll down automatically to display the latest message
     ScrollPane scrollPane = (ScrollPane) this.getChildren().get(0);
-    scrollPane.layout(); // Assure que la mise en page est à jour
-    scrollPane.setVvalue(1.0); // Positionne le curseur tout en bas
+    scrollPane.layout(); // Make sure the layout is up to date
+    scrollPane.setVvalue(1.0); // Put the cursor down
   }
 
-  /** Efface tout l'historique. */
+  /** Clear the history */
   public void clearHistory() {
     messageContainer.getChildren().clear();
   }

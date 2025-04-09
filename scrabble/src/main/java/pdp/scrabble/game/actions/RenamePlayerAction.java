@@ -3,6 +3,7 @@ package pdp.scrabble.game.actions;
 import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Player;
 
+/*if a player to change his pseudo */
 public class RenamePlayerAction extends GameAction {
   public final String newName;
 

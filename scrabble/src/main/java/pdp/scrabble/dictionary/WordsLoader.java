@@ -12,7 +12,9 @@ import pdp.scrabble.errorsHandling.ErrorType;
 
 public class WordsLoader {
 
-  /** TODO comment */
+  /*
+   * Open a file with a list of words to the dictionary. Return the list of words
+   */
   public static List<Word> loadWordsFromFile(Path filePath) {
     LinkedList<Word> words = new LinkedList<>();
     String solvedPath = WordsLoader.resolveFilePath(filePath);
@@ -32,7 +34,7 @@ public class WordsLoader {
     return words;
   }
 
-  /** TODO comment */
+  /* return the path of the dictionnary */
   private static String resolveFilePath(Path filePath) {
     if (!Files.exists(filePath)) {
       throw new CustomError(

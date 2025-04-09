@@ -3,6 +3,7 @@ package pdp.scrabble.game.actions;
 import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Player;
 
+/*A player can forfeit anytime he wants during his turn*/
 public class ForfeitGameAction extends GameAction {
 
   public ForfeitGameAction(Player player, int turn) {

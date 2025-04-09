@@ -1,5 +1,6 @@
 package pdp.scrabble.game;
 
+/*associate the scoremultiplier with the bonus of a case */
 public enum ScoreMultiplier {
   SIMPLE_LETTER(
       1, true, LetterColor.EMPTY, LetterColor.EMPTY, LetterColor.EMPTY, LetterColor.EMPTY),

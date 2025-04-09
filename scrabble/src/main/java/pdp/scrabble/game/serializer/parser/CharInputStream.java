@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 
+/*To read a history file*/
 public class CharInputStream {
 
   private BufferedReader input;
@@ -19,10 +20,12 @@ public class CharInputStream {
     } catch (IOException e) {
       throw new CustomError(ErrorType.IO, "cannot read provided history file", e.getMessage());
     }
+    // position of a cursor
     this.line = 1;
     this.col = 0;
   }
 
+  /* read and put the next character of the file */
   public char next() {
     try {
       char ch = (char) input.read();
@@ -36,6 +39,7 @@ public class CharInputStream {
     }
   }
 
+  /* just check the next charactere. Keep the position of the cursor */
   public char peek() {
     try {
       input.mark(1);
@@ -47,6 +51,7 @@ public class CharInputStream {
     }
   }
 
+  /* Like peek but send true or false */
   public boolean eof() {
     try {
       input.mark(1);

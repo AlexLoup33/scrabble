@@ -1,7 +1,7 @@
 package pdp.scrabble.dictionary;
 
 /**
- * Classe servant a associer les points a chaque lettres. Reprend quasiment les mêmes classes que
- * LettersCounter qui compte le nombre de lettres.
+ * Class used to associate points with each letter. It almost uses the same classes as
+ * LettersCounter, which counts the number of letters
  */
 public class LettersPoints extends LettersCounter {}

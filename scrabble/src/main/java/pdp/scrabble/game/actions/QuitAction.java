@@ -3,6 +3,7 @@ package pdp.scrabble.game.actions;
 import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Player;
 
+/*To quit a game. Ask if the player wants to save the game */
 public class QuitAction extends GameAction {
 
   public final boolean isSaveWanted;

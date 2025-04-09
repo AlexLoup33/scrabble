@@ -1,5 +1,6 @@
 package pdp.scrabble.game;
 
+/*To define and see in the grid the multiplicator bonus which corresponds to a case*/
 public enum LetterColor {
   EMPTY("", "", ""),
   CYAN("\u001B[36m", "\u001B[46m", "#00FFFF"),

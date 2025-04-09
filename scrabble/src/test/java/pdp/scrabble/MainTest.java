@@ -58,23 +58,24 @@ public class MainTest {
     lc = new LettersCounter();
 
     // DO NOT CHANGE WITHOUT ANY REASONS
-    this.config = new Configuration(
-        true,
-        "d",
-        false,
-        false,
-        false,
-        4,
-        30,
-        new boolean[4],
-        15,
-        2,
-        69,
-        "fr",
-        "idk",
-        java.nio.file.Paths.get("dictionary/fr.txt"),
-        java.nio.file.Paths.get("none"),
-        java.nio.file.Paths.get("none"));
+    this.config =
+        new Configuration(
+            true,
+            "d",
+            false,
+            false,
+            false,
+            4,
+            30,
+            new boolean[4],
+            15,
+            2,
+            69,
+            "fr",
+            "idk",
+            java.nio.file.Paths.get("dictionary/fr.txt"),
+            java.nio.file.Paths.get("none"),
+            java.nio.file.Paths.get("none"));
 
     gameModel = new GameModel(config);
   }
@@ -159,8 +160,9 @@ public class MainTest {
   public void testRenamePlayer() {
     assertEquals("Player0", this.gameModel.getCurrentPlayer().getName());
 
-    GameAction ga = new RenamePlayerAction(
-        this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), "franck");
+    GameAction ga =
+        new RenamePlayerAction(
+            this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), "franck");
     this.gameModel.applyGameActionDispatch(ga, 0);
 
     assertEquals("franck", this.gameModel.getCurrentPlayer().getName());
@@ -199,7 +201,8 @@ public class MainTest {
         this.gameModel.getActivePlayers().stream().map(p -> p.id).toList().toString());
 
     // Player forfeit
-    GameAction ga = new ForfeitGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
+    GameAction ga =
+        new ForfeitGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
     this.gameModel.applyGameActionDispatch(ga, 0);
 
     // check forfeit
@@ -218,23 +221,24 @@ public class MainTest {
 
   @Test
   public void testPlaceWord() {
-    Configuration config = new Configuration(
-        true,
-        "d",
-        false,
-        false,
-        false,
-        4,
-        10,
-        new boolean[4],
-        15,
-        2,
-        -1,
-        "fr",
-        "idk",
-        java.nio.file.Paths.get("dictionary/fr.txt"),
-        java.nio.file.Paths.get("none"),
-        java.nio.file.Paths.get("none"));
+    Configuration config =
+        new Configuration(
+            true,
+            "d",
+            false,
+            false,
+            false,
+            4,
+            10,
+            new boolean[4],
+            15,
+            2,
+            -1,
+            "fr",
+            "idk",
+            java.nio.file.Paths.get("dictionary/fr.txt"),
+            java.nio.file.Paths.get("none"),
+            java.nio.file.Paths.get("none"));
 
     GameModel gm = new GameModel(config);
     gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
@@ -438,23 +442,24 @@ public class MainTest {
 
   @Test
   public void testPrintGrid() {
-    Configuration config = new Configuration(
-        true,
-        "d",
-        false,
-        false,
-        false,
-        4,
-        10,
-        new boolean[4],
-        15,
-        2,
-        -1,
-        "fr",
-        "idk",
-        java.nio.file.Paths.get("dictionary/fr.txt"),
-        java.nio.file.Paths.get("none"),
-        java.nio.file.Paths.get("none"));
+    Configuration config =
+        new Configuration(
+            true,
+            "d",
+            false,
+            false,
+            false,
+            4,
+            10,
+            new boolean[4],
+            15,
+            2,
+            -1,
+            "fr",
+            "idk",
+            java.nio.file.Paths.get("dictionary/fr.txt"),
+            java.nio.file.Paths.get("none"),
+            java.nio.file.Paths.get("none"));
 
     GameModel gm = new GameModel(config);
     gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
@@ -467,8 +472,9 @@ public class MainTest {
       Utilities.logger.setRedirectState(true);
     }
 
-    String expectedOutput = "  "
-        + """
+    String expectedOutput =
+        "  "
+            + """
             1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
             a [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
             b _[0m  [41m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m
@@ -552,7 +558,8 @@ public class MainTest {
     assertEquals(2, this.gameModel.getTurn());
 
     // ------- Player restart
-    GameAction ga2 = new RestartGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
+    GameAction ga2 =
+        new RestartGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
     this.gameModel.applyGameActionDispatch(ga2, 0);
 
     // ------- After------------------------------------
@@ -592,8 +599,9 @@ public class MainTest {
     toExchange.add(new Letter('L'));
     toExchange.add(new Letter('A'));
 
-    ExchangeLetterAction ga = new ExchangeLetterAction(
-        this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange);
+    ExchangeLetterAction ga =
+        new ExchangeLetterAction(
+            this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange);
     this.gameModel.applyGameActionDispatch(ga, 0);
     assertEquals("LettersCounter{table=A:1,M:1}", ga.lettersDrawed.toString());
     assertEquals("LettersCounter{table=A:1,E:1,G:1,I:1,L:1,M:1,R:1}", ga.player.bag.toString());
@@ -602,8 +610,9 @@ public class MainTest {
     String bagBefore = this.gameModel.getCurrentPlayer().bag.toString();
     List<Letter> toExchange2 = new ArrayList<>();
     toExchange2.add(new Letter('Z'));
-    ExchangeLetterAction ga2 = new ExchangeLetterAction(
-        this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange2);
+    ExchangeLetterAction ga2 =
+        new ExchangeLetterAction(
+            this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange2);
     assertThrows(CustomError.class, () -> this.gameModel.applyGameActionDispatch(ga2, 0));
     // check same player and same bag
     assertEquals(ga2.player, this.gameModel.getCurrentPlayer());
@@ -612,8 +621,9 @@ public class MainTest {
     List<Letter> toExchange3 = new ArrayList<>();
     toExchange3.add(new Letter('U'));
 
-    GameAction ga3 = new ExchangeLetterAction(
-        this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange3);
+    GameAction ga3 =
+        new ExchangeLetterAction(
+            this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange3);
     this.gameModel.applyGameActionDispatch(ga3, 0);
 
     assertEquals("LettersCounter{table=#:1,A:2,E:1,N:1,O:1,S:1}", ga3.player.bag.toString());
@@ -621,23 +631,24 @@ public class MainTest {
 
   @Test
   public void testModeSuperScrabble() {
-    Configuration config = new Configuration(
-        true,
-        "d",
-        false,
-        true,
-        false,
-        4,
-        10,
-        new boolean[4],
-        15,
-        2,
-        69,
-        "en",
-        "idk",
-        java.nio.file.Paths.get("dictionary/en.txt"),
-        java.nio.file.Paths.get("none"),
-        java.nio.file.Paths.get("none"));
+    Configuration config =
+        new Configuration(
+            true,
+            "d",
+            false,
+            true,
+            false,
+            4,
+            10,
+            new boolean[4],
+            15,
+            2,
+            69,
+            "en",
+            "idk",
+            java.nio.file.Paths.get("dictionary/en.txt"),
+            java.nio.file.Paths.get("none"),
+            java.nio.file.Paths.get("none"));
 
     GameModel gm = new GameModel(config);
     gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/en.txt"));
@@ -673,8 +684,9 @@ public class MainTest {
     } finally {
       Utilities.logger.setRedirectState(true);
     }
-    String expectedOutput = "  "
-        + """
+    String expectedOutput =
+        "  "
+            + """
             1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21
             a [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
             b _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m
@@ -703,23 +715,24 @@ public class MainTest {
 
   @Test
   public void testModeBlitz() {
-    Configuration config = new Configuration(
-        true,
-        "d",
-        true,
-        false,
-        false,
-        4,
-        30,
-        new boolean[4],
-        15,
-        2,
-        69,
-        "en",
-        "idk",
-        java.nio.file.Paths.get("dictionary/en.txt"),
-        java.nio.file.Paths.get("none"),
-        java.nio.file.Paths.get("none"));
+    Configuration config =
+        new Configuration(
+            true,
+            "d",
+            true,
+            false,
+            false,
+            4,
+            30,
+            new boolean[4],
+            15,
+            2,
+            69,
+            "en",
+            "idk",
+            java.nio.file.Paths.get("dictionary/en.txt"),
+            java.nio.file.Paths.get("none"),
+            java.nio.file.Paths.get("none"));
 
     GameModel gm = new GameModel(config);
 
@@ -749,23 +762,24 @@ public class MainTest {
       assertEquals(1800, p.getRemainingTime(), 0);
     }
 
-    Configuration config = new Configuration(
-        true,
-        "d",
-        true,
-        false,
-        false,
-        4,
-        10,
-        new boolean[4],
-        15,
-        2,
-        69,
-        "en",
-        "idk",
-        java.nio.file.Paths.get("dictionary/en.txt"),
-        java.nio.file.Paths.get("none"),
-        java.nio.file.Paths.get("none"));
+    Configuration config =
+        new Configuration(
+            true,
+            "d",
+            true,
+            false,
+            false,
+            4,
+            10,
+            new boolean[4],
+            15,
+            2,
+            69,
+            "en",
+            "idk",
+            java.nio.file.Paths.get("dictionary/en.txt"),
+            java.nio.file.Paths.get("none"),
+            java.nio.file.Paths.get("none"));
 
     GameModel gm = new GameModel(config);
 
@@ -781,17 +795,20 @@ public class MainTest {
     toExchange.add(new Letter('L'));
     toExchange.add(new Letter('A'));
 
-    ExchangeLetterAction excLet = new ExchangeLetterAction(
-        this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange);
+    ExchangeLetterAction excLet =
+        new ExchangeLetterAction(
+            this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toExchange);
     assertEquals("0 ExchangeLetter [A,L]", excLet.toSerializedString());
 
-    ForfeitGameAction forfait = new ForfeitGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
+    ForfeitGameAction forfait =
+        new ForfeitGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
     assertEquals("0 ForfeitGame", forfait.toSerializedString());
     assertEquals(
         "ForfeitGameAction{player=Player{id=0, name='Player0', score=0, bag=LettersCounter{table=A:1,E:1,G:1,I:1,L:2,R:1}, hasForfeited=false, hasPassed=false, remainingTime=1800},turn=1",
         forfait.toString());
 
-    PassTurnAction pass = new PassTurnAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
+    PassTurnAction pass =
+        new PassTurnAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
     assertEquals("0 PassTurn", pass.toSerializedString());
 
     Letter[] toPlace = new Letter[5];
@@ -803,20 +820,23 @@ public class MainTest {
       }
     }
 
-    PlaceWordAction place = new PlaceWordAction(
-        this.gameModel.getCurrentPlayer(),
-        this.gameModel.getTurn(),
-        toPlace,
-        new GridWordPos(0, 1, Direction.Right));
+    PlaceWordAction place =
+        new PlaceWordAction(
+            this.gameModel.getCurrentPlayer(),
+            this.gameModel.getTurn(),
+            toPlace,
+            new GridWordPos(0, 1, Direction.Right));
     assertEquals("0 PlaceWord a2h LOUEE", place.toSerializedString());
 
     History<GameAction> history = new History<>();
     for (int i = 0; i < 5; i++) {
-      PassTurnAction pa = new PassTurnAction(gameModel.getCurrentPlayer(), this.gameModel.getTurn());
+      PassTurnAction pa =
+          new PassTurnAction(gameModel.getCurrentPlayer(), this.gameModel.getTurn());
       gameModel.applyGameActionDispatch(pa, 0);
       history.addPlayedAction(pa);
     }
-    RenamePlayerAction ra = new RenamePlayerAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), "BOB");
+    RenamePlayerAction ra =
+        new RenamePlayerAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), "BOB");
     gameModel.applyGameActionDispatch(ra, 0);
     history.addPlayedAction(ra);
 
@@ -902,7 +922,8 @@ public class MainTest {
     this.gameModel.getCurrentPlayer().bag.clear();
     this.gameModel.getCurrentPlayer().bag.addOther(w);
     GridWordPos s = new GridWordPos(7, 5, Direction.Right);
-    PlaceWordAction pwa = new PlaceWordAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), w, s);
+    PlaceWordAction pwa =
+        new PlaceWordAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), w, s);
     assertEquals(0, pwa.player.getScore());
     this.gameModel.applyGameActionDispatch(pwa, 1);
     assertEquals(84, pwa.player.getScore());

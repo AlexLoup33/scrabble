@@ -2,6 +2,7 @@ package pdp.scrabble.configuration;
 
 import java.nio.file.Path;
 
+/*All keys that can be set for a game */
 public record Configuration(
     boolean verbose,
     String debug,

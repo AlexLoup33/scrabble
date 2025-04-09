@@ -4,6 +4,7 @@ import java.util.List;
 import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Player;
 
+/*to restart a game */
 public class RestartGameAction extends GameAction {
 
   // Used by undo

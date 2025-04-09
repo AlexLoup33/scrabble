@@ -52,7 +52,7 @@ public class ViewCLI implements IView {
 
   public ViewCLI(Lang lang, boolean superScrabble, ByteArrayInputStream in) {
     this.langPack = lang.getViewCLI_langPack();
-    this.scaner = new Scanner(in);
+    this.scanner = new Scanner(in);
     this.superScrabble = superScrabble;
   }
 

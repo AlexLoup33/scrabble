@@ -124,7 +124,7 @@ public class ViewTests {
                     + "Details: de terre ^^\n\tat pdp.scrabble."));
     view.showError(new CustomError(ErrorType.InvalidePlaceLetterAction, "poire", "banana :)"));
     assertEquals(
-        "\u001B[33mError: ErrorType: InvalidePlaceLetterAction\n"
+        "\u001B[33mErrorType: InvalidePlaceLetterAction\n"
             + "Message: poire\nDetails: banana :)\u001B[0m\n",
         Utilities.logger.loggedOuts.getFirst());
     Utilities.logger.setRedirectState(false);

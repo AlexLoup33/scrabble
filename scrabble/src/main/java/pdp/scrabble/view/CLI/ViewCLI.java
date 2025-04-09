@@ -338,7 +338,7 @@ public class ViewCLI implements IView {
     if (e.isFatal()) {
       this.showError((Throwable) e);
     } else {
-      Utilities.logger.printf("%sError: %s%s\n", ANSI_YELLOW, e.toString(), ANSI_RESET);
+      Utilities.logger.println(ViewCLI.ANSI_YELLOW + e.toString() + ViewCLI.ANSI_RESET);
     }
   }
 

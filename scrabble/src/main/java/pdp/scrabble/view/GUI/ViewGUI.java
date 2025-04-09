@@ -585,13 +585,7 @@ public class ViewGUI implements IView {
     return langPack.getString(identifiant);
   }
 
-  @Override
-  public void showScore(Player player) {
-    this.playerScores.updateScore(player);
-  }
-
-  @Override
-  public void showScore(java.util.List<Player> players) {
+  public void showScores(java.util.List<Player> players) {
     this.playerScores.updateScores(players);
   }
 
@@ -634,11 +628,9 @@ public class ViewGUI implements IView {
     throw new UnsupportedOperationException("Unimplemented method 'showRemainingTimes'");
   }
 
-  @Override
   public void updateGUI(GameModel model) {
     this.displayGrid(model.grid, model.config.getGui());
-    this.showScore(model.getCurrentPlayer());
-    this.showScore(model.players);
+    this.showScores(model.players);
     this.displayTurn.updateTurn(model.getTurn(), model.getCurrentPlayer());
     this.announceTurn(model.getCurrentPlayer(), model.getTurn());
     this.displayDraw(model.draw);

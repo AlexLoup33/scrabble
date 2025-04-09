@@ -35,8 +35,6 @@ public class GamePresenter {
   }
 
   public void gameLoop() {
-    CustomError recoverableException = null;
-
     Utilities.debug('l', "GameLoop start\n");
     Utilities.verbose("Mode blitz: %s\n", this.model.config.getBlitz());
     Utilities.verbose("Blitz time: %s\n", this.model.config.blitzTime());
@@ -53,14 +51,9 @@ public class GamePresenter {
         if (this.model.config.getBlitz()) {
           view.showRemainingTimes(model.players);
         }
-        for (Player onGames : model.players) {
-          view.showScore(onGames);
-        }
+        view.showScores(model.players);
         view.displayGrid(model.grid, this.model.config.getSuperScrabble());
         view.displayPlayerLetters(playing.bag);
-        if (recoverableException != null) {
-          view.showError(recoverableException);
-        }
         Utilities.debug('l', "Attempt to askAction\n");
 
         long startTime = System.currentTimeMillis();
@@ -75,7 +68,6 @@ public class GamePresenter {
         // non-turn ending action (e.g., rename)
 
         Utilities.debug('l', "%s ends his turn\n", playing.getName());
-        recoverableException = null;
       } catch (CustomError e) {
         this.handleErrors(e);
       } catch (Throwable e) {

@@ -18,7 +18,6 @@ import pdp.scrabble.game.actions.ForfeitGameAction;
 import pdp.scrabble.game.actions.PassTurnAction;
 import pdp.scrabble.game.actions.PlaceWordAction;
 import pdp.scrabble.game.actions.RenamePlayerAction;
-import pdp.scrabble.game.actions.RestartGameAction;
 
 /**
  * Parses a save file into a GameModel object, which can then be used to restore the game decribed
@@ -144,15 +143,6 @@ public class Parser {
       input.croak("Expecting positive number");
     }
     return (int) tok.value;
-  }
-
-  private int parseSignedNumber() {
-    Token tok = input.next();
-    if (tok.type.equals("num") || tok.type.equals("negNum")) {
-      return (int) tok.value;
-    }
-    input.croak("Expecting a number");
-    return 0;
   }
 
   private long parseSignedLong() {
@@ -351,11 +341,6 @@ public class Parser {
         if (actionType.equals("PassTurn")) {
           PassTurnAction passTurnAction = new PassTurnAction(playing, curTurn);
           passTurnAction.applyGameAction(this.loadedModel);
-          continue;
-        }
-        if (actionType.equals("RestartGame")) {
-          RestartGameAction restartGameAction = new RestartGameAction(playing, curTurn);
-          restartGameAction.applyGameAction(this.loadedModel);
           continue;
         }
         unexpected();

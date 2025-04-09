@@ -3,7 +3,6 @@ package pdp.scrabble.view;
 import java.util.List;
 import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.errorsHandling.CustomError;
-import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Grid;
 import pdp.scrabble.game.LettersDrawer;
 import pdp.scrabble.game.Player;
@@ -58,21 +57,12 @@ public interface IView {
   public String getFromLangPack(String identifiant);
 
   /**
-   * This Java function is designed to display the score of a specific player.
-   *
-   * @param player The parameter "player" in the method "showScore" is of type Player. This means
-   *     that the method expects an object of the Player class to be passed as an argument when it
-   *     is called.
-   */
-  public void showScore(Player player);
-
-  /**
    * This function displays the scores of a list of players.
    *
    * @param players A list of Player objects representing the players whose scores you want to
    *     display.
    */
-  public void showScore(List<Player> players);
+  public void showScores(List<Player> players);
 
   /**
    * This Java function is named displayDraw and takes an object of type LettersDrawer as a
@@ -116,6 +106,4 @@ public interface IView {
    *     execution.
    */
   public void showError(Throwable e);
-
-  public void updateGUI(GameModel model);
 }

@@ -2,6 +2,7 @@ package pdp.scrabble.view.CLI;
 
 import static pdp.scrabble.errorsHandling.ErrorType.UnsupportedMultiplier;
 
+import java.io.ByteArrayInputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.LinkedList;
@@ -15,7 +16,6 @@ import pdp.scrabble.dictionary.Word;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.Direction;
-import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Grid;
 import pdp.scrabble.game.GridPos;
 import pdp.scrabble.game.GridWordPos;
@@ -47,6 +47,12 @@ public class ViewCLI implements IView {
   public ViewCLI(Lang lang, boolean superScrabble) {
     this.langPack = lang.getViewCLI_langPack();
     this.scaner = new Scanner(System.in);
+    this.superScrabble = superScrabble;
+  }
+
+  public ViewCLI(Lang lang, boolean superScrabble, ByteArrayInputStream in) {
+    this.langPack = lang.getViewCLI_langPack();
+    this.scaner = new Scanner(in);
     this.superScrabble = superScrabble;
   }
 
@@ -229,7 +235,6 @@ public class ViewCLI implements IView {
     }
     builder.append(grid.size + "\n");
 
-    String colorReset = "\u001B[0m";
     // Display each row
     for (int i = 0; i < grid.size; i++) {
       builder.append((char) ('a' + i) + " ");
@@ -265,11 +270,11 @@ public class ViewCLI implements IView {
 
         Letter letter = grid.getLetter(i, j);
         if (letter == null) {
-          if (j == grid.size - 1) builder.append(backgroundColor + "_" + colorReset);
-          else builder.append(backgroundColor + "_" + colorReset + "  ");
+          if (j == grid.size - 1) builder.append(backgroundColor + "_" + ANSI_RESET);
+          else builder.append(backgroundColor + "_" + ANSI_RESET + "  ");
         } else {
-          if (j == grid.size - 1) builder.append(color + letter + colorReset);
-          else builder.append(color + letter + "  " + colorReset);
+          if (j == grid.size - 1) builder.append(color + letter + ANSI_RESET);
+          else builder.append(color + letter + "  " + ANSI_RESET);
         }
       }
       builder.append("\n");
@@ -310,9 +315,11 @@ public class ViewCLI implements IView {
   }
 
   @Override
-  public void showScore(Player player) {
-    Utilities.logger.printf(
-        langPack.getString("viewcli_score") + "\n", player.getName(), player.getScore());
+  public void showScores(List<Player> players) {
+    for (Player player : players) {
+      Utilities.logger.printf(
+          langPack.getString("viewcli_score") + "\n", player.getName(), player.getScore());
+    }
   }
 
   @Override
@@ -351,13 +358,6 @@ public class ViewCLI implements IView {
   }
 
   @Override
-  public void showScore(List<Player> players) {
-    for (Player player : players) {
-      showScore(player);
-    }
-  }
-
-  @Override
   public void showRemainingTimes(List<Player> players) {
     for (Player player : players) {
       Utilities.logger.printf(
@@ -369,10 +369,5 @@ public class ViewCLI implements IView {
 
   protected void finalize() throws Throwable {
     this.scaner.close();
-  }
-
-  @Override
-  public void updateGUI(GameModel model) {
-    throw new UnsupportedOperationException("not supported by ViewCLI");
   }
 }

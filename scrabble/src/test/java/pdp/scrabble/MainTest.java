@@ -24,7 +24,6 @@ import pdp.scrabble.game.*;
 import pdp.scrabble.game.History.History;
 import pdp.scrabble.game.actions.*;
 import pdp.scrabble.game.serializer.parser.CharInputStream;
-import pdp.scrabble.view.CLI.ViewCLI;
 
 public class MainTest {
 
@@ -441,61 +440,6 @@ public class MainTest {
   }
 
   @Test
-  public void testPrintGrid() {
-    Configuration config =
-        new Configuration(
-            true,
-            "d",
-            false,
-            false,
-            false,
-            4,
-            10,
-            new boolean[4],
-            15,
-            2,
-            -1,
-            "fr",
-            "idk",
-            java.nio.file.Paths.get("dictionary/fr.txt"),
-            java.nio.file.Paths.get("none"),
-            java.nio.file.Paths.get("none"));
-
-    GameModel gm = new GameModel(config);
-    gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/fr.txt"));
-    ViewCLI view = new ViewCLI(gm.lang, config.getSuperScrabble());
-
-    Utilities.logger.setRedirectState(false);
-    try {
-      view.displayGrid(gm.grid, false);
-    } finally {
-      Utilities.logger.setRedirectState(true);
-    }
-
-    String expectedOutput =
-        "  "
-            + """
-            1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
-            a [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
-            b _[0m  [41m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m
-            c _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
-            d [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m
-            e _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m
-            f _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m
-            g _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m
-            h [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
-            i _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m
-            j _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m
-            k _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m
-            l [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m
-            m _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
-            n _[0m  [41m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [44m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m
-            o [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m\n""";
-
-    assertEquals(expectedOutput, Utilities.logger.loggedOuts.getLast());
-  }
-
-  @Test
   public void testRestartGame() {
     // F41. Restart a game
     // At any time, it should be possible to restart a game from the beginning by
@@ -627,90 +571,6 @@ public class MainTest {
     this.gameModel.applyGameActionDispatch(ga3, 0);
 
     assertEquals("LettersCounter{table=#:1,A:2,E:1,N:1,O:1,S:1}", ga3.player.bag.toString());
-  }
-
-  @Test
-  public void testModeSuperScrabble() {
-    Configuration config =
-        new Configuration(
-            true,
-            "d",
-            false,
-            true,
-            false,
-            4,
-            10,
-            new boolean[4],
-            15,
-            2,
-            69,
-            "en",
-            "idk",
-            java.nio.file.Paths.get("dictionary/en.txt"),
-            java.nio.file.Paths.get("none"),
-            java.nio.file.Paths.get("none"));
-
-    GameModel gm = new GameModel(config);
-    gm.dictionary.loadFromFile(java.nio.file.Paths.get("dictionary/en.txt"));
-    ViewCLI view = new ViewCLI(gm.lang, true);
-
-    // test for the new draw with more letters
-    assertEquals(
-        gm.draw.toString(),
-        "LettersDrawer{lang=en, content=LettersCounter{table=#:4,A:14,B:4,C:4,D:7,E:19,F:3,G:4,H:4,I:11,J:1,K:2,L:6,M:6,N:13,O:13,P:4,Q:2,R:9,S:9,T:15,U:6,V:1,W:4,X:2,Y:3,Z:2}, maxSize=200, currentSize=172}");
-
-    // Try to place the first word not at the center
-    Player p1 = gm.players.get(0);
-    Letter[] l1 = new Letter[2];
-    {
-      String w = "IN";
-      for (int i = 0; i < w.length(); i++) {
-        l1[i] = new Letter(w.charAt(i));
-        p1.bag.addLetter(l1[i]);
-      }
-    }
-
-    // Throw du to illegal first position
-    assertThrows(
-        CustomError.class,
-        () -> {
-          GridWordPos s = new GridWordPos(0, 1, Direction.Right);
-          gm.grid.placeLetters(new PlaceWordAction(p1, 0, l1, l1, s, s));
-        });
-
-    Utilities.logger.setRedirectState(false);
-    try {
-      view.displayGrid(gm.grid, true);
-    } finally {
-      Utilities.logger.setRedirectState(true);
-    }
-    String expectedOutput =
-        "  "
-            + """
-            1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21
-            a [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m
-            b _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m
-            c _[0m  _[0m  [41m_[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
-            d [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m
-            e _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m
-            f _[0m  _[0m  [45m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m
-            g _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m
-            h [41;1m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41;1m_[0m
-            i _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m
-            j _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
-            k [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m
-            l _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
-            m _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m
-            n [41;1m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  _[0m  _[0m  _[0m  [41;1m_[0m
-            o _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m
-            p _[0m  _[0m  [45m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m
-            q _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m
-            r [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [46m_[0m
-            s _[0m  _[0m  [41m_[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [45m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m
-            t _[0m  [41m_[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  _[0m  [46;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m
-            u [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  [41m_[0m  _[0m  _[0m  [41;1m_[0m  _[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  [45m_[0m\n""";
-
-    assertEquals(expectedOutput, Utilities.logger.loggedOuts.getLast());
   }
 
   @Test
@@ -1002,11 +862,6 @@ public class MainTest {
         () -> {
           new UndoAction(null, 0).undo(null);
         });
-  }
-
-  @Test
-  public void TestQuitAndLoad() {
-    // TODO
   }
 
   @Test

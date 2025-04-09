@@ -41,12 +41,12 @@ public class ViewCLI implements IView {
   public static final String ANSI_YELLOW = "\u001B[33m";
 
   private final ResourceBundle langPack;
-  private final Scanner scaner;
+  private final Scanner scanner;
   private final boolean superScrabble;
 
   public ViewCLI(Lang lang, boolean superScrabble) {
     this.langPack = lang.getViewCLI_langPack();
-    this.scaner = new Scanner(System.in);
+    this.scanner = new Scanner(System.in);
     this.superScrabble = superScrabble;
   }
 
@@ -56,7 +56,7 @@ public class ViewCLI implements IView {
         "possible actions are: placeWord | exchangeLetter | passTurn "
             + "| renamePlayer | forfeitPlayer | restartGame | quit | undo | redo\n");
     Utilities.logger.println(this.getFromLangPack("ask_actionType"));
-    String response = this.scaner.nextLine().strip();
+    String response = this.scanner.nextLine().strip();
 
     switch (response) {
       case "placeWord" -> {
@@ -97,7 +97,7 @@ public class ViewCLI implements IView {
   private ExchangeLetterAction ask_exchangeLetter(Player player, Integer turn) {
     Utilities.verbose("type the letters to exchange: like: 'AJTT' to exchange an A, J and 2 T\n");
     Utilities.logger.print(this.getFromLangPack("ask_exchange"));
-    String response = this.scaner.nextLine().strip();
+    String response = this.scanner.nextLine().strip();
 
     LinkedList<Letter> letters = new LinkedList<>();
     for (int index = 0; index < response.length(); index++) {
@@ -120,21 +120,21 @@ public class ViewCLI implements IView {
   private RenamePlayerAction ask_renamePlayer(Player player, Integer turn) {
     Utilities.verbose("type the new name for the current player\n");
     Utilities.logger.print(this.getFromLangPack("ask_rename"));
-    String response = this.scaner.nextLine().strip();
+    String response = this.scanner.nextLine().strip();
 
     return new RenamePlayerAction(player, turn, response);
   }
 
   private QuitAction askQuitAction(Player player, Integer turn) {
     Utilities.logger.print(this.getFromLangPack("ask_save") + "[y/N]");
-    String response = this.scaner.nextLine().strip().toLowerCase();
+    String response = this.scanner.nextLine().strip().toLowerCase();
     boolean isSaveWanted = (response.equals("y") || response.equals("yes"));
     return new QuitAction(player, turn, isSaveWanted);
   }
 
   private RedoAction askRedoAction(Player player, Integer turn) {
     Utilities.logger.print(this.getFromLangPack("ask_redo") + "[y/N]");
-    String response = this.scaner.nextLine().strip().toLowerCase();
+    String response = this.scanner.nextLine().strip().toLowerCase();
     if (response.equals("y") || response.equals("yes")) {
       return new RedoAction(player, turn);
     }
@@ -144,7 +144,7 @@ public class ViewCLI implements IView {
 
   private UndoAction askUndoAction(Player player, Integer turn) {
     Utilities.logger.print(this.getFromLangPack("ask_undo") + "[y/N]");
-    String response = this.scaner.nextLine().strip().toLowerCase();
+    String response = this.scanner.nextLine().strip().toLowerCase();
     if (response.equals("y") || response.equals("yes")) {
       return new UndoAction(player, turn);
     }
@@ -155,7 +155,7 @@ public class ViewCLI implements IView {
   private PlaceWordAction ask_placeWordAction(Player player, Integer turn) {
     Utilities.verbose("pattern for move is `yxdirection WORD`(eg. `a6h photo` or `b7v STICK` )\n");
     Utilities.logger.print(this.getFromLangPack("ask_move"));
-    String response = this.scaner.nextLine();
+    String response = this.scanner.nextLine();
     String[] move = response.split(" ");
 
     if (move.length != 2) {
@@ -368,7 +368,7 @@ public class ViewCLI implements IView {
   }
 
   protected void finalize() throws Throwable {
-    this.scaner.close();
+    this.scanner.close();
   }
 
   @Override

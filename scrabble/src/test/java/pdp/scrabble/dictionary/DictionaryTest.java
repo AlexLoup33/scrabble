@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import org.junit.Before;
 import org.junit.Test;
+import pdp.scrabble.game.Lang;
 
 public class DictionaryTest {
 
@@ -18,25 +19,9 @@ public class DictionaryTest {
     dict = new Dictionary();
   }
 
-  /** Test the basic functionality of the Dictionary class */
-  @Test
-  public void testDictionaryBasicFunc() {
-    // test addWord, containsWord
-    Word word = new Word("test");
-    dict.addWord(word);
-    assertTrue(dict.containsWord(word));
-    assertFalse(dict.containsWord(new Word("testDeux")));
-
-    // test toString
-    Word word2 = new Word("frank");
-    dict.addWord(word2);
-    assertTrue(dict.toString().contains(word.toString()));
-    assertTrue(dict.toString().contains(word2.toString()));
-  }
-
   @Test
   public void testDictionaryLoadFromFile() {
-    dict.loadFromFile(Paths.get("dictionary/fr.txt"));
+    dict.loadFromFile(Lang.FR.getDictionaryPath());
     assertTrue(dict.containsWord(new Word("AALENIEN")));
     assertFalse(dict.containsWord(new Word("cpasunmotlegalca")));
   }

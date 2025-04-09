@@ -21,4 +21,8 @@ public record GridPos(int row, int col) {
     }
     return path;
   }
+
+  public GridPos copy() {
+    return new GridPos(row, col);
+  }
 }

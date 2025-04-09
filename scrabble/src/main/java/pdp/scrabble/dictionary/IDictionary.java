@@ -7,14 +7,6 @@ import java.nio.file.Path;
 public interface IDictionary {
 
   /**
-   * add a word to the dictionary
-   *
-   * @param word
-   * @return void
-   */
-  void addWord(Word word);
-
-  /**
    * put every word from a file into the dictionary
    *
    * @param file_name

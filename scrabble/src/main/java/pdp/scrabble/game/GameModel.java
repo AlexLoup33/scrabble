@@ -73,6 +73,18 @@ public class GameModel {
     toRedo.fromRedo = false;
   }
 
+  public void undoAll() {
+    while (this.history.canUndo()) {
+      this.undoOne();
+    }
+  }
+
+  public void redoAll() {
+    while (this.history.canRedo()) {
+      this.redoOne();
+    }
+  }
+
   /**
    * dispatch the game action to the correct methode of applyGameAction
    *
@@ -90,6 +102,13 @@ public class GameModel {
               + " is during the turn of player: "
               + this.getCurrentPlayer());
     }
+    if (played.turn != this.getTurn()) {
+      throw new CustomError(
+          ErrorType.WrongTurnAction,
+          "wrong turn is asked playing",
+          "the action of turn: " + played.turn + " is during the turn: " + this.getTurn());
+    }
+
     played.player.addTurnPlayedTime(duration);
     played.duration = duration;
     played.applyGameAction(this); // use double dispatch
@@ -101,14 +120,12 @@ public class GameModel {
     if (!renamePlayer.fromRedo) history.addPlayedAction(renamePlayer);
   }
 
-  // F33
   public void applyGameAction(PassTurnAction passTurn) {
     passTurn.player.playerPassedTurn();
     if (!passTurn.fromRedo) history.addPlayedAction(passTurn);
     this.endPlayerTurn();
   }
 
-  // F34
   public void applyGameAction(ExchangeLetterAction exchLtrs) {
     exchLtrs.assertHasLettersToPlace();
     exchLtrs.rngStateBefore = rngGenerator.getCurrentState();
@@ -117,7 +134,6 @@ public class GameModel {
     this.endPlayerTurn();
   }
 
-  // F36
   public void applyGameAction(ForfeitGameAction ffGame) {
     ffGame.player.forfeit();
     if (!ffGame.fromRedo) history.addPlayedAction(ffGame);
@@ -146,15 +162,13 @@ public class GameModel {
     }
     this.grid.useMultiplicators(pwaFiltered);
     if (!pwaFiltered.fromRedo) history.addPlayedAction(pwaFiltered);
+    placeWord.copyUndoInfosFromFiltered(pwaFiltered);
     this.endPlayerTurn();
   }
 
-  // F41
   public void applyGameAction(RestartGameAction restart) {
     restart.player.undoTurnPlayedTime(restart); // don't count the time to select redo
-    while (this.history.canUndo()) {
-      this.undoOne();
-    }
+    this.undoAll();
     this.history.clear();
   }
 

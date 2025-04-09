@@ -26,7 +26,7 @@ public class PlaceWordAction extends GameAction {
   public long rngStateBefore = 0L; // to set by model
   public final LettersCounter drawedAfter; // Empty until model calls drawLetters()
   public final int scoreBefore;
-  public final GridPos[] placedLettersPos;
+  public GridPos[] placedLettersPos;
 
   public PlaceWordAction(Player player, int turn, Letter[] wordToPlace, GridWordPos wordStartPos) {
     super(player, turn);
@@ -197,5 +197,13 @@ public class PlaceWordAction extends GameAction {
 
   public boolean isFiltered() {
     return (this.lettersToPlace != null && this.lettersStartPos != null);
+  }
+
+  public void copyUndoInfosFromFiltered(PlaceWordAction pwaFiltered) {
+    this.fromRedo = pwaFiltered.fromRedo;
+    this.rngStateBefore = pwaFiltered.rngStateBefore;
+    this.drawedAfter.clear();
+    this.drawedAfter.addOther(pwaFiltered.drawedAfter);
+    this.placedLettersPos = pwaFiltered.placedLettersPos.clone();
   }
 }

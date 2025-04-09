@@ -40,7 +40,7 @@ public class History<T> {
   /**
    * @return the ID of the current node
    */
-  private int getCurrentNodeID() {
+  public int getCurrentNodeID() {
     return this.currentNode.getID();
   }
 
@@ -131,5 +131,9 @@ public class History<T> {
 
   public boolean canUndo() {
     return (this.getCurrentNodeID() != this.getEmptyHistNodeID());
+  }
+
+  public boolean canRedo() {
+    return (this.currentNode.getNextNode() != null);
   }
 }

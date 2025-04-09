@@ -112,13 +112,8 @@ public class Grid {
   private GridPos getNextPos(GridPos currentPos, Direction direction) {
     if (direction == Direction.Down) {
       return assertInBound(new GridPos(currentPos.row() + 1, currentPos.col()));
-    } else if (direction == Direction.Right) {
-      return assertInBound(new GridPos(currentPos.row(), currentPos.col() + 1));
     } else {
-      throw new CustomError(
-          ErrorType.PositionOutOfGird,
-          "weird direction for a word",
-          "invalide word direction: " + direction);
+      return assertInBound(new GridPos(currentPos.row(), currentPos.col() + 1));
     }
   }
 
@@ -134,13 +129,8 @@ public class Grid {
   private GridPos getPrevPos(GridPos currentPos, Direction direction) {
     if (direction == Direction.Down) {
       return assertInBound(new GridPos(currentPos.row() - 1, currentPos.col()));
-    } else if (direction == Direction.Right) {
-      return assertInBound(new GridPos(currentPos.row(), currentPos.col() - 1));
     } else {
-      throw new CustomError(
-          ErrorType.InvalidWordDirection,
-          "weird direction for a word",
-          "invalide word direction: " + direction);
+      return assertInBound(new GridPos(currentPos.row(), currentPos.col() - 1));
     }
   }
 
@@ -203,8 +193,6 @@ public class Grid {
     for (GridPos letterPos : firstPos.getPath(lastPos)) {
       Letter letter = this.placedLetters[letterPos.row()][letterPos.col()];
       if (letter == null) {
-        assert indexNextNewLetter < pwa.lettersToPlace.length
-            : "has alredy put all the new letters";
         letter = pwa.lettersToPlace[indexNextNewLetter];
         indexNextNewLetter++;
       }
@@ -240,8 +228,8 @@ public class Grid {
   public List<OwnedWord> placeLetters(PlaceWordAction pwa) {
     if (!pwa.isFiltered())
       throw new CustomError(
-          ErrorType.InvalidePlaceLetterAction,
-          "?",
+          ErrorType.UnfilteredPlaceWordAction,
+          "placed an unfiltered pwa",
           "pwa was not filtered before using placeLetters");
     if (pwa.lettersToPlace.length == 0) {
       throw new CustomError(
@@ -285,7 +273,7 @@ public class Grid {
           } catch (CustomError e) {
             e.handleIfErrorType(ErrorType.PositionOutOfGird);
             throw new CustomError(
-                ErrorType.InvalidePlaceLetterAction,
+                ErrorType.PositionOutOfGird,
                 "can't place the letters on the grid",
                 "reached the end of the grid while trying to execute: " + pwa);
           }
@@ -486,41 +474,37 @@ public class Grid {
   }
 
   public PlaceWordAction filterPwa(PlaceWordAction pwa) {
-    GridWordPos filteredStartPos = pwa.wordStartPos;
-    // If the first letters are already occupied on board
-    // Then move the filtered word to the right or down, according to direction
-    int toPlaceIndex = 0;
-    while (this.placedLetters[filteredStartPos.row()][filteredStartPos.col()] != null
-        && toPlaceIndex < pwa.wordToPlace.length) {
-      toPlaceIndex++;
-      if (filteredStartPos.direction() == Direction.Right) {
-        filteredStartPos =
-            new GridWordPos(
-                filteredStartPos.row(), filteredStartPos.col() + 1, filteredStartPos.direction());
-      } else {
-        filteredStartPos =
-            new GridWordPos(
-                filteredStartPos.row() + 1, filteredStartPos.col(), filteredStartPos.direction());
-      }
-    }
-
+    GridPos filteredStartPos = null;
     // If a letter is already on board for required direction
     // remove it from to place
     ArrayList<Letter> tempFiltered = new ArrayList<>(pwa.wordToPlace.length);
-    GridPos currPos = filteredStartPos.toGridPos();
-    Direction wordDirection = filteredStartPos.direction();
+    GridPos currPos = pwa.wordStartPos.toGridPos();
+    int toPlaceIndex = 0;
+
     while (toPlaceIndex < pwa.wordToPlace.length) {
-      if (this.placedLetters[currPos.row()][currPos.col()] == null) {
-        tempFiltered.add(pwa.wordToPlace[toPlaceIndex]);
-      }
+      Letter letterToPlace = pwa.wordToPlace[toPlaceIndex];
+      Letter letterOnGrid = this.placedLetters[currPos.row()][currPos.col()];
+      if (letterOnGrid == null) {
+        tempFiltered.add(letterToPlace); // empty -> place here
+        if (filteredStartPos == null) {
+          // => first empty pos to place a letter
+          filteredStartPos = currPos;
+        }
+      } else if (letterOnGrid.chr != letterToPlace.chr) {
+        throw new CustomError(
+            ErrorType.InvalidePlaceLetterAction,
+            "trying to replace a letter",
+            "the letter on " + currPos + " must be a " + letterOnGrid + " not a " + letterToPlace);
+      } // else => same letter as whanting to be placed
+      // move to next pos
       try {
-        currPos = this.getNextPos(currPos, wordDirection);
+        currPos = this.getNextPos(currPos, pwa.wordStartPos.direction());
       } catch (CustomError e) {
         e.handleIfErrorType(ErrorType.PositionOutOfGird);
         throw new CustomError(
-            ErrorType.InvalidePlaceLetterAction,
-            "can't place the letters on the grid",
-            "reached the end of the grid while trying to execute: " + pwa);
+            ErrorType.PositionOutOfGird,
+            "can't place a letter on the grid",
+            "reached the end of the grid while trying to filter: " + pwa);
       }
       toPlaceIndex++;
     }
@@ -533,7 +517,18 @@ public class Grid {
         "Grid::filterPwa - toPlace: %s / toPlaceFiltered: %s\n",
         Letter.concatenate(pwa.wordToPlace),
         Letter.concatenate(toPlaceFiltered));
-    return new PlaceWordAction(
-        pwa.player, pwa.turn, pwa.wordToPlace, toPlaceFiltered, pwa.wordStartPos, filteredStartPos);
+    GridWordPos newWordStartPos =
+        new GridWordPos(
+            filteredStartPos.row(), filteredStartPos.col(), pwa.wordStartPos.direction());
+    PlaceWordAction filteredPwa =
+        new PlaceWordAction(
+            pwa.player,
+            pwa.turn,
+            pwa.wordToPlace,
+            toPlaceFiltered,
+            pwa.wordStartPos,
+            newWordStartPos);
+    filteredPwa.fromRedo = pwa.fromRedo;
+    return filteredPwa;
   }
 }

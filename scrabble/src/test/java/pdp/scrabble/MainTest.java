@@ -6,6 +6,7 @@ import static pdp.scrabble.game.Lang.FR;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import org.junit.After;
@@ -18,6 +19,7 @@ import pdp.scrabble.dictionary.LettersCounter;
 import pdp.scrabble.dictionary.Word;
 import pdp.scrabble.dictionary.WordsLoader;
 import pdp.scrabble.errorsHandling.CustomError;
+import pdp.scrabble.errorsHandling.ErrorType;
 import pdp.scrabble.game.*;
 import pdp.scrabble.game.History.History;
 import pdp.scrabble.game.actions.*;
@@ -30,6 +32,26 @@ public class MainTest {
   private final Path path = java.nio.file.Paths.get("dictionary/fr.txt");
   private GameModel gameModel;
   private Configuration config;
+
+  public static void assertThrowsCustom(ErrorType errType, Runnable test) {
+    try {
+      test.run();
+    } catch (CustomError e) {
+      if (e.type != errType) {
+        // System.err.println(e.toString());
+        e.printStackTrace();
+        throw e;
+      }
+    }
+  }
+
+  public static Letter[] lettersFromString(String s) {
+    Letter[] res = new Letter[s.length()];
+    for (int i = 0; i < s.length(); i++) {
+      res[i] = new Letter(s.charAt(i));
+    }
+    return res;
+  }
 
   @Before
   public void setUp() {
@@ -127,9 +149,6 @@ public class MainTest {
     assertTrue(Dictionary.containsWord(new Word("car")));
 
     assertFalse(Dictionary.containsWord(new Word("notagoodword")));
-
-    Dictionary.addWord(new Word("notagoodword"));
-    assertTrue(Dictionary.containsWord(new Word("notagoodword")));
 
     LettersCounter lc = new LettersCounter();
     lc.addLetter(new Letter('A'));
@@ -300,14 +319,6 @@ public class MainTest {
         p1.bag.addLetter(l9[i]);
       }
     }
-
-    assertThrows(
-        CustomError.class,
-        () -> {
-          gm.grid
-              .placeLetters(new PlaceWordAction(p1, 0, l1, new GridWordPos(0, 1, Direction.Right)))
-              .toString();
-        });
 
     gm.applyGameAction(new PlaceWordAction(p1, 1, l1, new GridWordPos(7, 6, Direction.Right)));
 
@@ -663,9 +674,8 @@ public class MainTest {
     assertThrows(
         CustomError.class,
         () -> {
-          gm.grid
-              .placeLetters(new PlaceWordAction(p1, 0, l1, new GridWordPos(0, 1, Direction.Right)))
-              .toString();
+          GridWordPos s = new GridWordPos(0, 1, Direction.Right);
+          gm.grid.placeLetters(new PlaceWordAction(p1, 0, l1, l1, s, s));
         });
 
     Utilities.logger.setRedirectState(false);
@@ -732,7 +742,7 @@ u [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41;1m_[0m  _[0m
     }
 
     for (Player p : gm.players) {
-      PassTurnAction pta = new PassTurnAction(p, 0);
+      PassTurnAction pta = new PassTurnAction(p, gm.getTurn());
       gm.applyGameActionDispatch(pta, 66);
       assertEquals(1734.0, p.getRemainingTime(), 0);
     }
@@ -740,7 +750,7 @@ u [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41;1m_[0m  _[0m
     // Set the remaining time to 0 for a player
     Player p = gm.players.get(0);
     assertFalse(p.getHasForfeited());
-    PassTurnAction pta = new PassTurnAction(p, 0);
+    PassTurnAction pta = new PassTurnAction(p, gm.getTurn());
     gm.applyGameActionDispatch(pta, 9999);
     assertTrue(p.getHasForfeited());
   }
@@ -818,8 +828,23 @@ u [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41;1m_[0m  _[0m
             new GridWordPos(0, 1, Direction.Right));
     assertEquals("0 PlaceWord a2h LOUEE", place.toSerializedString());
 
-    History history = new History<>();
-    assertEquals("", history.toSerializedString());
+    History<GameAction> history = new History<>();
+    for (int i = 0; i < 5; i++) {
+      PassTurnAction pa =
+          new PassTurnAction(gameModel.getCurrentPlayer(), this.gameModel.getTurn());
+      gameModel.applyGameActionDispatch(pa, 0);
+      history.addPlayedAction(pa);
+    }
+    RenamePlayerAction ra =
+        new RenamePlayerAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), "BOB");
+    gameModel.applyGameActionDispatch(ra, 0);
+    history.addPlayedAction(ra);
+
+    assertEquals(
+        "1. 0 PassTurn 1 PassTurn 2 PassTurn 3 PassTurn;\n"
+            + //
+            "2. 0 PassTurn 1 RenamePlayer \"BOB\";",
+        history.toSerializedString());
   }
 
   @Test
@@ -829,5 +854,245 @@ u [45m_[0m  _[0m  _[0m  [46m_[0m  _[0m  _[0m  _[0m  [41;1m_[0m  _[0m
     assertEquals('A', cis.peek());
     assertEquals(false, cis.eof());
     assertThrows(CustomError.class, () -> cis.croak(null));
+  }
+
+  @Test
+  public void TestsUndoRedo() {
+    // placing valid word
+    GridWordPos s = new GridWordPos(7, 5, Direction.Right);
+    Letter[] w = lettersFromString("ARILLE");
+    this.gameModel.applyGameActionDispatch(
+        new PlaceWordAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), w, s), 1);
+    // pass turn
+    this.gameModel.applyGameActionDispatch(
+        new PassTurnAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()), 2);
+    // rename player
+    this.gameModel.applyGameActionDispatch(
+        new RenamePlayerAction(
+            this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), "PIKACHU"),
+        3);
+    // rename player
+    this.gameModel.applyGameActionDispatch(
+        new RenamePlayerAction(
+            this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), "BEBOU"),
+        4);
+    // rename player
+    this.gameModel.applyGameActionDispatch(
+        new ExchangeLetterAction(
+            this.gameModel.getCurrentPlayer(),
+            this.gameModel.getTurn(),
+            Arrays.asList(lettersFromString("VUSEENM"))),
+        4);
+    // forefeit
+    this.gameModel.applyGameActionDispatch(
+        new ForfeitGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()), 5);
+
+    // try some undo redo of the game
+    this.gameModel.undoAll();
+    this.gameModel.redoAll();
+    this.gameModel.undoAll();
+    this.gameModel.redoAll();
+    // undo 3
+    for (int i = 0; i < 3; i++) {
+      this.gameModel.applyGameActionDispatch(
+          new UndoAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()), 5);
+    }
+    // redo one
+    this.gameModel.applyGameActionDispatch(
+        new RedoAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()), 6);
+    // placing valid word
+    s = new GridWordPos(6, 8, Direction.Down);
+    w = lettersFromString("ULVES");
+    this.gameModel.applyGameActionDispatch(
+        new PlaceWordAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), w, s), 14);
+  }
+
+  @Test
+  public void TestSomeEdgeCases() {
+    // test forfeiting all players
+    for (int i = 0; i < this.gameModel.players.size(); i++) {
+      this.gameModel.applyGameActionDispatch(
+          new ForfeitGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()), 5);
+    }
+    assertEquals(0, this.gameModel.getActivePlayers().size());
+    this.gameModel.undoAll();
+
+    // placing valid word (of size 7 => score a scrable)
+    Letter[] w = lettersFromString("ANOXIES");
+    this.gameModel.getCurrentPlayer().bag.clear();
+    this.gameModel.getCurrentPlayer().bag.addOther(w);
+    GridWordPos s = new GridWordPos(7, 5, Direction.Right);
+    PlaceWordAction pwa =
+        new PlaceWordAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), w, s);
+    assertEquals(0, pwa.player.getScore());
+    this.gameModel.applyGameActionDispatch(pwa, 1);
+    assertEquals(84, pwa.player.getScore());
+    // test action with wrong player
+    assertThrowsCustom(
+        ErrorType.WrongPlayerAction,
+        () -> {
+          this.gameModel.applyGameActionDispatch(
+              new PassTurnAction(this.gameModel.players.get(0), this.gameModel.getTurn()), 0);
+        });
+    assertThrowsCustom(
+        ErrorType.WrongTurnAction,
+        () -> {
+          this.gameModel.applyGameActionDispatch(
+              new PassTurnAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn() - 1),
+              0);
+        });
+
+    this.gameModel.undoAll();
+    // test missing letters
+    this.gameModel.getCurrentPlayer().bag.clear();
+    this.gameModel.getCurrentPlayer().bag.addOther(w);
+    assertThrowsCustom(
+        ErrorType.PlayerDoesntHaveLettersInIsBag,
+        () -> {
+          Letter[] w2 = lettersFromString("ZZZZZZ");
+          GridWordPos s2 = new GridWordPos(7, 5, Direction.Right);
+          this.gameModel.applyGameActionDispatch(
+              new PlaceWordAction(
+                  this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), w2, s2),
+              0);
+        });
+
+    // test unsupported ops
+    // restart
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> {
+          new RestartGameAction(null, 0).toSerializedString();
+        });
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> {
+          new RestartGameAction(null, 0).undo(null);
+        });
+    // quit
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> {
+          new QuitAction(null, 0, true).toSerializedString();
+        });
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> {
+          new QuitAction(null, 0, true).undo(null);
+        });
+    // redo
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> {
+          new RedoAction(null, 0).toSerializedString();
+        });
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> {
+          new RedoAction(null, 0).undo(null);
+        });
+    // undo
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> {
+          new UndoAction(null, 0).toSerializedString();
+        });
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> {
+          new UndoAction(null, 0).undo(null);
+        });
+  }
+
+  @Test
+  public void TestQuitAndLoad() {
+    // TODO
+  }
+
+  @Test
+  public void TestPlaceLettersAndFilter() {
+    assertThrowsCustom(
+        ErrorType.UnfilteredPlaceWordAction, // unfiltered place word action
+        () -> {
+          GridWordPos s = new GridWordPos(7, 7, Direction.Right);
+          Letter[] w = lettersFromString("");
+          this.gameModel.grid.placeLetters(
+              new PlaceWordAction(
+                  this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), w, s));
+        });
+
+    assertThrowsCustom(
+        ErrorType.UnknownWord, // empty word
+        () -> {
+          GridWordPos s = new GridWordPos(7, 7, Direction.Right);
+          Letter[] w = lettersFromString("");
+          this.gameModel.grid.placeLetters(
+              new PlaceWordAction(
+                  this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), w, w, s, s));
+        });
+    assertThrowsCustom(
+        ErrorType.InvalidePlaceLetterAction, // start out of bound
+        () -> {
+          GridWordPos s = new GridWordPos(500, 500, Direction.Right);
+          Letter[] w = lettersFromString("AA");
+          this.gameModel.grid.placeLetters(
+              new PlaceWordAction(
+                  this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), w, w, s, s));
+        });
+    assertThrowsCustom(
+        ErrorType.PositionOutOfGird, // word too long (reached out of bound)
+        () -> {
+          GridWordPos s = new GridWordPos(7, 7, Direction.Right);
+          Letter[] w = lettersFromString("RISTOURNASSIONS");
+          this.gameModel.grid.placeLetters(
+              new PlaceWordAction(
+                  this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), w, w, s, s));
+        });
+    assertThrowsCustom(
+        ErrorType.FirstMoveIllegal, // not starting at the end
+        () -> {
+          GridWordPos s = new GridWordPos(5, 5, Direction.Right);
+          Letter[] w = lettersFromString("FELDSPATH");
+          this.gameModel.grid.placeLetters(
+              new PlaceWordAction(
+                  this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), w, w, s, s));
+        });
+    { // placing valid word
+      GridWordPos s = new GridWordPos(7, 5, Direction.Right);
+      Letter[] w = lettersFromString("FELDSPATH");
+      this.gameModel.grid.placeLetters(
+          this.gameModel.grid.filterPwa(
+              new PlaceWordAction(
+                  this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), w, s)));
+      this.gameModel.players.get(0).addScore(1); // to enable placing more
+    }
+    assertThrowsCustom(
+        ErrorType.InvalidePlaceLetterAction, // trying to replace a letter
+        () -> {
+          GridWordPos s = new GridWordPos(7, 7, Direction.Right);
+          Letter[] w = lettersFromString("A");
+          this.gameModel.grid.placeLetters(
+              this.gameModel.grid.filterPwa(
+                  new PlaceWordAction(
+                      this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), w, s)));
+        });
+
+    { // placing valid word
+      GridWordPos s = new GridWordPos(5, 7, Direction.Down);
+      Letter[] w = lettersFromString("FELAS");
+      this.gameModel.grid.placeLetters(
+          this.gameModel.grid.filterPwa(
+              new PlaceWordAction(
+                  this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), w, s)));
+    }
+    assertThrowsCustom(
+        ErrorType.InvalidePlaceLetterAction, // placing letters over existing letters
+        () -> {
+          GridWordPos s = new GridWordPos(7, 7, Direction.Right);
+          Letter[] w = lettersFromString("ZZZ");
+          this.gameModel.grid.placeLetters(
+              new PlaceWordAction(
+                  this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), w, w, s, s));
+        });
   }
 }

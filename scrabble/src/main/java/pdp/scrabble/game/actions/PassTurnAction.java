@@ -9,10 +9,6 @@ public class PassTurnAction extends GameAction {
     super(player, turn);
   }
 
-  public static PassTurnAction create(Player player, int turn) {
-    return new PassTurnAction(player, turn);
-  }
-
   @Override
   public void applyGameAction(GameModel gameModel) {
     gameModel.applyGameAction(this);

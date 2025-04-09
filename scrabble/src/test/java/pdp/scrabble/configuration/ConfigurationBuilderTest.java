@@ -218,6 +218,7 @@ public class ConfigurationBuilderTest {
   public void testVersionText() {
     try {
       String[] args = {"--version"};
+      Utilities.logger.setRedirectState(false);
       try {
         ConfigurationInitializer.configurationInit(args);
       } finally {

@@ -1,35 +1,32 @@
 package pdp.scrabble.dictionary;
 
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Dictionary implements IDictionary {
 
+  /** for fast tests */
+  private static final HashMap<Path, Set<Word>> cachedDicts = new HashMap<>();
+
   private final Set<Word> words = new HashSet<>();
-
-  /**
-   * add a word to the dictionary
-   *
-   * @param word
-   * @return void
-   */
-  @Override
-  public void addWord(Word word) {
-
-    this.words.add(word);
-  }
 
   /**
    * put every word from a file into the dictionary
    *
-   * @param file_name
+   * @param fileName
    * @return void
    */
   @Override
-  public void loadFromFile(Path file_name) {
+  public void loadFromFile(Path fileName) {
     this.words.clear();
-    this.words.addAll(WordsLoader.loadWordsFromFile(file_name));
+    if (!cachedDicts.containsKey(fileName)) {
+      this.words.addAll(WordsLoader.loadWordsFromFile(fileName));
+      cachedDicts.put(fileName, this.words);
+    } else {
+      this.words.addAll(cachedDicts.get(fileName));
+    }
   }
 
   /**

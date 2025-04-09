@@ -136,23 +136,6 @@ public enum Lang {
    */
   private Lang(Locale locale) {
     this.locale = locale;
-    if (!this.getCodeLang().equals(this.locale.getLanguage())) {
-      throw new CustomError(
-          ErrorType.MalformedLangError,
-          "couldn't create the Lang: '" + this.name() + "'",
-          "you can't create a Lang with name code: '"
-              + this.getCodeLang()
-              + "'' from Locale("
-              + locale.getLanguage()
-              + ")");
-    }
-    if (!(this.locale.getCountry().isEmpty())) {
-      throw new CustomError(
-          ErrorType.MalformedLangError,
-          "couldn't create the Lang: '" + this.name() + "'",
-          "you can't create a Lang with a Local of a country '" + locale + "'");
-    }
-    // handle a custom dictionary path
     this.customDictPath = null;
   }
 

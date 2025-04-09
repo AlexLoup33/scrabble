@@ -38,7 +38,9 @@ public enum ErrorType {
   CanceledAskAction(false),
   WrongPlayerAction(true),
   ExitNoError(true),
-  ExitWithError(true);
+  ExitWithError(true),
+  UnfilteredPlaceWordAction(true),
+  WrongTurnAction(true);
 
   public final boolean isFatal;
 

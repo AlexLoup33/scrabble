@@ -718,8 +718,8 @@ public class ViewGUI implements IView {
   private void showErrorBase(String text, AlertType type) {
     // Dialog to display the error message
     Alert alert = new Alert(type);
-    alert.setTitle(langPack.getString("error"));
-    alert.setHeaderText(langPack.getString("error"));
+    alert.setTitle(getFromLangPack("error"));
+    alert.setHeaderText(getFromLangPack("error"));
 
     TextArea textArea = new TextArea(text);
     textArea.setEditable(false);
@@ -739,6 +739,10 @@ public class ViewGUI implements IView {
     this.playerScores.updatePlayersTimes(players);
   }
 
+  private void updateHistory() {
+    this.actionHistory.update(this.gameModel.getHistory());
+  }
+
   public void updateGUI() {
     this.displayGrid(this.gameModel.grid, this.gameModel.config.superScrabble());
     this.showScores(this.gameModel.players);
@@ -747,5 +751,6 @@ public class ViewGUI implements IView {
     }
     this.announceTurn(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
     this.displayPlayerLetters(this.gameModel.getCurrentPlayer().bag);
+    this.updateHistory();
   }
 }

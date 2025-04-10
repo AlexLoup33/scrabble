@@ -236,7 +236,7 @@ public class ViewTests {
 
     // exchange letter
     ga = view.askAction(gameModel.getCurrentPlayer(), gameModel.getTurn());
-    assertEquals("0 ExchangeLetter [K,I,R,E,E,#]", ga.toSerializedString());
+    assertEquals("0 ExchangeLetter [K,I,R,E,E,$]", ga.toSerializedString());
     gameModel.applyGameActionDispatch(ga, 1);
 
     // rename

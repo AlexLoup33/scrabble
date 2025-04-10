@@ -137,6 +137,21 @@ public class Parser {
     return (String) tok.value;
   }
 
+  // # is the joker letter
+  // but our parser ignores # as comments
+  // so we serialize them as $
+  // An ExchangeLetter can be any identifier or $
+  private String parseExchangeLetters() {
+    Token tok = input.next();
+    if (tok.type == "punc" && (char) tok.value == '$') {
+      return "#";
+    }
+    if (!tok.type.equals("var")) {
+      input.croak("Expecting identifier");
+    }
+    return (String) tok.value;
+  }
+
   private int parseNumber() {
     Token tok = input.next();
     if (!tok.type.equals("num")) {
@@ -325,8 +340,12 @@ public class Parser {
         }
         if (actionType.equals("ExchangeLetter")) {
           List<Letter> toExchange =
-              delimited('[', ']', ',', this::parseIdent).stream()
-                  .map((obj) -> new Letter(((String) obj).charAt(0)))
+              delimited('[', ']', ',', this::parseExchangeLetters).stream()
+                  .map(
+                      (obj) -> {
+                        if (obj.equals("#")) return Letter.joker();
+                        else return new Letter(((String) obj).charAt(0));
+                      })
                   .collect(Collectors.toList());
           ExchangeLetterAction exchangeAction =
               new ExchangeLetterAction(playing, curTurn, toExchange);

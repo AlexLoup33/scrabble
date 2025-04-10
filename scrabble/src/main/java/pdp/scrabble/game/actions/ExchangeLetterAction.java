@@ -89,7 +89,9 @@ public class ExchangeLetterAction extends GameAction {
     StringBuilder toExchange = new StringBuilder();
     for (Map.Entry<Letter, Integer> l : this.lettersToExchange.getTable().entrySet()) {
       for (int i = 0; i < l.getValue(); i++) {
-        toExchange.append(l.getKey() + ",");
+        // jokers are $ instead of # when serialized
+        String ltr = l.getKey().isJoker ? "$" : l.getKey().toString();
+        toExchange.append(ltr + ",");
       }
     }
     if (toExchange.length() > 0) toExchange.deleteCharAt(toExchange.length() - 1);

@@ -42,7 +42,7 @@ public class GameModel {
 
     for (int i = 0; i < this.config.getPlayerCount(); i++) {
       if (this.config.aiPlayers()[nextPlayerID]) {
-        this.players.add(new AI(nextPlayerID, this.config.getBlitzTime()));
+        this.players.add(new Player(nextPlayerID, this.config.getBlitzTime(), true));
       } else {
         this.players.add(new Player(nextPlayerID, this.config.getBlitzTime()));
       }
@@ -51,7 +51,7 @@ public class GameModel {
     }
 
     if (this.config.getDictFile() != null) {
-      this.lang.set_customDictPath(this.config.getDictFile());
+      this.lang.setCustomDictPath(this.config.getDictFile());
     }
 
     this.dictionary = new Dictionary();

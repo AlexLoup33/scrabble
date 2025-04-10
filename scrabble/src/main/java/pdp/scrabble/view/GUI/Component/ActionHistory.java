@@ -1,10 +1,12 @@
 package pdp.scrabble.view.GUI.Component;
 
+import java.util.List;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
+import pdp.scrabble.game.actions.GameAction;
 
 public class ActionHistory extends StackPane {
   private final VBox messageContainer;
@@ -33,7 +35,7 @@ public class ActionHistory extends StackPane {
    *
    * @param message the message readed
    */
-  public void addMessage(String message) {
+  private void addMessage(String message) {
     // Add unique separator if not first message
     if (!messageContainer.getChildren().isEmpty()) {
       Line separator = new Line(0, 0, 180, 0); // horizontale ligne
@@ -55,7 +57,16 @@ public class ActionHistory extends StackPane {
   }
 
   /** Clear the history */
-  public void clearHistory() {
+  private void clearHistory() {
     messageContainer.getChildren().clear();
+  }
+
+  public void update(List<GameAction> history) {
+    this.clearHistory();
+    for (GameAction ga : history) {
+      String gaText = ga.toSerializedString();
+      gaText = gaText.substring(gaText.indexOf(' ', 0));
+      this.addMessage(ga.player.getName() + "-" + gaText);
+    }
   }
 }

@@ -18,12 +18,12 @@ public class Player {
   private final int timePerPlayer;
 
   public Player(int nextPlayerID, int timePerPlayer) {
-    this("Player", nextPlayerID, timePerPlayer, false);
+    this(nextPlayerID, timePerPlayer, false);
   }
 
-  protected Player(String nameBase, int nextPlayerID, int timePerPlayer, boolean isAi) {
+  protected Player(int nextPlayerID, int timePerPlayer, boolean isAi) {
     this.id = nextPlayerID;
-    this.name = nameBase + this.id;
+    this.name = "Player" + this.id;
     this.score = 0;
     this.bag = new LettersCounter();
     this.hasForfeited = false;
@@ -51,10 +51,14 @@ public class Player {
   }
 
   public String getName() {
-    if (this.hasForfeited) {
-      return this.name + "(forfeited)";
+    String out = this.name;
+    if (this.isAi) {
+      out = out + "[AI]";
     }
-    return this.name;
+    if (this.hasForfeited) {
+      out = out + "(forfeited)";
+    }
+    return out;
   }
 
   public boolean getHasForfeited() {

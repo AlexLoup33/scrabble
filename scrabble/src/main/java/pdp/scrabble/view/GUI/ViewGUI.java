@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -46,8 +47,10 @@ import pdp.scrabble.game.actions.GameAction;
 import pdp.scrabble.game.actions.PassTurnAction;
 import pdp.scrabble.game.actions.PlaceWordAction;
 import pdp.scrabble.game.actions.QuitAction;
+import pdp.scrabble.game.actions.RedoAction;
 import pdp.scrabble.game.actions.RenamePlayerAction;
 import pdp.scrabble.game.actions.RestartGameAction;
+import pdp.scrabble.game.actions.UndoAction;
 import pdp.scrabble.game.serializer.Serializer;
 import pdp.scrabble.view.GUI.Component.ActionHistory;
 import pdp.scrabble.view.GUI.Component.DisplayTurn;
@@ -106,7 +109,7 @@ public class ViewGUI implements IView {
 
   private void setupFromNewModel(GameModel newModel) {
     this.gameModel = newModel;
-    this.langPack = this.gameModel.lang.getViewGUI_langPack();
+    this.langPack = this.gameModel.lang.getViewGUILangPack();
     this.lastActionTimeMs = System.currentTimeMillis();
 
     // MENU BAR INITIALIZATION
@@ -137,18 +140,16 @@ public class ViewGUI implements IView {
 
     // Second -> Game : Hint | Undo | Redo
     MenuItem hintItem = new MenuItem(langPack.getString("hint"));
-    MenuItem undoAllItem = new MenuItem(langPack.getString("undoall"));
     MenuItem undoItem = new MenuItem(langPack.getString("undo"));
     MenuItem redoItem = new MenuItem(langPack.getString("redo"));
+    MenuItem undoAllItem = new MenuItem(langPack.getString("undoall"));
     MenuItem redoAllItem = new MenuItem(langPack.getString("redoall"));
     // Action for Items
-    // TODO faire des handle... pour chaque
-    // TODO hit = message pour rapeler que l'on peux echanger des lettres
-    hintItem.setOnAction(e -> System.out.println("Hint..."));
-    undoAllItem.setOnAction(e -> System.out.println("Undo All..."));
-    undoItem.setOnAction(e -> System.out.println("Undo one..."));
-    redoItem.setOnAction(e -> System.out.println("Redo one..."));
-    redoAllItem.setOnAction(e -> System.out.println("Redo All..."));
+    hintItem.setOnAction(e -> this.handleShowHint());
+    undoItem.setOnAction(e -> this.handleUndoOne());
+    redoItem.setOnAction(e -> this.handleRedoOne());
+    undoAllItem.setOnAction(e -> this.handleUndoAll());
+    redoAllItem.setOnAction(e -> this.handleRedoAll());
     // adding all items
     gameMenu.getItems().addAll(hintItem, undoAllItem, undoItem, redoItem, redoAllItem);
 
@@ -217,6 +218,64 @@ public class ViewGUI implements IView {
       this.root.getChildren().clear();
     }
     this.root.getChildren().addAll(menuBar, displayTurn, mainRow, playerHand, actionButtons);
+    this.updateGUI();
+  }
+
+  private void handleRedoAll() {
+    boolean ask = this.askYesNo(langPack.getString("redoall"), langPack.getString("redoallText"));
+    if (ask) {
+      this.gameModel.redoAll();
+      this.updateGUI();
+    }
+  }
+
+  private void handleRedoOne() {
+    boolean ask = this.askYesNo(langPack.getString("redo"), langPack.getString("redoText"));
+    if (ask) {
+      this.executeGameAction(
+          new RedoAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
+    }
+  }
+
+  private void handleUndoOne() {
+    boolean ask = this.askYesNo(langPack.getString("undo"), langPack.getString("undoText"));
+    if (ask) {
+      this.executeGameAction(
+          new UndoAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
+    }
+  }
+
+  private void handleUndoAll() {
+    boolean ask = this.askYesNo(langPack.getString("undoall"), langPack.getString("undoallText"));
+    if (ask) {
+      this.gameModel.undoAll();
+      this.updateGUI();
+    }
+  }
+
+  private void handleShowHint() {
+    this.showSimpleAlert(
+        langPack.getString("hint"), AlertType.INFORMATION, langPack.getString("hintText"));
+  }
+
+  private boolean askYesNo(String title, String content) {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle(title);
+    alert.setContentText(content);
+
+    ButtonType yes = new ButtonType(langPack.getString("yes"));
+    ButtonType no = new ButtonType(langPack.getString("no"));
+
+    alert.getButtonTypes().setAll(yes, no);
+
+    AtomicBoolean res = new AtomicBoolean(false);
+    alert
+        .showAndWait()
+        .ifPresent(
+            response -> {
+              res.set(response == yes);
+            });
+    return res.get();
   }
 
   private void showSimpleAlert(String title, AlertType type, String content) {
@@ -271,7 +330,7 @@ public class ViewGUI implements IView {
         .ifPresent(
             response -> {
               if (!(response == cancel)) {
-                this.executeGameAction(new QuitAction(player, turn, (response != saveAndQuit)));
+                this.executeGameAction(new QuitAction(player, turn, ((response == saveAndQuit))));
               }
             });
   }
@@ -386,19 +445,7 @@ public class ViewGUI implements IView {
 
   private void handleShowHelp() {
     this.showSimpleAlert(
-        langPack.getString("help"),
-        AlertType.INFORMATION,
-        """
-here is some nice tips to help you:
-  - you can place words, exchange letters or pass your turn
-    with the buttons in front of you
-  - in the center there is the grid and under it the letters in your hand,
-    over that you have some additional infos obout the game,
-    on the left you have the history,
-    and on the rigth the scores and remaing time
-  - on the grid the colors represent the multipliers as:
-    cyan is doubleLetter, blue is ...
-        """);
+        langPack.getString("help"), AlertType.INFORMATION, langPack.getString("helpcontent"));
   }
 
   /**
@@ -439,17 +486,14 @@ here is some nice tips to help you:
     if (file != null) {
 
       this.setupFromNewModel(Serializer.loadModelFromFile(file.toPath()));
-      this.updateGUI();
     }
   }
 
   private void handleNewGame() {
     this.setupFromNewModel(new GameModel(this.gameModel.config.getWithRandomSeed()));
-    this.updateGUI();
   }
 
   private void executeGameAction(GameAction ga) {
-    System.out.println("handling: " + ga.toString());
     // computye the duration of the decision and update last action time
     long currTimeMs = System.currentTimeMillis();
     long durationSec = (currTimeMs - this.lastActionTimeMs) / 1000;
@@ -540,21 +584,20 @@ here is some nice tips to help you:
       String orientation = result[2];
 
       // Parse the position (e.g., "a1" -> row=0, col=0)
-      int row;
+      int row, col;
       try {
         row = position.charAt(0) - 'a';
-      } catch (IndexOutOfBoundsException e) {
-        throw new CustomError( // FIXME : Ludo 🙏 (même si c'est oob ça renvoi la gameAction donc
-            // jsp ou ça devrai renvoyer une erreure)
+        col = Integer.parseInt(position.substring(1)) - 1;
+      } catch (IndexOutOfBoundsException | NumberFormatException e) {
+        throw new CustomError(
             ErrorType.InvalidMoveFormat,
             "Invalid position format. Expected format: 'a1', 'b2', etc.",
             "The position: " + position + " isn't valid");
       }
-      int col;
       try {
-        col = Integer.parseInt(position.substring(1)) - 1;
+
       } catch (NumberFormatException e) {
-        throw new CustomError( // FIXME : Ludo 🙏
+        throw new CustomError(
             ErrorType.InvalidMoveFormat,
             "Invalid position format. Expected format: 'a1', 'b2', etc.",
             "The position: " + position + " isn't valid");
@@ -743,12 +786,12 @@ here is some nice tips to help you:
 
   @Override
   public void displayDraw(LettersDrawer draw) {
-    // TODO: update somthing on the interface to show the number of remaining letters in drawer
+    throw new UnsupportedOperationException("displayDraw is included with the annonceTurn");
   }
 
   @Override
   public void announceTurn(Player currentPlayer, int turn) {
-    this.displayTurn.updateTurn(turn, currentPlayer);
+    this.displayTurn.updateTurn(turn, currentPlayer, this.gameModel.draw.getCurrentSize());
   }
 
   @Override
@@ -777,8 +820,8 @@ here is some nice tips to help you:
   private void showErrorBase(String text, AlertType type) {
     // Dialog to display the error message
     Alert alert = new Alert(type);
-    alert.setTitle(langPack.getString("error"));
-    alert.setHeaderText(langPack.getString("error"));
+    alert.setTitle(getFromLangPack("error"));
+    alert.setHeaderText(getFromLangPack("error"));
 
     TextArea textArea = new TextArea(text);
     textArea.setEditable(false);
@@ -798,15 +841,18 @@ here is some nice tips to help you:
     this.playerScores.updatePlayersTimes(players);
   }
 
+  private void updateHistory() {
+    this.actionHistory.update(this.gameModel.getHistory());
+  }
+
   public void updateGUI() {
     this.displayGrid(this.gameModel.grid, this.gameModel.config.superScrabble());
     this.showScores(this.gameModel.players);
     if (this.gameModel.config.blitz()) {
       this.showRemainingTimes(this.gameModel.players);
     }
-    this.displayTurn.updateTurn(this.gameModel.getTurn(), this.gameModel.getCurrentPlayer());
     this.announceTurn(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
-    this.displayDraw(this.gameModel.draw);
     this.displayPlayerLetters(this.gameModel.getCurrentPlayer().bag);
+    this.updateHistory();
   }
 }

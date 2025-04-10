@@ -482,21 +482,20 @@ public class ViewGUI implements IView {
       String orientation = result[2];
 
       // Parse the position (e.g., "a1" -> row=0, col=0)
-      int row;
+      int row, col;
       try {
         row = position.charAt(0) - 'a';
-      } catch (IndexOutOfBoundsException e) {
-        throw new CustomError( // FIXME : Ludo 🙏 (même si c'est oob ça renvoi la gameAction donc
-            // jsp ou ça devrai renvoyer une erreure)
+        col = Integer.parseInt(position.substring(1)) - 1;
+      } catch (IndexOutOfBoundsException | NumberFormatException e) {
+        throw new CustomError(
             ErrorType.InvalidMoveFormat,
             "Invalid position format. Expected format: 'a1', 'b2', etc.",
             "The position: " + position + " isn't valid");
       }
-      int col;
       try {
-        col = Integer.parseInt(position.substring(1)) - 1;
+
       } catch (NumberFormatException e) {
-        throw new CustomError( // FIXME : Ludo 🙏
+        throw new CustomError(
             ErrorType.InvalidMoveFormat,
             "Invalid position format. Expected format: 'a1', 'b2', etc.",
             "The position: " + position + " isn't valid");
@@ -685,12 +684,12 @@ public class ViewGUI implements IView {
 
   @Override
   public void displayDraw(LettersDrawer draw) {
-    // TODO: update somthing on the interface to show the number of remaining letters in drawer
+    throw new UnsupportedOperationException("displayDraw is included with the annonceTurn");
   }
 
   @Override
   public void announceTurn(Player currentPlayer, int turn) {
-    this.displayTurn.updateTurn(turn, currentPlayer);
+    this.displayTurn.updateTurn(turn, currentPlayer, this.gameModel.draw.getCurrentSize());
   }
 
   @Override
@@ -746,9 +745,7 @@ public class ViewGUI implements IView {
     if (this.gameModel.config.blitz()) {
       this.showRemainingTimes(this.gameModel.players);
     }
-    this.displayTurn.updateTurn(this.gameModel.getTurn(), this.gameModel.getCurrentPlayer());
     this.announceTurn(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
-    this.displayDraw(this.gameModel.draw);
     this.displayPlayerLetters(this.gameModel.getCurrentPlayer().bag);
   }
 }

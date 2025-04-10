@@ -45,13 +45,13 @@ public class ViewCLI implements IView {
   private final boolean superScrabble;
 
   public ViewCLI(Lang lang, boolean superScrabble) {
-    this.langPack = lang.getViewCLI_langPack();
+    this.langPack = lang.getViewCLILangPack();
     this.scanner = new Scanner(System.in);
     this.superScrabble = superScrabble;
   }
 
   public ViewCLI(Lang lang, boolean superScrabble, ByteArrayInputStream in) {
-    this.langPack = lang.getViewCLI_langPack();
+    this.langPack = lang.getViewCLILangPack();
     this.scanner = new Scanner(in);
     this.superScrabble = superScrabble;
   }
@@ -66,7 +66,7 @@ public class ViewCLI implements IView {
 
     switch (response) {
       case "placeWord" -> {
-        return this.ask_placeWordAction(player, turn);
+        return this.askPlaceWordAction(player, turn);
       }
       case "passTurn" -> {
         return new PassTurnAction(player, turn);
@@ -87,10 +87,10 @@ public class ViewCLI implements IView {
         return this.askRedoAction(player, turn);
       }
       case "exchangeLetter" -> {
-        return this.ask_exchangeLetter(player, turn);
+        return this.askExchangeLetter(player, turn);
       }
       case "renamePlayer" -> {
-        return this.ask_renamePlayer(player, turn);
+        return this.askRenamePlayer(player, turn);
       }
       default ->
           throw new CustomError(
@@ -100,7 +100,7 @@ public class ViewCLI implements IView {
     }
   }
 
-  private ExchangeLetterAction ask_exchangeLetter(Player player, Integer turn) {
+  private ExchangeLetterAction askExchangeLetter(Player player, Integer turn) {
     Utilities.verbose("type the letters to exchange: like: 'AJTT' to exchange an A, J and 2 T\n");
     Utilities.logger.print(this.getFromLangPack("ask_exchange"));
     String response = this.scanner.nextLine().strip();
@@ -123,7 +123,7 @@ public class ViewCLI implements IView {
     return new ExchangeLetterAction(player, turn, letters);
   }
 
-  private RenamePlayerAction ask_renamePlayer(Player player, Integer turn) {
+  private RenamePlayerAction askRenamePlayer(Player player, Integer turn) {
     Utilities.verbose("type the new name for the current player\n");
     Utilities.logger.print(this.getFromLangPack("ask_rename"));
     String response = this.scanner.nextLine().strip();
@@ -158,7 +158,7 @@ public class ViewCLI implements IView {
         ErrorType.CanceledAskAction, "canceled", "not all players agreed on undoing");
   }
 
-  private PlaceWordAction ask_placeWordAction(Player player, Integer turn) {
+  private PlaceWordAction askPlaceWordAction(Player player, Integer turn) {
     Utilities.verbose("pattern for move is `yxdirection WORD`(eg. `a6h photo` or `b7v STICK` )\n");
     Utilities.logger.print(this.getFromLangPack("ask_move"));
     String response = this.scanner.nextLine();

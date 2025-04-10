@@ -430,7 +430,7 @@ public class MainTest {
 
   @Test
   public void testLangPack() {
-    ResourceBundle langPack = Lang.EN.getViewCLI_langPack();
+    ResourceBundle langPack = Lang.EN.getViewCLILangPack();
     assertNotNull(langPack);
     String result = langPack.getString("test");
 

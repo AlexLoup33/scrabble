@@ -314,12 +314,12 @@ public class Grid {
       }
     }
 
-    int score_tot = 0;
+    int scoreTotal = 0;
     boolean playCenter = false;
     for (Player onGames : this.gameModel.players) {
-      score_tot += onGames.getScore();
+      scoreTotal += onGames.getScore();
     }
-    if (score_tot == 0) {
+    if (scoreTotal == 0) {
       for (int index = 0; index < pwa.lettersToPlace.length; index++) {
         final GridPos currPos = lettersPos.get(index);
         if (currPos.row() == size / 2 && currPos.col() == size / 2) {
@@ -331,12 +331,12 @@ public class Grid {
           throw new CustomError(
               ErrorType.FirstMoveIllegal,
               "Not the right move for the first move",
-              "the first move: '" + score_tot + " not play to the center (need to touch k11)");
+              "the first move: '" + scoreTotal + " not play to the center (need to touch k11)");
         }
         throw new CustomError(
             ErrorType.FirstMoveIllegal,
             "Not the right move for the first move",
-            "the first move: '" + score_tot + " not play to the center (need to touch h8)");
+            "the first move: '" + scoreTotal + " not play to the center (need to touch h8)");
       }
     }
 
@@ -346,7 +346,9 @@ public class Grid {
       for (Letter letter : pwa.lettersToPlace) {
         sb.append(String.valueOf(letter));
       }
-      if (result.size() == 1 && score_tot != 0 && sb.toString().equals(ownedWord.word.toString())) {
+      if (result.size() == 1
+          && scoreTotal != 0
+          && sb.toString().equals(ownedWord.word.toString())) {
         throw new CustomError(
             ErrorType.NotPlaceNextToAWord,
             "Not the right move, need to put next to the word",
@@ -399,13 +401,13 @@ public class Grid {
    */
   public int getScore(OwnedWord word) {
     int score = 0;
-    int multi_word = 1;
+    int multiWord = 1;
     for (int i = 0; i < word.word.getLength(); i++) {
       GridPos pos = word.position.getPosAtIndex(i);
       ScoreMultiplier multi = this.getMultiplier(pos);
       int letterMult = 1;
       if (!multi.isLetterMultiplier()) {
-        multi_word *= multi.getMultiplier();
+        multiWord *= multi.getMultiplier();
       } else {
         // => is a letter mult
         letterMult = multi.getMultiplier();
@@ -417,12 +419,12 @@ public class Grid {
        * "adding points for letter: "
        * + letter + " at " + pos + " basePoints=" + lettreBasePoints
        * + " and with letterMult=" + letterMult +
-       * " (multi_word=" + multi_word + ")");
+       * " (multiWord=" + multi_word + ")");
        */
       score += (lettreBasePoints * letterMult);
     }
-    // Utilities.verbose("-> score=" + score + ", multi_word=" + multi_word + ")");
-    return score * multi_word;
+    // Utilities.verbose("-> score=" + score + ", multiWord=" + multi_word + ")");
+    return score * multiWord;
   }
 
   /**

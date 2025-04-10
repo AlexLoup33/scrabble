@@ -109,7 +109,7 @@ public class ViewGUI implements IView {
 
   private void setupFromNewModel(GameModel newModel) {
     this.gameModel = newModel;
-    this.langPack = this.gameModel.lang.getViewGUI_langPack();
+    this.langPack = this.gameModel.lang.getViewGUILangPack();
     this.lastActionTimeMs = System.currentTimeMillis();
 
     // MENU BAR INITIALIZATION

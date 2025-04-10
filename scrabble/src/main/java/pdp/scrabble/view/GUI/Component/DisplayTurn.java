@@ -13,7 +13,7 @@ public class DisplayTurn extends HBox {
   private final ResourceBundle langPack;
 
   public DisplayTurn(Lang lang) {
-    langPack = lang.getViewGUI_langPack();
+    langPack = lang.getViewGUILangPack();
     turnLabel = new Label(langPack.getString("turn"));
     playerLabel = new Label(langPack.getString("player"));
     drawerLabel = new Label(langPack.getString("drawer"));

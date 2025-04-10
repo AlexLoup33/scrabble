@@ -21,7 +21,7 @@ public enum Lang {
       int[] counts = {
         9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1
       };
-      int[] counts_ss = {
+      int[] countsSuperScrabble = {
         16, 4, 6, 8, 24, 4, 5, 5, 13, 2, 2, 7, 6, 13, 15, 4, 2, 13, 10, 15, 7, 3, 4, 2, 4, 2
       };
 
@@ -34,7 +34,7 @@ public enum Lang {
         if (!isSuperScrabble) {
           letterCounts.addLetter(new Letter(letters[i]), counts[i]);
         } else {
-          letterCounts.addLetter(new Letter(letters[i]), counts_ss[i]);
+          letterCounts.addLetter(new Letter(letters[i]), countsSuperScrabble[i]);
         }
       }
 
@@ -51,7 +51,7 @@ public enum Lang {
       int[] points = {
         1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10
       };
-      int[] points_ss = {
+      int[] pointsSuperScrabble = {
         1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10
       };
 
@@ -59,7 +59,7 @@ public enum Lang {
         if (!isSuperScrabble) {
           letterPoints.addLetter(new Letter(letters[i]), points[i]);
         } else {
-          letterPoints.addLetter(new Letter(letters[i]), points_ss[i]);
+          letterPoints.addLetter(new Letter(letters[i]), pointsSuperScrabble[i]);
         }
       }
 
@@ -79,7 +79,7 @@ public enum Lang {
       int[] counts = {
         9, 2, 2, 3, 15, 2, 2, 2, 8, 1, 1, 5, 3, 6, 6, 2, 1, 6, 6, 6, 6, 2, 1, 1, 1, 1
       };
-      int[] counts_ss = {
+      int[] countsSuperScrabble = {
         9, 1, 2, 3, 15, 1, 1, 1, 8, 1, 0, 5, 3, 6, 6, 2, 1, 6, 6, 6, 6, 2, 1, 1, 1, 0
       };
 
@@ -88,7 +88,7 @@ public enum Lang {
         if (!isSuperScrabble) {
           letterCounts.addLetter(new Letter(letters[i]), counts[i]);
         } else {
-          letterCounts.addLetter(new Letter(letters[i]), counts_ss[i]);
+          letterCounts.addLetter(new Letter(letters[i]), countsSuperScrabble[i]);
         }
       }
 
@@ -105,7 +105,7 @@ public enum Lang {
       int[] points = {
         1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 10, 1, 2, 1, 1, 3, 8, 1, 1, 1, 1, 4, 10, 10, 10, 10
       };
-      int[] points_ss = {
+      int[] pointsSuperScrabble = {
         1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 10, 8, 10, 0
       };
 
@@ -113,7 +113,7 @@ public enum Lang {
         if (!isSuperScrabble) {
           letterPoints.addLetter(new Letter(letters[i]), points[i]);
         } else {
-          letterPoints.addLetter(new Letter(letters[i]), points_ss[i]);
+          letterPoints.addLetter(new Letter(letters[i]), pointsSuperScrabble[i]);
         }
       }
 
@@ -139,7 +139,7 @@ public enum Lang {
     this.customDictPath = null;
   }
 
-  void set_customDictPath(Path customDictPath) {
+  void setCustomDictPath(Path customDictPath) {
     this.customDictPath = customDictPath;
   }
 
@@ -188,7 +188,7 @@ public enum Lang {
   /**
    * @return the ressource bundle for the ViewCLI
    */
-  public ResourceBundle getViewCLI_langPack() {
+  public ResourceBundle getViewCLILangPack() {
     return ResourceBundle.getBundle(Lang.viewCliLangPack + this.getCodeLang());
   }
 
@@ -197,7 +197,7 @@ public enum Lang {
    *
    * @return A ResourceBundle object is being returned.
    */
-  public ResourceBundle getViewGUI_langPack() {
+  public ResourceBundle getViewGUILangPack() {
     return ResourceBundle.getBundle(Lang.viewGuiLangPack + this.getCodeLang());
   }
 

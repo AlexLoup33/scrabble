@@ -35,5 +35,5 @@ ContestFile="null"
 # o _  _  _  _  _  _  _  _  _  _  _  _  _  _  _
 <<<<<<<<<<<<<<<<<<<< HISTORY
 1. 0 PlaceWord h8h SODOM 1 PlaceWord h12v MOBILES 2 PassTurn 3 ForfeitGame;
-2. 0 ExchangeLetter [K,I,R,E,E] 1 RenamePlayer "BLIPOUILLE";
+2. 0 ExchangeLetter [K,I,R,E,E,$] 1 RenamePlayer "BLIPOUILLE";
 >>>>>>>>>>>>>>>>>>>>

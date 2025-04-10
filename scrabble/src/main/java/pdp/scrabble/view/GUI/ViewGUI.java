@@ -285,19 +285,7 @@ public class ViewGUI implements IView {
 
   private void handleShowHelp() {
     this.showSimpleAlert(
-        langPack.getString("help"),
-        AlertType.INFORMATION,
-        """
-here is some nice tips to help you:
-  - you can place words, exchange letters or pass your turn
-    with the buttons in front of you
-  - in the center there is the grid and under it the letters in your hand,
-    over that you have some additional infos obout the game,
-    on the left you have the history,
-    and on the rigth the scores and remaing time
-  - on the grid the colors represent the multipliers as:
-    cyan is doubleLetter, blue is ...
-        """);
+        langPack.getString("help"), AlertType.INFORMATION, langPack.getString("helpcontent"));
   }
 
   /**

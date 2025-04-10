@@ -51,7 +51,7 @@ public class GameModel {
     }
 
     if (this.config.getDictFile() != null) {
-      this.lang.set_customDictPath(this.config.getDictFile());
+      this.lang.setCustomDictPath(this.config.getDictFile());
     }
 
     this.dictionary = new Dictionary();

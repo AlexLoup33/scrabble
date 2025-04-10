@@ -12,7 +12,7 @@ public interface IDictionary {
    * @param file_name
    * @return void
    */
-  void loadFromFile(Path file_name);
+  void loadFromFile(Path fileName);
 
   /**
    * check if the dictionary contains the word

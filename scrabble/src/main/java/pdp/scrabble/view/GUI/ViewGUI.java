@@ -1,10 +1,15 @@
 package pdp.scrabble.view.GUI;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -13,12 +18,17 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.dictionary.Letter;
 import pdp.scrabble.dictionary.LettersCounter;
@@ -38,6 +48,7 @@ import pdp.scrabble.game.actions.PlaceWordAction;
 import pdp.scrabble.game.actions.QuitAction;
 import pdp.scrabble.game.actions.RenamePlayerAction;
 import pdp.scrabble.game.actions.RestartGameAction;
+import pdp.scrabble.game.serializer.Serializer;
 import pdp.scrabble.view.GUI.Component.ActionHistory;
 import pdp.scrabble.view.GUI.Component.DisplayTurn;
 import pdp.scrabble.view.GUI.Component.PlayerHand;
@@ -46,192 +57,33 @@ import pdp.scrabble.view.GUI.Component.ShowScore;
 import pdp.scrabble.view.IView;
 
 public class ViewGUI implements IView {
-  private final GameModel gameModel;
-  private final Configuration config;
+  private GameModel gameModel;
+  private Configuration config;
 
   private final Stage primaryStage;
-  private final HBox mainRow;
-  private final ResourceBundle langPack;
+  private Scene scene;
+  private VBox root;
+  private HBox mainRow;
+  private ResourceBundle langPack;
 
-  private final ScrabbleBoard scrabbleBoard;
-  private final PlayerHand playerHand;
-  private final DisplayTurn displayTurn;
-  private final ShowScore playerScores;
-  private final ActionHistory actionHistory;
+  private ScrabbleBoard scrabbleBoard;
+  private PlayerHand playerHand;
+  private DisplayTurn displayTurn;
+  private ShowScore playerScores;
+  private ActionHistory actionHistory;
   private long lastActionTimeMs;
 
-  public ViewGUI(Stage stage, Configuration configuration) {
+  public ViewGUI(Stage stage, GameModel gameModel) {
     this.primaryStage = stage;
 
-    this.gameModel = new GameModel(configuration);
-    this.config = configuration;
+    this.gameModel = gameModel;
+    this.config = gameModel.config;
     this.langPack = this.gameModel.lang.getViewGUI_langPack();
-
-    // MENU BAR INITIALIZATION
-    MenuBar menuBar = new MenuBar();
-
-    // First -> File : New Game | Load Game | Save Game | Help | Settings | Quit
-    Menu fileMenu = new Menu(langPack.getString("file"));
-
-    // Declaration of the Items
-    MenuItem newGameItem = new MenuItem(langPack.getString("ngame"));
-    MenuItem loadGameItem = new MenuItem(langPack.getString("lgame"));
-    MenuItem saveGameItem = new MenuItem(langPack.getString("sgame"));
-    MenuItem helpItem = new MenuItem(langPack.getString("help"));
-    MenuItem settingsItem = new MenuItem(langPack.getString("settings"));
-    MenuItem quitItem = new MenuItem(langPack.getString("quit"));
-
-    // Actions for Items
-    newGameItem.setOnAction(e -> this.handleNewGame());
-    loadGameItem.setOnAction(e -> this.handleLoadGame());
-    saveGameItem.setOnAction(e -> this.handleSaveGame());
-    helpItem.setOnAction(e -> this.handleShowHelp());
-    settingsItem.setOnAction(e -> this.handleSettings());
-    quitItem.setOnAction(e -> this.handleQuit());
-    // Adding all item to fileMenu
-    fileMenu
-        .getItems()
-        .addAll(newGameItem, loadGameItem, saveGameItem, helpItem, settingsItem, quitItem);
-
-    // Second -> Game : Hint | Undo | Redo
-    Menu gameMenu = new Menu(langPack.getString("game"));
-
-    MenuItem hintItem = new MenuItem(langPack.getString("hint"));
-    MenuItem undoAllItem = new MenuItem(langPack.getString("undoall"));
-    MenuItem undoItem = new MenuItem(langPack.getString("undo"));
-    MenuItem redoItem = new MenuItem(langPack.getString("redo"));
-    MenuItem redoAllItem = new MenuItem(langPack.getString("redoall"));
-
-    // Action for Items
-    hintItem.setOnAction(e -> System.out.println("Hint..."));
-    undoAllItem.setOnAction(e -> System.out.println("Undo All..."));
-    undoItem.setOnAction(e -> System.out.println("Undo one..."));
-    redoItem.setOnAction(e -> System.out.println("Redo one..."));
-    redoAllItem.setOnAction(e -> System.out.println("Redo All..."));
-
-    gameMenu.getItems().addAll(hintItem, undoAllItem, undoItem, redoItem, redoAllItem);
-
-    // Third -> About : Version | Author | Licence
-    Menu aboutMenu = new Menu(langPack.getString("about"));
-
-    MenuItem versionItem = new MenuItem(langPack.getString("version"));
-    MenuItem authorItem = new MenuItem(langPack.getString("author"));
-    MenuItem licenceItem = new MenuItem(langPack.getString("license"));
-
-    // Actions for Items
-    // TODO: Display the version of the game
-    versionItem.setOnAction(
-        (ActionEvent event) -> {
-          Alert alert = new Alert(Alert.AlertType.INFORMATION);
-          alert.setTitle(langPack.getString("version"));
-          alert.setHeaderText(null);
-          alert.setContentText("Version 1.0.0");
-          alert.showAndWait();
-        });
-
-    // TODO: Display the author of the game
-    authorItem.setOnAction(
-        (ActionEvent event) -> {
-          Alert alert = new Alert(Alert.AlertType.INFORMATION);
-          alert.setTitle(langPack.getString("author"));
-          alert.setHeaderText(null);
-          alert.setContentText(
-              """
-                                    Andrieu Ludovic
-                                    Cassard Aymeric
-                                    Cazet Valentin
-                                    Lou-Poueyou Alexandre
-                                    Mayol Jean
-                                    Petry Math\u00e9o
-                                    """);
-          alert.showAndWait();
-        });
-
-    // TODO: Display the licence of the gam
-    licenceItem.setOnAction(
-        (ActionEvent event) -> {
-          Alert alert = new Alert(Alert.AlertType.INFORMATION);
-          alert.setTitle(langPack.getString("licence"));
-          alert.setHeaderText(null);
-          alert.setContentText(
-              """
-                                    This game is licensed under the MIT License.
-                                    You can do whatever you want with it, as long as you include the original license.
-                                    """);
-          alert.setContentText(
-              alert.getContentText() + "\n\n" + "https://opensource.org/licenses/MIT");
-          alert.showAndWait();
-        });
-
-    aboutMenu.getItems().addAll(versionItem, authorItem, licenceItem);
-
-    // Adding all the Menu in the MenuBar and adding a bit of style
-    menuBar.getMenus().addAll(fileMenu, gameMenu, aboutMenu);
-    menuBar.setStyle("-fx-start-margin: 200px;");
-
-    // HISTO INITIALIZATION
-    this.actionHistory = new ActionHistory();
-
-    // GRID INITIALIZATION
-    this.scrabbleBoard = new ScrabbleBoard(600, 600, this.gameModel.grid.size);
-
-    // Player score
-    this.playerScores = new ShowScore();
-
-    // Combine histo, scrabbleBoard, and playerScores into a single row
-    mainRow = new HBox(10, actionHistory, scrabbleBoard, playerScores);
-    mainRow.setStyle("-fx-alignment: center; -fx-padding: 10px;");
-
-    // Display Turn
-    this.displayTurn = new DisplayTurn(this.gameModel.lang);
-
-    // Player Hand
-    this.playerHand = new PlayerHand(this.gameModel.lang, this.config.superScrabble());
-    // this.playerHand.updateLetters(letters);
-
-    // ACTION BUTTONS --------------------------------------------
-    Button placeWordButton = new Button(langPack.getString("placew"));
-    placeWordButton.setOnAction(
-        e -> handlePlaceWord(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
-
-    Button exchangeLetterButton = new Button(langPack.getString("exchange"));
-    exchangeLetterButton.setOnAction(
-        e -> handleExchangeLetter(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
-
-    Button renamePlayerButton = new Button(langPack.getString("rename"));
-    renamePlayerButton.setOnAction(
-        e -> hadleNewPlayerName(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
-
-    Button passTurnButton = new Button(langPack.getString("pass"));
-    passTurnButton.setOnAction(
-        e -> new PassTurnAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
-
-    Button forfeitPlayerButton = new Button(langPack.getString("forfeit"));
-    forfeitPlayerButton.setOnAction(
-        e -> new ForfeitGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
-
-    Button restartGameButton = new Button(langPack.getString("restart"));
-    restartGameButton.setOnAction(
-        e -> new RestartGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
-
-    // Adding buttons to the layout in a horizontal line
-    HBox actionButtons =
-        new HBox(
-            10,
-            placeWordButton,
-            exchangeLetterButton,
-            passTurnButton,
-            renamePlayerButton,
-            forfeitPlayerButton,
-            restartGameButton);
-    actionButtons.setStyle("-fx-padding: 10px; -fx-alignment: center;");
-
-    VBox root = new VBox(menuBar, displayTurn, mainRow, playerHand, actionButtons);
-
-    Scene scene = new Scene(root, 1200, 800);
+    this.setupInterface();
+    this.scene = new Scene(this.root, 1200, 800);
 
     primaryStage.setTitle("Scrabble - GUI");
-    primaryStage.setScene(scene);
+    primaryStage.setScene(this.scene);
 
     primaryStage.setOnCloseRequest(
         event -> {
@@ -241,6 +93,163 @@ public class ViewGUI implements IView {
 
     primaryStage.setResizable(false);
     primaryStage.show();
+    this.updateGUI();
+  }
+
+  public ViewGUI(Stage stage, Configuration configuration) {
+    this(stage, ViewGUI.constructModelFromConfig(configuration));
+  }
+
+  private static GameModel constructModelFromConfig(Configuration configuration) {
+    if (configuration.getHistoryFile() != null) {
+      return Serializer.loadModelFromFile(configuration.getHistoryFile());
+    } else {
+      return new GameModel(configuration);
+    }
+  }
+
+  private void setupInterface() {
+    // MENU BAR INITIALIZATION
+    MenuBar menuBar = new MenuBar();
+
+    Menu fileMenu = new Menu(langPack.getString("file"));
+    Menu gameMenu = new Menu(langPack.getString("game"));
+    Menu aboutMenu = new Menu(langPack.getString("about"));
+
+    // First -> File : New Game | Load Game | Save Game | Help | Settings | Quit
+    // Declaration of the Items
+    MenuItem newGameItem = new MenuItem(langPack.getString("ngame"));
+    MenuItem loadGameItem = new MenuItem(langPack.getString("lgame"));
+    MenuItem saveGameItem = new MenuItem(langPack.getString("sgame"));
+    MenuItem helpItem = new MenuItem(langPack.getString("help"));
+    MenuItem settingsItem = new MenuItem(langPack.getString("settings"));
+    MenuItem quitItem = new MenuItem(langPack.getString("quit"));
+    MenuItem updateGUI = new MenuItem("[DEBUG] Update GUI");
+    // Actions for Items
+    newGameItem.setOnAction(e -> this.handleNewGame());
+    loadGameItem.setOnAction(e -> this.handleLoadGame());
+    saveGameItem.setOnAction(e -> this.handleSaveGame());
+    helpItem.setOnAction(e -> this.handleShowHelp());
+    settingsItem.setOnAction(e -> this.handleSettings());
+    quitItem.setOnAction(e -> this.handleQuit());
+    updateGUI.setOnAction(e -> this.updateGUI());
+    // Adding all item to fileMenu
+    fileMenu.getItems().addAll(newGameItem, loadGameItem, saveGameItem);
+    fileMenu.getItems().addAll(helpItem, settingsItem, quitItem, updateGUI);
+
+    // Second -> Game : Hint | Undo | Redo
+    MenuItem hintItem = new MenuItem(langPack.getString("hint"));
+    MenuItem undoAllItem = new MenuItem(langPack.getString("undoall"));
+    MenuItem undoItem = new MenuItem(langPack.getString("undo"));
+    MenuItem redoItem = new MenuItem(langPack.getString("redo"));
+    MenuItem redoAllItem = new MenuItem(langPack.getString("redoall"));
+    // Action for Items 
+    // TODO faire des handle... pour chaque
+    // TODO hit = message pour rapeler que l'on peux echanger des lettres
+    hintItem.setOnAction(e -> System.out.println("Hint...")); 
+    undoAllItem.setOnAction(e -> System.out.println("Undo All..."));
+    undoItem.setOnAction(e -> System.out.println("Undo one..."));
+    redoItem.setOnAction(e -> System.out.println("Redo one..."));
+    redoAllItem.setOnAction(e -> System.out.println("Redo All..."));
+    // adding all items
+    gameMenu.getItems().addAll(hintItem, undoAllItem, undoItem, redoItem, redoAllItem);
+
+    // Third -> About : Version | Author | Licence
+    MenuItem versionItem = new MenuItem(langPack.getString("version"));
+    MenuItem authorItem = new MenuItem(langPack.getString("author"));
+    MenuItem licenceItem = new MenuItem(langPack.getString("license"));
+    // Actions for Items
+    versionItem.setOnAction(
+        e -> {
+          this.handleShowVersion();
+        });
+    authorItem.setOnAction(
+        e -> {
+          this.handleShowAuthors();
+        });
+    licenceItem.setOnAction(
+        e -> {
+          this.handleShowLicense();
+        });
+    // add all the items
+    aboutMenu.getItems().addAll(versionItem, authorItem, licenceItem);
+
+    // Adding all the Menu in the MenuBar and adding a bit of style
+    menuBar.getMenus().addAll(fileMenu, gameMenu, aboutMenu);
+    menuBar.setStyle("-fx-start-margin: 200px;");
+
+    // HISTO INITIALIZATION
+    this.actionHistory = new ActionHistory();
+    // GRID INITIALIZATION
+    this.scrabbleBoard = new ScrabbleBoard(600, 600, this.gameModel.grid.size);
+    // Player score
+    this.playerScores = new ShowScore();
+    // Combine histo, scrabbleBoard, and playerScores into a single row
+    mainRow = new HBox(10, actionHistory, scrabbleBoard, playerScores);
+    mainRow.setStyle("-fx-alignment: center; -fx-padding: 10px;");
+    // Display Turn
+    this.displayTurn = new DisplayTurn(this.gameModel.lang);
+    // Player Hand
+    this.playerHand = new PlayerHand(this.gameModel.lang, this.config.superScrabble());
+
+    // ACTION BUTTONS --------------------------------------------
+    Button placeWordButton = new Button(langPack.getString("placew"));
+    Button exchangeLetterButton = new Button(langPack.getString("exchange"));
+    Button renamePlayerButton = new Button(langPack.getString("rename"));
+    Button passTurnButton = new Button(langPack.getString("pass"));
+    Button forfeitPlayerButton = new Button(langPack.getString("forfeit"));
+    Button restartGameButton = new Button(langPack.getString("restart"));
+
+    placeWordButton.setOnAction(e -> this.handlePlaceWord());
+    exchangeLetterButton.setOnAction(e -> this.handleExchangeLetter());
+    renamePlayerButton.setOnAction(e -> this.hadleNewPlayerName());
+    passTurnButton.setOnAction(e -> this.handlePassTurn());
+    forfeitPlayerButton.setOnAction(e -> this.handleForfeitPlayer());
+    restartGameButton.setOnAction(e -> this.handleRestartGame());
+
+    // Adding buttons to the layout in a horizontal line
+    HBox actionButtons = new HBox(10);
+    actionButtons.getChildren().addAll(placeWordButton, exchangeLetterButton, passTurnButton);
+    actionButtons.getChildren().addAll(renamePlayerButton, forfeitPlayerButton, restartGameButton);
+    actionButtons.setStyle("-fx-padding: 10px; -fx-alignment: center;");
+
+    if (this.root == null) {
+      this.root = new VBox();
+    } else {
+      this.root.getChildren().clear();
+    }
+    this.root.getChildren().addAll(menuBar, displayTurn, mainRow, playerHand, actionButtons);
+  }
+
+  private void showSimpleAlert(String title, AlertType type, String content) {
+    Alert alert = new Alert(type);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(content);
+    alert.showAndWait();
+  }
+
+  private void handleShowLicense() {
+    this.showSimpleAlert(
+        langPack.getString("license"),
+        AlertType.INFORMATION,
+        "This game is licensed under the MIT License.\n"
+            + "You can do whatever you want with it, as long as you include the original license."
+            + "\n\nhttps://opensource.org/licenses/MIT");
+  }
+
+  private void handleShowAuthors() {
+    this.showSimpleAlert(
+        langPack.getString("author"),
+        AlertType.INFORMATION,
+        "Andrieu Ludovic\nCassard Aymeric\n"
+            + "Cazet Valentin\nLou-Poueyou Alexandre\n"
+            + "Mayol Jean\nPetry Math\u00e9o\n");
+  }
+
+  private void handleShowVersion() {
+    this.showSimpleAlert(
+        langPack.getString("version"), AlertType.INFORMATION, Utilities.getProjetVersion());
   }
 
   private void handleQuit() {
@@ -263,10 +272,8 @@ public class ViewGUI implements IView {
         .showAndWait()
         .ifPresent(
             response -> {
-              if (response == saveAndQuit) {
-                new QuitAction(player, turn, true);
-              } else if (response == quitWithoutSaving) {
-                new QuitAction(player, turn, false);
+              if (!(response == cancel)) {
+                this.executeGameAction(new QuitAction(player, turn, (response != saveAndQuit)));
               }
             });
   }
@@ -277,17 +284,51 @@ public class ViewGUI implements IView {
   }
 
   private void handleShowHelp() {
-    // TODO
+    // TODO  Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'handleShowHelp'");
   }
 
-  private void handleSaveGame() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'handleSaveGame'");
+  /**
+   * ask where to save
+   *
+   * @return whether it has save or not
+   */
+  private boolean handleSaveGame() {
+    // create the default filname
+    LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    String defaultFileName = now.toString() + ".txt";
+
+    // configure dialog
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Save Game");
+    fileChooser.setInitialDirectory(new File("saves"));
+    fileChooser.setInitialFileName(defaultFileName);
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+
+    // Show dialog and save if a file is selected
+    File file = fileChooser.showSaveDialog(this.primaryStage);
+    if (file != null) {
+      this.gameModel.saveToFile(file.toPath());
+      return true;
+    }
+    return false;
   }
 
   private void handleLoadGame() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'handleLoadGame'");
+    // configure dialog
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Load Game");
+    fileChooser.setInitialDirectory(new File("saves"));
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+
+    // Show dialog and save if a file is selected
+    File file = fileChooser.showOpenDialog(this.primaryStage);
+    if (file != null) {
+
+      this.gameModel = Serializer.loadModelFromFile(file.toPath());
+      this.setupInterface();
+      this.updateGUI();
+    }
   }
 
   private void handleNewGame() {
@@ -309,32 +350,28 @@ public class ViewGUI implements IView {
       this.handleErrors(e);
     }
     // update the view
-    this.updateGUI(gameModel);
+    this.updateGUI();
   }
 
   private void handleErrors(Throwable e) {
     this.showError(e);
-    throw new CustomError(
-        ErrorType.ExitWithError,
-        "couldn't handle the error",
-        "the error: " + e + " caused an exit");
+    System.exit(1);
   }
 
   private void handleErrors(CustomError e) {
-    if (e.type == ErrorType.ExitNoError || e.type == ErrorType.ExitWithError) {
-      throw e; // re-throw exits
+    if (e.type == ErrorType.ExitNoError) {
+      System.exit(0);
+    } else if (e.type == ErrorType.ExitWithError) {
+      System.exit(1);
     }
     this.showError(e);
     if (e.isFatal()) {
-      throw new CustomError(
-          ErrorType.ExitWithError,
-          "couldn't handle the error",
-          "the error: " + e + " caused an exit");
+      System.exit(1);
     }
   }
 
   // --- Intern methods ---
-  private void handlePlaceWord(Player currentPlayer, Integer currentTurn) {
+  private void handlePlaceWord() {
     Dialog<String[]> dialog = new Dialog<>();
     dialog.setTitle(langPack.getString("placew"));
     dialog.setHeaderText(langPack.getString("placewdesc"));
@@ -432,14 +469,14 @@ public class ViewGUI implements IView {
       }
 
       // Create the PlaceWordAction
-      GameAction action = new PlaceWordAction(currentPlayer, currentTurn, toPlace, gridWordPos);
-      System.out.println("Game action: " + action);
+      this.executeGameAction(
+          new PlaceWordAction(
+              this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), toPlace, gridWordPos));
     }
   }
 
-  private void handleExchangeLetter(Player currentPlayer, Integer currentTurn) {
-    System.out.println("Exchange Letter action triggered");
-    LettersCounter letters = currentPlayer.bag;
+  private void handleExchangeLetter() {
+    LettersCounter letters = this.gameModel.getCurrentPlayer().bag;
 
     // Create a dialog for selecting letters to exchange
     Dialog<java.util.List<Letter>> dialog = new Dialog<>();
@@ -498,15 +535,17 @@ public class ViewGUI implements IView {
     // Show the dialog and process the selected letters
     List<Letter> selectedLetters = dialog.showAndWait().orElse(null);
     if (selectedLetters != null) {
-      GameAction action = new ExchangeLetterAction(currentPlayer, currentTurn, selectedLetters);
-      System.out.println("Game action :" + action);
+      this.executeGameAction(
+          new ExchangeLetterAction(
+              this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), selectedLetters));
     }
   }
 
-  private void hadleNewPlayerName(Player currentPlayer, Integer currentTurn) {
+  private void hadleNewPlayerName() {
     Dialog<String> dialog = new Dialog<>();
     dialog.setTitle(langPack.getString("rename"));
-    dialog.setHeaderText(langPack.getString("renametxt") + currentPlayer.getName());
+    dialog.setHeaderText(
+        langPack.getString("renametxt") + this.gameModel.getCurrentPlayer().getName());
 
     // OK and Cancel buttons
     ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
@@ -534,9 +573,20 @@ public class ViewGUI implements IView {
     // Display the dialog and return the result
     String newName = dialog.showAndWait().orElse(null);
     if (newName != null && !newName.isEmpty()) {
-      GameAction action = new RenamePlayerAction(currentPlayer, currentTurn, newName);
-      System.out.println("Game action :" + action);
+      this.executeGameAction(
+          new RenamePlayerAction(
+              this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), newName));
     }
+  }
+
+  private void handleRestartGame() {
+    this.executeGameAction(
+        new RestartGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
+  }
+
+  private void handleForfeitPlayer() {
+    this.executeGameAction(
+        new ForfeitGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
   }
 
   // --- IView methods ---
@@ -545,9 +595,9 @@ public class ViewGUI implements IView {
     throw new UnsupportedOperationException("not supported method 'askAction' for the GUI");
   }
 
-  private PassTurnAction passTurnAction(Player player, Integer turn) {
-    this.actionHistory.addMessage(player.getName() + " " + langPack.getString("passaction"));
-    return new PassTurnAction(player, turn);
+  private void handlePassTurn() {
+    this.executeGameAction(
+        new PassTurnAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
   }
 
   @Override
@@ -567,16 +617,6 @@ public class ViewGUI implements IView {
   @Override
   public String getFromLangPack(String identifiant) {
     if (!langPack.containsKey(identifiant)) {
-      Alert alert = new Alert(Alert.AlertType.ERROR);
-      alert.setTitle(langPack.getString("error"));
-      alert.setHeaderText(langPack.getString("error"));
-      alert.setContentText(
-          "Key : "
-              + identifiant
-              + " not in: "
-              + langPack
-              + "\nInvalid KeyArgument. Please check the file pack_ and verify your keys");
-      alert.showAndWait();
       throw new CustomError(
           ErrorType.InvalidLangPackIdentifier,
           "Key : " + identifiant + " not in:" + langPack,
@@ -591,34 +631,53 @@ public class ViewGUI implements IView {
 
   @Override
   public void displayDraw(LettersDrawer draw) {
-    this.actionHistory.addMessage(langPack.getString("drawaction") + " " + draw.getCurrentSize());
+    // TODO: update somthing on the interface to show the number of remaining letters in drawer
   }
 
   @Override
   public void announceTurn(Player currentPlayer, int turn) {
-    this.actionHistory.addMessage(
-        langPack.getString("turn")
-            + " "
-            + turn
-            + " | "
-            + langPack.getString("player")
-            + " "
-            + currentPlayer.getName());
     this.displayTurn.updateTurn(turn, currentPlayer);
   }
 
   @Override
   public void showError(CustomError e) {
-    throw new UnsupportedOperationException("Unimplemented method 'showError'");
+    if (e.isFatal()) {
+      this.showError((Throwable) e);
+    } else {
+      this.showErrorBase(e.toString(), AlertType.WARNING);
+    }
   }
 
   @Override
   public void showError(Throwable e) {
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    e.printStackTrace(pw);
+    this.showErrorBase(sw.toString(), AlertType.ERROR);
+  }
+
+  /**
+   * generic methode to show an error
+   *
+   * @param text the text of the error
+   * @param type the kind of error for the alert
+   */
+  private void showErrorBase(String text, AlertType type) {
     // Dialog to display the error message
-    Alert alert = new Alert(Alert.AlertType.ERROR);
+    Alert alert = new Alert(type);
     alert.setTitle(langPack.getString("error"));
     alert.setHeaderText(langPack.getString("error"));
-    alert.setContentText(e.getMessage());
+
+    TextArea textArea = new TextArea(text);
+    textArea.setEditable(false);
+    textArea.setWrapText(false);
+    textArea.setMaxWidth(Double.MAX_VALUE);
+    textArea.setMaxHeight(Double.MAX_VALUE);
+    GridPane.setVgrow(textArea, Priority.ALWAYS);
+    GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+    alert.getDialogPane().setExpandableContent(textArea);
+    alert.getDialogPane().setExpanded(true);
     alert.showAndWait();
   }
 
@@ -628,12 +687,12 @@ public class ViewGUI implements IView {
     throw new UnsupportedOperationException("Unimplemented method 'showRemainingTimes'");
   }
 
-  public void updateGUI(GameModel model) {
-    this.displayGrid(model.grid, model.config.getGui());
-    this.showScores(model.players);
-    this.displayTurn.updateTurn(model.getTurn(), model.getCurrentPlayer());
-    this.announceTurn(model.getCurrentPlayer(), model.getTurn());
-    this.displayDraw(model.draw);
-    this.displayPlayerLetters(model.getCurrentPlayer().bag);
+  public void updateGUI() {
+    this.displayGrid(this.gameModel.grid, this.config.getGui());
+    this.showScores(this.gameModel.players);
+    this.displayTurn.updateTurn(this.gameModel.getTurn(), this.gameModel.getCurrentPlayer());
+    this.announceTurn(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
+    this.displayDraw(this.gameModel.draw);
+    this.displayPlayerLetters(this.gameModel.getCurrentPlayer().bag);
   }
 }

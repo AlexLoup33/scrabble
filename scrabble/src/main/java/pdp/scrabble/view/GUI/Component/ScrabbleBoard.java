@@ -41,26 +41,25 @@ public class ScrabbleBoard extends Canvas {
     gc.setStroke(Color.BLACK);
     gc.setLineWidth(2);
 
-    for (int row = 0; row < BOARD_SIZE; row++) {
-      for (int col = 0; col < BOARD_SIZE; col++) {
-        gc.strokeRect(row * CELL_SIZE, col * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+    for (int col = 0; col < BOARD_SIZE; col++) {
+      for (int row = 0; row < BOARD_SIZE; row++) {
+        gc.strokeRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 
-        // First, we set up the border with row = 0 and col = 0 for display column index (number)
-        // and
-        // row index (letter)
+        // First, we set up the border with col = 0 and row = 0 for display row index (number)
+        // and column index (letter)
         gc.setFill(Color.BLACK);
-        if (row == 0 || col == 0) {
+        if (col == 0 || row == 0) {
           if (row == 0 && col != 0) {
             // Change the color of the text to black
             gc.fillText(
                 String.valueOf(col),
-                row * CELL_SIZE + CELL_SIZE / 2,
-                col * CELL_SIZE + CELL_SIZE / 2);
+                col * CELL_SIZE + CELL_SIZE / 2,
+                row * CELL_SIZE + CELL_SIZE / 2);
           } else if (col == 0 && row != 0) {
             gc.fillText(
                 (char) (row + 96) + "",
-                row * CELL_SIZE + CELL_SIZE / 2,
-                col * CELL_SIZE + CELL_SIZE / 2);
+                col * CELL_SIZE + CELL_SIZE / 2,
+                row * CELL_SIZE + CELL_SIZE / 2);
           }
         } else {
           GridPos pos = new GridPos(row - 1, col - 1);
@@ -69,14 +68,14 @@ public class ScrabbleBoard extends Canvas {
               ScoreMultiplier.SIMPLE_LETTER.getLetterColor(isSuperScrabble, true).getGuiColor();
           if (letter != null) {
             gc.setFill(Color.BEIGE);
-            gc.fillRect(row * CELL_SIZE, col * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+            gc.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 
             gc.setFill(Color.BLACK);
-            gc.strokeRect(row * CELL_SIZE, col * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+            gc.strokeRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
             gc.strokeText(
                 letter.toString(),
-                row * CELL_SIZE + CELL_SIZE / 2,
-                col * CELL_SIZE + CELL_SIZE / 2);
+                col * CELL_SIZE + CELL_SIZE / 2,
+                row * CELL_SIZE + CELL_SIZE / 2);
           } else {
             Color c;
             ScoreMultiplier mult = grid.getMultiplier(pos);
@@ -87,8 +86,8 @@ public class ScrabbleBoard extends Canvas {
               c = Color.valueOf(color);
             }
             gc.setFill(c);
-            gc.fillRect(row * CELL_SIZE, col * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-            gc.strokeRect(row * CELL_SIZE, col * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+            gc.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+            gc.strokeRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
           }
         }
       }

@@ -13,20 +13,22 @@ public class Player {
   public final LettersCounter bag;
   private boolean hasForfeited;
   private boolean hasPassed;
+  private boolean isAi;
   private long remainingTime; // in sec
   private final int timePerPlayer;
 
   public Player(int nextPlayerID, int timePerPlayer) {
-    this("Player", nextPlayerID, timePerPlayer);
+    this("Player", nextPlayerID, timePerPlayer, false);
   }
 
-  protected Player(String nameBase, int nextPlayerID, int timePerPlayer) {
+  protected Player(String nameBase, int nextPlayerID, int timePerPlayer, boolean isAi) {
     this.id = nextPlayerID;
     this.name = nameBase + this.id;
     this.score = 0;
     this.bag = new LettersCounter();
     this.hasForfeited = false;
     this.hasPassed = false;
+    this.isAi = isAi;
     this.timePerPlayer = timePerPlayer;
     this.remainingTime = this.timePerPlayer * 60L;
   }
@@ -57,6 +59,10 @@ public class Player {
 
   public boolean getHasForfeited() {
     return this.hasForfeited;
+  }
+
+  public boolean getIsAi() {
+    return this.isAi;
   }
 
   public void forfeit() {

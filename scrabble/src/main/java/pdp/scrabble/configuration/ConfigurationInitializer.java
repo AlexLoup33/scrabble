@@ -10,7 +10,10 @@ import pdp.scrabble.Utilities;
  * <p>1.If an attribute is absent from cli arg, fallback to scrabblerc value 2. If an attribute is
  * absent from scrabblerc, throw error
  */
-public class ConfigurationInitializer {
+public final class ConfigurationInitializer {
+
+  private ConfigurationInitializer() {}
+
   public static Configuration configurationInit(String[] args) {
     ConfigurationBuilder rcBuilder = new ConfigurationBuilder(Paths.get("./.scrabblerc"));
     ConfigurationBuilder cliBuilder = new ConfigurationBuilder(args);

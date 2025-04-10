@@ -33,13 +33,12 @@ public class ConfigurationBuilder {
    */
   public ConfigurationBuilder(Path src) throws CustomError {
     Properties props = new Properties();
-    try {
+    try (BufferedReader scrabblerc = Files.newBufferedReader(src)) {
       // FileReader location is relative to user working directory at runtime
-      BufferedReader scrabblerc = Files.newBufferedReader(src);
       props.load(scrabblerc);
     } catch (Exception e) {
       throw new CustomError(
-          ErrorType.FailedConfigFileParsing, "Could not access .scrabblerc", e.getMessage());
+          ErrorType.FailedConfigFileParsing, "Could not access .scrabblerc", e.getMessage(), e);
     }
 
     this.completeness = new HashMap<>();
@@ -154,7 +153,8 @@ public class ConfigurationBuilder {
                       + "`, expected a positive `"
                       + Integer.TYPE
                       + "`",
-                  e.getMessage());
+                  e.getMessage(),
+                  e);
             }
             // Build setter reflectively from key
             // basically creating `set{key}(int value)` and calling it
@@ -170,18 +170,19 @@ public class ConfigurationBuilder {
               // so we can safely cast
               InvocationTargetException qualified = (InvocationTargetException) e;
               CustomError src = (CustomError) qualified.getCause();
-              throw new CustomError(errType, errHeader + src.message, src.details);
+              throw new CustomError(errType, errHeader + src.message, src.details, e);
             }
             break;
           }
         // Strings
         case DEBUG:
-          if (props.getProperty(key).equals("true"))
+          if ("true".equals(props.getProperty(key)))
             props.setProperty(key, "+"); // '+' is the all flags enabled keyword
-          if (props.getProperty(key).equals("false")) {
+          if ("false".equals(props.getProperty(key))) {
             this.completeness.put(confEnum, true);
             break;
           }
+        // fallthrough
         case AIPLAYERS:
         case LANGUAGE:
         case AIMODE:
@@ -204,7 +205,7 @@ public class ConfigurationBuilder {
               // so we can safely cast
               InvocationTargetException qualified = (InvocationTargetException) e;
               CustomError src = (CustomError) qualified.getCause();
-              throw new CustomError(errType, errHeader + src.message, src.details);
+              throw new CustomError(errType, errHeader + src.message, src.details, e);
             }
             break;
           }
@@ -222,7 +223,8 @@ public class ConfigurationBuilder {
                     + "`, expected an `"
                     + Integer.TYPE
                     + "`",
-                e.getMessage());
+                e.getMessage(),
+                e);
           }
           break;
         default:
@@ -260,7 +262,7 @@ public class ConfigurationBuilder {
           // Calling this.confStub.set{fieldName}(source.get({fieldName}))
           setter.invoke(this.confStub, getter.invoke(sourceConf));
         } catch (Exception e) {
-          throw new CustomError(ErrorType.FailedConfigFileParsing, "Oops", e.getMessage());
+          throw new CustomError(ErrorType.FailedConfigFileParsing, "Oops", e.getMessage(), e);
         }
       }
     }
@@ -285,35 +287,38 @@ public class ConfigurationBuilder {
    * @param conf the configuration objet to get values to write from
    */
   public static void saveConfiguration(Path dst, Configuration conf) throws IOException {
-    BufferedWriter writer = Files.newBufferedWriter(dst);
+    try (BufferedWriter writer = Files.newBufferedWriter(dst)) {
 
-    String name = dst.getFileName().toString().replace(".", "");
-    writer.write("#[" + name + "]\n");
-    writer.write("#[Flags]\n");
-    writer.write("verbose=" + conf.getVerbose() + "\n");
-    writer.write("debug=" + (conf.getDebug() == null ? "false" : conf.getDebug()) + "\n");
-    writer.write("blitz=" + conf.getBlitz() + "\n");
-    writer.write("superScrabble=" + conf.getSuperScrabble() + "\n");
-    writer.write("gui=" + conf.getGui() + "\n\n");
+      String name = dst.getFileName().toString().replace(".", "");
+      writer.write("#[" + name + "]\n");
+      writer.write("#[Flags]\n");
+      writer.write("verbose=" + conf.getVerbose() + "\n");
+      writer.write("debug=" + (conf.getDebug() == null ? "false" : conf.getDebug()) + "\n");
+      writer.write("blitz=" + conf.getBlitz() + "\n");
+      writer.write("superScrabble=" + conf.getSuperScrabble() + "\n");
+      writer.write("gui=" + conf.getGui() + "\n\n");
 
-    writer.write("#[Game]\n");
-    writer.write("language=" + conf.getLanguage() + "\n");
-    writer.write("playerCount=" + conf.getPlayerCount() + "\n");
-    writer.write("blitzTime=" + conf.getBlitzTime() + "\n");
-    writer.write("seed=" + conf.getSeed() + "\n\n");
+      writer.write("#[Game]\n");
+      writer.write("language=" + conf.getLanguage() + "\n");
+      writer.write("playerCount=" + conf.getPlayerCount() + "\n");
+      writer.write("blitzTime=" + conf.getBlitzTime() + "\n");
+      writer.write("seed=" + conf.getSeed() + "\n\n");
 
-    writer.write("#[AI]\n");
-    writer.write("aiPlayers=" + aiPlayersToString(conf.getAiPlayers()) + "\n");
-    writer.write("aiMode=" + conf.getAiMode() + "\n");
-    writer.write("aiDepth=" + conf.getAiDepth() + "\n");
-    writer.write("aiTime=" + conf.getAiTime() + "\n\n");
+      writer.write("#[AI]\n");
+      writer.write("aiPlayers=" + aiPlayersToString(conf.getAiPlayers()) + "\n");
+      writer.write("aiMode=" + conf.getAiMode() + "\n");
+      writer.write("aiDepth=" + conf.getAiDepth() + "\n");
+      writer.write("aiTime=" + conf.getAiTime() + "\n\n");
 
-    writer.write("#[Storage]\n");
-    writer.write("historyFile=" + conf.getHistoryFile() + "\n");
-    writer.write("dictFile=" + conf.getDictFile() + "\n");
-    writer.write("contestFile=" + conf.getContestFile() + "\n");
+      writer.write("#[Storage]\n");
+      writer.write("historyFile=" + conf.getHistoryFile() + "\n");
+      writer.write("dictFile=" + conf.getDictFile() + "\n");
+      writer.write("contestFile=" + conf.getContestFile() + "\n");
 
-    writer.close();
+      writer.close();
+    } catch (IOException e) {
+      throw e;
+    }
   }
 
   public static String aiPlayersToString(boolean[] aiPlayers) {

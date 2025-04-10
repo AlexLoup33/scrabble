@@ -8,11 +8,20 @@ public final class CustomError extends Error {
      * happened, if the error is expected or if it is a bug, this message is intended
      * for the devs and will be logged later
      */
+  public final Exception original;
 
   public CustomError(ErrorType type, String message, String details) {
     this.type = type;
     this.message = message;
     this.details = details;
+    this.original = null;
+  }
+
+  public CustomError(ErrorType type, String message, String details, Exception e) {
+    this.type = type;
+    this.message = message;
+    this.details = details;
+    this.original = e;
   }
 
   public boolean isFatal() {

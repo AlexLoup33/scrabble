@@ -271,10 +271,6 @@ public class GameModel {
     return this.currentPlayer;
   }
 
-  public int nbEveryonePassedTurn() {
-    return this.everyonePassedTurnStreak;
-  }
-
   public String getSerializedHistory() {
     return this.history.toSerializedString();
   }
@@ -322,6 +318,10 @@ public class GameModel {
 
   public void undoGameAction(PassTurnAction passTurn) {
     this.genericUndoing(passTurn);
+    this.everyonePassedTurnStreak -= 1;
+    if (this.everyonePassedTurnStreak <= 0) {
+      this.everyonePassedTurnStreak = 0;
+    }
   }
 
   public void undoGameAction(PlaceWordAction placeWord) {
@@ -353,5 +353,21 @@ public class GameModel {
     } catch (IOException e) {
       throw new CustomError(ErrorType.IO, "save directory is not accessible", e.getMessage());
     }
+  }
+
+  public boolean isGameFinished() {
+    // test if there are enough letters to be drawn
+    if (this.draw.getCurrentSize() < 7) {
+      return true;
+    }
+    // test if enough players remain
+    if (this.getActivePlayers().size() <= 1) {
+      return true;
+    }
+    // test: 3 game turn with everyone passing
+    if (this.everyonePassedTurnStreak >= 3) {
+      return true;
+    }
+    return false; // the game isn't finished
   }
 }

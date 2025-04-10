@@ -40,7 +40,7 @@ public class GamePresenter {
     Utilities.verbose("Blitz time: %s\n", this.model.config.blitzTime());
     Utilities.verbose("Mode super scrabble: %s\n", this.model.config.getSuperScrabble());
 
-    while (!this.isGameFinished()) {
+    while (!this.model.isGameFinished()) {
       int turn = model.getTurn();
       Utilities.debug('l', "round number %d\n", turn);
       try {
@@ -94,22 +94,5 @@ public class GamePresenter {
           "couldn't handle the error",
           "the error: " + e + " caused an exit");
     }
-  }
-
-  public boolean isGameFinished() {
-    // test if there are enough letters to be drawn
-    if (model.draw.getCurrentSize() < 7) {
-      return true;
-    }
-    // test if enough players remain
-    if (this.model.getActivePlayers().size() <= 1) {
-      return true;
-    }
-    // test: 3 game turn with everyone passing
-    if (this.model.nbEveryonePassedTurn() >= 3) {
-      return true;
-    }
-
-    return false; // the game isn't finished
   }
 }

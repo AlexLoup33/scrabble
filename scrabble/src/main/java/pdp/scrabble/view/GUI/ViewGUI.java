@@ -406,6 +406,15 @@ public class ViewGUI implements IView {
     }
     // update the view
     this.updateGUI();
+    // detect if the game ended
+    if (this.gameModel.isGameFinished()) {
+      this.handleGameEnding();
+    }
+  }
+
+  private void handleGameEnding() {
+    this.showSimpleAlert(
+        this.getFromLangPack("ended"), AlertType.INFORMATION, this.getFromLangPack("endedText"));
   }
 
   private void handleErrors(Throwable e) {

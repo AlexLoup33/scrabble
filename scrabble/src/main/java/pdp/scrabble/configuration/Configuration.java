@@ -84,4 +84,24 @@ public record Configuration(
   public Path getHistoryFile() {
     return this.historyFile;
   }
+
+  public Configuration getWithRandomSeed() {
+    return new Configuration(
+        verbose,
+        debug,
+        blitz,
+        superScrabble,
+        gui,
+        playerCount,
+        blitzTime,
+        aiPlayers,
+        aiDepth,
+        aiTime,
+        -1,
+        language,
+        aiMode,
+        dictFile,
+        contestFile,
+        historyFile);
+  }
 }

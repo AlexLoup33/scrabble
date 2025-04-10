@@ -107,6 +107,7 @@ public class ViewGUI implements IView {
   private void setupFromNewModel(GameModel newModel) {
     this.gameModel = newModel;
     this.langPack = this.gameModel.lang.getViewGUI_langPack();
+    this.lastActionTimeMs = System.currentTimeMillis();
 
     // MENU BAR INITIALIZATION
     MenuBar menuBar = new MenuBar();
@@ -123,7 +124,6 @@ public class ViewGUI implements IView {
     MenuItem helpItem = new MenuItem(langPack.getString("help"));
     MenuItem settingsItem = new MenuItem(langPack.getString("settings"));
     MenuItem quitItem = new MenuItem(langPack.getString("quit"));
-    MenuItem updateGUI = new MenuItem("[DEBUG] Update GUI");
     // Actions for Items
     newGameItem.setOnAction(e -> this.handleNewGame());
     loadGameItem.setOnAction(e -> this.handleLoadGame());
@@ -131,10 +131,9 @@ public class ViewGUI implements IView {
     helpItem.setOnAction(e -> this.handleShowHelp());
     settingsItem.setOnAction(e -> this.handleSettings());
     quitItem.setOnAction(e -> this.handleQuit());
-    updateGUI.setOnAction(e -> this.updateGUI());
     // Adding all item to fileMenu
     fileMenu.getItems().addAll(newGameItem, loadGameItem, saveGameItem);
-    fileMenu.getItems().addAll(helpItem, settingsItem, quitItem, updateGUI);
+    fileMenu.getItems().addAll(helpItem, settingsItem, quitItem);
 
     // Second -> Game : Hint | Undo | Redo
     MenuItem hintItem = new MenuItem(langPack.getString("hint"));
@@ -283,8 +282,20 @@ public class ViewGUI implements IView {
   }
 
   private void handleShowHelp() {
-    // TODO  Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'handleShowHelp'");
+    this.showSimpleAlert(
+        langPack.getString("help"),
+        AlertType.INFORMATION,
+        """
+here is some nice tips to help you:
+  - you can place words, exchange letters or pass your turn
+    with the buttons in front of you
+  - in the center there is the grid and under it the letters in your hand,
+    over that you have some additional infos obout the game,
+    on the left you have the history,
+    and on the rigth the scores and remaing time
+  - on the grid the colors represent the multipliers as:
+    cyan is doubleLetter, blue is ...
+        """);
   }
 
   /**
@@ -330,8 +341,8 @@ public class ViewGUI implements IView {
   }
 
   private void handleNewGame() {
-    this.executeGameAction(
-        new RestartGameAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
+    this.setupFromNewModel(new GameModel(this.gameModel.config.getWithRandomSeed()));
+    this.updateGUI();
   }
 
   private void executeGameAction(GameAction ga) {
@@ -602,7 +613,6 @@ public class ViewGUI implements IView {
   @Override
   public void displayGrid(Grid grid, Boolean isSuperScrabble) {
     // Update the scrabble board with the new grid
-    System.out.println("Updating scrabble board with new grid");
     this.mainRow.getChildren().remove(scrabbleBoard);
     this.scrabbleBoard.update(grid, isSuperScrabble);
     this.mainRow.getChildren().add(1, scrabbleBoard);

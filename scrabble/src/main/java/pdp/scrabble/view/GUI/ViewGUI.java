@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -46,8 +47,10 @@ import pdp.scrabble.game.actions.GameAction;
 import pdp.scrabble.game.actions.PassTurnAction;
 import pdp.scrabble.game.actions.PlaceWordAction;
 import pdp.scrabble.game.actions.QuitAction;
+import pdp.scrabble.game.actions.RedoAction;
 import pdp.scrabble.game.actions.RenamePlayerAction;
 import pdp.scrabble.game.actions.RestartGameAction;
+import pdp.scrabble.game.actions.UndoAction;
 import pdp.scrabble.game.serializer.Serializer;
 import pdp.scrabble.view.GUI.Component.ActionHistory;
 import pdp.scrabble.view.GUI.Component.DisplayTurn;
@@ -137,18 +140,16 @@ public class ViewGUI implements IView {
 
     // Second -> Game : Hint | Undo | Redo
     MenuItem hintItem = new MenuItem(langPack.getString("hint"));
-    MenuItem undoAllItem = new MenuItem(langPack.getString("undoall"));
     MenuItem undoItem = new MenuItem(langPack.getString("undo"));
     MenuItem redoItem = new MenuItem(langPack.getString("redo"));
+    MenuItem undoAllItem = new MenuItem(langPack.getString("undoall"));
     MenuItem redoAllItem = new MenuItem(langPack.getString("redoall"));
     // Action for Items
-    // TODO faire des handle... pour chaque
-    // TODO hit = message pour rapeler que l'on peux echanger des lettres
-    hintItem.setOnAction(e -> System.out.println("Hint..."));
-    undoAllItem.setOnAction(e -> System.out.println("Undo All..."));
-    undoItem.setOnAction(e -> System.out.println("Undo one..."));
-    redoItem.setOnAction(e -> System.out.println("Redo one..."));
-    redoAllItem.setOnAction(e -> System.out.println("Redo All..."));
+    hintItem.setOnAction(e -> this.handleShowHint());
+    undoItem.setOnAction(e -> this.handleUndoOne());
+    redoItem.setOnAction(e -> this.handleRedoOne());
+    undoAllItem.setOnAction(e -> this.handleUndoAll());
+    redoAllItem.setOnAction(e -> this.handleRedoAll());
     // adding all items
     gameMenu.getItems().addAll(hintItem, undoAllItem, undoItem, redoItem, redoAllItem);
 
@@ -218,6 +219,63 @@ public class ViewGUI implements IView {
     }
     this.root.getChildren().addAll(menuBar, displayTurn, mainRow, playerHand, actionButtons);
     this.updateGUI();
+  }
+
+  private void handleRedoAll() {
+    boolean ask = this.askYesNo(langPack.getString("redoall"), langPack.getString("redoallText"));
+    if (ask) {
+      this.gameModel.redoAll();
+      this.updateGUI();
+    }
+  }
+
+  private void handleRedoOne() {
+    boolean ask = this.askYesNo(langPack.getString("redo"), langPack.getString("redoText"));
+    if (ask) {
+      this.executeGameAction(
+          new RedoAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
+    }
+  }
+
+  private void handleUndoOne() {
+    boolean ask = this.askYesNo(langPack.getString("undo"), langPack.getString("undoText"));
+    if (ask) {
+      this.executeGameAction(
+          new UndoAction(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn()));
+    }
+  }
+
+  private void handleUndoAll() {
+    boolean ask = this.askYesNo(langPack.getString("undoall"), langPack.getString("undoallText"));
+    if (ask) {
+      this.gameModel.undoAll();
+      this.updateGUI();
+    }
+  }
+
+  private void handleShowHint() {
+    this.showSimpleAlert(
+        langPack.getString("hint"), AlertType.INFORMATION, langPack.getString("hintText"));
+  }
+
+  private boolean askYesNo(String title, String content) {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle(title);
+    alert.setContentText(content);
+
+    ButtonType yes = new ButtonType(langPack.getString("yes"));
+    ButtonType no = new ButtonType(langPack.getString("no"));
+
+    alert.getButtonTypes().setAll(yes, no);
+
+    AtomicBoolean res = new AtomicBoolean(false);
+    alert
+        .showAndWait()
+        .ifPresent(
+            response -> {
+              res.set(response == yes);
+            });
+    return res.get();
   }
 
   private void showSimpleAlert(String title, AlertType type, String content) {
@@ -334,7 +392,6 @@ public class ViewGUI implements IView {
   }
 
   private void executeGameAction(GameAction ga) {
-    System.out.println("handling: " + ga.toString());
     // computye the duration of the decision and update last action time
     long currTimeMs = System.currentTimeMillis();
     long durationSec = (currTimeMs - this.lastActionTimeMs) / 1000;

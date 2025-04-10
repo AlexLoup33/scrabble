@@ -40,6 +40,7 @@ public enum ErrorType {
   ExitNoError(true),
   ExitWithError(true),
   UnfilteredPlaceWordAction(true),
+  InvalidConfigurationSettings(false),
   WrongTurnAction(true);
 
   public final boolean isFatal;

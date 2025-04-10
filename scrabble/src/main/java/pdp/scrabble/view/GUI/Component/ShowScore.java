@@ -80,4 +80,27 @@ public class ShowScore extends VBox {
 
     return playerBox;
   }
+
+  /**
+   * Updates the players' boxes to include the remaining time next to their scores.
+   *
+   * @param players The list of players whose remaining time should be displayed.
+   */
+  public void updatePlayersTimes(List<Player> players) {
+    for (Player player : players) {
+      StackPane playerBox = playerBoxes.get(player);
+
+      if (playerBox != null) {
+        Label playerLabel = (Label) playerBox.getChildren().get(0);
+        String playerInfo =
+            player.getName()
+                + ": "
+                + player.getScore()
+                + "\n(Time: "
+                + player.getRemainingTimeAsString()
+                + "s)";
+        playerLabel.setText(playerInfo);
+      }
+    }
+  }
 }

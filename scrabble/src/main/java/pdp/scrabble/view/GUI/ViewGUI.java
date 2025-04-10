@@ -683,13 +683,15 @@ public class ViewGUI implements IView {
 
   @Override
   public void showRemainingTimes(List<Player> players) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'showRemainingTimes'");
+    this.playerScores.updatePlayersTimes(players);
   }
 
   public void updateGUI() {
     this.displayGrid(this.gameModel.grid, this.config.getGui());
     this.showScores(this.gameModel.players);
+    if (this.gameModel.config.blitz()) {
+      this.showRemainingTimes(this.gameModel.players);
+    }
     this.displayTurn.updateTurn(this.gameModel.getTurn(), this.gameModel.getCurrentPlayer());
     this.announceTurn(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());
     this.displayDraw(this.gameModel.draw);

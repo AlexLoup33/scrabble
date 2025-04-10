@@ -1,0 +1,39 @@
+# [2025-04-10T03:03:43]
+<<<<<<<<<<<<<<<<<<<< GAME
+Verbose="true"
+Debug="false"
+Blitz="true"
+SuperScrabble="false"
+Gui="false"
+Language="fr"
+PlayerCount=3
+BlitzTime=30
+Seed=42
+AiPlayers=[2]
+AiMode="null"
+AiDepth=0
+AiTime=5
+HistoryFile="null"
+DictFile="null"
+ContestFile="null"
+>>>>>>>>>>>>>>>>>>>>
+#   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+# a _  _  _  _  _  _  _  _  _  _  _  _  _  _  _
+# b _  _  _  _  _  _  _  _  _  _  _  _  _  _  _
+# c _  _  _  _  _  _  _  _  _  _  _  _  _  _  _
+# d _  _  _  _  _  _  _  _  _  _  _  _  _  _  _
+# e _  _  _  _  _  _  _  _  _  _  _  _  _  _  _
+# f _  _  _  _  _  _  _  _  _  _  _  _  _  _  _
+# g _  _  _  _  _  _  _  _  _  _  _  _  _  _  _
+# h _  _  _  _  _  _  _  T  O  I  _  _  _  _  _
+# i _  _  _  _  _  _  _  I  _  _  _  _  _  _  _
+# j _  _  _  _  _  _  _  R  _  _  _  _  _  _  _
+# k _  _  _  _  _  _  _  E  _  _  _  _  _  _  _
+# l _  _  _  _  _  _  _  _  _  _  _  _  _  _  _
+# m _  _  _  _  _  _  _  _  _  _  _  _  _  _  _
+# n _  _  _  _  _  _  _  _  _  _  _  _  _  _  _
+# o _  _  _  _  _  _  _  _  _  _  _  _  _  _  _
+<<<<<<<<<<<<<<<<<<<< HISTORY
+1. 0 PlaceWord h8h TOI 1 PlaceWord h8v TIRE 2 ExchangeLetter [C,X];
+2. 0 PassTurn;
+>>>>>>>>>>>>>>>>>>>>

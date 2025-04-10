@@ -202,7 +202,7 @@ public class ViewGUI implements IView {
 
     placeWordButton.setOnAction(e -> this.handlePlaceWord());
     exchangeLetterButton.setOnAction(e -> this.handleExchangeLetter());
-    renamePlayerButton.setOnAction(e -> this.hadleNewPlayerName());
+    renamePlayerButton.setOnAction(e -> this.handleNewPlayerName());
     passTurnButton.setOnAction(e -> this.handlePassTurn());
     forfeitPlayerButton.setOnAction(e -> this.handleForfeitPlayer());
     restartGameButton.setOnAction(e -> this.handleRestartGame());
@@ -541,7 +541,7 @@ public class ViewGUI implements IView {
     }
   }
 
-  private void hadleNewPlayerName() {
+  private void handleNewPlayerName() {
     Dialog<String> dialog = new Dialog<>();
     dialog.setTitle(langPack.getString("rename"));
     dialog.setHeaderText(

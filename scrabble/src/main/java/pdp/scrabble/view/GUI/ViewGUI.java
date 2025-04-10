@@ -217,6 +217,7 @@ public class ViewGUI implements IView {
       this.root.getChildren().clear();
     }
     this.root.getChildren().addAll(menuBar, displayTurn, mainRow, playerHand, actionButtons);
+    this.updateGUI();
   }
 
   private void showSimpleAlert(String title, AlertType type, String content) {
@@ -277,8 +278,9 @@ public class ViewGUI implements IView {
   }
 
   private void handleSettings() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'handleSettings'");
+    langPack.getString("settings");
+    langPack.getString("settingsTxt");
+    // TODO: HERE
   }
 
   private void handleShowHelp() {
@@ -336,13 +338,11 @@ here is some nice tips to help you:
     if (file != null) {
 
       this.setupFromNewModel(Serializer.loadModelFromFile(file.toPath()));
-      this.updateGUI();
     }
   }
 
   private void handleNewGame() {
     this.setupFromNewModel(new GameModel(this.gameModel.config.getWithRandomSeed()));
-    this.updateGUI();
   }
 
   private void executeGameAction(GameAction ga) {

@@ -950,12 +950,4 @@ public class MainTest {
                   this.gameModel.getCurrentPlayer(), this.gameModel.getTurn(), w, w, s, s));
         });
   }
-
-  @Test
-  public void testAiPlayer() {
-    AI ai = new AI(1, 30);
-    assertTrue(ai.getIsAi());
-    GameAction ga = ai.getAction(gameModel);
-    assertTrue(ga instanceof PassTurnAction);
-  }
 }

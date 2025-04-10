@@ -330,7 +330,7 @@ public class ViewGUI implements IView {
         .ifPresent(
             response -> {
               if (!(response == cancel)) {
-                this.executeGameAction(new QuitAction(player, turn, (response != saveAndQuit)));
+                this.executeGameAction(new QuitAction(player, turn, ((response == saveAndQuit))));
               }
             });
   }

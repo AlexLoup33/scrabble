@@ -4,7 +4,6 @@ import pdp.scrabble.Utilities;
 import pdp.scrabble.configuration.Configuration;
 import pdp.scrabble.errorsHandling.CustomError;
 import pdp.scrabble.errorsHandling.ErrorType;
-import pdp.scrabble.game.AI;
 import pdp.scrabble.game.GameModel;
 import pdp.scrabble.game.Player;
 import pdp.scrabble.game.actions.GameAction;
@@ -40,7 +39,6 @@ public class GamePresenter {
     Utilities.verbose("Mode blitz: %s\n", this.model.config.getBlitz());
     Utilities.verbose("Blitz time: %s\n", this.model.config.blitzTime());
     Utilities.verbose("Mode super scrabble: %s\n", this.model.config.getSuperScrabble());
-    boolean wasAi = false;
 
     while (!this.isGameFinished()) {
       int turn = model.getTurn();
@@ -58,20 +56,8 @@ public class GamePresenter {
         view.displayPlayerLetters(playing.bag);
         Utilities.debug('l', "Attempt to askAction\n");
 
-        long startTime = 0L;
-        GameAction ga = null;
-        if (playing.getIsAi()) {
-          startTime = System.currentTimeMillis();
-          ga = ((AI) playing).getAction(this.model);
-          wasAi = true;
-        } else {
-          if (wasAi) {
-            ((ViewCLI) view).showAiWarning();
-          }
-          startTime = System.currentTimeMillis();
-          ga = view.askAction(playing, this.model.getTurn());
-          wasAi = false;
-        }
+        long startTime = System.currentTimeMillis();
+        GameAction ga = view.askAction(playing, this.model.getTurn());
         long timeElapsed = (System.currentTimeMillis() - startTime) / 1000;
         this.model.applyGameActionDispatch(ga, timeElapsed);
         Utilities.debug('l', "Action received\n");

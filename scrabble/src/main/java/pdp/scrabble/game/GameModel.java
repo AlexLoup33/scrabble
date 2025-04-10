@@ -42,7 +42,7 @@ public class GameModel {
 
     for (int i = 0; i < this.config.getPlayerCount(); i++) {
       if (this.config.aiPlayers()[nextPlayerID]) {
-        this.players.add(new AI(nextPlayerID, this.config.getBlitzTime()));
+        this.players.add(new Player(nextPlayerID, this.config.getBlitzTime(), true));
       } else {
         this.players.add(new Player(nextPlayerID, this.config.getBlitzTime()));
       }

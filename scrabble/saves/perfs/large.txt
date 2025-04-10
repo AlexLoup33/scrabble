@@ -1,0 +1,45 @@
+# [2025-04-10T01:36:13]
+<<<<<<<<<<<<<<<<<<<< GAME
+Verbose="true"
+Debug="l"
+Blitz="false"
+SuperScrabble="false"
+Gui="false"
+Language="en"
+PlayerCount=3
+BlitzTime=30
+Seed=-2051327283424727604
+AiPlayers=[2]
+AiMode="null"
+AiDepth=0
+AiTime=5
+HistoryFile="null"
+DictFile="null"
+ContestFile="null"
+>>>>>>>>>>>>>>>>>>>>
+#   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+# a _  _  _  _  _  _  _  _  _  _  _  _  _  _  _
+# b _  _  _  _  _  _  _  E  T  N  A  _  A  _  _
+# c _  _  _  _  _  _  _  A  _  _  Z  _  M  _  _
+# d _  _  _  _  _  _  _  V  _  F  I  C  I  N  S
+# e _  _  _  _  _  V  _  E  _  _  N  _  A  _  _
+# f _  _  _  F  J  O  R  D  S  _  E  _  _  _  _
+# g _  _  _  L  _  L  _  _  P  _  S  A  K  E  R
+# h _  _  _  U  _  T  I  R  E  D  _  I  _  _  _
+# i _  _  _  T  _  _  _  _  W  _  _  R  _  _  _
+# j _  _  _  E  B  B  E  D  _  _  _  Y  O  U  R
+# k _  _  _  _  I  _  _  Y  _  _  _  _  _  T  _
+# l _  _  _  _  A  _  _  A  L  G  U  M  _  E  _
+# m _  _  C  O  S  _  _  D  _  _  G  _  _  R  _
+# n _  _  _  _  _  _  _  _  _  _  H  _  _  I  _
+# o _  _  _  _  _  _  _  _  _  _  _  _  _  _  _
+<<<<<<<<<<<<<<<<<<<< HISTORY
+1. 0 PlaceWord h6h TIRED 1 PlaceWord f9v SPEW 2 PlaceWord e6v VOLT;
+2. 0 PassTurn 1 PassTurn 2 PlaceWord f4h FJORD;
+3. 0 PlaceWord f4v FLUTE 1 PlaceWord j4h EBBED 2 PlaceWord j8v DYAD;
+4. 0 PlaceWord l8h ALGUM 1 PlaceWord l11v UGH 2 PlaceWord b8v EAVED;
+5. 0 PlaceWord b8h ETNA 1 PlaceWord b11v AZINES 2 PlaceWord d10h FICINS;
+6. 0 PlaceWord b13v AMIA 1 PlaceWord g11h SAKER 2 PlaceWord g12v AIRY;
+7. 0 PlaceWord j12h YOUR 1 PlaceWord j14v UTERI 2 PlaceWord j5v BIAS;
+8. 0 PlaceWord m3h COS;
+>>>>>>>>>>>>>>>>>>>>

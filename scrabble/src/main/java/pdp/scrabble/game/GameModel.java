@@ -41,7 +41,11 @@ public class GameModel {
     this.players = new ArrayList<>(this.config.getPlayerCount());
 
     for (int i = 0; i < this.config.getPlayerCount(); i++) {
-      this.players.add(new Player(nextPlayerID, this.config.getBlitzTime()));
+      if (this.config.aiPlayers()[nextPlayerID]) {
+        this.players.add(new AI(nextPlayerID, this.config.getBlitzTime()));
+      } else {
+        this.players.add(new Player(nextPlayerID, this.config.getBlitzTime()));
+      }
       drawLetters(this.players.get(i));
       this.nextPlayerID++;
     }

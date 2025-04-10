@@ -362,6 +362,10 @@ public class ViewCLI implements IView {
     }
   }
 
+  public void showAiWarning() {
+    Utilities.logger.printf(getFromLangPack("ai_warning") + "\n");
+  }
+
   protected void finalize() throws Throwable {
     this.scanner.close();
   }

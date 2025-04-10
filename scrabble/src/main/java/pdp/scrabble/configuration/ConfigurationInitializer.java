@@ -15,8 +15,7 @@ public final class ConfigurationInitializer {
   private ConfigurationInitializer() {}
 
   /**
-   * Initializes a Configuration Object from scratch, using our 
-   * Configuration objects
+   * Initializes a Configuration Object from scratch, using our Configuration objects
    *
    * @param args command line arguments
    * @return Configuration object

@@ -17,8 +17,8 @@ public class Serializer {
   /**
    * Serializes the passed model to the given path argument
    *
-   * @param src Path object pointing to the target destination
-   *        The given extension will be applied if possible
+   * @param src Path object pointing to the target destination The given extension will be applied
+   *     if possible
    * @param toSave game model object to serialize
    */
   public static void saveCurrentToFile(Path filePath, GameModel toSave) throws IOException {
@@ -68,7 +68,7 @@ public class Serializer {
    * Loads a model from a saveFile
    *
    * @param src Path object pointing to the saveFile
-   * @return the loaded GameModel 
+   * @return the loaded GameModel
    */
   public static GameModel loadModelFromFile(Path filePath) {
     Parser parser = new Parser(new TokenInputStream(new CharInputStream(filePath)));

@@ -369,7 +369,6 @@ public class Parser {
     }
   }
 
-
   /**
    * Returns the parsed Model
    *

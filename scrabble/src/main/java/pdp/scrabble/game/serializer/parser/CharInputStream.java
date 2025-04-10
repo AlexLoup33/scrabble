@@ -28,7 +28,7 @@ public class CharInputStream {
   /**
    * Read and put the next character of the file
    *
-   * @return the next character in file Reader 
+   * @return the next character in file Reader
    */
   public char next() {
     try {
@@ -45,7 +45,8 @@ public class CharInputStream {
 
   /**
    * Just check the next character. Keep the position of the cursor
-   * @return the next character in file Reader 
+   *
+   * @return the next character in file Reader
    */
   public char peek() {
     try {
@@ -60,6 +61,7 @@ public class CharInputStream {
 
   /**
    * Return true if the next char is EOF
+   *
    * @return Eof status
    */
   public boolean eof() {

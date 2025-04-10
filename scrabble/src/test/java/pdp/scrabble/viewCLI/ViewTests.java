@@ -107,7 +107,6 @@ public class ViewTests {
         "lettres du joueur: [ A | L | V | T | D | D | M ]\n",
         Utilities.logger.loggedOuts.getFirst());
     // test show errors
-    Utilities.logger.setRedirectState(true);
     view.showError(new Throwable("wololo"));
     assertTrue(
         Utilities.logger
@@ -127,7 +126,6 @@ public class ViewTests {
         "\u001B[33mErrorType: InvalidePlaceLetterAction\n"
             + "Message: poire\nDetails: banana :)\u001B[0m\n",
         Utilities.logger.loggedOuts.getFirst());
-    Utilities.logger.setRedirectState(false);
 
     // test show errors
     view.displayDraw(gameModel.draw);

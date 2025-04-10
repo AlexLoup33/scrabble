@@ -143,10 +143,10 @@ public class ViewGUI implements IView {
     MenuItem undoItem = new MenuItem(langPack.getString("undo"));
     MenuItem redoItem = new MenuItem(langPack.getString("redo"));
     MenuItem redoAllItem = new MenuItem(langPack.getString("redoall"));
-    // Action for Items 
+    // Action for Items
     // TODO faire des handle... pour chaque
     // TODO hit = message pour rapeler que l'on peux echanger des lettres
-    hintItem.setOnAction(e -> System.out.println("Hint...")); 
+    hintItem.setOnAction(e -> System.out.println("Hint..."));
     undoAllItem.setOnAction(e -> System.out.println("Undo All..."));
     undoItem.setOnAction(e -> System.out.println("Undo one..."));
     redoItem.setOnAction(e -> System.out.println("Redo one..."));

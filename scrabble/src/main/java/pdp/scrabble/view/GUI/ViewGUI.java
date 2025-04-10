@@ -58,7 +58,6 @@ import pdp.scrabble.view.IView;
 
 public class ViewGUI implements IView {
   private GameModel gameModel;
-  private Configuration config;
 
   private final Stage primaryStage;
   private Scene scene;
@@ -76,10 +75,7 @@ public class ViewGUI implements IView {
   public ViewGUI(Stage stage, GameModel gameModel) {
     this.primaryStage = stage;
 
-    this.gameModel = gameModel;
-    this.config = gameModel.config;
-    this.langPack = this.gameModel.lang.getViewGUI_langPack();
-    this.setupInterface();
+    this.setupFromNewModel(gameModel);
     this.scene = new Scene(this.root, 1200, 800);
 
     primaryStage.setTitle("Scrabble - GUI");
@@ -108,7 +104,10 @@ public class ViewGUI implements IView {
     }
   }
 
-  private void setupInterface() {
+  private void setupFromNewModel(GameModel newModel) {
+    this.gameModel = newModel;
+    this.langPack = this.gameModel.lang.getViewGUI_langPack();
+
     // MENU BAR INITIALIZATION
     MenuBar menuBar = new MenuBar();
 
@@ -190,7 +189,7 @@ public class ViewGUI implements IView {
     // Display Turn
     this.displayTurn = new DisplayTurn(this.gameModel.lang);
     // Player Hand
-    this.playerHand = new PlayerHand(this.gameModel.lang, this.config.superScrabble());
+    this.playerHand = new PlayerHand(this.gameModel.lang, this.gameModel.config.superScrabble());
 
     // ACTION BUTTONS --------------------------------------------
     Button placeWordButton = new Button(langPack.getString("placew"));
@@ -325,8 +324,7 @@ public class ViewGUI implements IView {
     File file = fileChooser.showOpenDialog(this.primaryStage);
     if (file != null) {
 
-      this.gameModel = Serializer.loadModelFromFile(file.toPath());
-      this.setupInterface();
+      this.setupFromNewModel(Serializer.loadModelFromFile(file.toPath()));
       this.updateGUI();
     }
   }
@@ -337,6 +335,7 @@ public class ViewGUI implements IView {
   }
 
   private void executeGameAction(GameAction ga) {
+    System.out.println("handling: " + ga.toString());
     // computye the duration of the decision and update last action time
     long currTimeMs = System.currentTimeMillis();
     long durationSec = (currTimeMs - this.lastActionTimeMs) / 1000;
@@ -688,7 +687,7 @@ public class ViewGUI implements IView {
   }
 
   public void updateGUI() {
-    this.displayGrid(this.gameModel.grid, this.config.getGui());
+    this.displayGrid(this.gameModel.grid, this.gameModel.config.superScrabble());
     this.showScores(this.gameModel.players);
     this.displayTurn.updateTurn(this.gameModel.getTurn(), this.gameModel.getCurrentPlayer());
     this.announceTurn(this.gameModel.getCurrentPlayer(), this.gameModel.getTurn());

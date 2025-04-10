@@ -124,6 +124,11 @@ public class TokenInputStream {
     this.input.next();
   }
 
+  /**
+   * Returns the next token under cursor
+   *
+   * @return next token
+   */
   public Token readNext() throws Error {
     readWhile((ch) -> isWhiteSpace(ch));
     if (input.eof()) return null;
@@ -147,17 +152,32 @@ public class TokenInputStream {
     return null;
   }
 
+  /**
+   * Peek the next token value, without advancing cursor
+   *
+   * @return next token
+   */
   public Token peek() {
     if (current == null) current = readNext();
     return current;
   }
 
+  /*
+   * Returns the next token value
+   * We keep current, in case we have peeked before
+   *
+   * @return next token
+   */
   public Token next() {
     Token tok = current;
     current = null;
     return (tok != null) ? tok : readNext();
   }
 
+  /*
+   * throw at relevant position
+   *
+   */
   public void croak(String msg) {
     input.croak(msg);
   }

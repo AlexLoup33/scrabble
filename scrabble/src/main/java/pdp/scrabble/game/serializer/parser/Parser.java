@@ -369,6 +369,12 @@ public class Parser {
     }
   }
 
+
+  /**
+   * Returns the parsed Model
+   *
+   * @return Parsed model
+   */
   public GameModel getLoadedModel() {
     return this.loadedModel;
   }

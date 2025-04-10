@@ -25,7 +25,11 @@ public class CharInputStream {
     this.col = 0;
   }
 
-  /* read and put the next character of the file */
+  /**
+   * Read and put the next character of the file
+   *
+   * @return the next character in file Reader 
+   */
   public char next() {
     try {
       char ch = (char) input.read();
@@ -39,7 +43,10 @@ public class CharInputStream {
     }
   }
 
-  /* just check the next charactere. Keep the position of the cursor */
+  /**
+   * Just check the next character. Keep the position of the cursor
+   * @return the next character in file Reader 
+   */
   public char peek() {
     try {
       input.mark(1);
@@ -51,7 +58,10 @@ public class CharInputStream {
     }
   }
 
-  /* Like peek but send true or false */
+  /**
+   * Return true if the next char is EOF
+   * @return Eof status
+   */
   public boolean eof() {
     try {
       input.mark(1);

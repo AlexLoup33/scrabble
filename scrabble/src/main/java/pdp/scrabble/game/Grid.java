@@ -496,15 +496,18 @@ public class Grid {
             "trying to replace a letter",
             "the letter on " + currPos + " must be a " + letterOnGrid + " not a " + letterToPlace);
       } // else => same letter as whanting to be placed
-      // move to next pos
-      try {
-        currPos = this.getNextPos(currPos, pwa.wordStartPos.direction());
-      } catch (CustomError e) {
-        e.handleIfErrorType(ErrorType.PositionOutOfGird);
-        throw new CustomError(
-            ErrorType.PositionOutOfGird,
-            "can't place a letter on the grid",
-            "reached the end of the grid while trying to filter: " + pwa);
+      // Dont advance curPos on last iteration -> can be out of bounds
+      if (toPlaceIndex != pwa.wordToPlace.length - 1) {
+        try {
+          // move to next pos
+          currPos = this.getNextPos(currPos, pwa.wordStartPos.direction());
+        } catch (CustomError e) {
+          e.handleIfErrorType(ErrorType.PositionOutOfGird);
+          throw new CustomError(
+              ErrorType.PositionOutOfGird,
+              "can't place a letter on the grid",
+              "reached the end of the grid while trying to filter: " + pwa);
+        }
       }
       toPlaceIndex++;
     }

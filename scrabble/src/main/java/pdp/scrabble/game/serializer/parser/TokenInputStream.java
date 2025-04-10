@@ -33,7 +33,7 @@ public class TokenInputStream {
   }
 
   private boolean isPunc(char ch) {
-    return ".{}<>[],;".indexOf(ch) >= 0;
+    return ".{}<>[],;$".indexOf(ch) >= 0;
   }
 
   private boolean isWhiteSpace(char ch) {

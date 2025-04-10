@@ -277,8 +277,111 @@ public class ViewGUI implements IView {
   }
 
   private void handleSettings() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'handleSettings'");
+    Dialog<String> dialog = new Dialog<>();
+
+    dialog.setTitle(langPack.getString("settings"));
+    dialog.setHeaderText(langPack.getString("settingsdesc"));
+    dialog.setContentText(langPack.getString("settingscontent"));
+
+    // OK and Cancel buttons
+    ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+    dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+
+    ToggleGroup gameMode = new ToggleGroup();
+
+    ToggleButton normalMode = new ToggleButton(langPack.getString("normalMode"));
+    ToggleButton blitzButton = new ToggleButton(langPack.getString("blitzMode"));
+    ToggleButton superScrabbleButton = new ToggleButton(langPack.getString("superScrabbleMode"));
+
+    normalMode.setToggleGroup(gameMode);
+    blitzButton.setToggleGroup(gameMode);
+    superScrabbleButton.setToggleGroup(gameMode);
+
+    TextField langageField = new TextField(this.gameModel.config.language());
+
+    TextField playerCountField = new TextField(this.gameModel.config.playerCount() + "");
+
+    TextField blitzTimeField = new TextField(this.gameModel.config.blitzTime() + "");
+
+    TextField seedField = new TextField(this.gameModel.config.seed() + "");
+
+    VBox content = new VBox();
+    content.setSpacing(10);
+
+    content
+        .getChildren()
+        .addAll(
+            new Label(langPack.getString("gameModeDesc")),
+            normalMode,
+            blitzButton,
+            superScrabbleButton,
+            new Label(langPack.getString("langdesc")),
+            langageField,
+            new Label(langPack.getString("playercountdesc")),
+            playerCountField,
+            new Label(langPack.getString("timelimitdesc")),
+            blitzTimeField,
+            new Label(langPack.getString("seeddesc")),
+            seedField);
+    dialog.getDialogPane().setContent(content);
+
+    // Handle the result
+    dialog.setResultConverter(
+        dialogButton -> {
+          if (dialogButton == okButtonType) {
+            boolean blitz = blitzButton.isSelected();
+            boolean superScrabble = superScrabbleButton.isSelected();
+
+            String lang =
+                (langageField.getText() != null)
+                    ? langageField.getText().trim()
+                    : this.gameModel.config.language();
+
+            int playerCount =
+                (playerCountField.getText() != null)
+                    ? Integer.parseInt(playerCountField.getText().trim())
+                    : this.gameModel.config.playerCount();
+
+            int blitzTime =
+                (blitzTimeField.getText() != null)
+                    ? Integer.parseInt(blitzTimeField.getText().trim())
+                    : this.gameModel.config.blitzTime();
+            long seed =
+                (seedField.getText() != null)
+                    ? Long.parseLong(seedField.getText().trim())
+                    : this.gameModel.config.seed();
+
+            Configuration config;
+            try {
+              config =
+                  new Configuration(
+                      this.gameModel.config.verbose(),
+                      this.gameModel.config.debug(),
+                      blitz,
+                      superScrabble,
+                      true,
+                      playerCount,
+                      blitzTime,
+                      new boolean[playerCount],
+                      this.gameModel.config.aiDepth(),
+                      this.gameModel.config.aiTime(),
+                      seed,
+                      lang,
+                      this.gameModel.config.aiMode(),
+                      null,
+                      java.nio.file.Paths.get("none"),
+                      java.nio.file.Paths.get("none"));
+            } catch (Exception e) {
+              throw new CustomError(
+                  ErrorType.InvalidConfigurationSettings,
+                  "Invalid configuration settings",
+                  "The configurations has wrong arguments: " + e.getMessage());
+            }
+            setupFromNewModel(new GameModel(config));
+          }
+          return "configuration ok";
+        });
+    dialog.showAndWait();
   }
 
   private void handleShowHelp() {

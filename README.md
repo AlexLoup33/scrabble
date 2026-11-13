@@ -7,7 +7,8 @@
 2. **[Technologies](#technologies)**
 3. **[Clone The Repository](#clone-the-repository)**
 4. **[Usage](#usage)**
-5. **[Contact](#contact)**
+5. **[How-To](#howto)**
+6. **[Contact](#contact)**
 
 ## About The Project
 This project is a Java implementation of the famous game Scrabble, using multiples technologies, algorithmes, data structures and design patterns. The game is supposed to be played from 2 to 4 players, either by human or AI. The game can be played in a console or a graphical interface. Multiples options will allow the user to customize the game.
@@ -47,21 +48,9 @@ For more information about the options, you can run the script with the `-h` opt
 ./scrabble -h
 ```
 
-## Contact
-* **Project Link** : [Scrabble Java](https://gitlab.emi.u-bordeaux.fr/pdp-2025/scrabble-1)
+## PdP Java Projects HOWTO
 
-
-* **Andrieu Ludovic - ludovic.andrieu@etu.u-bordeaux.fr**
-* **Cassard Aymeric - aymeric.cassard@etu.u-bordeaux.fr**
-* **Cazet Valentin - valentin.cazet@etu.u-bordeaux.fr**
-* **Lou-Poueyou Alexandre - alexandre.lou-poueyou@etu.u-bordeaux.fr**
-* **Mayol Jean - jean.mayol@etu.u-bordeaux.fr**
-* **Petry Mathéo - matheo.petry@etu.u-bordeaux.fr**
-
-
-# PdP Java Projects HOWTO
-
-## List dependencies
+### List dependencies
 
 ```console
 #> mvn site
@@ -69,7 +58,7 @@ For more information about the options, you can run the script with the `-h` opt
 #> open -a Safari target/site/dependencies.html
 ```
 
-## Build and tests
+### Build and tests
 
 ```console
 #> mvn clean install
@@ -87,7 +76,7 @@ The coverage is obtained with:
 #> open -a Safari target/site/jacoco/index.html
 ```
 
-## Documentation
+### Documentation
 
 ```console
 #> mvn javadoc:javadoc
@@ -102,7 +91,7 @@ working):
 #> mvn javadoc:fix
 ```
 
-## Checkstyle
+### Checkstyle
 
 If you want to check if the code is compliant with the Google Java Style, you need to check that the following plugin is present in the `pom.xml` file:
 
@@ -132,7 +121,7 @@ Then, you can run the checkstyle with:
 #> open -a Safari target/reports/checkstyle.html
 ```
 
-## PMD Static Analysis
+### PMD Static Analysis
 
 If you want to run the PMD static analysis, you need to check that the following plugin is present in the `pom.xml` file:
 
@@ -176,3 +165,13 @@ Then, you can run the PMD static analysis with:
 #> firefox target/reports/pmd.html
 #> open -a Safari target/reports/pmd.html
 ```
+
+## Contact
+* **Original Project Link** : [Scrabble Java](https://gitlab.emi.u-bordeaux.fr/pdp-2025/scrabble-1)
+
+* **Andrieu Ludovic - ludovic.andrieu@etu.u-bordeaux.fr**
+* **Cassard Aymeric - aymeric.cassard@etu.u-bordeaux.fr**
+* **Cazet Valentin - valentin.cazet@etu.u-bordeaux.fr**
+* **Lou-Poueyou Alexandre - alexandre.lou-poueyou@etu.u-bordeaux.fr**
+* **Mayol Jean - jean.mayol@etu.u-bordeaux.fr**
+* **Petry Mathéo - matheo.petry@etu.u-bordeaux.fr**
